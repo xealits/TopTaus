@@ -13,7 +13,9 @@ cvs co -r V00-04-01 CondFormats/EgammaObjects
 # Updated PAT tags.
 # addpkg PhysicsTools/PatAlgos
 cvs up -r 1.53 PhysicsTools/PatAlgos/python/tools/tauTools.py
-cvs up -r 1.12 PhysicsTools/PatAlgos/python/producersLayer1/tauProducer_cff.py
+#cvs up -r 1.12 PhysicsTools/PatAlgos/python/producersLayer1/tauProducer_cff.py
+#Recommended 1.12 crashes all the stuff. Still waiting for answer from TauID HN, since many days.
+cvs up -r 1.11 PhysicsTools/PatAlgos/python/producersLayer1/tauProducer_cff.py
 cvs up -r 1.15 PhysicsTools/PatAlgos/python/recoLayer0/tauDiscriminators_cff.py
 
 # TopRevEventSel
