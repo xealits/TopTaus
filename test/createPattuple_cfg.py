@@ -116,7 +116,7 @@ for i in xrange(0,len(postfixes) ):
     print ' ******* Setting up PF2PAT sequence: ' + i_jetAlgo
     print '         PFnoPU will run? ' + str(i_doPFNoPU)
     print '         ' + i_jetAlgo + ' jet algo payload is: ' + i_jetAlgoPayLoad
-   
+
     usePF2PAT(process,runPF2PAT=True, jetAlgo=i_jetAlgo, runOnMC=runOnMC, postfix=i_postfix, jetCorrections=(i_jetAlgoPayLoad, jecLevels))
 
     #    uselessModules=["produceCaloMETCorrections","pfCandsNotInJet","pfJetMETcorr","pfCandMETcorr",
@@ -171,16 +171,15 @@ for i in xrange(0,len(postfixes) ):
     #    from CMGTools.Common.PAT.addMETSignificance_cff import addMETSig
     #    addMETSig( process, i_postfix )
 
-    
     #tau
     from LIP.TopTaus.TausTools_cff import configureTauProduction, removeHPSTauIsolation, embedPFCandidatesInTaus
     #  adaptSelectedPFJetForHpSTau
     configureTauProduction(process, runOnMC)
     removeHPSTauIsolation(process, i_postfix)
     #adaptSelectedPFJetForHPSTau(process,jetSelection="pt()>15.0",postfix=i_postfix)
-
     embedPFCandidatesInTaus( process, postfix=i_postfix, enable=True )
     #    embedPFCandidatesInTaus( process, postfix=i_postfix, enable=False)
+    
 
     # cure photon matching in PAT
     from LIP.TopTaus.PhotonsTools_cff import removePhotonMatching

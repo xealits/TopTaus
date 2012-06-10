@@ -9,6 +9,14 @@ Repository for tauDilepton analysis
 to remove levels of messiness in the original code to be compiled every time together with
 its libraries
 
+Installation
+# 55x
+export SCRAM_ARCH=slc5_amd64_gcc462
+scramv1 project CMSSW CMSSW_5_2_3_patch2
+cd CMSSW_5_2_3_patch2/src/
+cvs co -p UserCode/LIP/TopTaus/TAGS.txt | sh
+
+
 
 TODO:
 

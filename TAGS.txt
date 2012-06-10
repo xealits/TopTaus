@@ -1,0 +1,24 @@
+# PAT recipe V08-09-11-00
+addpkg DataFormats/PatCandidates V06-05-01
+addpkg PhysicsTools/PatAlgos V08-09-11-00
+addpkg CommonTools/ParticleFlow V00-03-14
+addpkg JetMETCorrections/Type1MET V04-06-05
+addpkg PhysicsTools/PatUtils V03-09-22
+addpkg CommonTools/RecoUtils V00-00-09
+
+# Tau ID recipes
+cvs co -r V01-04-17 RecoTauTag/RecoTau
+cvs co -r V01-04-03 RecoTauTag/Configuration
+cvs co -r V00-04-01 CondFormats/EgammaObjects
+# Updated PAT tags.
+# addpkg PhysicsTools/PatAlgos
+cvs up -r 1.53 PhysicsTools/PatAlgos/python/tools/tauTools.py
+cvs up -r 1.12 PhysicsTools/PatAlgos/python/producersLayer1/tauProducer_cff.py
+cvs up -r 1.15 PhysicsTools/PatAlgos/python/recoLayer0/tauDiscriminators_cff.py
+
+# TopRevEventSel
+cvs co -r V00-00-13 -d EGamma/EGammaAnalysisTools UserCode/EGamma/EGammaAnalysisTools
+cd EGamma/EGammaAnalysisTools/data
+cat download.url | xargs wget
+cd ../../../
+cvs co -d LIP/TopTaus UserCode/LIP/TopTaus
