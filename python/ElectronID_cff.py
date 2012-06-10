@@ -1,8 +1,4 @@
 import FWCore.ParameterSet.Config as cms
-from EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi import *
-from ElectroWeakAnalysis.WENu.simpleEleIdSequence_cff import *
-from RecoEgamma.ElectronIdentification.cutsInCategoriesElectronIdentificationV06_DataTuning_cfi import *
-
 
 def addElectronID(process, sequenceName, postfix) :
     """
@@ -32,22 +28,8 @@ def addElectronID(process, sequenceName, postfix) :
     getattr(process, "patElectrons" + postfix).electronIDSources  = electronIDs.clone()
 
     # Define sequences
-    mvaIDSequence = cms.Sequence(
-        mvaTrigV0 +
-        mvaNonTrigV0
-        )
-    electronIDSequence = cms.Sequence(
-        eidVeryLoose +
-        eidLoose +
-        eidMedium +
-        eidTight +
-        eidSuperTight
-        )
-    patElectronIDSequence = cms.Sequence(
-        mvaIDSequence +
-        simpleEleIdSequence +
-        electronIDSequence
-        )
+    process.load('LIP.TopTaus.ElectronIDSequences_cff')
+
     getattr(process, sequenceName + postfix).replace(
         getattr(process, "patElectrons" + postfix),
         process.patElectronIDSequence  + getattr(process, "patElectrons" + postfix)

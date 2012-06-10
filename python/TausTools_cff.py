@@ -1,16 +1,16 @@
 import FWCore.ParameterSet.Config as cms
 #import copy
-#from PhysicsTools.PatAlgos.tools.tauTools import *
-#from PhysicsTools.PatAlgos.tools.jetTools import *
+from PhysicsTools.PatAlgos.tools.tauTools import *
+from PhysicsTools.PatAlgos.tools.jetTools import *
 
-
-def configureTauProduction(process, isMC=False) :
-    #Re-process PFTau to give ak5pfjets as input to pftau, only for 36x MC data
+def configureTauProduction(process, isMC=False):
     process.load("RecoTauTag.Configuration.RecoPFTauTag_cff")
     if(not isMC):
         removeMCMatching(process,['Taus'])
-        
-
+    process.reprocessTaus = cms.Sequence(process.PFTau)
+    print "   Tau sequence is: " + str(process.reprocessTaus)
+    print "   Note: process.reprocessTaus has to be added to your main sequence"
+    
 #removes isolation cut in PF2PAT and adds only the decayModeFinding (this is now compatible with PF2PAT in 5_2_3)
 def removeHPSTauIsolation(process, postfix = ""):
     print "removing tau isolation discriminators and applying only the decayModeFinding "
@@ -19,8 +19,6 @@ def removeHPSTauIsolation(process, postfix = ""):
     getattr(process,"pfTaus"+postfix).discriminators = [cms.PSet(discriminator = cms.InputTag("pfTausBaseDiscriminationByDecayModeFinding"+postfix),
                                                                  selectionCut = cms.double(0.5)
                                                                  )]
-    
-    
     
 # insert a selected pfJet and apply it to the HPS Tau sequences (this is now compatible with PF2PAT in 5_2_3)
 from CommonTools.ParticleFlow.ParticleSelectors.genericPFJetSelector_cfi import selectedPfJets
@@ -45,5 +43,22 @@ def adaptSelectedPFJetForHPSTau(process,
     # must use the pfJets for the patJets otherwise we will have the above selection on the pfJetsForHPSTau ( pfNoTau is a jet collection)
     print 'Warning!!!!!!!!!!!!!: switching patJet.jetSource from pfNoTau to pfJets because Tau cleaning on the jets cannot be applied currently'
     applyPostfix(process,"patJets",postfix).jetSource = "pfJets"+postfix
+    
+
+def embedPFCandidatesInTaus( process, postfix, enable ):
+    print "Embedding pfCandidates in patTaus: " + str(enable)
+    patTaus = getattr(process,'patTaus'+postfix)
+    patTaus.embedLeadPFCand                       = cms.bool(enable)
+    patTaus.embedLeadPFChargedHadrCand            = cms.bool(enable)
+    patTaus.embedLeadPFNeutralCand                = cms.bool(enable)
+    patTaus.embedSignalPFCands                    = cms.bool(enable)
+    patTaus.embedSignalPFChargedHadrCands         = cms.bool(enable)
+    patTaus.embedSignalPFNeutralHadrCands         = cms.bool(enable)
+    patTaus.embedSignalPFGammaCands               = cms.bool(enable)
+    patTaus.embedIsolationPFCands                 = cms.bool(enable)
+    patTaus.embedIsolationPFChargedHadrCands      = cms.bool(enable)
+    patTaus.embedIsolationPFNeutralHadrCands      = cms.bool(enable)
+    patTaus.embedIsolationPFGammaCands            = cms.bool(enable)
+    
     
     

@@ -13,7 +13,7 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True),
 process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring())
 
 # TODO: implement list in CommandLineUtils_cff.py for txt list of files# process.source.fileNames=inputList
-process.source.fileNames=inFile
+process.source.fileNames=inList
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
@@ -46,12 +46,14 @@ if(runOnMC) :
 ################
 from LIP.TopTaus.PreselectionSequences_cff import addPreselectionSequences, addLumifilter
 if(not runOnMC ):
-    addPreselectionSequences(process,filterHBHEnoise=True)
-    addLumifilter(process,'grid/8TeV/json/Cert_190456-194076_8TeV_PromptReco_Collisions12_JSON.txt')
+    addPreselectionSequences(process)
+    addLumifilter(process,'lipcms/EventSelection/test/grid/8TeV/json/Cert_190456-195016_8TeV_PromptReco_Collisions12_JSON_v3.txt')
     
 # trigger filter
-from LIP.TopTaus.TriggerSequences_cff import addTriggerSequence
-if(not runOnMC): addTriggerSequence(process,trigpath,egtriglist,mutriglist)
+from LIP.TopTaus.TriggerSequences_cff import addTriggerSequence, getTriggerPaths
+if(not runOnMC):
+    mutriglist, egtriglist, jettriglist = getTriggerPaths(version=2012)
+    addTriggerSequence(process,trigpath,egtriglist,mutriglist)
 
 
 jecLevels=['L1FastJet','L2Relative','L3Absolute']
@@ -65,8 +67,8 @@ process.load("PhysicsTools.PatAlgos.patSequences_cff")
 from PhysicsTools.PatAlgos.tools.pfTools import *
 
 # adding vbtf,CIC, HEEP electron IDs to both electron collections
-from LIP.TopTaus.addPATElectronID_cff import addPATElectronID
-from SHarper.HEEPAnalyzer.HEEPSelectionCuts_cfi import *
+from LIP.TopTaus.ElectronID_cff import addElectronID
+#from SHarper.HEEPAnalyzer.HEEPSelectionCuts_cfi import *
 
 #adding custom detector based iso deposit
 #from RecoLocalCalo.EcalRecAlgos.EcalSeverityLevelESProducer_cfi import *
@@ -119,7 +121,13 @@ for i in xrange(0,len(postfixes) ):
 
     #    uselessModules=["produceCaloMETCorrections","pfCandsNotInJet","pfJetMETcorr","pfCandMETcorr",
     #                    "pfchsMETcorr","pfType1CorrectedMet","pfType1p2CorrectedMet"]
-    if( i_eleFromGsfElectrons ) : useGsfElectrons(process,postfix)
+    if( i_eleFromGsfElectrons ) :
+        useGsfElectrons(process,i_postfix)
+        getattr(process,'patDefaultSequence'+i_postfix).replace( getattr(process,"patElectrons"+i_postfix),
+                                                               process.pfParticleSelectionSequence +
+                                                               process.eleIsoSequence +
+                                                               getattr(process,"patElectrons"+i_postfix) )
+
     uselessModules=[]
     for uMod in uselessModules :
         getattr(process,"patDefaultSequence"+i_postfix).remove( getattr(process, uMod+i_postfix) )
@@ -137,7 +145,7 @@ for i in xrange(0,len(postfixes) ):
     #    getattr(process,"pfElectronsFromVertex"+i_postfix).dzCut = 99
     #    getattr(process,"pfElectronsFromVertex"+i_postfix).d0Cut = 99
     getattr(process,"pfSelectedElectrons"+i_postfix).cut="pt()>5"
-    from LIP.TopTaus.ElectronID_cff import addElectronID
+    #    from LIP.TopTaus.ElectronID_cff import addElectronID
     addElectronID(process, 'patDefaultSequence', i_postfix)
     # addPATElectronID( process, 'patDefaultSequence', i_postfix)    
 
@@ -148,7 +156,7 @@ for i in xrange(0,len(postfixes) ):
     getattr(process,"patJets"+i_postfix).embedCaloTowers   = cms.bool(True)
     
     # use non pileup substracted rho as in the Jan2012 JEC set
-    getattr(process,"patJetCorrFactors"+i_postfix).rho = cms.InputTag("kt6PFJets","rho")
+#    getattr(process,"patJetCorrFactors"+i_postfix).rho = cms.InputTag("kt6PFJets","rho")
 
     #configure Top projectors
     getattr(process,"pfNoPileUp"+i_postfix).enable   = i_doPFNoPU
@@ -165,14 +173,14 @@ for i in xrange(0,len(postfixes) ):
 
     
     #tau
-    from LIP.TopTaus.TausTools_cff import configureTauProduction, removeHPSTauIsolation
+    from LIP.TopTaus.TausTools_cff import configureTauProduction, removeHPSTauIsolation, embedPFCandidatesInTaus
     #  adaptSelectedPFJetForHpSTau
     configureTauProduction(process, runOnMC)
     removeHPSTauIsolation(process, i_postfix)
     #adaptSelectedPFJetForHPSTau(process,jetSelection="pt()>15.0",postfix=i_postfix)
 
-    #embedPFCandidatesInTaus( process, postfix=i_postfix, enable=True )
-    embedPFCandidatesInTaus( process, postfix=i_postfix, enable=False)
+    embedPFCandidatesInTaus( process, postfix=i_postfix, enable=True )
+    #    embedPFCandidatesInTaus( process, postfix=i_postfix, enable=False)
 
     # cure photon matching in PAT
     from LIP.TopTaus.PhotonsTools_cff import removePhotonMatching
@@ -250,9 +258,10 @@ process.endCounter = cms.EDProducer("EventCountProducer")
 
 #pat sequence
 process.patSequence = cms.Sequence( process.startCounter
-                                    + process.HEEPId
+#                                    + process.HEEPId
                                     + process.patTriggerDefaultSequence + process.kt6PFJets 
                                     + process.kt6PFJetsForIso + process.pfOnlyNeutrals + process.kt6PFJetsCentralNeutral
+                                    + process.reprocessTaus
                                     + getattr(process,"patPF2PATSequence"+postfixes[0])
 #                                    + getattr(process,"patPF2PATSequence"+postfixes[1])
 #                                    + process.stdMuonSeq + process.stdElectronSeq + process.stdPhotonSeq
@@ -270,8 +279,8 @@ process.e = cms.EndPath( process.endCounter*process.out )
 # SCHEDULE THE EXECUTION OF THE PATHS #
 #######################################
 configureOutput(process,selPaths=['stdPath'],outFile=outFile)
-if(runOnMC) : process.schedule = cms.Schedule( process.genLevelPath, process.patOnlyPath, process.e )
-else        : process.schedule = cms.Schedule( process.patOnlyPath, process.e )
+if(runOnMC) : process.schedule = cms.Schedule( process.genLevelPath, process.stdPath, process.e )
+else        : process.schedule = cms.Schedule( process.stdPath, process.e )
 
 
 print '******************'

@@ -5,9 +5,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 ##
 ## standard pre-selection sequences
 ##
-def addPreselectionSequences(process,
-                             filterHBHEnoise=True
-                             ) :
+def addPreselectionSequences(process) :
 
     # require scraping filter
     # https://twiki.cern.ch/twiki/bin/view/CMS/TKPOG2010Collisions
@@ -31,13 +29,10 @@ def addPreselectionSequences(process,
     
     # HB/HE noise filter
     # https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFilters
-    if(filterHBHEnoise) :
-        process.load('CommonTools/RecoAlgos/HBHENoiseFilter_cfi')
-        process.HBHENoiseFilter.minIsolatedNoiseSumE = cms.double(999999.)
-        process.HBHENoiseFilter.minNumIsolatedNoiseChannels = cms.int32(999999)
-        process.HBHENoiseFilter.minIsolatedNoiseSumEt = cms.double(999999.)
-        print "    Adding HB/HE noise filter"      
-        process.basePreSel = cms.Sequence( process.basePreSel*process.HBHENoiseFilter )
+    process.load('CommonTools/RecoAlgos/HBHENoiseFilter_cfi')
+    process.HBHENoiseFilter.minIsolatedNoiseSumE = cms.double(999999.)
+    process.HBHENoiseFilter.minNumIsolatedNoiseChannels = cms.int32(999999)
+    process.HBHENoiseFilter.minIsolatedNoiseSumEt = cms.double(999999.)
         
     # filter counters
     process.preSelectionCounter = cms.EDProducer("EventCountProducer")
@@ -75,15 +70,15 @@ def addPreselectionSequences(process,
 
     print " *** Event preselection defined: " + str(process.preselection)
     
-    """
-    """
-    def addLumifilter(process,fname='') :
-        if(len(fname)>0):
-            myLumis = LumiList.LumiList(filename = fname).getCMSSWString().split(',')
-            process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
-            process.source.lumisToProcess.extend(myLumis)
-            print 'Lumi sections will be filtered with: ' + fname
-            
+"""
+"""
+def addLumifilter(process,fname='') :
+    if(len(fname)>0):
+        myLumis = LumiList.LumiList(filename = fname).getCMSSWString().split(',')
+        process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
+        process.source.lumisToProcess.extend(myLumis)
+        print 'Lumi sections will be filtered with: ' + fname
+        
             
             
             

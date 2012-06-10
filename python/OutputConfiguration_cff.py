@@ -42,7 +42,7 @@ def configureOutput(process,selPaths=['llPath', 'photonPath'],outFile='/tmp/patT
                        #'keep recoGenJets_ak5GenJets_*_*',
                        'keep recoGenJets_selectedPatJets*_*_*',
                        #'drop recoGenJets_selectedPatJets*_*_*',
-                       'drop patTaus_*_*_*',
+                       'keep patTaus_*_*_*',
                        'drop *_*PFlowNoPuSub_*_*',
                        'keep recoGenJets_selectedPatJetsPFlowNoPuSub_*_*',
                        'keep patJets_selectedPatJetsPFlowNoPuSub_*_*',
