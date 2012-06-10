@@ -16,11 +16,12 @@ scramv1 project CMSSW CMSSW_5_2_3_patch2
 cd CMSSW_5_2_3_patch2/src/
 cvs co -p UserCode/LIP/TopTaus/TAGS.txt | sh
 
-
+Local test run (local data file at LIP)
+cmsRun LIP/TopTaus/test/createDataPattuple_cfg.py /lustre/data3/cmslocal/samples/CMSSW_5_2_5/test/Run2012B_SingleMu_AOD_PromptReco-v1_000_193_998_0C7DCC80-4E9D-E111-B22A-001D09F25267.root pattuple.root inclusive_mu
 
 TODO:
 
-- Pattuple producer --> Must finish editing the createPattuple_cfg.py (arrived ad Trigger selection level)
+- Pattuple producer --> Check tauID discriminators. Still no answer from TauID HN. Sent another email soliciting clarifications.
 
 - Ntuples producer --> Convert plugin
 
