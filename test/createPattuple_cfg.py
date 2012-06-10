@@ -70,6 +70,8 @@ from PhysicsTools.PatAlgos.tools.pfTools import *
 from LIP.TopTaus.ElectronID_cff import addElectronID
 #from SHarper.HEEPAnalyzer.HEEPSelectionCuts_cfi import *
 
+# defining sequence for taus
+process.reprocessTaus = cms.Sequence()
 #adding custom detector based iso deposit
 #from RecoLocalCalo.EcalRecAlgos.EcalSeverityLevelESProducer_cfi import *
 #from CMGTools.Common.PAT.addLeptCustomIsoDeposit_cff import addMuonCustomIsoDeposit
@@ -98,11 +100,11 @@ process.kt6PFJetsCentralNeutral = process.kt6PFJets.clone( src = cms.InputTag("p
 # jetAlgo        = ['AK5',      'AK5']     
 # jetAlgoPayLoad = ['AK5PFchs', 'AK5PF'] 
 
-postfixes      = ['PFlow']
-doPFNoPU       = [True]
-jetAlgo        = ['AK5']     
-jetAlgoPayLoad = ['AK5PFchs']
-eleFromGsfElectrons = [True]
+postfixes      = ['PFlow','PFlowNoGsf']
+doPFNoPU       = [True, True]
+jetAlgo        = ['AK5', 'AK5']     
+jetAlgoPayLoad = ['AK5PFchs', 'AK5PFchs']
+eleFromGsfElectrons = [True, False]
 
 from CommonTools.ParticleFlow.Tools.enablePileUpCorrection import enablePileUpCorrection
 for i in xrange(0,len(postfixes) ):
@@ -174,7 +176,7 @@ for i in xrange(0,len(postfixes) ):
     #tau
     from LIP.TopTaus.TausTools_cff import configureTauProduction, removeHPSTauIsolation, embedPFCandidatesInTaus
     #  adaptSelectedPFJetForHpSTau
-    configureTauProduction(process, runOnMC)
+    configureTauProduction(process, i_postfix, runOnMC)
     removeHPSTauIsolation(process, i_postfix)
     #adaptSelectedPFJetForHPSTau(process,jetSelection="pt()>15.0",postfix=i_postfix)
     embedPFCandidatesInTaus( process, postfix=i_postfix, enable=True )
@@ -261,8 +263,10 @@ process.patSequence = cms.Sequence( process.startCounter
                                     + process.patTriggerDefaultSequence + process.kt6PFJets 
                                     + process.kt6PFJetsForIso + process.pfOnlyNeutrals + process.kt6PFJetsCentralNeutral
                                     + process.reprocessTaus
+#                                    + getattr(process,"reprocessTaus"+postfixes[0])
+#                                    + getattr(process,"reprocessTaus"+postfixes[1])
                                     + getattr(process,"patPF2PATSequence"+postfixes[0])
-#                                    + getattr(process,"patPF2PATSequence"+postfixes[1])
+                                    + getattr(process,"patPF2PATSequence"+postfixes[1])
 #                                    + process.stdMuonSeq + process.stdElectronSeq + process.stdPhotonSeq
                                     )
 

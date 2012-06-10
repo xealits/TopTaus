@@ -3,13 +3,13 @@ import FWCore.ParameterSet.Config as cms
 from PhysicsTools.PatAlgos.tools.tauTools import *
 from PhysicsTools.PatAlgos.tools.jetTools import *
 
-def configureTauProduction(process, isMC=False):
+def configureTauProduction(process, postfix, isMC=False):
     process.load("RecoTauTag.Configuration.RecoPFTauTag_cff")
     if(not isMC):
-        removeMCMatching(process,['Taus'])
-    process.reprocessTaus = cms.Sequence(process.PFTau)
-    print "   Tau sequence is: " + str(process.reprocessTaus)
-    print "   Note: process.reprocessTaus has to be added to your main sequence"
+        removeMCMatching(process,['Taus'],postfix=postfix)
+    process.reprocessTaus += applyPostfix(process,"PFTau",postfix)
+#    print "   Tau sequence is: " + str(getattr(process,"reprocessTaus",postfix))
+    print "   Note: postfixed process.reprocessTaus has to be added to your main sequence"
     
 #removes isolation cut in PF2PAT and adds only the decayModeFinding (this is now compatible with PF2PAT in 5_2_3)
 def removeHPSTauIsolation(process, postfix = ""):
