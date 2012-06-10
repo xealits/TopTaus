@@ -21,7 +21,10 @@ cmsRun LIP/TopTaus/test/createDataPattuple_cfg.py /lustre/data3/cmslocal/samples
 
 TODO:
 
-- Pattuple producer --> Check tauID discriminators. Still no answer from TauID HN. Sent another email soliciting clarifications.
+- Pattuple producer 
+  --> Check tauID discriminators. Still no answer from TauID HN. Sent another email soliciting clarifications.
+  --> Check gsfElectrons/pfElectrons (wrote to Sadia and Tae Jeong)
+  --> Fix second PF2PAT in order to keep just the pfElectrons (or add the pfElectrons to the first PF2PAT)
 
 - Ntuples producer --> Convert plugin
 
