@@ -1,10 +1,10 @@
 /**                                                                                                                                                                              
   \class    likelihoodFitter::tauDileptonPDFBuilderFitter tauDileptonPDFBuilderFitter.cc "UserCode/LIP/TopTaus/tauDileptonPDFBuilderFitter.cc"                                                                     
-  \brief    Class for performing multivariable likelihood fit in order to improve estimation of N_fakes
+  \brief    executable for performing multivariable likelihood fit in order to improve estimation of N_fakes
   
   \author   Pietro Vischia
 
-  \version  $Id: tauDileptonPDFBuilderFitter,v 1.1 2012/09/14 15:05:41 vischia Exp $                                                                                                       
+  \version  $Id: tauDileptonPDFBuilderFitter.cc,v 1.2 2012/09/14 13:06:17 vischia Exp $                                                                                                       
 */
 
 
@@ -15,21 +15,61 @@
 /*
 
 @run me like this
-root -l -b -q TauDileptonUnbinnedNoCompilationPDFBuilder.C\(\"mutau\",HIGGS2BKG\)
-root -l -b -q TauDileptonUnbinnedNoCompilationPDFBuilder.C\(\"mutau\",HIGGS3BKG\)
 
-root -l -b -q TauDileptonUnbinnedNoCompilationPDFBuilder.C\(\"mutau\",SM2BKG\)
-root -l -b -q TauDileptonUnbinnedNoCompilationPDFBuilder.C\(\"mutau\",SM3BKG\)
+tauDileptonPDFBuilderFitter mutau HIGGS2BKG
+tauDileptonPDFBuilderFitter mutau HIGGS2BKG
 
-- All libraries are autoloaded (no compilation)
-
-*** TODO: check constraints on signal vars (currently signal gets fitted to 100% of the model
-could as well be a problem in the definition of the pdf model
+tauDileptonPDFBuilderFitter mutau HIGGS2BKG
+tauDileptonPDFBuilderFitter mutau HIGGS3BKG
 
 */
 
 #define NVARS 6
 enum FITTYPES {SM2BKG=0, SM3BKG, HIGGS2BKG, HIGGS3BKG};
+
+
+
+
+//
+int main(int argc, char* argv[])
+{
+  // load framework libraries
+  gSystem->Load( "libFWCoreFWLite" );
+  AutoLibraryLoader::enable();
+
+  //check arguments
+  if ( argc < 2 ) {
+    std::cout << "Usage : " << argv[0] << " parameters_cfg.py" << std::endl;
+    return 0;
+  }
+
+  //
+  // configure
+  //
+  const edm::ParameterSet &runProcess = edm::readPSetsFrom(argv[1])->getParameter<edm::ParameterSet>("runProcess");
+  TString evurl=runProcess.getParameter<std::string>("input");
+  TString outdir=runProcess.getParameter<std::string>("outdir");
+  bool isMC = runProcess.getParameter<bool>("isMC");
+  int mcTruthMode = runProcess.getParameter<int>("mctruthmode");
+  int evStart=runProcess.getParameter<int>("evStart");
+  int evEnd=runProcess.getParameter<int>("evEnd");
+  TString dirname = runProcess.getParameter<std::string>("dirName");
+  double xsec = runProcess.getParameter<double>("xsec");
+  bool saveSummaryTree = runProcess.getParameter<bool>("saveSummaryTree");
+  bool runSystematics = runProcess.getParameter<bool>("runSystematics");
+  double sfMetCut = runProcess.getParameter<double>("sfMetCut");
+  double ofMetCut = runProcess.getParameter<double>("ofMetCut");
+  double jetPtCut = runProcess.getParameter<double>("jetPtCut");
+  int jetIdToUse=JETID_LOOSE;
+  int eIdToUse=EID_TIGHT;
+  int mIdToUse=MID_TIGHT;
+  bool applyDYweight(true);//false);
+  TString uncFile =  runProcess.getParameter<std::string>("jesUncFileName");      gSystem->ExpandPathName(uncFile);
+
+
+
+
+
 
 void TauDileptonUnbinnedNoCompilationPDFBuilder(TString channel, FITTYPES fitType){
   
