@@ -1,3 +1,17 @@
+/**                                                                                                                                                                              
+  \class    likelihoodFitter::tauDileptonPDFBuilderFitter tauDileptonPDFBuilderFitter.cc "UserCode/LIP/TopTaus/tauDileptonPDFBuilderFitter.cc"                                                                     
+  \brief    Class for performing multivariable likelihood fit in order to improve estimation of N_fakes
+  
+  \author   Pietro Vischia
+
+  \version  $Id: tauDileptonPDFBuilderFitter,v 1.1 2012/09/14 15:05:41 vischia Exp $                                                                                                       
+*/
+
+
+
+
+
+
 /*
 
 @run me like this
