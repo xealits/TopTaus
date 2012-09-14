@@ -1,168 +1,21 @@
-/**                                                                                                                                                                              
-  \class    likelihoodFitter::tauDileptonPDFBuilderFitter tauDileptonPDFBuilderFitter.cc "UserCode/LIP/TopTaus/tauDileptonPDFBuilderFitter.cc"                                                                     
-  \brief    Class for performing multivariable likelihood fit in order to improve estimation of N_fakes
-  
-  \author   Pietro Vischia
+#include "LIP/TopTaus/interface/TauDileptonPDFBuilderFitter.h"
 
-  \version  $Id: tauDileptonPDFBuilderFitter.cc,v 1.2 2012/09/14 13:06:17 vischia Exp $                                                                                                       
-*/
+//#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
+#include "FWCore/PythonParameterSet/interface/MakeParameterSets.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-
-
-
-
-
-/*
-
-@run me like this
-
-tauDileptonPDFBuilderFitter mutau HIGGS2BKG
-tauDileptonPDFBuilderFitter mutau HIGGS2BKG
-
-tauDileptonPDFBuilderFitter mutau HIGGS2BKG
-tauDileptonPDFBuilderFitter mutau HIGGS3BKG
-
-*/
-
-#define NVARS 6
-enum FITTYPES {SM2BKG=0, SM3BKG, HIGGS2BKG, HIGGS3BKG};
-
-
-
-
-//
-int main(int argc, char* argv[])
+TauDileptonPDFBuilderFitter::TauDileptonPDFBuilderFitter(string parSet):
+  parSet_ = parSet
 {
-  // load framework libraries
-  gSystem->Load( "libFWCoreFWLite" );
-  AutoLibraryLoader::enable();
-
-  //check arguments
-  if ( argc < 2 ) {
-    std::cout << "Usage : " << argv[0] << " parameters_cfg.py" << std::endl;
-    return 0;
-  }
-
-  //
-  // configure
-  //
-  const edm::ParameterSet &runProcess = edm::readPSetsFrom(argv[1])->getParameter<edm::ParameterSet>("runProcess");
-  TString evurl=runProcess.getParameter<std::string>("input");
-  TString outdir=runProcess.getParameter<std::string>("outdir");
-  bool isMC = runProcess.getParameter<bool>("isMC");
-  int mcTruthMode = runProcess.getParameter<int>("mctruthmode");
-  int evStart=runProcess.getParameter<int>("evStart");
-  int evEnd=runProcess.getParameter<int>("evEnd");
-  TString dirname = runProcess.getParameter<std::string>("dirName");
-  double xsec = runProcess.getParameter<double>("xsec");
-  bool saveSummaryTree = runProcess.getParameter<bool>("saveSummaryTree");
-  bool runSystematics = runProcess.getParameter<bool>("runSystematics");
-  double sfMetCut = runProcess.getParameter<double>("sfMetCut");
-  double ofMetCut = runProcess.getParameter<double>("ofMetCut");
-  double jetPtCut = runProcess.getParameter<double>("jetPtCut");
-  int jetIdToUse=JETID_LOOSE;
-  int eIdToUse=EID_TIGHT;
-  int mIdToUse=MID_TIGHT;
-  bool applyDYweight(true);//false);
-  TString uncFile =  runProcess.getParameter<std::string>("jesUncFileName");      gSystem->ExpandPathName(uncFile);
-
-
-
-
-
-
-void TauDileptonUnbinnedNoCompilationPDFBuilder(TString channel, FITTYPES fitType){
   
-  //  using namespace std; 
+  using namespace std; 
   using namespace RooFit ;
   
-  gStyle->SetOptStat(0);
-  
-  
-  TString signalFileName, signalFileNameWH, signalFileNameHH, dataFileName, ddBkgFileName, mcBkgFileName, baseMCDir, baseDataDir ;
-  
-//  TCanvas* canvas_ = new TCanvas("canvas2","My plots ",0,0,1000,500);
-//  canvas_->cd();
-  
+  Init();
 
-  TString minitreeSelected("lep_tau_Selected");
-  TString minitreeDataDriven("lep_tau_DataDriven");
-
-  
-  if (channel=="mutau"){ 
-    baseMCDir        = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/");
-    baseDataDir      = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/");
-
-    //baseMCDir        = TString("/lip-sw/cmssw/users/nalmeida/new/nalmeida/sw424/Physics/UserCode/nalmeida/TopTauDileptons2012/results-mc/");                                   
-    //baseDataDir      = TString("/lip-sw/cmssw/users/nalmeida/new/nalmeida/sw424/Physics/UserCode/nalmeida/TopTauDileptons2012/results-data/"); 
-    signalFileName   = baseMCDir + TString("out-higgs-pythia-m120.root"); 
-    signalFileNameWH   = baseMCDir + TString("out-wh-pythia-m120.root"); 
-    signalFileNameHH   = baseMCDir + TString("out-hh-pythia-m120.root"); 
-    
-  }
-  
-  dataFileName  = baseDataDir  + TString("out-data.root");
-  //  ddBkgFileName = baseMCDir    + TString("out-ddbkg_rescaled.root");  //to be built from w+jets and other contribution (data driven contribution)
-  ddBkgFileName = baseDataDir    + TString("out-data_rescaled.root");  //to be built from w+jets and other contribution (data driven contribution)
-  ttbarmcBkgFileName = baseMCDir    + TString("out-ttbar_mutau.root");  //to be built from the remaining MC contribution (zjets+diboson+singletop)
-  mcBkgFileName = baseMCDir    + TString("out-mcbkg.root");  //to be built from the remaining MC contribution (zjets+diboson+singletop)
+  SetOptions();
   
   
-  TTree * signalTree_; 
-  TTree * signalTreeWH_;
-  TTree * signalTreeHH_;
-  TTree * ddBkgTree_ ;
-  TTree * ttbarmcBkgTree_;
-  TTree * mcBkgTree_;
-  TTree * dataTree_;
-  
-  
-//  tree->SetWeight(0.4);
-//  tree->AutoSave(); 
-//  higgsH->Add(wh,0.095);
-//  higgsH->Add(hh,0.025);
-  
-  // Open File //////////////////////////////////////////////////////////////
-  //double scaleFactor( 2217.089/2136 );  ---> goes into the weights
-
-  TFile * signalFile  = TFile::Open(signalFileName); signalTree_ = (TTree *) signalFile->Get(minitreeSelected);
-  TFile * signalFileWH  = TFile::Open(signalFileNameWH); signalTreeWH_ = (TTree *) signalFileWH->Get(minitreeSelected);
-  TFile * signalFileHH  = TFile::Open(signalFileNameHH); signalTreeHH_ = (TTree *) signalFileHH->Get(minitreeSelected);
-  TFile * ddBkgFile   = TFile::Open(ddBkgFileName);  ddBkgTree_  = (TTree *) ddBkgFile->Get(minitreeDataDriven);   // ddBkg is the only to be taken from data driven estimation
-  //    TFile * mcBkgFile   = TFile::Open(mcBkgFileName);  mcBkgTree_  = (TTree *) mcBkgFile->Get(minitreeDataDriven);
-  //  TFile * ddBkgFile   = TFile::Open(ddBkgFileName);  ddBkgTree_  = (TTree *) ddBkgFile->Get(minitreeSelected);
-  TFile * ttbarmcBkgFile   = TFile::Open(ttbarmcBkgFileName);  ttbarmcBkgTree_  = (TTree *) ttbarmcBkgFile->Get(minitreeSelected);
-  TFile * mcBkgFile   = TFile::Open(mcBkgFileName);  mcBkgTree_  = (TTree *) mcBkgFile->Get(minitreeSelected);
-  TFile * dataFile    = TFile::Open(dataFileName);   dataTree_   = (TTree *) dataFile->Get(minitreeSelected);
-  
-  cout << "Check: signal tree entries:"<<signalTree_->GetEntries()<<endl;
-  
-  //vector< pair<TFile * , double> > myFiles;
-  //pair<TFile * , double> key;
-  //key.first = signalFile;   key.second = scaleFactor; myFiles.push_back(key);
-  //key.first = ddBkgFile;    key.second = scaleFactor; myFiles.push_back(key);
-  //key.first = mcBkgFile;    key.second = scaleFactor; myFiles.push_back(key);
-  // key.first = dataFile;     key.second = 1; myFiles.push_back(key);
-  //////////////////////////////////////////////////////////////////////////
-  
-  
-  
-  
-  
-  // Get Data Sets /////////////////////////////////////////////////////////////////////////////////
-  double tauPtMin(20), tauPtMax(200), tauPtBins(50);
-  // RooRealVar signalTauJetPtVar("pt_t","pt_t",tauPtMin,tauPtMax); 
-  // RooDataSet signalTauJetPt("signalTauJetPt","signalTauJetPt",signalTree_,signalTauJetPtVar);
-  
-  double weightMin(0), weightMax(3); RooRealVar weightsVar("weight","weight",weightMin,weightMax); 
-  RooDataSet weights("weights","weights",signalTree_,weightsVar);
-  //////////////////////////////////////////////////////////////////////////////////////////////////
-  
-  
-  //builSinglePDFModel( "pt_t", tauPtMin, tauPtMax,  tauPtBins);
-  
-  
-
   vector<string> vars;
   vector<double> mins;
   vector<double> maxs;
@@ -221,7 +74,42 @@ void TauDileptonUnbinnedNoCompilationPDFBuilder(TString channel, FITTYPES fitTyp
 ///  buildGenericMultiPDFModel(vars, mins,maxs, bins, hmin, hmax, unbinned, smoothOrder, HIGGS3BKG, signalTree_, ddBkgTree_, ttbarmcBkgTree_, mcBkgTree_, dataTree_);//, canvas_);  
 ///
 ///
+  
+}
+  
+void TauDileptonPDFBuilderFitter::Init(){
+  
+  // Get ParameterSet from cfg file
+  const edm::ParameterSet &mFitPars = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("mFitPars");
+  
+  baseMCDir_        = mFitPars.getParameter<std::string>("baseMCDir");
+  baseDataDir_      = mFitPars.getParameter<std::string>("baseDataDir");
+  
+  signalFileNameWH_   = mFitPars.getParameter<std::string>("signalFileNameWH");
+  signalFileNameHH_   = mFitPars.getParameter<std::string>("signalFileNameHH");
+  dataFileName_       = mFitPars.getParameter<std::string>("dataFileName");
+  ddBkgFileName_      = mFitPars.getParameter<std::string>("ddBkgFileName");
+  ttbarmcBkgFileName_ = mFitPars.getParameter<std::string>("ttbarmcBkgFileName");
+  mcBkgFileName_      = mFitPars.getParameter<std::string>("mcBkgFileName");
+  
+  minitreeSelected_   = mFitPars.getParameter<std::string>("");
+  minitreeDataDriven_ = mFitPars.getParameter<std::string>("");
+  
+  
+  // Open files and get trees
+  // ddBkg is the only to be taken from data driven estimation (tree)
+  signalFileWH_   = TFile::Open(baseMCDir_   + signalFileNameWH_  ); signalTreeWH_   = (TTree*) signalFileWH_ ->Get(minitreeSelected_);
+  signalFileHH_   = TFile::Open(baseMCDir_   + signalFileNameHH_  ); signalTreeHH_   = (TTree*) signalFileHH_ ->Get(minitreeSelected_);
+  ddBkgFile_      = TFile::Open(baseMCDir_   + ddBkgFileName_     ); ddBkgTree_      = (TTree*) ddBkgFile     ->Get(minitreeDataDriven_);
+  ttbarmcBkgFile_ = TFile::Open(baseMCDir_   + ttbarmcBkgFileName_); ttbarmcBkgTree_ = (TTree*) ttbarmcBkgFile->Get(minitreeSelected);
+  mcBkgFile_      = TFile::Open(baseMCDir_   + mcBkgFileName_     ); mcBkgTree_      = (TTree*) mcBkgFile     ->Get(minitreeSelected);
+  dataFile_       = TFile::Open(baseDataDir_ + dataFileName_      ); dataTree_       = (TTree*) dataFile      ->Get(minitreeSelected);
 
+  cout << "Init process complete" << endl;
+}
+
+void TauDileptonPDFBuilderFitter::SetOptions(){
+  gStyle->SetOptStat(0);
 }
 
 void buildGenericMultiPDFModel( 

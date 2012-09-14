@@ -1,7 +1,7 @@
 <use name="LIP/TopTaus"/>
 <!-- <use name="lhapdf"/> -->
 <environment>
-  <bin name="tauDileptonPDFBuilderFitter"  file="tauDileptonPDFBuilderFitter.cc"></bin> 
+  <bin name="runTauDileptonPDFBuilderFitter"  file="runTauDileptonPDFBuilderFitter.cc"></bin> 
 <!-- <bin name="runKinAnalysis"            file="runKinAnalysis.cc"></bin> -->
 <!--  <bin name="displayKinResults"         file="displayKinResults.cc"></bin>  -->
 <!--  <bin name="showMassDistribution"      file="showMassDistribution.cc"></bin>  -->
