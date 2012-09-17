@@ -4,8 +4,54 @@
 #include "FWCore/PythonParameterSet/interface/MakeParameterSets.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+FitVar::FitVar(string varName, double min, double max, double bins, double hmin, double hmax, Int_t unbinned, Int_t smoothOrder)
+  varName_(varname),
+  min_(min),
+  max_(max),
+  bins_(bins),
+  hmin_(hmin),
+  hmax_(hmax),
+  unbinned_(unbinned),
+  smoothOrder_(smoothOrder)
+{
+  
+}
+
+string FitVar::getVarName(){
+  return varName_;
+}
+
+double FitVar::getMin(){
+  return min_;
+}
+
+double FitVar::getMax(){
+  return max_;
+}
+
+int FitVar::getBins(){
+  return bins_;
+}
+
+double FitVar::getHmin(){
+  return hmin_;
+}
+
+double FitVar::getHmax(){
+  return hmax_;
+}
+
+Int_t FitVar::getUnbinned(){
+  return unbinned_;
+}
+
+Int_t FitVar::getSmoothOrder(){
+  return smoothOrder_;
+}
+
+
 TauDileptonPDFBuilderFitter::TauDileptonPDFBuilderFitter(string parSet):
-  parSet_ = parSet
+  parSet_(parSet)
 {
   
   using namespace std; 
@@ -14,74 +60,33 @@ TauDileptonPDFBuilderFitter::TauDileptonPDFBuilderFitter(string parSet):
   Init();
 
   SetOptions();
-  
-  
-  vector<string> vars;
-  vector<double> mins;
-  vector<double> maxs;
-  vector<double> bins;
-  vector<double> hmin;
-  vector<double> hmax;
-  vector<Int_t> unbinned;
-  vector<Int_t> smoothOrder;
  
-  vars.clear(); mins.clear(); maxs.clear(); bins.clear(); hmin.clear(); hmax.clear(); unbinned.clear(); smoothOrder.clear();
-  
-  //  vars.push_back("pt_t");               mins.push_back(0);  maxs.push_back(200); bins.push_back(50); hmin.push_back(0); hmax.push_back(60);
-  //  vars.push_back("pt_l");               mins.push_back(0);  maxs.push_back(200); bins.push_back(50); hmin.push_back(0); hmax.push_back(50);
-  //  vars.push_back("pt_met");             mins.push_back(0);  maxs.push_back(200); bins.push_back(50); hmin.push_back(0); hmax.push_back(50);
-  ////  vars.push_back("Dphi_lepton_met");    mins.push_back(0);  maxs.push_back(200); bins.push_back(50); hmin.push_back(0); hmax.push_back(50);
-  //  vars.push_back("multiplicity_j");     mins.push_back(2);  maxs.push_back(7); bins.push_back(5); hmin.push_back(0); hmax.push_back(200);
-  //  vars.push_back("btagmultiplicity_j"); mins.push_back(0);  maxs.push_back(4); bins.push_back(4); hmin.push_back(0); hmax.push_back(300);
-  //  vars.push_back("Dphi_tau_met");       mins.push_back(0);  maxs.push_back(2.4); bins.push_back(20); hmin.push_back(0); hmax.push_back(100);
-  
-  
-  //  vars.push_back("eta_t");              mins.push_back(0);  maxs.push_back(2.6); bins.push_back(20);hmin.push_back(0); hmax.push_back(60) ; unbinned.push_back(0); smoothOrder.push_back(5);
-  //  vars.push_back("eta_l");              mins.push_back(0);  maxs.push_back(2.6); bins.push_back(20);hmin.push_back(0); hmax.push_back(60) ; unbinned.push_back(0); smoothOrder.push_back(5);
-  vars.push_back("rc_t");       mins.push_back(0);  maxs.push_back(1.2); bins.push_back(12);hmin.push_back(0); hmax.push_back(100); unbinned.push_back(0); smoothOrder.push_back(3);
-  vars.push_back("pt_l");               mins.push_back(0);  maxs.push_back(200); bins.push_back(20);hmin.push_back(0); hmax.push_back(50) ; unbinned.push_back(0); smoothOrder.push_back(5);
-  //  vars.push_back("pt_t");               mins.push_back(0);  maxs.push_back(200); bins.push_back(20);hmin.push_back(0); hmax.push_back(60) ; unbinned.push_back(0); smoothOrder.push_back(5);
-  vars.push_back("pt_met");             mins.push_back(0);  maxs.push_back(200); bins.push_back(20);hmin.push_back(0); hmax.push_back(50) ; unbinned.push_back(0); smoothOrder.push_back(5);
-  vars.push_back("multiplicity_j");     mins.push_back(2);  maxs.push_back(7);   bins.push_back(5); hmin.push_back(0); hmax.push_back(200); unbinned.push_back(0); smoothOrder.push_back(0);
-  vars.push_back("btagmultiplicity_j"); mins.push_back(0);  maxs.push_back(4);   bins.push_back(4); hmin.push_back(0); hmax.push_back(300); unbinned.push_back(0); smoothOrder.push_back(0);
-  vars.push_back("Dphi_tau_met");       mins.push_back(0);  maxs.push_back(4.8); bins.push_back(10);hmin.push_back(0); hmax.push_back(100); unbinned.push_back(0); smoothOrder.push_back(3);
-
 
   
 
-//  vars.push_back("radius_t");               mins.push_back(0);  maxs.push_back(200); bins.push_back(20); hmin.push_back(0); hmax.push_back(60) ; unbinned.push_back(0); smoothOrder.push_back(5);  
-  
-  //  vars.push_back("Dphi_lepton_met");    mins.push_back(0);  maxs.push_back(200); bins.push_back(20); hmin.push_back(0); hmax.push_back(50);
-  
-
-  //  vector<TString> treeLabels;
-
-  // sm only: (ttbar+mcbkg)=allmcbkg, ddbkg
-  ///  buildGenericMultiPDFModel(vars, mins,maxs, bins, hmin, hmax, unbinned, smoothOrder, SM2BKG, signalTree_, ddBkgTree_, ttbarmcBkgTree_, mcBkgTree_, dataTree_);//, canvas_);  
-  // sm only: ttbar, mcbkg, ddbkg
-
-  ///  buildGenericMultiPDFModel(vars, mins,maxs, bins, hmin, hmax, unbinned, smoothOrder, SM3BKG, signalTree_, ddBkgTree_, ttbarmcBkgTree_, mcBkgTree_, dataTree_);//, canvas_);  
-  // with higgs: signal, (ttbar+mcbkg)=allmcbkg, ddbkg
-  
-
-  //  buildGenericMultiPDFModel(vars, mins,maxs, bins, hmin, hmax, unbinned, smoothOrder, fitType, signalTree_, ddBkgTree_, ttbarmcBkgTree_, mcBkgTree_, dataTree_);//, canvas_);  
   buildGenericMultiPDFModel(vars, mins,maxs, bins, hmin, hmax, unbinned, smoothOrder, fitType, signalTree_, signalTreeWH_, signalTreeHH_, ddBkgTree_, ttbarmcBkgTree_, mcBkgTree_, dataTree_);//, canvas_);  
 
-///
-///  buildGenericMultiPDFModel(vars, mins,maxs, bins, hmin, hmax, unbinned, smoothOrder, HIGGS2BKG, signalTree_, ddBkgTree_, ttbarmcBkgTree_, mcBkgTree_, dataTree_);//, canvas_);  
-///  // with higgs: signal, ttbar, mcbkg, ddbkg
-///
-///  buildGenericMultiPDFModel(vars, mins,maxs, bins, hmin, hmax, unbinned, smoothOrder, HIGGS3BKG, signalTree_, ddBkgTree_, ttbarmcBkgTree_, mcBkgTree_, dataTree_);//, canvas_);  
-///
-///
   
 }
   
 void TauDileptonPDFBuilderFitter::Init(){
+
+  // Clear vectors
+  fitVars.clear();
+  vars_.clear();
+  mins_.clear(); 
+  maxs_.clear();
+  bins_.clear();
+  hmin_.clear();
+  hmax_.clear();
+  unbinned_.clear(); 
+  smoothOrder_.clear();
   
   // Get ParameterSet from cfg file
   const edm::ParameterSet &mFitPars = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("mFitPars");
-  
+
+  outFolder_        = mFitPars.getParameter<std::string>("outFolder");
+  resultsFileName_  = mFitPars.getParameter<std::string>("resultsFileName");
   baseMCDir_        = mFitPars.getParameter<std::string>("baseMCDir");
   baseDataDir_      = mFitPars.getParameter<std::string>("baseDataDir");
   
@@ -94,6 +99,15 @@ void TauDileptonPDFBuilderFitter::Init(){
   
   minitreeSelected_   = mFitPars.getParameter<std::string>("");
   minitreeDataDriven_ = mFitPars.getParameter<std::string>("");
+
+  vars_        = mFitPars.getParameter<vector<string> >("vars");
+  mins_        = mFitPars.getParameter<vector<double> >("mins");
+  maxs_        = mFitPars.getParameter<vector<double> >("maxs");
+  bins_        = mFitPars.getParameter<vector<int> >("bins");
+  hmin_        = mFitPars.getParameter<vector<double> >("hmin");
+  hmax_        = mFitPars.getParameter<vector<double> >("hmax");
+  unbinned_    = mFitPars.getParameter<vector<Int_t> >("unbinned");
+  smoothOrder_ = mFitPars.getParameter<vector<Int_t> >("smoothOrder");
   
   
   // Open files and get trees
@@ -105,11 +119,69 @@ void TauDileptonPDFBuilderFitter::Init(){
   mcBkgFile_      = TFile::Open(baseMCDir_   + mcBkgFileName_     ); mcBkgTree_      = (TTree*) mcBkgFile     ->Get(minitreeSelected);
   dataFile_       = TFile::Open(baseDataDir_ + dataFileName_      ); dataTree_       = (TTree*) dataFile      ->Get(minitreeSelected);
 
+
+  // Set variables
+  //
+  for(size_t i=0; i<vars_.size(); i++)
+    {
+      FitVar myVar(vars_[i], mins_[i], maxs_[i], bins_[i], hmin_[i], hmax_[i], unbinned_[i], smoothOrder_[i], );
+      fitVars_.push_back(myVar);
+    }
+  
+  // Set canvas
+  canvas_ = new TCanvas("canvas","My plots ",0,0,1000,500);
+  canvas_->cd();
+  
+  // Set fit settings
+  SetFitSettings();
+
+  resultsFile_.open ((outFolder_+resultsFileName_).c_str());
+  
   cout << "Init process complete" << endl;
 }
 
 void TauDileptonPDFBuilderFitter::SetOptions(){
   gStyle->SetOptStat(0);
+}
+
+void TauDileptonPDFBuilderFitter::SetFitSettings(){
+  baseIdentifier_="";
+  
+  signalStatError_=8.3; // 6.7; // 8.3 and 0.2 propagation // 6.7 (wh) and 0.2 (hh) propagation  
+  ddbkgEstimate_ = 207.85; //165.4;
+  ddbkgStatError_ = 49.52; //23.7;
+  
+  switch(fitType_){
+  case SM2BKG :
+    includeSignal_=false;
+    standaloneTTbar_=false;
+    baseIdentifier_.append("SM2BKG");
+    mcbkgStatError_ = 6.09; //3.48;
+    break;
+  case SM3BKG:
+    includeSignal_=false;
+    standaloneTTbar_=true;
+    baseIdentifier_.append("SM3BKG");
+    ttbarmcbkgStatError_ = 3.4; // 3.0
+    mcbkgStatError_ = 5.05; // 1.76
+    break;
+  case HIGGS2BKG:
+    includeSignal_=true;
+    standaloneTTbar_=false;
+    baseIdentifier_.append("HIGGS2BKG");
+    mcbkgStatError_ = 6.09; // 3.48;
+    break;
+  case HIGGS3BKG:
+    includeSignal_=true;
+    standaloneTTbar_=true;
+    baseIdentifier_.append("HIGGS3BKG");
+    ttbarmcbkgStatError_ = 3.4; //3.0;
+    mcbkgStatError_ = 5.05; //1.76;
+    break;
+  default : // Dummy - should never arrive here
+    cout<<"Type of fit not available. Check your options motherfucker"<<endl;
+    gApplication->Terminate(1);
+  }
 }
 
 void buildGenericMultiPDFModel( 
@@ -134,61 +206,12 @@ void buildGenericMultiPDFModel(
 
   cout << "INIT: signal tree entries:"<<signalTree_->GetEntries()<<endl;
 
-  TCanvas* canvas_ = new TCanvas("canvas","My plots ",0,0,1000,500);
-  canvas_->cd();
-  
-  
-  
-  bool includeSignal=false;
-  bool standaloneTTbar=false;
-  string baseIdentifier="";
-  double signalStatError;
-  double ddbkgEstimate;
-  double ddbkgStatError;
-  double ttbarmcbkgStatError;
-  double mcbkgStatError;
 
-  string outFolder = "likelihoodFit/";
 
-  signalStatError=8.3; // 6.7; // 8.3 and 0.2 propagation // 6.7 (wh) and 0.2 (hh) propagation  
-  ddbkgEstimate = 207.85; //165.4;
-  ddbkgStatError = 49.52; //23.7;
   
-  switch(fitType){
-  case SM2BKG :
-    includeSignal=false;
-    standaloneTTbar=false;
-    baseIdentifier.append("SM2BKG");
-    mcbkgStatError = 6.09; //3.48;
-    break;
-  case SM3BKG:
-    includeSignal=false;
-    standaloneTTbar=true;
-    baseIdentifier.append("SM3BKG");
-    ttbarmcbkgStatError = 3.4; // 3.0
-    mcbkgStatError = 5.05; // 1.76
-    break;
-  case HIGGS2BKG:
-    includeSignal=true;
-    standaloneTTbar=false;
-    baseIdentifier.append("HIGGS2BKG");
-    mcbkgStatError = 6.09; // 3.48;
-    break;
-  case HIGGS3BKG:
-    includeSignal=true;
-    standaloneTTbar=true;
-    baseIdentifier.append("HIGGS3BKG");
-    ttbarmcbkgStatError = 3.4; //3.0;
-    mcbkgStatError = 5.05; //1.76;
-    break;
-  default : // Dummy - should never arrive here
-    cout<<"Type of fit not available. Check your options motherfucker"<<endl;
-    gApplication->Terminate(1);
-  }
+  
   
  
-  ofstream resultsFile;
-  resultsFile.open ("likelihoodResults.txt");
   
   //
   //  std::streambuf * old = std::cout.rdbuf(resultsFile.rdbuf());

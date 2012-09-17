@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.1 2012/09/14 13:16:16 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.2 2012/09/14 14:42:04 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -37,6 +37,29 @@
 #define NVARS 6
 
 
+class FitVar{
+  
+public:
+  FitVar(string, double, double, double, double, double, Int_t, Int_t);
+  string getVarName();
+  double getMin();
+  double getMax();
+  int getBins();
+  double getHmin();
+  double getHmax();
+  Int_t getUnbinned();
+  Int_t getSmoothOrder();
+private:
+  string varName_;
+  double min_;
+  double max_;
+  double bins_;
+  double hmin_;
+  double hmax_;
+  Int_t unbinned_;
+  Int_t smoothOrder_;
+};
+
 class TauDileptonPDFBuilderFitter{
   
 public :
@@ -64,10 +87,24 @@ public :
 private:
   void Init();
   void SetOptions();
+  void SetFitSettings();
 
   // Data members
-  string parSet;
+  string parSet_;
+
+  string outFolder_;
+  string resultsFileName_;
   
+  ofstream resultsFile_;
+  bool includeSignal_;
+  bool standaloneTTbar_;
+  string baseIdentifier_;
+  double signalStatError_;
+  double ddbkgEstimate_;
+  double ddbkgStatError_;
+  double ttbarmcbkgStatError_;
+  double mcbkgStatError_;
+
   TString   baseMCDir_;
   TString   baseDataDir_;
     
@@ -95,8 +132,18 @@ private:
   TFile * ttbarmcBkgFile;
   TFile * mcBkgFile;
   TFile * dataFile;
-  
 
+  vector<FitVar> fitVars_;  
+  vector<string> vars_;
+  vector<double> mins_;
+  vector<double> maxs_;
+  vector<int> bins_;
+  vector<double> hmin_;
+  vector<double> hmax_;
+  vector<Int_t> unbinned_;
+  vector<Int_t> smoothOrder_;
+
+  TCanvas* canvas_;
 };
 
 #endif //_TauDileptonPDFBuilderFitter_hh
