@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.3 2012/09/17 01:46:06 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.4 2012/09/17 14:18:11 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -27,19 +27,25 @@
 #include "RooDataHist.h"
 #include "RooHistPdf.h"
 #include "RooKeysPdf.h"
+#include "RooGaussian.h"
+#include "RooAddPdf.h"
+#include "RooProdPdf.h"
+#include "RooFitResult.h"
+#include "RooPlot.h"
+#include "RooNLLVar.h"
+#include "RooAddition.h"
 //#include "RooMinuit.h"
 
 
 // ROOT headers
 #include "TString.h"
+#include "TStyle.h"
+#include "TFile.h"
 #include "TTree.h"
 #include "TCanvas.h"
-
+#include "TH1.h"
+#include "TLegend.h"
 #endif
-
-// perhaps not needed anymore
-#define NVARS 6
-
 
 class FitVar{
   
@@ -67,7 +73,7 @@ private:
 class TauDileptonPDFBuilderFitter{
   
 public :
-  enum FITTYPES {SM2BKG=0, SM3BKG, HIGGS2BKG, HIGGS3BKG};
+  typedef enum {SM2BKG=0, SM3BKG, HIGGS2BKG, HIGGS3BKG, N_FITTYPES} FITTYPES;
   
   // Constructor
   TauDileptonPDFBuilderFitter(string);
@@ -77,24 +83,21 @@ public :
   /**
      @short performs the variable fit to a given set of variables
   */
-  void buildGenericMultiPDFModel(vector<string> & distVector,
-				 vector<double> & minVector,
-				 vector<double> & maxVector,
-				 vector<double> & numbBinsVector,
-				 vector<double> & hminVector,
-				 vector<double> & hmaxVector,
-				 vector<Int_t> & unbinned,
-				 vector<Int_t> & smoothOrder,
-				 unsigned int & fitType,
-				 );
-    
+  void DoFit();
+  
 private:
   void Init();
   void SetOptions();
-  void SetFitSettings();
+  void SetFitSettings(size_t);
   void InitPerVariableAmbient(size_t);
   void BuildDatasets(size_t);
   void BuildPDFs(size_t);
+  void DrawTemplates(size_t);
+  void BuildConstrainedModels(size_t);
+  void DoPerVariableFit(size_t);
+  void DrawPerVariableFit(size_t);
+  void DoPerVariableLikelihoodFit(size_t);
+  void DoCombinedLikelihoodFit();
   // Data members
   
   // Parameter set
@@ -105,7 +108,10 @@ private:
   string resultsFileName_;
   ofstream resultsFile_;
   streambuf* streamToFile_;
-  
+
+  // Style
+  TStyle* myStyle_;
+
   // Fit settings
   vector<FITTYPES> fitType_;
   bool includeSignal_;
@@ -132,13 +138,12 @@ private:
   TString minitreeDataDriven_;
   
   // Input files
-  TFile * signalFile;
-  TFile * signalFileWH;
-  TFile * signalFileHH;
-  TFile * ddBkgFile;
-  TFile * ttbarmcBkgFile;
-  TFile * mcBkgFile;
-  TFile * dataFile;
+  TFile * signalFileWH_;
+  TFile * signalFileHH_;
+  TFile * ddBkgFile_;
+  TFile * ttbarmcBkgFile_;
+  TFile * mcBkgFile_;
+  TFile * dataFile_;
 
   // Input trees
   TTree* signalTreeWH_;
@@ -163,7 +168,7 @@ private:
   TCanvas* canvas_;
 
   // RooFit stuff
-  vector<RooNLLVar> likelihoodVector_;
+  vector<RooNLLVar*> likelihoodVector_;
   RooRealVar* sigVar_             ;              
   RooRealVar* sigMeanVar_         ;              
   RooRealVar* sigSigmaVar_        ;              
@@ -192,12 +197,16 @@ private:
 
   string signalModelName_           ;
   string signalConstrainedName_     ;
+  string signalConstraintName_      ;
   string ddbkgModelName_            ;
   string ddbkgConstrainedName_      ;
+  string ddbkgConstraintName_       ;
   string ttbarmcbkgModelName_       ;
   string ttbarmcbkgConstrainedName_ ;
+  string ttbarmcbkgConstraintName_  ;
   string mcbkgModelName_            ;
   string mcbkgConstrainedName_      ;
+  string mcbkgConstraintName_       ;
 
   string signalVarName_     ;
   string ddbkgVarName_      ;
@@ -214,25 +223,50 @@ private:
   RooDataSet* myMCBkgDS_      ; 
   RooDataSet* myDataDS_       ; 
 
-  RooDataHist* signalHisto    ;
-  RooDataHist* ttbarmcbkgHisto;
-  RooDataHist* mcbkgHisto     ;
-  RooDataHist* ddbkgHisto     ;
-  RooDataHist* dataHisto      ;
+  RooDataHist* signalHisto_    ;
+  RooDataHist* ttbarmcbkgHisto_;
+  RooDataHist* mcbkgHisto_     ;
+  RooDataHist* ddbkgHisto_     ;
+  RooDataHist* dataHisto_      ;
 
   // Binned
-  RooHistPdf* b_signalModel;
-  RooHistPdf* b_ddbkgModel;
-  RooHistPdf* b_ttbarmcbkgModel;  
-  RooHistPdf* b_mcbkgModel;  
+  RooHistPdf* b_signalModel_    ;
+  RooHistPdf* b_ddbkgModel_     ;
+  RooHistPdf* b_ttbarmcbkgModel_;  
+  RooHistPdf* b_mcbkgModel_     ;  
   
   
   // Unbinned	       
-  RooKeysPdf* u_signalModel; 
-  RooKeysPdf* u_ddbkgModel;  
-  RooKeysPdf* u_ttbarmcbkgModel;  
-  RooKeysPdf* u_mcbkgModel;  
+  RooKeysPdf* u_signalModel_    ; 
+  RooKeysPdf* u_ddbkgModel_     ;  
+  RooKeysPdf* u_ttbarmcbkgModel_;  
+  RooKeysPdf* u_mcbkgModel_     ;  
+
+  TH1* signalHist_;
+  TH1* ddbkgHist_;
+  TH1* ttbarmcbkgHist_;
+  TH1* mcbkgHist_;
+  TLegend* leg_;
   
+  double sumWeights_;
+
+  RooGaussian* signalConstraint_;
+  RooGaussian* ttbarmcbkgConstraint_;
+  RooGaussian* ddbkgConstraint_;
+  RooGaussian* mcbkgConstraint_;
+
+  RooAddPdf* sumModel_;
+  RooProdPdf* model_;
+  RooFitResult* constrainedModelFit_;
+  
+  RooPlot* myFrame_;
+
+  RooNLLVar* nll_;
+  
+  RooFitResult* myNllFitResult_;
+  RooPlot* contourPlot_;
+  
+  RooAddition* combll_;
 };
 
 #endif //_TauDileptonPDFBuilderFitter_hh
