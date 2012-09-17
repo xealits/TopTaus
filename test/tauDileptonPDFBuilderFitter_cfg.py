@@ -23,12 +23,13 @@ mFitPars = cms.PSet(
     minitreeSelected   = cms.string("lep_tau_Selected"),
     minitreeDataDriven = cms.string("lep_tau_DataDriven"),
 
+    fitType     = cms.vint( HIGGS2BKG, HIGGS3BKG, SM2BKG, SM3BKG)
     vars        = cms.vstring("rc_t", "pt_l", "pt_met", "multiplicity_j", "btagmultiplicity_j", "Dphi_tau_met"),
     mins        = cms.vdouble( 0,      0,      0,        2,                0,                    0            ),
     maxs        = cms.vdouble( 1.2,    200,    300,      7,                4,                    4.8          ),
     bins        = cms.vint(    12,     20,     30,       5,                4,                    10           ),
     hmin        = cms.vdouble( 0,      0,      0,        0,                0,                    0            ),
-    hmax        = cms.vdouble( 100,    50,     50,       200,              300,                  100          ),
+    hmax        = cms.vdouble( 200,    100,    100,      400,              600,                  200          ),
     unbinned    = cms.vint32(  0,      0,      0,        0,                0,                    0            ),
     smoothOrder = cms.vint32(  3,      5,      5,        0,                0,                    3            )
 

@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.2 2012/09/14 14:42:04 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.3 2012/09/17 01:46:06 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -18,18 +18,22 @@
 #endif
 
 // System headers
+#include <string>
+#include <fstream>
 
 // RooFit headers
-//#include "RooRealVar.h"
+#include "RooRealVar.h"
+#include "RooDataSet.h"
+#include "RooDataHist.h"
+#include "RooHistPdf.h"
+#include "RooKeysPdf.h"
 //#include "RooMinuit.h"
-//#include "RooDataSet.h"
-//#include "RooDataHist.h"
+
 
 // ROOT headers
 #include "TString.h"
 #include "TTree.h"
-//#include "TCanvas.h"
-//#include "TH1F.h"
+#include "TCanvas.h"
 
 #endif
 
@@ -88,14 +92,22 @@ private:
   void Init();
   void SetOptions();
   void SetFitSettings();
-
+  void InitPerVariableAmbient(size_t);
+  void BuildDatasets(size_t);
+  void BuildPDFs(size_t);
   // Data members
+  
+  // Parameter set
   string parSet_;
 
+  // Output paths
   string outFolder_;
   string resultsFileName_;
-  
   ofstream resultsFile_;
+  streambuf* streamToFile_;
+  
+  // Fit settings
+  vector<FITTYPES> fitType_;
   bool includeSignal_;
   bool standaloneTTbar_;
   string baseIdentifier_;
@@ -105,26 +117,21 @@ private:
   double ttbarmcbkgStatError_;
   double mcbkgStatError_;
 
+  // Input paths
   TString   baseMCDir_;
   TString   baseDataDir_;
-    
+
   TString   signalFileNameWH_;
   TString   signalFileNameHH_;
   TString   dataFileName_;
   TString   ddBkgFileName_;
   TString   ttbarmcBkgFileName_;
   TString   mcBkgFileName_;
-  
+
   TString minitreeSelected_;
   TString minitreeDataDriven_;
   
-  TTree* signalTreeWH_;
-  TTree* signalTreeHH_; 
-  TTree* ddBkgTree_ ;
-  TTree* ttbarmcBkgTree_;
-  TTree* mcBkgTree_;
-  TTree* dataTree_;
-  
+  // Input files
   TFile * signalFile;
   TFile * signalFileWH;
   TFile * signalFileHH;
@@ -133,6 +140,16 @@ private:
   TFile * mcBkgFile;
   TFile * dataFile;
 
+  // Input trees
+  TTree* signalTreeWH_;
+  TTree* signalTreeHH_; 
+  TTree* ddBkgTree_ ;
+  TTree* ttbarmcBkgTree_;
+  TTree* mcBkgTree_;
+  TTree* dataTree_;
+  
+  // Variables parameters
+  size_t nVars_;
   vector<FitVar> fitVars_;  
   vector<string> vars_;
   vector<double> mins_;
@@ -144,6 +161,78 @@ private:
   vector<Int_t> smoothOrder_;
 
   TCanvas* canvas_;
+
+  // RooFit stuff
+  vector<RooNLLVar> likelihoodVector_;
+  RooRealVar* sigVar_             ;              
+  RooRealVar* sigMeanVar_         ;              
+  RooRealVar* sigSigmaVar_        ;              
+  RooRealVar* ttbarmcbkgVar_      ;
+  RooRealVar* ttbarmcbkgMeanVar_  ;
+  RooRealVar* ttbarmcbkgSigmaVar_ ;
+  RooRealVar* mcbkgVar_           ;               
+  RooRealVar* mcbkgMeanVar_       ;         
+  RooRealVar* mcbkgSigmaVar_      ;         
+  RooRealVar* ddbkgVar_           ;              
+  RooRealVar* ddbkgMeanVar_       ;         
+  RooRealVar* ddbkgSigmaVar_      ;        
+
+  // Per-var stuff
+  string identifier_;
+  
+  RooRealVar* myvar_         ;
+  RooRealVar* myvar_weights_ ;
+  RooRealVar* isOSvar_       ;
+  
+  string mySignalDSName_     ;
+  string myDDBkgDSName_      ;
+  string myTTBARMCBkgDSName_ ;
+  string myMCBkgDSName_      ;
+  string myDataDSName_       ;
+
+  string signalModelName_           ;
+  string signalConstrainedName_     ;
+  string ddbkgModelName_            ;
+  string ddbkgConstrainedName_      ;
+  string ttbarmcbkgModelName_       ;
+  string ttbarmcbkgConstrainedName_ ;
+  string mcbkgModelName_            ;
+  string mcbkgConstrainedName_      ;
+
+  string signalVarName_     ;
+  string ddbkgVarName_      ;
+  string ttbarmcbkgVarName_ ;
+  string mcbkgVarName_      ;
+  
+  RooDataSet* mySignalDS_      ;
+  RooDataSet* unrMyDDBkgDS_      ; // Unreduced datasets for OS cut
+  RooDataSet* unrMyTTBARMCBkgDS_ ;
+  RooDataSet* unrMyMCBkgDS_      ; 
+  RooDataSet* unrMyDataDS_       ; 
+  RooDataSet* myDDBkgDS_      ; // Reduced datasets
+  RooDataSet* myTTBARMCBkgDS_ ;
+  RooDataSet* myMCBkgDS_      ; 
+  RooDataSet* myDataDS_       ; 
+
+  RooDataHist* signalHisto    ;
+  RooDataHist* ttbarmcbkgHisto;
+  RooDataHist* mcbkgHisto     ;
+  RooDataHist* ddbkgHisto     ;
+  RooDataHist* dataHisto      ;
+
+  // Binned
+  RooHistPdf* b_signalModel;
+  RooHistPdf* b_ddbkgModel;
+  RooHistPdf* b_ttbarmcbkgModel;  
+  RooHistPdf* b_mcbkgModel;  
+  
+  
+  // Unbinned	       
+  RooKeysPdf* u_signalModel; 
+  RooKeysPdf* u_ddbkgModel;  
+  RooKeysPdf* u_ttbarmcbkgModel;  
+  RooKeysPdf* u_mcbkgModel;  
+  
 };
 
 #endif //_TauDileptonPDFBuilderFitter_hh
