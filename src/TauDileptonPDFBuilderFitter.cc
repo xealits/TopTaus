@@ -403,54 +403,40 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     signalTreeWH_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
     signalTreeWH_->SetBranchAddress("weight", &myVarWeightAllocator);
     signalTreeWH_->SetBranchAddress("is_os", &isOSsig);
-    //    cout << "getentries " << signalTreeWH_->GetEntries() << endl;
     for(unsigned int ev=0; ev<signalTreeWH_->GetEntries(); ev++){
-      //      cout << "ev: " << ev << endl;
       signalTreeWH_->GetEntry(ev);
-      //      cout << "isOSsig: " << isOSsig << endl;//	if(isOSsig < 0.5) continue;
       if(isOSsig<0.5) continue;
       myvar_->setVal(myVarAllocator);
-      if(fitVars_[i].getVarName() == "rc_t" && myVarAllocator > 1) cout<< "myVar: " << myVarAllocator<<endl;
       sumWeights_ += myVarWeightAllocator;
-      //      cout << " arrive here" ;
       myvar_weights_->setVal(fhw*myVarWeightAllocator);
       mySignalDS_->add(RooArgSet(*myvar_,*myvar_weights_),fhw*myVarWeightAllocator);
     }
-    //    cout << " strt HH" << endl;
     // Get HH events
     signalTreeHH_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
-    //    cout << "getAllocator      ";
     signalTreeHH_->SetBranchAddress("weight", &myVarWeightAllocator);
-    //    cout << "getWeightAllocator      ";
     signalTreeHH_->SetBranchAddress("is_os", &isOSsig);
     //    cout << "getIsoS      ";
     for(unsigned int ev=0; ev<signalTreeHH_->GetEntries(); ev++){
       signalTreeHH_->GetEntry(ev);
       if(isOSsig < 0.5) continue;
       myvar_->setVal(myVarAllocator);
-      if(fitVars_[i].getVarName() == "rc_t" && myVarAllocator > 1) cout<< "myVar: " << myVarAllocator<<endl;
       sumWeights_ += myVarWeightAllocator;
       myvar_weights_->setVal(fhh*myVarWeightAllocator);
       mySignalDS_->add(RooArgSet(*myvar_,*myvar_weights_),fhh*myVarWeightAllocator);
     }
-    //     cout<<"Signal ok"<<endl;
   }
   string myOsCut = "is_os>0.5";
   unrMyDDBkgDS_      = new RooDataSet(myDDBkgDSName_.c_str(), myDDBkgDSName_.c_str(),  ddBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
   myDDBkgDS_ = (RooDataSet*) unrMyDDBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-  cout<<"DDBkg ok"<<endl;
   if(standaloneTTbar_){
     unrMyTTBARMCBkgDS_ = new RooDataSet(myTTBARMCBkgDSName_.c_str(), myTTBARMCBkgDSName_.c_str(),  ttbarmcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
     myTTBARMCBkgDS_ = (RooDataSet*) unrMyTTBARMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
   }
-  cout<<"TTbar ok"<<endl;
   unrMyMCBkgDS_      = new RooDataSet(myMCBkgDSName_.c_str(), myMCBkgDSName_.c_str(),  mcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
   myMCBkgDS_ = (RooDataSet*) unrMyMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-  cout<<"MCBkg ok"<<endl;
   unrMyDataDS_       = new RooDataSet(myDataDSName_.c_str(),  myDataDSName_.c_str(),   dataTree_,   RooArgSet(*myvar_,*isOSvar_), myOsCut.c_str() );
   myDataDS_ = (RooDataSet*) unrMyDataDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-  cout<<"Data ok"<<endl;
-
+  
   // Build binned clones
   if(includeSignal_)
     signalHisto_ = mySignalDS_->binnedClone();
@@ -460,7 +446,6 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
   mcbkgHisto_ = myMCBkgDS_->binnedClone();
   dataHisto_  = myDataDS_ ->binnedClone();
   
-
 }
 
 void TauDileptonPDFBuilderFitter::BuildPDFs(size_t i){
