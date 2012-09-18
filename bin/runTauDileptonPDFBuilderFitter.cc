@@ -4,7 +4,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: runTauDileptonPDFBuilderFitter.cc,v 1.1 2012/09/14 13:16:15 vischia Exp $                                                                                                       
+  \version  $Id: runTauDileptonPDFBuilderFitter.cc,v 1.2 2012/09/17 18:52:51 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/TauDileptonPDFBuilderFitter.hh"
@@ -44,6 +44,8 @@ int main(int argc, char* argv[])
 
   TauDileptonPDFBuilderFitter* myFitter = new TauDileptonPDFBuilderFitter(parSet);
   myFitter->DoFit();
+  cout << "Fitter reached natural end" << endl;
 
+  return 0;
   
 }

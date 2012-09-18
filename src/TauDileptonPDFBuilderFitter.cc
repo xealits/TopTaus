@@ -4,7 +4,7 @@
 #include <sstream>
 
 // CMSSW includes
-//#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
+#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "FWCore/PythonParameterSet/interface/MakeParameterSets.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
@@ -72,6 +72,82 @@ TauDileptonPDFBuilderFitter::TauDileptonPDFBuilderFitter(string parSet):
   SetOptions();
 
 }
+
+TauDileptonPDFBuilderFitter::~TauDileptonPDFBuilderFitter(){
+  
+  delete myStyle_;
+  delete signalFileWH_;
+  delete signalFileHH_;
+  delete ddBkgFile_;
+  delete ttbarmcBkgFile_;
+  delete mcBkgFile_;
+  delete dataFile_;
+  delete signalTreeWH_;
+  delete signalTreeHH_; 
+  delete ddBkgTree_ ;
+  delete ttbarmcBkgTree_;
+  delete mcBkgTree_;
+  delete dataTree_;
+  delete canvas_;
+  delete sigVar_             ;              
+  delete sigMeanVar_         ;              
+  delete sigSigmaVar_        ;              
+  delete ttbarmcbkgVar_      ;
+  delete ttbarmcbkgMeanVar_  ;
+  delete ttbarmcbkgSigmaVar_ ;
+  delete mcbkgVar_           ;               
+  delete mcbkgMeanVar_       ;         
+  delete mcbkgSigmaVar_      ;         
+  delete ddbkgVar_           ;              
+  delete ddbkgMeanVar_       ;         
+  delete ddbkgSigmaVar_      ;        
+  delete myvar_         ;
+  delete myvar_weights_ ;
+  delete isOSvar_       ;
+  delete mySignalDS_      ;
+  delete unrMyDDBkgDS_      ; // Unreduced datasets for OS cut
+  delete unrMyTTBARMCBkgDS_ ;
+  delete unrMyMCBkgDS_      ; 
+  delete unrMyDataDS_       ; 
+  delete myDDBkgDS_      ; // Reduced datasets
+  delete myTTBARMCBkgDS_ ;
+  delete myMCBkgDS_      ; 
+  delete myDataDS_       ; 
+  delete signalHisto_    ;
+  delete ttbarmcbkgHisto_;
+  delete mcbkgHisto_     ;
+  delete ddbkgHisto_     ;
+  delete dataHisto_      ;
+  delete b_signalModel_    ;
+  delete b_ddbkgModel_     ;
+  delete b_ttbarmcbkgModel_;  
+  delete b_mcbkgModel_     ;  
+  delete u_signalModel_    ; 
+  delete u_ddbkgModel_     ;  
+  delete u_ttbarmcbkgModel_;  
+  delete u_mcbkgModel_     ;  
+  delete signalHist_;
+  delete ddbkgHist_;
+  delete ttbarmcbkgHist_;
+  delete mcbkgHist_;
+  delete leg_;
+  delete signalConstraint_;
+  delete ttbarmcbkgConstraint_;
+  delete ddbkgConstraint_;
+  delete mcbkgConstraint_;
+  delete sumModel_;
+  delete model_;
+  delete constrainedModelFit_;
+  delete myFrame_;
+  delete nll_;
+  for(size_t i=0; i<nVars_;i++)
+    delete likelihoodVector_[i];
+  delete myNllFitResult_;
+  delete contourPlot_;
+  delete combll_;
+
+}
+
   
 void TauDileptonPDFBuilderFitter::Init(){
 
@@ -178,7 +254,7 @@ void TauDileptonPDFBuilderFitter::SetOptions(){
   myStyle_->SetOptStat(0);
 }
 
-void TauDileptonPDFBuilderFitter::SetFitSettings(size_t f){
+void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
   baseIdentifier_="";
   
   // FIXME: hardcoded
@@ -216,6 +292,8 @@ void TauDileptonPDFBuilderFitter::SetFitSettings(size_t f){
   default : // Dummy - should never arrive here
     cout<<"Type of fit not available. Check your options motherfucker"<<endl;
   }
+
+  likelihoodVector_.clear();
 }
 
 void TauDileptonPDFBuilderFitter::InitPerVariableAmbient(size_t i){
@@ -325,27 +403,27 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     signalTreeWH_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
     signalTreeWH_->SetBranchAddress("weight", &myVarWeightAllocator);
     signalTreeWH_->SetBranchAddress("is_os", &isOSsig);
-    cout << "getentries " << signalTreeWH_->GetEntries() << endl;
+    //    cout << "getentries " << signalTreeWH_->GetEntries() << endl;
     for(unsigned int ev=0; ev<signalTreeWH_->GetEntries(); ev++){
-      cout << "ev: " << ev << endl;
+      //      cout << "ev: " << ev << endl;
       signalTreeWH_->GetEntry(ev);
-      cout << "isOSsig: " << isOSsig << endl;//	if(isOSsig < 0.5) continue;
-      if(isOSsig==0) cout << "peggio" << endl;
+      //      cout << "isOSsig: " << isOSsig << endl;//	if(isOSsig < 0.5) continue;
+      if(isOSsig<0.5) continue;
       myvar_->setVal(myVarAllocator);
       if(fitVars_[i].getVarName() == "rc_t" && myVarAllocator > 1) cout<< "myVar: " << myVarAllocator<<endl;
       sumWeights_ += myVarWeightAllocator;
-      cout << " arrive here" ;
+      //      cout << " arrive here" ;
       myvar_weights_->setVal(fhw*myVarWeightAllocator);
       mySignalDS_->add(RooArgSet(*myvar_,*myvar_weights_),fhw*myVarWeightAllocator);
     }
-    cout << " strt HH" << endl;
+    //    cout << " strt HH" << endl;
     // Get HH events
     signalTreeHH_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
-    cout << "getAllocator      ";
+    //    cout << "getAllocator      ";
     signalTreeHH_->SetBranchAddress("weight", &myVarWeightAllocator);
-    cout << "getWeightAllocator      ";
+    //    cout << "getWeightAllocator      ";
     signalTreeHH_->SetBranchAddress("is_os", &isOSsig);
-    cout << "getIsoS      ";
+    //    cout << "getIsoS      ";
     for(unsigned int ev=0; ev<signalTreeHH_->GetEntries(); ev++){
       signalTreeHH_->GetEntry(ev);
       if(isOSsig < 0.5) continue;
@@ -355,7 +433,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
       myvar_weights_->setVal(fhh*myVarWeightAllocator);
       mySignalDS_->add(RooArgSet(*myvar_,*myvar_weights_),fhh*myVarWeightAllocator);
     }
-    cout<<"Signal ok"<<endl;
+    //     cout<<"Signal ok"<<endl;
   }
   string myOsCut = "is_os>0.5";
   unrMyDDBkgDS_      = new RooDataSet(myDDBkgDSName_.c_str(), myDDBkgDSName_.c_str(),  ddBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
@@ -481,8 +559,8 @@ void TauDileptonPDFBuilderFitter::DrawTemplates(size_t i){
   if(standaloneTTbar_) ttbarmcbkgHist_->DrawNormalized("histsame"); // in order for it to be on top and thus viewable for discriminating it from higgs in rc_t plots
   
   leg_->Draw();
-  canvas_->SaveAs((outFolder_+string("shapes_")+identifier_+string(".pdf")).c_str());
-  canvas_->SaveAs((outFolder_+string("shapes_")+identifier_+string(".png")).c_str());
+  canvas_->SaveAs((outFolder_+identifier_+string("_shapes_")+string(".pdf")).c_str());
+  canvas_->SaveAs((outFolder_+identifier_+string("_shapes_")+string(".png")).c_str());
   canvas_->cd();
   canvas_->Clear();
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -575,10 +653,10 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   else{ mcbkgSigmaVar_->setVal(nmcbkgSigma); }
   
   
-  if(includeSignal_) signalConstraint_ = new RooGaussian( signalConstrainedName_.c_str(), signalConstraintName_.c_str(), *sigVar_,*sigMeanVar_, *sigSigmaVar_);
-  ddbkgConstraint_ = new RooGaussian( ddbkgConstrainedName_.c_str(), ddbkgConstraintName_.c_str(), *ddbkgVar_, *ddbkgMeanVar_, *ddbkgSigmaVar_);   
-  if(standaloneTTbar_) ttbarmcbkgConstraint_ = new RooGaussian( ttbarmcbkgConstrainedName_.c_str(), ttbarmcbkgConstraintName_.c_str(), *ttbarmcbkgVar_,*ttbarmcbkgMeanVar_, *ttbarmcbkgSigmaVar_);
-  mcbkgConstraint_ = new RooGaussian( mcbkgConstrainedName_.c_str(), mcbkgConstraintName_.c_str(), *mcbkgVar_,*mcbkgMeanVar_, *mcbkgSigmaVar_);
+  if(includeSignal_) signalConstraint_ = new RooGaussian( signalConstraintName_.c_str(), signalConstraintName_.c_str(), *sigVar_,*sigMeanVar_, *sigSigmaVar_);
+  ddbkgConstraint_ = new RooGaussian( ddbkgConstraintName_.c_str(), ddbkgConstraintName_.c_str(), *ddbkgVar_, *ddbkgMeanVar_, *ddbkgSigmaVar_);   
+  if(standaloneTTbar_) ttbarmcbkgConstraint_ = new RooGaussian( ttbarmcbkgConstraintName_.c_str(), ttbarmcbkgConstraintName_.c_str(), *ttbarmcbkgVar_,*ttbarmcbkgMeanVar_, *ttbarmcbkgSigmaVar_);
+  mcbkgConstraint_ = new RooGaussian( mcbkgConstraintName_.c_str(), mcbkgConstraintName_.c_str(), *mcbkgVar_,*mcbkgMeanVar_, *mcbkgSigmaVar_);
     
   
   // build the sum model and model with constrains ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -593,10 +671,10 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   string sumModelConstrainedName = fitVars_[i].getVarName()+string("_sumConstrainedModel");
   
   string sumModelConstrainedExp = sumModelName+string("*");
-  if(includeSignal_) sumModelConstrainedExp.append(signalConstrainedName_+string("*"));
-  sumModelConstrainedExp.append(ddbkgConstrainedName_+string("*"));
-  if(standaloneTTbar_) sumModelConstrainedExp.append(ttbarmcbkgConstrainedName_+string("*"));
-  sumModelConstrainedExp.append(mcbkgConstrainedName_);
+  if(includeSignal_) sumModelConstrainedExp.append(signalConstraintName_+string("*"));
+  sumModelConstrainedExp.append(ddbkgConstraintName_+string("*"));
+  if(standaloneTTbar_) sumModelConstrainedExp.append(ttbarmcbkgConstraintName_+string("*"));
+  sumModelConstrainedExp.append(mcbkgConstraintName_);
   
   switch(fitVars_[i].getUnbinned()){
   case 1 : // Unbinned
@@ -710,8 +788,8 @@ void TauDileptonPDFBuilderFitter::DrawPerVariableFit(size_t i){
     }
   
   myFrame_->Draw();
-  canvas_->SaveAs((outFolder_+string("modelFit_")+identifier_+string(".pdf")).c_str());
-  canvas_->SaveAs((outFolder_+string("modelFit_")+identifier_+string(".png")).c_str());
+  canvas_->SaveAs((outFolder_+identifier_+string("_modelFit_")+string(".pdf")).c_str());
+  canvas_->SaveAs((outFolder_+identifier_+string("_modelFit_")+string(".png")).c_str());
   canvas_->cd();
   canvas_->Clear();
 }
@@ -729,20 +807,22 @@ void TauDileptonPDFBuilderFitter::DoPerVariableLikelihoodFit(size_t i){
   
   switch(fitVars_[i].getUnbinned()){
   case 1: // Unbinned
-    if(includeSignal_)
+    if(includeSignal_){
       if(standaloneTTbar_) nll_ = (RooNLLVar*) model_->createNLL( *myDataDS_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
       else nll_ = (RooNLLVar*) model_->createNLL( *myDataDS_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
-    else
+    } else{
       if(standaloneTTbar_) nll_ = (RooNLLVar *) model_->createNLL( *myDataDS_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
       else nll_ = (RooNLLVar*) model_->createNLL( *myDataDS_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*ddbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+    }
     break;
   case 0:  // Binned (w/ or w/out smoothing)
-    if(includeSignal_)
+    if(includeSignal_){
       if(standaloneTTbar_) nll_ = (RooNLLVar*) model_->createNLL( *dataHisto_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
       else nll_ = (RooNLLVar*) model_->createNLL( *dataHisto_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
-    else
+    } else{
       if(standaloneTTbar_) nll_ = (RooNLLVar*) model_->createNLL( *dataHisto_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
       else nll_ = (RooNLLVar*) model_->createNLL( *dataHisto_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*ddbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+    }
     break;
   default : // Dummy - should never arrive here
     cout<<"Neither binned not unbinned. Check your options motherfucker."<<endl;
@@ -787,8 +867,8 @@ void TauDileptonPDFBuilderFitter::DoPerVariableLikelihoodFit(size_t i){
   contourPlot_->GetXaxis()->SetTitle("N^{DD}_{Bkg}");
   contourPlot_->GetXaxis()->SetRange(0,400);
   contourPlot_->Draw();
-  canvas_->SaveAs((outFolder_+string("contour_")+identifier_+string(".pdf")).c_str());
-  canvas_->SaveAs((outFolder_+string("contour_")+identifier_+string(".png")).c_str());
+  canvas_->SaveAs((outFolder_+identifier_+string("_contour_")+string(".pdf")).c_str());
+  canvas_->SaveAs((outFolder_+identifier_+string("_contour_")+string(".png")).c_str());
   canvas_->cd();
   canvas_->Clear();
   ///////////////////////////////////////////////////////////
@@ -800,7 +880,7 @@ void TauDileptonPDFBuilderFitter::DoCombinedLikelihoodFit(){
   //  RooPlot* contourPlot;
   //  for(int dim=0; dim<NVARS; dim++){
   RooArgSet llSet;
-  cout<<"FINAL FIT NUMBER " << nVars_ << endl;    
+  cout<<"FINAL FIT NUMBER " << nVars_ << ", likelihoodVector with dim: " << likelihoodVector_.size() << endl;    
   // fill arg set with a
   for(size_t i=0; i<nVars_;i++){ llSet.add( *(likelihoodVector_[i]) ); }
   //  for(int i=0; i<likelihoodVector.size();i++){ llSet.add( *(likelihoodVector[i]) ); }
@@ -836,8 +916,12 @@ void TauDileptonPDFBuilderFitter::DoCombinedLikelihoodFit(){
   }
   else{
     if(standaloneTTbar_){
+      cout << "Here I am" << endl;
       contourPlot_ = minuit.contour( *ddbkgVar_ , *ttbarmcbkgVar_,1,2,3);
+      cout << "Here I am. contour generation set to some other stuff" << endl;
+      myNllFitResult_->Print("v");
       contourPlot_->GetYaxis()->SetTitle("N(t#bar{t}#rightarrow l#tau)");
+      cout << "Here I am not. contour access crashed because of lack of component" << endl;
       contourPlot_->GetYaxis()->SetRangeUser(0,400);
     }
     else{
@@ -855,9 +939,11 @@ void TauDileptonPDFBuilderFitter::DoCombinedLikelihoodFit(){
   std::ostringstream oss;
   oss << nVars_;//dim;
   
-  canvas_->SaveAs((outFolder_+string("contour_final_")+baseIdentifier_+oss.str()+string("vars.pdf")).c_str());
-  canvas_->SaveAs((outFolder_+string("contour_final_")+baseIdentifier_+oss.str()+string("vars.png")).c_str());
+  canvas_->SaveAs((outFolder_+baseIdentifier_+string("_contour_final_")+oss.str()+string("vars.pdf")).c_str());
+  canvas_->SaveAs((outFolder_+baseIdentifier_+string("_contour_final_")+oss.str()+string("vars.png")).c_str());
   ///////////////////////////////////////////////////////////
+
+  minuit.cleanup();
 }
 
 void TauDileptonPDFBuilderFitter::DoFit(){
@@ -867,7 +953,7 @@ void TauDileptonPDFBuilderFitter::DoFit(){
   for(size_t f=0; f<fitType_.size(); f++){
     
     // Set fit settings
-    SetFitSettings(f);
+    InitFitSettings(f);
     
     for(size_t i = 0; i< nVars_; i++){
       
@@ -892,59 +978,6 @@ void TauDileptonPDFBuilderFitter::DoFit(){
     DoCombinedLikelihoodFit();
     
   }
-  //  delete canvas_;
-  //  delete signalTree_;
-  //  delete ddBkgTree_;
-  //  delete ttbarmcBkgTree_;
-  //  delete mcBkgTree_;
-  //  delete dataTree_;
-  //  delete likelihoodVector;
-  //  delete sigVar_             ;              
-  //  delete sigMeanVar_         ;              
-  //  delete sigSigmaVar_        ;              
-  //  delete ttbarmcbkgVar_      ;
-  //  delete ttbarmcbkgMeanVar_  ;
-  //  delete ttbarmcbkgSigmaVar_ ;
-  //  delete mcbkgVar_           ;               
-  //  delete mcbkgMeanVar_       ;         
-  //  delete mcbkgSigmaVar_      ;         
-  //  delete ddbkgVar_           ;              
-  //  delete ddbkgMeanVar_       ;         
-  //  delete ddbkgSigmaVar_      ;        
-  //  delete myvar;
-  //  delete myvar_weights;
-  //  delete mySignalDS_ ;
-  //  delete myDDBkgDS_  ;
-  //  delete myTTBARMCBkgDS_;
-  //  delete myMCBkgDS_  ; 
-  //  delete myDataDS_   ; 
-  //  delete signalHisto_    ;
-  //  delete ttbarmcbkgHisto_;
-  //  delete mcbkgHisto_     ;
-  //  delete ddbkgHisto_     ;
-  //  delete dataHisto_      ;
-  //  delete b_signalModel;
-  //  delete b_ddbkgModel;
-  //  delete b_ttbarmcbkgModel;  
-  //  delete b_mcbkgModel;  
-  //  delete u_signalModel; 
-  //  delete u_ddbkgModel;  
-  //  delete u_ttbarmcbkgModel;  
-  //  delete u_mcbkgModel;  
-  //  delete signalConstraint;
-  //  delete ttbarmcbkgConstraint;
-  //  delete ddbkgConstraint;
-  //  delete mcbkgConstraint;
-  //  delete sumModel;
-  //  delete model;
-  //  delete constrainedModelFit;
-  //  delete myFrame;
-  //  delete nll;
-  //  delete myTempRes;
-  //  delete contourPlot;
-  //  delete combll;
-  //  delete myRes;
-  //  delete contourPlot;
   
   
   //}

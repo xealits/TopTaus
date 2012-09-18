@@ -8,13 +8,13 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.4 2012/09/17 14:18:11 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.5 2012/09/17 18:52:51 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
 
 #ifndef __CINT__
-// #include "RooGlobalFunc.h"
+#include "RooGlobalFunc.h"
 #endif
 
 // System headers
@@ -88,7 +88,7 @@ public :
 private:
   void Init();
   void SetOptions();
-  void SetFitSettings(size_t);
+  void InitFitSettings(size_t);
   void InitPerVariableAmbient(size_t);
   void BuildDatasets(size_t);
   void BuildPDFs(size_t);
@@ -168,7 +168,6 @@ private:
   TCanvas* canvas_;
 
   // RooFit stuff
-  vector<RooNLLVar*> likelihoodVector_;
   RooRealVar* sigVar_             ;              
   RooRealVar* sigMeanVar_         ;              
   RooRealVar* sigSigmaVar_        ;              
@@ -262,6 +261,7 @@ private:
   RooPlot* myFrame_;
 
   RooNLLVar* nll_;
+  vector<RooNLLVar* > likelihoodVector_;
   
   RooFitResult* myNllFitResult_;
   RooPlot* contourPlot_;
