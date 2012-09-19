@@ -63,7 +63,7 @@ void LandSShapesProducer::Init(){
   const edm::ParameterSet &mFitPars = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSet");
 
   outFolder_        = mFitPars.getParameter<std::string>("outFolder");
-  resultsFileName_  = mFitPars.getParameter<std::string>("resultsFileName");
+  outputFileName_  = mFitPars.getParameter<std::string>("outputFileName");
   baseMCDir_        = mFitPars.getParameter<std::string>("baseMCDir");
   baseDataDir_      = mFitPars.getParameter<std::string>("baseDataDir");
   
@@ -287,7 +287,7 @@ void LandSShapesProducer::BuildDatasets(size_t i){
 
 void LandSShapesProducer::DrawTemplates(size_t i){
   
-  string outputFileName = outputFileName_ + string("_") + fitVars_[i].getVarName();
+  string outputFileName = outputFileName_ + string("_") + fitVars_[i].getVarName() + string(".root");
   TFile* outputFile = new TFile(outputFileName.c_str(), "RECREATE");
   
   canvas_->cd();

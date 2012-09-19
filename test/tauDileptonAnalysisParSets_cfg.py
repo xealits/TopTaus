@@ -5,6 +5,12 @@ import FWCore.ParameterSet.Config as cms
 #########
 
 LandSShapesProducerParSet = cms.PSet(
+    outFolder        = cms.string("shapesForDatacard/"),
+    outputFileName  = cms.string("shapes"),
+
+    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
+    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
+
     signalFileNameWH   = cms.string("out-wh-pythia-m120.root"),
     signalFileNameHH   = cms.string("out-hh-pythia-m120.root"),
     
@@ -36,7 +42,7 @@ LandSShapesProducerParSet = cms.PSet(
     )
 
 TauDileptonPDFBuilderFitterParSet = cms.PSet(
-    outFolder        = cms.string("shapesForDatacard/"),
+    outFolder        = cms.string("likelihoodFit/"),
     resultsFileName  = cms.string("likelihoodResults.txt"),
     
     baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),

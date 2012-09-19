@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: LandSShapesProducer.hh,v 1.1 2012/09/19 11:04:39 vischia Exp $                                                                                                       
+  \version  $Id: LandSShapesProducer.hh,v 1.2 2012/09/19 18:37:32 vischia Exp $                                                                                                       
 */
 
 
@@ -85,7 +85,8 @@ private:
 
   // Output paths
   string outFolder_;
-  string resultsFileName_;
+  string outputFileName_;
+  string resultsFileName_; // not used. txt.
   ofstream resultsFile_;
   streambuf* streamToFile_;
 
@@ -128,7 +129,7 @@ private:
   vector<TFile*> mcBkgFile_;
   TFile* dataFile_;
 
-  string outputFileName_;
+
 
   // Input trees
   TTree* signalTreeWH_;
