@@ -1,5 +1,6 @@
 <use name="LIP/TopTaus"/>
 <environment>
  <bin name="runTauDileptonPDFBuilderFitter"  file="runTauDileptonPDFBuilderFitter.cc"></bin> 
+ <bin name="produceLandSShapes"  file="produceLandSShapes.cc"></bin> 
 </environment>
 <Flags CXXFLAGS="-g"/>
