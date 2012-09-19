@@ -8,29 +8,39 @@ LandSShapesProducerParSet = cms.PSet(
     outFolder        = cms.string("shapesForDatacard/"),
     outputFileName  = cms.string("shapes"),
 
-    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
-    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
+#    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
+#    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
 
-    signalFileNameWH   = cms.string("out-wh-pythia-m120.root"),
-    signalFileNameHH   = cms.string("out-hh-pythia-m120.root"),
+    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_bakNew/nomtcut/nomt-2011-V1-mc-MU-20GeV/"),
+    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_bakNew/nomtcut/nomt-2011-V1-data-MU-20GeV/"),
+
+
+    signalFileNameWH   = cms.vstring("out-wh-pythia-m80.root", "out-wh-pythia-m100.root", "out-wh-pythia-m120.root", "out-wh-pythia-m140.root", "out-wh-pythia-m150.root", "out-wh-pythia-m155.root", "out-wh-pythia-m160.root",),
+    signalFileNameHH   = cms.vstring("out-hh-pythia-m80.root", "out-hh-pythia-m100.root", "out-hh-pythia-m120.root", "out-hh-pythia-m140.root", "out-hh-pythia-m150.root", "out-hh-pythia-m155.root", "out-hh-pythia-m160.root"),
+
+    outputFileNameSuffix   = cms.vstring("m80", "m100", "m120", "m140", "m150", "m155", "m160"),
     
     dataFileName       = cms.string("out-data.root"),
     ddBkgFileName      = cms.string("out-data_rescaled.root"),
-    mcBkgFileName      = cms.vstring("out-mcbkg.root"),
+    mcBkgFileName      = cms.vstring(    "out-ttbar_mutau.root", "out-ttbar_other.root", "out-singletop.root", "out-dibosons.root"      ),
 
-    signalSampleNameWH   = cms.string("wh-pythia-m120"),
-    signalSampleNameHH   = cms.string("hh-pythia-m120"),
+    signalSampleNameWH   = cms.string("WH3"),
+    signalSampleNameHH   = cms.string("HH3"),
     
-    dataSampleName       = cms.string("data"),
-    ddBkgSampleName      = cms.string("data_rescaled"),
-    mcBkgSampleName      = cms.vstring("mcbkg"),
+    dataSampleName       = cms.string("data_obs"),
+    ddBkgSampleName      = cms.string("tau-fake3"),
+    mcBkgSampleName      = cms.vstring( "tt->ltau3", "tt~->ll3", "singleTop3", "di-boson3", "Z->ee,mumu3", "Z->tautau3" ),
+    
+    
+    #    "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson"
 
     minitreeSelected   = cms.string("lep_tau_Selected"),
     minitreeDataDriven = cms.string("lep_tau_DataDriven"),
 
         #fitType     = cms.vstring( HIGGS2BKG, HIGGS3BKG, SM2BKG, SM3BKG)
     fitType     = cms.vint32( 3, 2, 3, 0),
-    vars        = cms.vstring("rc_t", "pt_l", "pt_met", "multiplicity_j", "btagmultiplicity_j", "Dphi_tau_met"),
+    vars        = cms.vstring("rc_t"),
+    #, "pt_l", "pt_met", "multiplicity_j", "btagmultiplicity_j", "Dphi_tau_met"),
     mins        = cms.vdouble( 0,      0,      0,        2,                0,                    0            ),
     maxs        = cms.vdouble( 1.2,    200,    300,      7,                4,                    4.8          ),
     bins        = cms.vint32(    12,     20,     30,       5,                4,                    10           ),

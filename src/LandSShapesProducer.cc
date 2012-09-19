@@ -33,6 +33,8 @@ void LandSShapesProducer::Init(){
   // Clear vectors
   nVars_ = 0;
   nMcSamples_ = 0;
+  nMassPoints_ = 0;
+  currentMassPoint_ = 999;
   fitVars_.clear();
   vars_.clear();
   mins_.clear(); 
@@ -66,11 +68,13 @@ void LandSShapesProducer::Init(){
 
   outFolder_        = mFitPars.getParameter<std::string>("outFolder");
   outputFileName_  = mFitPars.getParameter<std::string>("outputFileName");
+  outputFileNameSuffix_  = mFitPars.getParameter<vector<std::string> >("outputFileNameSuffix");
+  nMassPoints_ = outputFileNameSuffix_.size();
   baseMCDir_        = mFitPars.getParameter<std::string>("baseMCDir");
   baseDataDir_      = mFitPars.getParameter<std::string>("baseDataDir");
   
-  signalFileNameWH_   = mFitPars.getParameter<std::string>("signalFileNameWH");
-  signalFileNameHH_   = mFitPars.getParameter<std::string>("signalFileNameHH");
+  signalFileNameWH_   = mFitPars.getParameter<vector<std::string> >("signalFileNameWH");
+  signalFileNameHH_   = mFitPars.getParameter<vector<std::string> >("signalFileNameHH");
   ddBkgFileName_      = mFitPars.getParameter<std::string>("ddBkgFileName");
   vector<string>mcBkgFileNameTemp = mFitPars.getParameter<vector<std::string> >("mcBkgFileName");
   for(size_t f=0; f<mcBkgFileNameTemp.size(); f++)
@@ -105,11 +109,6 @@ void LandSShapesProducer::Init(){
   // ddBkg is the only to be taken from data driven estimation (tree)
   nMcSamples_ = mcBkgFileName_.size();
   
-  signalFileWH_   = TFile::Open(baseMCDir_   + signalFileNameWH_  ); signalTreeWH_   = (TTree*) signalFileWH_  ->Get(minitreeSelected_);
-  signalFileHH_   = TFile::Open(baseMCDir_   + signalFileNameHH_  ); signalTreeHH_   = (TTree*) signalFileHH_  ->Get(minitreeSelected_);
-  ddBkgFile_      = TFile::Open(baseDataDir_   + ddBkgFileName_     ); ddBkgTree_      = (TTree*) ddBkgFile_     ->Get(minitreeDataDriven_);
-  for(size_t f=0; f<nMcSamples_; f++){ mcBkgFile_.push_back( TFile::Open(baseMCDir_   + mcBkgFileName_[f]     ) ); mcBkgTree_.push_back( (TTree*) mcBkgFile_[f]     ->Get(minitreeSelected_) );}
-  dataFile_       = TFile::Open(baseDataDir_ + dataFileName_      ); dataTree_       = (TTree*) dataFile_      ->Get(minitreeSelected_);
   
   cout << "Files opened" << endl;
   // Set variables
@@ -137,6 +136,22 @@ void LandSShapesProducer::Init(){
 
 void LandSShapesProducer::SetOptions(){
   myStyle_->SetOptStat(0);
+}
+
+void LandSShapesProducer::InitMassPoint(size_t s){
+
+  mcBkgFile_.clear();
+
+  currentMassPoint_ = s;
+
+  signalFileWH_   = TFile::Open(baseMCDir_   + signalFileNameWH_[currentMassPoint_]  ); signalTreeWH_   = (TTree*) signalFileWH_  ->Get(minitreeSelected_);
+  signalFileHH_   = TFile::Open(baseMCDir_   + signalFileNameHH_[currentMassPoint_]  ); signalTreeHH_   = (TTree*) signalFileHH_  ->Get(minitreeSelected_);
+
+  ddBkgFile_      = TFile::Open(baseDataDir_   + ddBkgFileName_     ); ddBkgTree_      = (TTree*) ddBkgFile_     ->Get(minitreeDataDriven_);
+  for(size_t f=0; f<nMcSamples_; f++){ mcBkgFile_.push_back( TFile::Open(baseMCDir_   + mcBkgFileName_[f]     ) ); mcBkgTree_.push_back( (TTree*) mcBkgFile_[f]     ->Get(minitreeSelected_) );}
+  dataFile_       = TFile::Open(baseDataDir_ + dataFileName_      ); dataTree_       = (TTree*) dataFile_      ->Get(minitreeSelected_);
+  
+
 }
 
 void LandSShapesProducer::InitPerVariableAmbient(size_t i){
@@ -168,6 +183,12 @@ void LandSShapesProducer::InitPerVariableAmbient(size_t i){
   signalHistHH_     = 0;
   ddbkgHist_      = 0;
   mcbkgHist_.clear();
+
+  signalHistoWH_     = 0;
+  signalHistoHH_     = 0;
+  ddbkgHisto_      = 0;
+  mcbkgHisto_.clear();
+
   leg_            = 0;
   
   
@@ -222,7 +243,7 @@ void LandSShapesProducer::BuildDatasets(size_t i){
     myvar_weights_->setVal(myVarWeightAllocator);
     myDDBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
   }
-  
+
   for(size_t f=0; f<nMcSamples_; f++){
     myMCBkgDS_.push_back( new RooDataSet(myMCBkgDSName_[f].c_str(),myMCBkgDSName_[f].c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight") ); // This constructor does not accept the cut parameter
     // Get MCBkg events
@@ -255,7 +276,7 @@ void LandSShapesProducer::BuildDatasets(size_t i){
     myDataDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
   }
   
-  
+  cout << "Datasets built" << endl;
   
   // // Legacy: seems not to give correct inputs
   //  string myOsCut = "is_os>0.5";
@@ -280,6 +301,7 @@ void LandSShapesProducer::BuildDatasets(size_t i){
   for(size_t f=0; f<nMcSamples_; f++) mcbkgHisto_.push_back( myMCBkgDS_[f]->binnedClone());
   dataHisto_  = myDataDS_ ->binnedClone();
 
+  cout << "Binned clones built" << endl;
 
   cout << mySignalDSNameWH_ << " unbinned entries: " << mySignalDSWH_->numEntries() << ". weighted entries: " << signalHistoWH_->sum(kFALSE) << endl;
   cout << mySignalDSNameHH_ << " unbinned entries: " << mySignalDSHH_->numEntries() << ". weighted entries: " << signalHistoHH_->sum(kFALSE) << endl;
@@ -287,6 +309,7 @@ void LandSShapesProducer::BuildDatasets(size_t i){
   for(size_t f=0; f<nMcSamples_; f++)  cout << myMCBkgDSName_[f] << " unbinned entries: " << myMCBkgDS_[f]->numEntries() << ". weighted entries: " << mcbkgHisto_[f]->sum(kFALSE) << endl;
   cout << myDataDSName_ << " unbinned entries: " << myDataDS_->numEntries() << ". weighted entries: " << dataHisto_->sum(kFALSE) << endl;
   
+  cout << "BuildDatasets successful" << endl;
 }
 
 //void LandSShapesProducer::BuildPDFs(size_t i){
@@ -311,8 +334,8 @@ void LandSShapesProducer::BuildDatasets(size_t i){
 
 void LandSShapesProducer::DrawTemplates(size_t i){
   
-  string outputFileName = outputFileName_ + string("_") + fitVars_[i].getVarName() + string(".root");
-  TFile* outputFile = new TFile(outputFileName.c_str(), "RECREATE");
+  string outputFileName = outputFileName_ + string("_") + outputFileNameSuffix_[currentMassPoint_] + fitVars_[i].getVarName() + string(".root");
+  TFile* outputFile = new TFile((outFolder_+outputFileName).c_str(), "RECREATE");
   
   canvas_->cd();
   canvas_->Clear();
@@ -320,6 +343,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   //signal histogram ////////////////////////////////////////////////////////////
   signalHistWH_ = signalHistoWH_->createHistogram(fitVars_[i].getVarName().c_str(),fitVars_[i].getBins() );
   signalHistHH_ = signalHistoHH_->createHistogram(fitVars_[i].getVarName().c_str(),fitVars_[i].getBins() );
+
   //  signalHist_->SetOption("0000");
   //  signalHist_->SetLineWidth(3);
   //  signalHist_->SetTitle("");
@@ -348,6 +372,15 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   //    mcbkgHist_->SetFillStyle(3017);
   //    ///////////////////////////////////////////////////////////////////
     
+  mcbkgHist_.push_back( (TH1*)mcbkgHist_[0]->Clone(  mcBkgSampleName_[nMcSamples_].c_str()) );
+  mcbkgHist_.push_back( (TH1*)mcbkgHist_[0]->Clone(  mcBkgSampleName_[nMcSamples_+1].c_str()) );
+  mcbkgHist_[nMcSamples_]->Reset();
+  mcbkgHist_[nMcSamples_+1]->Reset();
+
+
+
+
+
   dataHist_ = dataHisto_->createHistogram(fitVars_[i].getVarName().c_str(),fitVars_[i].getBins() );
   
   leg_ = new TLegend(0.3,0.665,0.85,0.86,NULL,"brNDC");
@@ -365,19 +398,31 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   leg_->AddEntry(dataHist_,dataSampleName_.c_str(),"f");
   canvas_->cd(); 
   // Order chosen to have good Y axis boundaries
-  dataHist_->DrawNormalized("hist");
-  signalHistWH_->DrawNormalized("histsame");
+
+  signalHistWH_->DrawNormalized("hist");
   signalHistHH_->DrawNormalized("histsame");
   ddbkgHist_->DrawNormalized("histsame");
   for(size_t f=0; f<nMcSamples_; f++)
     mcbkgHist_[f]->DrawNormalized("histsame");
-    
+  dataHist_->DrawNormalized("histsame");    
   leg_->Draw();
-  canvas_->SaveAs((outFolder_+identifier_+string("_shapes_")+string(".pdf")).c_str());
-  canvas_->SaveAs((outFolder_+identifier_+string("_shapes_")+string(".png")).c_str());
+  canvas_->SaveAs((outFolder_+identifier_+string("_shapes")+string(".pdf")).c_str());
+  canvas_->SaveAs((outFolder_+identifier_+string("_shapes")+string(".png")).c_str());
   canvas_->cd();
   canvas_->Clear();
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  signalHistWH_->SetName(signalSampleNameWH_.c_str());
+  signalHistHH_->SetName(signalSampleNameHH_.c_str());
+
+  ddbkgHist_->SetName(ddBkgSampleName_.c_str());
+  for(size_t f=0; f<nMcSamples_; f++)
+    mcbkgHist_[f]->SetName(mcBkgSampleName_[f].c_str());
+  mcbkgHist_[nMcSamples_]->SetName(mcBkgSampleName_[nMcSamples_].c_str());
+  mcbkgHist_[nMcSamples_+1]->SetName(mcBkgSampleName_[nMcSamples_+1].c_str());
+  
+  dataHist_->SetName(dataSampleName_.c_str());
   
   outputFile->Write();
   outputFile->Close();
@@ -388,27 +433,31 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 void LandSShapesProducer::Produce(){
   
   //cout << "INIT: signal tree entries:"<<signalTree_->GetEntries()<<endl;
-  
-  for(size_t i = 0; i< nVars_; i++){
+
+  for(size_t s=0; s< nMassPoints_; s++){
     
-    InitPerVariableAmbient(i);
+    InitMassPoint(s);
     
-    BuildDatasets(i);
-    
-    //    BuildPDFs(i);
-    
-    DrawTemplates(i);
-    
-//    BuildConstrainedModels(i);
-//    
-//    DoPerVariableFit(i);
-//    
-//    DrawPerVariableFit(i);
-//    
-//    DoPerVariableLikelihoodFit(i);
-    
+    for(size_t i = 0; i< nVars_; i++){
+      
+      InitPerVariableAmbient(i);
+      
+      BuildDatasets(i);
+      
+      //    BuildPDFs(i);
+      
+      DrawTemplates(i);
+      
+      //    BuildConstrainedModels(i);
+      //    
+      //    DoPerVariableFit(i);
+      //    
+      //    DrawPerVariableFit(i);
+      //    
+      //    DoPerVariableLikelihoodFit(i);
+      
+    }
   }
-  
   //  DoCombinedLikelihoodFit();
   
   //}

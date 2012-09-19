@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: LandSShapesProducer.hh,v 1.2 2012/09/19 18:37:32 vischia Exp $                                                                                                       
+  \version  $Id: LandSShapesProducer.hh,v 1.3 2012/09/19 18:46:19 vischia Exp $                                                                                                       
 */
 
 
@@ -69,6 +69,7 @@ public :
 private:
   void Init();
   void SetOptions();
+  void InitMassPoint(size_t);
   void InitPerVariableAmbient(size_t);
   void BuildDatasets(size_t);
   //  void BuildPDFs(size_t);
@@ -86,6 +87,7 @@ private:
   // Output paths
   string outFolder_;
   string outputFileName_;
+  vector<string> outputFileNameSuffix_;
   string resultsFileName_; // not used. txt.
   ofstream resultsFile_;
   streambuf* streamToFile_;
@@ -107,8 +109,8 @@ private:
   TString   baseMCDir_;
   TString   baseDataDir_;
 
-  TString signalFileNameWH_;
-  TString signalFileNameHH_;
+  vector<string> signalFileNameWH_;
+  vector<string> signalFileNameHH_;
   TString dataFileName_;
   TString ddBkgFileName_;
   vector<TString> mcBkgFileName_;
@@ -138,6 +140,8 @@ private:
   vector<TTree*> mcBkgTree_;
   TTree* dataTree_;
 
+  size_t currentMassPoint_;
+  size_t nMassPoints_;
   // Variables parameters
   size_t nVars_;
   size_t nMcSamples_;
