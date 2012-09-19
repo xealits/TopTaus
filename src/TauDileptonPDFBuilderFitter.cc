@@ -181,7 +181,7 @@ void TauDileptonPDFBuilderFitter::Init(){
   identifier_ = "";
   
   // Get ParameterSet from cfg file
-  const edm::ParameterSet &mFitPars = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("mFitPars");
+  const edm::ParameterSet &mFitPars = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("TauDileptonPDFBuilderFitterParSet");
 
   outFolder_        = mFitPars.getParameter<std::string>("outFolder");
   resultsFileName_  = mFitPars.getParameter<std::string>("resultsFileName");

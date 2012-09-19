@@ -4,10 +4,10 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: produceLandSShapes.cc,v 1.0 2012/09/19 13:03:33 vischia Exp $                                                                                                       
+  \version  $Id: produceLandSShapes.cc,v 1.1 2012/09/19 11:04:39 vischia Exp $                                                                                                       
 */
 
-#include "LIP/TopTaus/interface/TauDileptonPDFBuilderFitter.hh"
+#include "LIP/TopTaus/interface/LandSShapesProducer.hh"
 
 // System includes
 #include <string>
@@ -42,9 +42,9 @@ int main(int argc, char* argv[])
   
   string parSet(argv[1]);
 
-  TauDileptonPDFBuilderFitter* myFitter = new TauDileptonPDFBuilderFitter(parSet);
-  myFitter->DoFit();
-  cout << "Fitter reached natural end" << endl;
+  LandSShapesProducer* myProducer = new LandSShapesProducer(parSet);
+  //  myFitter->DoFit();
+  cout << "Shapes producer reached its natural end" << endl;
 
   return 0;
   
