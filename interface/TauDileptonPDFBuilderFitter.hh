@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.5 2012/09/17 18:52:51 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.6 2012/09/18 17:12:33 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -45,30 +45,11 @@
 #include "TCanvas.h"
 #include "TH1.h"
 #include "TLegend.h"
+
+#include "LIP/TopTaus/interface/FitVar.hh"
+
 #endif
 
-class FitVar{
-  
-public:
-  FitVar(string, double, double, double, double, double, Int_t, Int_t);
-  string getVarName();
-  double getMin();
-  double getMax();
-  int getBins();
-  double getHmin();
-  double getHmax();
-  Int_t getUnbinned();
-  Int_t getSmoothOrder();
-private:
-  string varName_;
-  double min_;
-  double max_;
-  double bins_;
-  double hmin_;
-  double hmax_;
-  Int_t unbinned_;
-  Int_t smoothOrder_;
-};
 
 class TauDileptonPDFBuilderFitter{
   

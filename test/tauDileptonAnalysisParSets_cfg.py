@@ -5,11 +5,38 @@ import FWCore.ParameterSet.Config as cms
 #########
 
 LandSShapesProducerParSet = cms.PSet(
+    signalFileNameWH   = cms.string("out-wh-pythia-m120.root"),
+    signalFileNameHH   = cms.string("out-hh-pythia-m120.root"),
     
+    dataFileName       = cms.string("out-data.root"),
+    ddBkgFileName      = cms.string("out-data_rescaled.root"),
+    mcBkgFileName      = cms.vstring("out-mcbkg.root"),
+
+    signalSampleNameWH   = cms.string("wh-pythia-m120"),
+    signalSampleNameHH   = cms.string("hh-pythia-m120"),
+    
+    dataSampleName       = cms.string("data"),
+    ddBkgSampleName      = cms.string("data_rescaled"),
+    mcBkgSampleName      = cms.vstring("mcbkg"),
+
+    minitreeSelected   = cms.string("lep_tau_Selected"),
+    minitreeDataDriven = cms.string("lep_tau_DataDriven"),
+
+        #fitType     = cms.vstring( HIGGS2BKG, HIGGS3BKG, SM2BKG, SM3BKG)
+    fitType     = cms.vint32( 3, 2, 3, 0),
+    vars        = cms.vstring("rc_t", "pt_l", "pt_met", "multiplicity_j", "btagmultiplicity_j", "Dphi_tau_met"),
+    mins        = cms.vdouble( 0,      0,      0,        2,                0,                    0            ),
+    maxs        = cms.vdouble( 1.2,    200,    300,      7,                4,                    4.8          ),
+    bins        = cms.vint32(    12,     20,     30,       5,                4,                    10           ),
+    hmin        = cms.vdouble( 0,      0,      0,        0,                0,                    0            ),
+    hmax        = cms.vdouble( 200,    100,    100,      400,              600,                  200          ),
+    unbinned    = cms.vint32(  0,      0,      0,        0,                0,                    0            ),
+    smoothOrder = cms.vint32(  3,      5,      5,        0,                0,                    3            )
+
     )
 
 TauDileptonPDFBuilderFitterParSet = cms.PSet(
-    outFolder        = cms.string("likelihoodFit/"),
+    outFolder        = cms.string("shapesForDatacard/"),
     resultsFileName  = cms.string("likelihoodResults.txt"),
     
     baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
