@@ -117,7 +117,9 @@ void TauDileptonPDFBuilderFitter::Init(){
   unbinned_.clear(); 
   smoothOrder_.clear();
 
+
   likelihoodVector_.clear();
+
   // Init RooFit variables
   sigVar_             = 0;              
   sigMeanVar_         = 0;              
@@ -141,7 +143,8 @@ void TauDileptonPDFBuilderFitter::Init(){
   resultsFileName_  = mFitPars.getParameter<std::string>("resultsFileName");
   baseMCDir_        = mFitPars.getParameter<std::string>("baseMCDir");
   baseDataDir_      = mFitPars.getParameter<std::string>("baseDataDir");
-  
+
+  useOS_            = mFitPars.getParameter<bool>("useOS");  
   signalFileNameWH_   = mFitPars.getParameter<std::string>("signalFileNameWH");
   signalFileNameHH_   = mFitPars.getParameter<std::string>("signalFileNameHH");
   dataFileName_       = mFitPars.getParameter<std::string>("dataFileName");
@@ -156,6 +159,7 @@ void TauDileptonPDFBuilderFitter::Init(){
   tempFitType.clear();
   tempFitType     = mFitPars.getParameter<vector<int> >("fitType");
   for(size_t k=0; k<tempFitType.size(); k++){
+    cout << "fitType chosen: " << tempFitType[k] << ". SM3BKG = " << SM3BKG << endl;
     if(tempFitType[k]==SM2BKG) fitType_.push_back(SM2BKG);
     if(tempFitType[k]==SM3BKG) fitType_.push_back(SM3BKG);
     if(tempFitType[k]==HIGGS2BKG) fitType_.push_back(HIGGS2BKG);
@@ -251,6 +255,7 @@ void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
 }
 
 void TauDileptonPDFBuilderFitter::InitPerVariableAmbient(size_t i){
+
   
   // String identifiers
   switch(fitVars_[i].getUnbinned()){
@@ -341,14 +346,15 @@ void TauDileptonPDFBuilderFitter::InitPerVariableAmbient(size_t i){
 
 void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
   
+    // Temp variables for setting branch addresses
+    double myVarAllocator, myVarWeightAllocator;
+    double isOSsig;
+
   // Signal dataset from WH and HH
   if(includeSignal_){
     //  mySignalDS     = new RooDataSet(mySignalDSName.c_str(),mySignalDSName.c_str(), signalTree_, RooArgSet(*myvar,*myvar_weights),0,"weight" );
     mySignalDS_         = new RooDataSet(mySignalDSName_.c_str(),mySignalDSName_.c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight"); // This constructor does not accept the cut parameter
     
-    // Temp variables for setting branch addresses
-    double myVarAllocator, myVarWeightAllocator;
-    double isOSsig;
     
     // Cross section
     // FIXME: hardcoded
@@ -359,7 +365,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     signalTreeWH_->SetBranchAddress("is_os", &isOSsig);
     for(unsigned int ev=0; ev<signalTreeWH_->GetEntries(); ev++){
       signalTreeWH_->GetEntry(ev);
-      if(isOSsig<0.5) continue;
+      if(useOS_ && isOSsig<0.5) continue;
       myvar_->setVal(myVarAllocator);
       sumWeights_ += myVarWeightAllocator;
       myvar_weights_->setVal(fhw*myVarWeightAllocator);
@@ -372,25 +378,90 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     //    cout << "getIsoS      ";
     for(unsigned int ev=0; ev<signalTreeHH_->GetEntries(); ev++){
       signalTreeHH_->GetEntry(ev);
-      if(isOSsig < 0.5) continue;
+      if(useOS_ && isOSsig < 0.5) continue;
       myvar_->setVal(myVarAllocator);
       sumWeights_ += myVarWeightAllocator;
       myvar_weights_->setVal(fhh*myVarWeightAllocator);
       mySignalDS_->add(RooArgSet(*myvar_,*myvar_weights_),fhh*myVarWeightAllocator);
     }
   }
-  string myOsCut = "is_os>0.5";
-  unrMyDDBkgDS_      = new RooDataSet(myDDBkgDSName_.c_str(), myDDBkgDSName_.c_str(),  ddBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
-  myDDBkgDS_ = (RooDataSet*) unrMyDDBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-  if(standaloneTTbar_){
-    unrMyTTBARMCBkgDS_ = new RooDataSet(myTTBARMCBkgDSName_.c_str(), myTTBARMCBkgDSName_.c_str(),  ttbarmcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
-    myTTBARMCBkgDS_ = (RooDataSet*) unrMyTTBARMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+
+  myDDBkgDS_         = new RooDataSet(myDDBkgDSName_.c_str(),myDDBkgDSName_.c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight"); // This constructor does not accept the cut parameter
+  // Get DD events
+  ddBkgTree_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
+  ddBkgTree_->SetBranchAddress("weight", &myVarWeightAllocator);
+  ddBkgTree_->SetBranchAddress("is_os", &isOSsig);
+  //    cout << "getIsoS      ";
+  for(unsigned int ev=0; ev<ddBkgTree_->GetEntries(); ev++){
+    ddBkgTree_->GetEntry(ev);
+    if(useOS_ && isOSsig < 0.5) continue;
+    myvar_->setVal(myVarAllocator);
+    //      sumWeights_ += myVarWeightAllocator;
+    myvar_weights_->setVal(myVarWeightAllocator);
+    myDDBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
   }
-  unrMyMCBkgDS_      = new RooDataSet(myMCBkgDSName_.c_str(), myMCBkgDSName_.c_str(),  mcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
-  myMCBkgDS_ = (RooDataSet*) unrMyMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-  unrMyDataDS_       = new RooDataSet(myDataDSName_.c_str(),  myDataDSName_.c_str(),   dataTree_,   RooArgSet(*myvar_,*isOSvar_), myOsCut.c_str() );
-  myDataDS_ = (RooDataSet*) unrMyDataDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
   
+  if(standaloneTTbar_){
+    myTTBARMCBkgDS_         = new RooDataSet(myTTBARMCBkgDSName_.c_str(),myTTBARMCBkgDSName_.c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight"); // This constructor does not accept the cut parameter
+    // Get TTMCBkg events
+    ttbarmcBkgTree_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
+    ttbarmcBkgTree_->SetBranchAddress("weight", &myVarWeightAllocator);
+    ttbarmcBkgTree_->SetBranchAddress("is_os", &isOSsig);
+    //    cout << "getIsoS      ";
+    for(unsigned int ev=0; ev<ttbarmcBkgTree_->GetEntries(); ev++){
+      ttbarmcBkgTree_->GetEntry(ev);
+      if(useOS_ && isOSsig < 0.5) continue;
+      myvar_->setVal(myVarAllocator);
+      //      sumWeights_ += myVarWeightAllocator;
+      myvar_weights_->setVal(myVarWeightAllocator);
+      myTTBARMCBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+    }
+  }
+
+  
+  myMCBkgDS_         = new RooDataSet(myMCBkgDSName_.c_str(),myMCBkgDSName_.c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight"); // This constructor does not accept the cut parameter
+    // Get MCBkg events
+    mcBkgTree_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
+    mcBkgTree_->SetBranchAddress("weight", &myVarWeightAllocator);
+    mcBkgTree_->SetBranchAddress("is_os", &isOSsig);
+    //    cout << "getIsoS      ";
+    for(unsigned int ev=0; ev<mcBkgTree_->GetEntries(); ev++){
+      mcBkgTree_->GetEntry(ev);
+      if(useOS_ && isOSsig < 0.5) continue;
+      myvar_->setVal(myVarAllocator);
+      //      sumWeights_ += myVarWeightAllocator;
+      myvar_weights_->setVal(myVarWeightAllocator);
+      myMCBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+    }
+
+  myDataDS_         = new RooDataSet(myDataDSName_.c_str(),myDataDSName_.c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight"); // This constructor does not accept the cut parameter
+    // Get Data events
+    dataTree_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
+    dataTree_->SetBranchAddress("weight", &myVarWeightAllocator);
+    dataTree_->SetBranchAddress("is_os", &isOSsig);
+    //    cout << "getIsoS      ";
+    for(unsigned int ev=0; ev<dataTree_->GetEntries(); ev++){
+      dataTree_->GetEntry(ev);
+      if(useOS_ && isOSsig < 0.5) continue;
+      myvar_->setVal(myVarAllocator);
+      //      sumWeights_ += myVarWeightAllocator;
+      myvar_weights_->setVal(myVarWeightAllocator);
+      myDataDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+    }
+
+
+//  string myOsCut = "is_os>0.5";
+//  unrMyDDBkgDS_      = new RooDataSet(myDDBkgDSName_.c_str(), myDDBkgDSName_.c_str(),  ddBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
+//  myDDBkgDS_ = (RooDataSet*) unrMyDDBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+//  if(standaloneTTbar_){
+//    unrMyTTBARMCBkgDS_ = new RooDataSet(myTTBARMCBkgDSName_.c_str(), myTTBARMCBkgDSName_.c_str(),  ttbarmcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
+//    myTTBARMCBkgDS_ = (RooDataSet*) unrMyTTBARMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+//  }
+//  unrMyMCBkgDS_      = new RooDataSet(myMCBkgDSName_.c_str(), myMCBkgDSName_.c_str(),  mcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
+//  myMCBkgDS_ = (RooDataSet*) unrMyMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+//  unrMyDataDS_       = new RooDataSet(myDataDSName_.c_str(),  myDataDSName_.c_str(),   dataTree_,   RooArgSet(*myvar_,*isOSvar_), myOsCut.c_str() );
+//  myDataDS_ = (RooDataSet*) unrMyDataDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+//  
   // Build binned clones
   if(includeSignal_)
     signalHisto_ = mySignalDS_->binnedClone();
@@ -498,8 +569,8 @@ void TauDileptonPDFBuilderFitter::DrawTemplates(size_t i){
   if(standaloneTTbar_) ttbarmcbkgHist_->DrawNormalized("histsame"); // in order for it to be on top and thus viewable for discriminating it from higgs in rc_t plots
   
   leg_->Draw();
-  canvas_->SaveAs((outFolder_+identifier_+string("_shapes_")+string(".pdf")).c_str());
-  canvas_->SaveAs((outFolder_+identifier_+string("_shapes_")+string(".png")).c_str());
+  canvas_->SaveAs((outFolder_+string("shapes_")+identifier_+string(".pdf")).c_str());
+  canvas_->SaveAs((outFolder_+string("shapes_")+identifier_+string(".png")).c_str());
   canvas_->cd();
   canvas_->Clear();
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -534,6 +605,7 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   if(standaloneTTbar_) cout<<endl<<" ttbarmcbkg_N  = "<<ttbarmcbkg_N<<" , root entries : "<<ttbarmcBkgTree_->GetEntries()<<" weights : "<<nttbarmcbkg;
   cout<<endl<<" mcbkg_N  = "<<mcbkg_N<<" , root entries : "<<mcBkgTree_->GetEntries()<<" weights : "<<nmcbkg;
   cout<<endl<<" data_N   = "<<data_N<< " , root entries : "<<dataTree_->GetEntries()<<endl;
+  cout<<endl<<" ddbkgEstimate = " << ddbkgEstimate_ << endl;
   cout<<endl<<endl<<" ******************************************************************************************* "<<endl;
   /////////////////////////////////////////////////////////////////////////////////////
   
@@ -544,6 +616,7 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   if(includeSignal_) nsignalMean=nsig; nsignalSigma=signalStatError_;
   double nddbkgMean(ddbkgEstimate_); double nddbkgSigma(ddbkgStatError_);
   nddbkg = ddbkgEstimate_;
+  cout<<endl<<" ddbkgEstimate = " << ddbkgEstimate_ << ", nddbkgMean = " << nddbkgMean << endl;
   if(standaloneTTbar_) nttbarmcbkgMean=nttbarmcbkg; nttbarmcbkgSigma=ttbarmcbkgStatError_;
   double nmcbkgMean(nmcbkg); double nmcbkgSigma(mcbkgStatError_);
   
@@ -727,8 +800,8 @@ void TauDileptonPDFBuilderFitter::DrawPerVariableFit(size_t i){
     }
   
   myFrame_->Draw();
-  canvas_->SaveAs((outFolder_+identifier_+string("_modelFit_")+string(".pdf")).c_str());
-  canvas_->SaveAs((outFolder_+identifier_+string("_modelFit_")+string(".png")).c_str());
+  canvas_->SaveAs((outFolder_+string("modelFit_")+identifier_+string(".pdf")).c_str());
+  canvas_->SaveAs((outFolder_+string("modelFit_")+identifier_+string(".png")).c_str());
   canvas_->cd();
   canvas_->Clear();
 }
@@ -806,8 +879,8 @@ void TauDileptonPDFBuilderFitter::DoPerVariableLikelihoodFit(size_t i){
   contourPlot_->GetXaxis()->SetTitle("N^{DD}_{Bkg}");
   contourPlot_->GetXaxis()->SetRange(0,400);
   contourPlot_->Draw();
-  canvas_->SaveAs((outFolder_+identifier_+string("_contour_")+string(".pdf")).c_str());
-  canvas_->SaveAs((outFolder_+identifier_+string("_contour_")+string(".png")).c_str());
+  canvas_->SaveAs((outFolder_+string("contour_")+identifier_+string(".pdf")).c_str());
+  canvas_->SaveAs((outFolder_+string("contour_")+identifier_+string(".png")).c_str());
   canvas_->cd();
   canvas_->Clear();
   ///////////////////////////////////////////////////////////
@@ -878,8 +951,8 @@ void TauDileptonPDFBuilderFitter::DoCombinedLikelihoodFit(){
   std::ostringstream oss;
   oss << nVars_;//dim;
   
-  canvas_->SaveAs((outFolder_+baseIdentifier_+string("_contour_final_")+oss.str()+string("vars.pdf")).c_str());
-  canvas_->SaveAs((outFolder_+baseIdentifier_+string("_contour_final_")+oss.str()+string("vars.png")).c_str());
+  canvas_->SaveAs((outFolder_+string("contour_final_")+baseIdentifier_+oss.str()+string("vars.pdf")).c_str());
+  canvas_->SaveAs((outFolder_+string("contour_final_")+baseIdentifier_+oss.str()+string("vars.png")).c_str());
   ///////////////////////////////////////////////////////////
 
   minuit.cleanup();

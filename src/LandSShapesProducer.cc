@@ -32,6 +32,7 @@ void LandSShapesProducer::Init(){
 
   // Clear vectors
   nVars_ = 0;
+  uncSources_.clear();
   nMcSamples_ = 0;
   nMassPoints_ = 0;
   currentMassPoint_ = 999;
@@ -75,6 +76,9 @@ void LandSShapesProducer::Init(){
   
   signalFileNameWH_   = mFitPars.getParameter<vector<std::string> >("signalFileNameWH");
   signalFileNameHH_   = mFitPars.getParameter<vector<std::string> >("signalFileNameHH");
+
+  uncSources_         = mFitPars.getParameter<vector<std::string> >("uncSources");
+
   ddBkgFileName_      = mFitPars.getParameter<std::string>("ddBkgFileName");
   vector<string>mcBkgFileNameTemp = mFitPars.getParameter<vector<std::string> >("mcBkgFileName");
   for(size_t f=0; f<mcBkgFileNameTemp.size(); f++)
@@ -334,8 +338,8 @@ void LandSShapesProducer::BuildDatasets(size_t i){
 
 void LandSShapesProducer::DrawTemplates(size_t i){
   
-  string outputFileName = outputFileName_ + string("_") + outputFileNameSuffix_[currentMassPoint_] + fitVars_[i].getVarName() + string(".root");
-  TFile* outputFile = new TFile((outFolder_+outputFileName).c_str(), "RECREATE");
+  string outputFileName = outputFileName_ + string("_") + outputFileNameSuffix_[currentMassPoint_] + fitVars_[i].getVarName();
+  TFile* outputFile = new TFile((outFolder_+outputFileName+string(".root")).c_str(), "RECREATE");
   
   canvas_->cd();
   canvas_->Clear();
@@ -344,32 +348,42 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   signalHistWH_ = signalHistoWH_->createHistogram(fitVars_[i].getVarName().c_str(),fitVars_[i].getBins() );
   signalHistHH_ = signalHistoHH_->createHistogram(fitVars_[i].getVarName().c_str(),fitVars_[i].getBins() );
 
-  //  signalHist_->SetOption("0000");
-  //  signalHist_->SetLineWidth(3);
-  //  signalHist_->SetTitle("");
-  //  signalHist_->GetYaxis()->SetTitle("a.u.");
-  //  signalHist_->GetYaxis()->SetTitleOffset(1.5);
-  //  signalHist_->SetLineColor(kGreen);
-  //  signalHist_->SetFillColor(kGreen);
+  signalHistWH_->SetOption("0000");
+  signalHistWH_->SetLineWidth(3);
+  signalHistWH_->SetTitle("");
+  signalHistWH_->GetYaxis()->SetTitle("a.u.");
+  signalHistWH_->GetYaxis()->SetTitleOffset(1.5);
+  signalHistWH_->SetLineColor(kGreen);
+  signalHistWH_->SetFillColor(kGreen);
+
+  signalHistHH_->SetOption("0000");
+  signalHistHH_->SetLineWidth(3);
+  signalHistHH_->SetTitle("");
+  signalHistHH_->GetYaxis()->SetTitle("a.u.");
+  signalHistHH_->GetYaxis()->SetTitleOffset(1.5);
+  signalHistHH_->SetLineColor(kGreen);
+  signalHistHH_->SetFillColor(kGreen);
+
   //  ///////////////////////////////////////////////////////////////////////////////
   
   
   // dd bkg histogram /////////////////////////////////////////////////
   ddbkgHist_ = ddbkgHisto_->createHistogram(fitVars_[i].getVarName().c_str(),fitVars_[i].getBins() );
-//  ddbkgHist_->SetLineColor(kRed);
-//  ddbkgHist_->SetFillColor(kRed);
-//  ddbkgHist_->SetLineWidth(3);
-//  ddbkgHist_->SetFillStyle(3017);
+  ddbkgHist_->SetLineColor(kRed);
+  //  ddbkgHist_->SetFillColor(kRed);
+  ddbkgHist_->SetLineWidth(3);
+  //  ddbkgHist_->SetFillStyle(3017);
 //  /////////////////////////////////////////////////////////////////////
   
   
   // mc bkg histogram ////////////////////////////////////////////////
-  for(size_t f=0; f<nMcSamples_; f++)
+  for(size_t f=0; f<nMcSamples_; f++){
     mcbkgHist_.push_back( mcbkgHisto_[f]->createHistogram(fitVars_[i].getVarName().c_str(),fitVars_[i].getBins() ) );
-  //    mcbkgHist_->SetLineColor(kBlack);
-  //    mcbkgHist_->SetFillColor(kBlack);
-  //    mcbkgHist_->SetLineWidth(3);
-  //    mcbkgHist_->SetFillStyle(3017);
+    mcbkgHist_[f]->SetLineColor(kBlack+9+f);
+    //   mcbkgHist_[f]->SetFillColor(kBlack+9+f);
+    mcbkgHist_[f]->SetLineWidth(3);
+    //   mcbkgHist_[f]->SetFillStyle(3017);
+  }
   //    ///////////////////////////////////////////////////////////////////
     
   mcbkgHist_.push_back( (TH1*)mcbkgHist_[0]->Clone(  mcBkgSampleName_[nMcSamples_].c_str()) );
@@ -389,25 +403,29 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   leg_->SetLineColor(1);
   leg_->SetLineStyle(1);
   leg_->SetLineWidth(1);
-  leg_->SetFillColor(0);
-  leg_->SetFillStyle(1001);
-  leg_->AddEntry(signalHistWH_,signalSampleNameWH_.c_str(),"f");
-  leg_->AddEntry(signalHistHH_,signalSampleNameHH_.c_str(),"f");
+  //  leg_->SetFillColor(0);
+  //  leg_->SetFillStyle(1001);
+  leg_->AddEntry(signalHistWH_,(signalSampleNameWH_+string(" + ")+signalSampleNameHH_).c_str(),"f");
+  //  leg_->AddEntry(signalHistHH_,signalSampleNameHH_.c_str(),"f");
   leg_->AddEntry(ddbkgHist_,ddBkgSampleName_.c_str(),"f");
   for(size_t f=0; f<nMcSamples_; f++) leg_->AddEntry(mcbkgHist_[f],mcBkgSampleName_[f].c_str(),"f");
   leg_->AddEntry(dataHist_,dataSampleName_.c_str(),"f");
   canvas_->cd(); 
   // Order chosen to have good Y axis boundaries
 
+  signalHistWH_->Add(signalHistHH_);
+
   signalHistWH_->DrawNormalized("hist");
-  signalHistHH_->DrawNormalized("histsame");
+//  signalHistHH_->DrawNormalized("histsame");
+
   ddbkgHist_->DrawNormalized("histsame");
   for(size_t f=0; f<nMcSamples_; f++)
     mcbkgHist_[f]->DrawNormalized("histsame");
   dataHist_->DrawNormalized("histsame");    
   leg_->Draw();
-  canvas_->SaveAs((outFolder_+identifier_+string("_shapes")+string(".pdf")).c_str());
-  canvas_->SaveAs((outFolder_+identifier_+string("_shapes")+string(".png")).c_str());
+
+  canvas_->SaveAs((outFolder_+outputFileName+string(".pdf")).c_str());
+  canvas_->SaveAs((outFolder_+outputFileName+string(".png")).c_str());
   canvas_->cd();
   canvas_->Clear();
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

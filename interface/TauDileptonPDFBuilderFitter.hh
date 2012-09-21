@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.6 2012/09/18 17:12:33 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.7 2012/09/19 18:37:32 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -92,6 +92,7 @@ private:
 
   // Style
   TStyle* myStyle_;
+  bool useOS_;
 
   // Fit settings
   vector<FITTYPES> fitType_;
@@ -133,7 +134,7 @@ private:
   TTree* ttbarmcBkgTree_;
   TTree* mcBkgTree_;
   TTree* dataTree_;
-  
+
   // Variables parameters
   size_t nVars_;
   vector<FitVar> fitVars_;  

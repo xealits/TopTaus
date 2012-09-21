@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: LandSShapesProducer.hh,v 1.3 2012/09/19 18:46:19 vischia Exp $                                                                                                       
+  \version  $Id: LandSShapesProducer.hh,v 1.4 2012/09/19 21:25:11 vischia Exp $                                                                                                       
 */
 
 
@@ -140,6 +140,7 @@ private:
   vector<TTree*> mcBkgTree_;
   TTree* dataTree_;
 
+  vector<string> uncSources_;
   size_t currentMassPoint_;
   size_t nMassPoints_;
   // Variables parameters
