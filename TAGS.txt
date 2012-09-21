@@ -1,3 +1,5 @@
+CMSSW_4_4_4 instructions:
+-------------------------
 # PAT recipe V08-09-11-00
 addpkg DataFormats/PatCandidates V06-05-01
 addpkg PhysicsTools/PatAlgos V08-09-11-00
@@ -24,3 +26,6 @@ cd EGamma/EGammaAnalysisTools/data
 cat download.url | xargs wget
 cd ../../../
 cvs co -d LIP/TopTaus UserCode/LIP/TopTaus
+
+CMSSW_5_3_4_cand2 instructions:
+-------------------------------
