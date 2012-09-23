@@ -256,6 +256,14 @@ void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
 
 void TauDileptonPDFBuilderFitter::InitPerVariableAmbient(size_t i){
 
+  signalTreeWH_   ->ResetBranchAddresses();
+  signalTreeHH_   ->ResetBranchAddresses();
+  ddBkgTree_      ->ResetBranchAddresses();
+  ttbarmcBkgTree_ ->ResetBranchAddresses();
+  mcBkgTree_      ->ResetBranchAddresses();
+  dataTree_       ->ResetBranchAddresses();
+  
+
   
   // String identifiers
   switch(fitVars_[i].getUnbinned()){

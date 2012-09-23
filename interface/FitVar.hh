@@ -6,7 +6,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.6 2012/09/18 17:12:33 vischia Exp $                                                                                                       
+  \version  $Id: FitVar.hh,v 1.1 2012/09/19 18:37:32 vischia Exp $                                                                                                       
 */
 
 //#if !defined(__CINT__) || defined(__MAKECINT__)
@@ -27,7 +27,7 @@
 class FitVar{
   
 public:
-  FitVar(std::string, double, double, double, double, double, Int_t, Int_t);
+  FitVar(std::string, double, double, int, double, double, Int_t, Int_t);
   std::string getVarName();
   double getMin();
   double getMax();
@@ -40,7 +40,7 @@ private:
   std::string varName_;
   double min_;
   double max_;
-  double bins_;
+  int bins_;
   double hmin_;
   double hmax_;
   Int_t unbinned_;

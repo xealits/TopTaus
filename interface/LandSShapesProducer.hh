@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: LandSShapesProducer.hh,v 1.4 2012/09/19 21:25:11 vischia Exp $                                                                                                       
+  \version  $Id: LandSShapesProducer.hh,v 1.5 2012/09/21 16:39:53 vischia Exp $                                                                                                       
 */
 
 
@@ -146,7 +146,7 @@ private:
   // Variables parameters
   size_t nVars_;
   size_t nMcSamples_;
-  vector<FitVar> fitVars_;  
+  vector<FitVar*> fitVars_;  
   vector<string> vars_;
   vector<double> mins_;
   vector<double> maxs_;
@@ -190,23 +190,24 @@ private:
   vector<string> ddbkgVarName_      ;
   string mcbkgVarName_ ;
   
-  RooDataSet* mySignalDSWH_      ;
-  RooDataSet* mySignalDSHH_      ;
-  RooDataSet* myDDBkgDS_         ; // Reduced datasets
-  vector<RooDataSet*> myMCBkgDS_         ; 
-  RooDataSet* myDataDS_          ; 
-  
   RooDataHist* signalHistoWH_    ;
   RooDataHist* signalHistoHH_    ;
   RooDataHist* ddbkgHisto_     ;
   vector<RooDataHist*> mcbkgHisto_     ;
   RooDataHist* dataHisto_      ;
   
+  RooDataSet* mySignalDSWH_      ;
+  RooDataSet* mySignalDSHH_      ;
+  RooDataSet* myDDBkgDS_         ; // Reduced datasets
+  vector<RooDataSet*> myMCBkgDS_         ; 
+  RooDataSet* myDataDS_          ; 
+
   TH1* signalHistWH_;
   TH1* signalHistHH_;
   TH1* ddbkgHist_;
   vector<TH1*> mcbkgHist_;
   TH1* dataHist_;
+  
 
   TLegend* leg_;
   

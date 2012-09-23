@@ -8,7 +8,7 @@
 
 using namespace std;
 
-FitVar::FitVar(string varName, double min, double max, double bins, double hmin, double hmax, Int_t unbinned, Int_t smoothOrder):
+FitVar::FitVar(string varName, double min, double max, int bins, double hmin, double hmax, Int_t unbinned, Int_t smoothOrder):
   varName_(varName),
   min_(min),
   max_(max),
