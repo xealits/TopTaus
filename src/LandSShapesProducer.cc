@@ -121,11 +121,9 @@ void LandSShapesProducer::Init(){
   
   
   for(size_t i=0; i<nVars_; i++)
-    {
-     
-      fitVars_.push_back( new FitVar(vars_[i], mins_[i], maxs_[i], bins_[i], hmin_[i], hmax_[i], unbinned_[i], smoothOrder_[i]));
-    }
-
+    fitVars_.push_back( new FitVar(vars_[i], mins_[i], maxs_[i], bins_[i], hmin_[i], hmax_[i], unbinned_[i], smoothOrder_[i]));
+    
+  
   // Set canvas
   canvas_ = new TCanvas("canvas","My plots ",0,0,1000,500);
   canvas_->cd();
@@ -221,9 +219,9 @@ void LandSShapesProducer::InitPerVariableAmbient(size_t i){
 
   
   sumWeights_ = 0;
-/// test ///}
-/// test ///
-/// test ///void LandSShapesProducer::BuildDatasets(size_t i){
+}
+
+void LandSShapesProducer::BuildDatasets(size_t i){
 
   
   // Temp variables for setting branch addresses
@@ -364,9 +362,9 @@ void LandSShapesProducer::InitPerVariableAmbient(size_t i){
 //}
 
 
-/// test ///}
-/// test ///
-/// test ///void LandSShapesProducer::DrawTemplates(size_t i){
+}
+
+void LandSShapesProducer::DrawTemplates(size_t i){
 
 
   
@@ -418,18 +416,6 @@ void LandSShapesProducer::InitPerVariableAmbient(size_t i){
     //   mcbkgHist_[f]->SetFillColor(kBlack+9+f);
     mcbkgHist_[f]->SetLineWidth(3);
     //   mcbkgHist_[f]->SetFillStyle(3017);
-
-    cout << "------------------------------------------------------" << endl;
-    cout << "----------------- mcsample: " << f << " that is " << mcbkgHist_[f]->GetName() << ", index " << i << "..................." << endl;
-    cout << "Variable: " << fitVars_[i]->getVarName().c_str() << endl;
-    cout << "Minimum: " << fitVars_[i]->getMin() << endl;
-    cout << "Maximum: " << fitVars_[i]->getMax() << endl;
-    cout << "Bins: " << fitVars_[i]->getBins() << endl;
-    cout << "SmoothOrder: " << fitVars_[i]->getSmoothOrder() << endl;
-    cout << "------------------------------------------------------" << endl;
-
-
-
   }
   //    ///////////////////////////////////////////////////////////////////
     
@@ -508,11 +494,11 @@ void LandSShapesProducer::Produce(){
       
       InitPerVariableAmbient(i);
       
-      /// test ///            BuildDatasets(i);
+      BuildDatasets(i);
       
       //    BuildPDFs(i);
       
-      /// test ///            DrawTemplates(i);
+      DrawTemplates(i);
       
       //    BuildConstrainedModels(i);
       //    

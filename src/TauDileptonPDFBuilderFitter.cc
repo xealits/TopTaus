@@ -176,6 +176,23 @@ void TauDileptonPDFBuilderFitter::Init(){
   smoothOrder_ = mFitPars.getParameter<vector<Int_t> >("smoothOrder");
   
   
+
+  // Set variables
+  //
+  nVars_ = vars_.size();
+  
+  for(size_t i=0; i<nVars_; i++)
+    fitVars_.push_back(new FitVar(vars_[i], mins_[i], maxs_[i], bins_[i], hmin_[i], hmax_[i], unbinned_[i], smoothOrder_[i]));
+      
+  // Set canvas
+  canvas_ = new TCanvas("canvas","My plots ",0,0,1000,500);
+  canvas_->cd();
+  
+  resultsFile_.open ((outFolder_+resultsFileName_).c_str());
+ 
+  //  Uncomment following line in order to redirect stdout to file
+  //  streamToFile_ = std::cout.rdbuf(resultsFile_.rdbuf());
+
   // Open files and get trees
   // ddBkg is the only to be taken from data driven estimation (tree)
   signalFileWH_   = TFile::Open(baseMCDir_   + signalFileNameWH_  ); signalTreeWH_   = (TTree*) signalFileWH_  ->Get(minitreeSelected_);
@@ -185,25 +202,6 @@ void TauDileptonPDFBuilderFitter::Init(){
   mcBkgFile_      = TFile::Open(baseMCDir_   + mcBkgFileName_     ); mcBkgTree_      = (TTree*) mcBkgFile_     ->Get(minitreeSelected_);
   dataFile_       = TFile::Open(baseDataDir_ + dataFileName_      ); dataTree_       = (TTree*) dataFile_      ->Get(minitreeSelected_);
 
-
-  // Set variables
-  //
-  nVars_ = vars_.size();
-  
-  for(size_t i=0; i<nVars_; i++)
-    {
-      FitVar myVar(vars_[i], mins_[i], maxs_[i], bins_[i], hmin_[i], hmax_[i], unbinned_[i], smoothOrder_[i]);
-      fitVars_.push_back(myVar);
-    }
-  
-  // Set canvas
-  canvas_ = new TCanvas("canvas","My plots ",0,0,1000,500);
-  canvas_->cd();
-  
-  resultsFile_.open ((outFolder_+resultsFileName_).c_str());
- 
-  //  Uncomment following line in order to redirect stdout to file
-  //  streamToFile_ = std::cout.rdbuf(resultsFile_.rdbuf());
   
   cout << "Init process complete" << endl;
 }
@@ -256,6 +254,7 @@ void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
 
 void TauDileptonPDFBuilderFitter::InitPerVariableAmbient(size_t i){
 
+  // Totally necessary (otherwise branches remain tied to the variables and datasets get messed up for nVars_>1)
   signalTreeWH_   ->ResetBranchAddresses();
   signalTreeHH_   ->ResetBranchAddresses();
   ddBkgTree_      ->ResetBranchAddresses();
@@ -266,29 +265,29 @@ void TauDileptonPDFBuilderFitter::InitPerVariableAmbient(size_t i){
 
   
   // String identifiers
-  switch(fitVars_[i].getUnbinned()){
+  switch(fitVars_[i]->getUnbinned()){
   case 1 : // Unbinned
-    identifier_=baseIdentifier_+string("_unbinned_")+fitVars_[i].getVarName();
+    identifier_=baseIdentifier_+string("_unbinned_")+fitVars_[i]->getVarName();
     break;
   case 0:  // Binned (w/ or w/out smoothing)
-    identifier_=baseIdentifier_+string("_binned_")+fitVars_[i].getVarName();
+    identifier_=baseIdentifier_+string("_binned_")+fitVars_[i]->getVarName();
     break;
   default : // Dummy - should never arrive here
     cout<<"Neither binned not unbinned. Check your options motherfucker."<<endl;
   }
   
   // Binned fit variable
-  myvar_           = new RooRealVar(fitVars_[i].getVarName().c_str(), fitVars_[i].getVarName().c_str(), fitVars_[i].getMin(), fitVars_[i].getMax());  myvar_->setBins(fitVars_[i].getBins()); 
+  myvar_           = new RooRealVar(fitVars_[i]->getVarName().c_str(), fitVars_[i]->getVarName().c_str(), fitVars_[i]->getMin(), fitVars_[i]->getMax());  myvar_->setBins(fitVars_[i]->getBins()); 
   myvar_weights_   = new RooRealVar("weight","weight",0,1000);
   isOSvar_         = new RooRealVar("is_os","is_os",0,2);
   
 
   //Define data sets /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  mySignalDSName_= fitVars_[i].getVarName().c_str() + string("_mySignalDS");
-  myDDBkgDSName_ = fitVars_[i].getVarName().c_str() + string("_myDDBkgDS");
-  myTTBARMCBkgDSName_ = fitVars_[i].getVarName().c_str() + string("_myTTBARMCBkgDS");
-  myMCBkgDSName_  = fitVars_[i].getVarName().c_str() + string("_myMCBkgDS");
-  myDataDSName_   = fitVars_[i].getVarName().c_str() + string("_myDataDS");
+  mySignalDSName_= fitVars_[i]->getVarName().c_str() + string("_mySignalDS");
+  myDDBkgDSName_ = fitVars_[i]->getVarName().c_str() + string("_myDDBkgDS");
+  myTTBARMCBkgDSName_ = fitVars_[i]->getVarName().c_str() + string("_myTTBARMCBkgDS");
+  myMCBkgDSName_  = fitVars_[i]->getVarName().c_str() + string("_myMCBkgDS");
+  myDataDSName_   = fitVars_[i]->getVarName().c_str() + string("_myDataDS");
   mySignalDS_        = 0; //= new RooDataSet(mySignalDSName.c_str(),mySignalDSName.c_str(), signalTree_, RooArgSet(*myvar,*myvar_weights),0,"weight" );
   unrMyDDBkgDS_      = 0; //= new RooDataSet(myDDBkgDSName.c_str(), myDDBkgDSName.c_str(),  ddBkgTree_,  RooArgSet(*myvar,*myvar_weights),0,"weight" );
   unrMyTTBARMCBkgDS_ = 0; //= new RooDataSet(myMCBkgDSName.c_str(), myMCBkgDSName.c_str(),  mcBkgTree_,  RooArgSet(*myvar,*myvar_weights),0,"weight" );
@@ -300,21 +299,21 @@ void TauDileptonPDFBuilderFitter::InitPerVariableAmbient(size_t i){
   myDataDS_       = 0; 
 
   // Define model names
-  signalModelName_           = fitVars_[i].getVarName() + string("_SignalModel");
-  signalConstrainedName_       = fitVars_[i].getVarName() + string("_signalConstrained");    signalConstraintName_ =fitVars_[i].getVarName()+string("_signalConstraint");
-  ddbkgModelName_            = fitVars_[i].getVarName() + string("_ddbkgModel");  
-  ddbkgConstrainedName_        = fitVars_[i].getVarName() + string("_ddbkgConstrained");    ddbkgConstraintName_ =fitVars_[i].getVarName()+string("_ddbkgConstraint");
-  ttbarmcbkgModelName_       = fitVars_[i].getVarName() + string("_ttbarmcbkgModel");  
-  ttbarmcbkgConstrainedName_   = fitVars_[i].getVarName() + string("_ttbarmcbkgConstrained");   ttbarmcbkgConstraintName_ =fitVars_[i].getVarName()+string("_ttbarmcbkgConstraint");
-  mcbkgModelName_            = fitVars_[i].getVarName() + string("_mcbkgModel");  
-  mcbkgConstrainedName_        = fitVars_[i].getVarName() + string("_mcbkgConstrained");   mcbkgConstraintName_ =fitVars_[i].getVarName()+string("_mcbkgConstraint");
+  signalModelName_           = fitVars_[i]->getVarName() + string("_SignalModel");
+  signalConstrainedName_       = fitVars_[i]->getVarName() + string("_signalConstrained");    signalConstraintName_ =fitVars_[i]->getVarName()+string("_signalConstraint");
+  ddbkgModelName_            = fitVars_[i]->getVarName() + string("_ddbkgModel");  
+  ddbkgConstrainedName_        = fitVars_[i]->getVarName() + string("_ddbkgConstrained");    ddbkgConstraintName_ =fitVars_[i]->getVarName()+string("_ddbkgConstraint");
+  ttbarmcbkgModelName_       = fitVars_[i]->getVarName() + string("_ttbarmcbkgModel");  
+  ttbarmcbkgConstrainedName_   = fitVars_[i]->getVarName() + string("_ttbarmcbkgConstrained");   ttbarmcbkgConstraintName_ =fitVars_[i]->getVarName()+string("_ttbarmcbkgConstraint");
+  mcbkgModelName_            = fitVars_[i]->getVarName() + string("_mcbkgModel");  
+  mcbkgConstrainedName_        = fitVars_[i]->getVarName() + string("_mcbkgConstrained");   mcbkgConstraintName_ =fitVars_[i]->getVarName()+string("_mcbkgConstraint");
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   // Define var names
-  signalVarName_     =fitVars_[i].getVarName()+string("_signalVar");string signalMeanVarName  =fitVars_[i].getVarName()+string("_signalMeanVar");              string signalSigmaVarName     =fitVars_[i].getVarName()+string("_signalSigmaVar");
-  ddbkgVarName_      =fitVars_[i].getVarName()+string("_ddbkgVar"); string ddbkgMeanVarName  =fitVars_[i].getVarName()+string("_ddbkgMeanVar");                string ddbkgSigmaVarName      =fitVars_[i].getVarName()+string("_ddbkgSigmaVar");
-  ttbarmcbkgVarName_ =fitVars_[i].getVarName()+string("_ttbarmcbkgVar"); string ttbarmcbkgMeanVarName  =fitVars_[i].getVarName()+string("_ttbarmcbkgMeanVar"); string ttbarmcbkgSigmaVarName =fitVars_[i].getVarName()+string("_ttbarmcbkgSigmaVar");
-  mcbkgVarName_      =fitVars_[i].getVarName()+string("_mcbkgVar"); string mcbkgMeanVarName  =fitVars_[i].getVarName()+string("_mcbkgMeanVar");                string mcbkgSigmaVarName      =fitVars_[i].getVarName()+string("_mcbkgSigmaVar");
+  signalVarName_     =fitVars_[i]->getVarName()+string("_signalVar");string signalMeanVarName  =fitVars_[i]->getVarName()+string("_signalMeanVar");              string signalSigmaVarName     =fitVars_[i]->getVarName()+string("_signalSigmaVar");
+  ddbkgVarName_      =fitVars_[i]->getVarName()+string("_ddbkgVar"); string ddbkgMeanVarName  =fitVars_[i]->getVarName()+string("_ddbkgMeanVar");                string ddbkgSigmaVarName      =fitVars_[i]->getVarName()+string("_ddbkgSigmaVar");
+  ttbarmcbkgVarName_ =fitVars_[i]->getVarName()+string("_ttbarmcbkgVar"); string ttbarmcbkgMeanVarName  =fitVars_[i]->getVarName()+string("_ttbarmcbkgMeanVar"); string ttbarmcbkgSigmaVarName =fitVars_[i]->getVarName()+string("_ttbarmcbkgSigmaVar");
+  mcbkgVarName_      =fitVars_[i]->getVarName()+string("_mcbkgVar"); string mcbkgMeanVarName  =fitVars_[i]->getVarName()+string("_mcbkgMeanVar");                string mcbkgSigmaVarName      =fitVars_[i]->getVarName()+string("_mcbkgSigmaVar");
 
   // PDF models
   b_signalModel_     = 0;
@@ -368,7 +367,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     // FIXME: hardcoded
     double fhh(0.05*0.05) , fhw( 2*(1-0.05)*0.05) ;      
     // Get WH events
-    signalTreeWH_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
+    signalTreeWH_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
     signalTreeWH_->SetBranchAddress("weight", &myVarWeightAllocator);
     signalTreeWH_->SetBranchAddress("is_os", &isOSsig);
     for(unsigned int ev=0; ev<signalTreeWH_->GetEntries(); ev++){
@@ -380,7 +379,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
       mySignalDS_->add(RooArgSet(*myvar_,*myvar_weights_),fhw*myVarWeightAllocator);
     }
     // Get HH events
-    signalTreeHH_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
+    signalTreeHH_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
     signalTreeHH_->SetBranchAddress("weight", &myVarWeightAllocator);
     signalTreeHH_->SetBranchAddress("is_os", &isOSsig);
     //    cout << "getIsoS      ";
@@ -396,7 +395,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
 
   myDDBkgDS_         = new RooDataSet(myDDBkgDSName_.c_str(),myDDBkgDSName_.c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight"); // This constructor does not accept the cut parameter
   // Get DD events
-  ddBkgTree_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
+  ddBkgTree_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
   ddBkgTree_->SetBranchAddress("weight", &myVarWeightAllocator);
   ddBkgTree_->SetBranchAddress("is_os", &isOSsig);
   //    cout << "getIsoS      ";
@@ -412,7 +411,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
   if(standaloneTTbar_){
     myTTBARMCBkgDS_         = new RooDataSet(myTTBARMCBkgDSName_.c_str(),myTTBARMCBkgDSName_.c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight"); // This constructor does not accept the cut parameter
     // Get TTMCBkg events
-    ttbarmcBkgTree_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
+    ttbarmcBkgTree_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
     ttbarmcBkgTree_->SetBranchAddress("weight", &myVarWeightAllocator);
     ttbarmcBkgTree_->SetBranchAddress("is_os", &isOSsig);
     //    cout << "getIsoS      ";
@@ -429,7 +428,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
   
   myMCBkgDS_         = new RooDataSet(myMCBkgDSName_.c_str(),myMCBkgDSName_.c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight"); // This constructor does not accept the cut parameter
     // Get MCBkg events
-    mcBkgTree_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
+    mcBkgTree_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
     mcBkgTree_->SetBranchAddress("weight", &myVarWeightAllocator);
     mcBkgTree_->SetBranchAddress("is_os", &isOSsig);
     //    cout << "getIsoS      ";
@@ -444,7 +443,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
 
   myDataDS_         = new RooDataSet(myDataDSName_.c_str(),myDataDSName_.c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight"); // This constructor does not accept the cut parameter
     // Get Data events
-    dataTree_->SetBranchAddress(fitVars_[i].getVarName().c_str(), &myVarAllocator);
+    dataTree_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
     dataTree_->SetBranchAddress("weight", &myVarWeightAllocator);
     dataTree_->SetBranchAddress("is_os", &isOSsig);
     //    cout << "getIsoS      ";
@@ -483,7 +482,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
 
 void TauDileptonPDFBuilderFitter::BuildPDFs(size_t i){
   
-  switch(fitVars_[i].getUnbinned()){
+  switch(fitVars_[i]->getUnbinned()){
   case 1 : // Unbinned
     if(includeSignal_) u_signalModel_ = new RooKeysPdf(signalModelName_.c_str(), signalModelName_.c_str(), *myvar_, *mySignalDS_, RooKeysPdf::MirrorBoth,2);
     u_ddbkgModel_  = new RooKeysPdf(ddbkgModelName_.c_str(),  ddbkgModelName_.c_str(),  *myvar_, *myDDBkgDS_ , RooKeysPdf::MirrorBoth,2);
@@ -491,10 +490,10 @@ void TauDileptonPDFBuilderFitter::BuildPDFs(size_t i){
     u_mcbkgModel_  = new RooKeysPdf(mcbkgModelName_.c_str(),  mcbkgModelName_.c_str(),  *myvar_, *myMCBkgDS_ , RooKeysPdf::MirrorBoth,2);
     break;
   case 0:  // Binned (w/ or w/out smoothing)
-    if(includeSignal_) b_signalModel_ = new RooHistPdf(signalModelName_.c_str(), signalModelName_.c_str(), *myvar_, *signalHisto_, fitVars_[i].getSmoothOrder());
-    b_ddbkgModel_  = new RooHistPdf(ddbkgModelName_.c_str(),  ddbkgModelName_.c_str(), *myvar_, *ddbkgHisto_ , fitVars_[i].getSmoothOrder());
-    if(standaloneTTbar_) b_ttbarmcbkgModel_ = new RooHistPdf(ttbarmcbkgModelName_.c_str(),  ttbarmcbkgModelName_.c_str(),  *myvar_, *ttbarmcbkgHisto_  , fitVars_[i].getSmoothOrder()); 
-    b_mcbkgModel_  = new RooHistPdf(mcbkgModelName_.c_str(),  mcbkgModelName_.c_str(),  *myvar_, *mcbkgHisto_  , fitVars_[i].getSmoothOrder()); 
+    if(includeSignal_) b_signalModel_ = new RooHistPdf(signalModelName_.c_str(), signalModelName_.c_str(), *myvar_, *signalHisto_, fitVars_[i]->getSmoothOrder());
+    b_ddbkgModel_  = new RooHistPdf(ddbkgModelName_.c_str(),  ddbkgModelName_.c_str(), *myvar_, *ddbkgHisto_ , fitVars_[i]->getSmoothOrder());
+    if(standaloneTTbar_) b_ttbarmcbkgModel_ = new RooHistPdf(ttbarmcbkgModelName_.c_str(),  ttbarmcbkgModelName_.c_str(),  *myvar_, *ttbarmcbkgHisto_  , fitVars_[i]->getSmoothOrder()); 
+    b_mcbkgModel_  = new RooHistPdf(mcbkgModelName_.c_str(),  mcbkgModelName_.c_str(),  *myvar_, *mcbkgHisto_  , fitVars_[i]->getSmoothOrder()); 
     break;
   default : // Dummy - should never arrive here
     cout<<"Neither binned not unbinned. Check your options motherfucker."<<endl;
@@ -507,7 +506,7 @@ void TauDileptonPDFBuilderFitter::DrawTemplates(size_t i){
 
   //signal histogram ////////////////////////////////////////////////////////////
   if(includeSignal_){
-    signalHist_ = signalHisto_->createHistogram(fitVars_[i].getVarName().c_str(),fitVars_[i].getBins() );
+    signalHist_ = signalHisto_->createHistogram(fitVars_[i]->getVarName().c_str(),fitVars_[i]->getBins() );
     signalHist_->SetOption("0000");
     signalHist_->SetLineWidth(3);
     signalHist_->SetTitle("");
@@ -520,7 +519,7 @@ void TauDileptonPDFBuilderFitter::DrawTemplates(size_t i){
   
   
   // dd bkg histogram /////////////////////////////////////////////////
-  ddbkgHist_ = ddbkgHisto_->createHistogram(fitVars_[i].getVarName().c_str(),fitVars_[i].getBins() );
+  ddbkgHist_ = ddbkgHisto_->createHistogram(fitVars_[i]->getVarName().c_str(),fitVars_[i]->getBins() );
   ddbkgHist_->SetLineColor(kRed);
   ddbkgHist_->SetFillColor(kRed);
   ddbkgHist_->SetLineWidth(3);
@@ -529,7 +528,7 @@ void TauDileptonPDFBuilderFitter::DrawTemplates(size_t i){
   
   // ttbar mc bkg histogram ////////////////////////////////////////////////
   if(standaloneTTbar_){
-    ttbarmcbkgHist_ = ttbarmcbkgHisto_->createHistogram(fitVars_[i].getVarName().c_str(),fitVars_[i].getBins() );   
+    ttbarmcbkgHist_ = ttbarmcbkgHisto_->createHistogram(fitVars_[i]->getVarName().c_str(),fitVars_[i]->getBins() );   
     ttbarmcbkgHist_->SetLineColor(kYellow);
     ttbarmcbkgHist_->SetFillColor(kYellow);
     ttbarmcbkgHist_->SetLineWidth(3);
@@ -538,7 +537,7 @@ void TauDileptonPDFBuilderFitter::DrawTemplates(size_t i){
   ///////////////////////////////////////////////////////////////////
   
   // mc bkg histogram ////////////////////////////////////////////////
-  mcbkgHist_ = mcbkgHisto_->createHistogram(fitVars_[i].getVarName().c_str(),fitVars_[i].getBins() );   
+  mcbkgHist_ = mcbkgHisto_->createHistogram(fitVars_[i]->getVarName().c_str(),fitVars_[i]->getBins() );   
   mcbkgHist_->SetLineColor(kBlack);
   mcbkgHist_->SetFillColor(kBlack);
   mcbkgHist_->SetLineWidth(3);
@@ -561,12 +560,12 @@ void TauDileptonPDFBuilderFitter::DrawTemplates(size_t i){
   canvas_->cd(); 
   // Order chosen to have good Y axis boundaries
   if(standaloneTTbar_){
-    if(fitVars_[i].getHmax()){ ttbarmcbkgHist_->SetMaximum(fitVars_[i].getHmax()); ttbarmcbkgHist_->SetMinimum(fitVars_[i].getHmin());} 
+    if(fitVars_[i]->getHmax()){ ttbarmcbkgHist_->SetMaximum(fitVars_[i]->getHmax()); ttbarmcbkgHist_->SetMinimum(fitVars_[i]->getHmin());} 
     ttbarmcbkgHist_->DrawNormalized("hist");
     mcbkgHist_     ->DrawNormalized("histsame");    
   }
   else {
-    if(fitVars_[i].getHmax()){ mcbkgHist_->SetMaximum(fitVars_[i].getHmax()); mcbkgHist_->SetMinimum(fitVars_[i].getHmin());} 
+    if(fitVars_[i]->getHmax()){ mcbkgHist_->SetMaximum(fitVars_[i]->getHmax()); mcbkgHist_->SetMinimum(fitVars_[i]->getHmin());} 
     mcbkgHist_->DrawNormalized("hist");
   }
   
@@ -604,16 +603,13 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   
   /////////////////////////////////////////////////////////////////////////////////////
   cout<<endl<<"Identifier: "<<identifier_<<", meaning that includeSignal="<<includeSignal_<<", standaloneTTbar="<<standaloneTTbar_<<endl;
-  cout<<endl<<" PDF data set Entries for fitVars_[i].getVarName()ribution : "<<fitVars_[i].getVarName();    
-  cout<<endl<<"WARNING: values taken just from unbinned datasets"<<endl;
-  cout<<endl<<"Sum weights for signal is " << sumWeights_ << endl;
-  double separateSigEntries = signalTreeWH_->GetEntries() + signalTreeHH_->GetEntries();
-  if(includeSignal_) cout<<endl<<" sig_N    = "<<sig_N<<  " , root entries : "<< separateSigEntries<<" weights : "<<nsig;
-  cout<<endl<<" ddbkg_N  = "<<ddbkg_N<<" , root entries : "<<ddBkgTree_->GetEntries()<<" weights : "<<nddbkg;
-  if(standaloneTTbar_) cout<<endl<<" ttbarmcbkg_N  = "<<ttbarmcbkg_N<<" , root entries : "<<ttbarmcBkgTree_->GetEntries()<<" weights : "<<nttbarmcbkg;
-  cout<<endl<<" mcbkg_N  = "<<mcbkg_N<<" , root entries : "<<mcBkgTree_->GetEntries()<<" weights : "<<nmcbkg;
-  cout<<endl<<" data_N   = "<<data_N<< " , root entries : "<<dataTree_->GetEntries()<<endl;
-  cout<<endl<<" ddbkgEstimate = " << ddbkgEstimate_ << endl;
+  cout<<endl<<" PDF data set Entries for distribution : "<<fitVars_[i]->getVarName()   << endl;
+  if(includeSignal_) cout << mySignalDSName_ << " unbinned entries: " << sig_N << ". weighted entries: " << nsig << endl;
+  cout << myDDBkgDSName_ << " unbinned entries: " << ddbkg_N << ". weighted entries: " << nddbkg << endl;
+  if(standaloneTTbar_) cout<<endl<<" unbinned entries: "<< ttbarmcbkg_N << " , weighted entries : "<< nttbarmcbkg << endl;
+  cout << myMCBkgDSName_ << " unbinned entries: " << mcbkg_N << ". weighted entries: " << nmcbkg << endl;
+  cout << myDataDSName_ << " unbinned entries: " << data_N << ". weighted entries: " << dataHisto_->sum(kFALSE) << endl;
+
   cout<<endl<<endl<<" ******************************************************************************************* "<<endl;
   /////////////////////////////////////////////////////////////////////////////////////
   
@@ -680,7 +676,7 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
     
   
   // build the sum model and model with constrains ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  string sumModelName = fitVars_[i].getVarName()+string("_sumModel");
+  string sumModelName = fitVars_[i]->getVarName()+string("_sumModel");
   
   string sumModelExp = "";
   if(includeSignal_) sumModelExp.append(signalModelName_+string("+"));
@@ -688,7 +684,7 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   if(standaloneTTbar_) sumModelExp.append(ttbarmcbkgModelName_+string("+"));
   sumModelExp.append(mcbkgModelName_);
   
-  string sumModelConstrainedName = fitVars_[i].getVarName()+string("_sumConstrainedModel");
+  string sumModelConstrainedName = fitVars_[i]->getVarName()+string("_sumConstrainedModel");
   
   string sumModelConstrainedExp = sumModelName+string("*");
   if(includeSignal_) sumModelConstrainedExp.append(signalConstraintName_+string("*"));
@@ -696,7 +692,7 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   if(standaloneTTbar_) sumModelConstrainedExp.append(ttbarmcbkgConstraintName_+string("*"));
   sumModelConstrainedExp.append(mcbkgConstraintName_);
   
-  switch(fitVars_[i].getUnbinned()){
+  switch(fitVars_[i]->getUnbinned()){
   case 1 : // Unbinned
     if(includeSignal_){
       if(standaloneTTbar_){
@@ -745,38 +741,38 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
 }
 
 void TauDileptonPDFBuilderFitter::DoPerVariableFit(size_t i){
-  switch(fitVars_[i].getUnbinned()){
+  switch(fitVars_[i]->getUnbinned()){
   case 1 : // Unbinned
     if(includeSignal_){
       if(standaloneTTbar_){
-	constrainedModelFit_ = model_->fitTo( *myDataDS_, Minos(), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+	constrainedModelFit_ = model_->fitTo( *myDataDS_, Minos(), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
       }
       else{
-	constrainedModelFit_ = model_->fitTo( *myDataDS_, Minos(), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+	constrainedModelFit_ = model_->fitTo( *myDataDS_, Minos(), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
       }
     } else{
       if(standaloneTTbar_){
-	constrainedModelFit_ = model_->fitTo( *myDataDS_, Minos(), Constrain(RooArgSet(*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+	constrainedModelFit_ = model_->fitTo( *myDataDS_, Minos(), Constrain(RooArgSet(*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
       }
       else{
-	constrainedModelFit_ = model_->fitTo( *myDataDS_, Minos(), Constrain(RooArgSet(*ddbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+	constrainedModelFit_ = model_->fitTo( *myDataDS_, Minos(), Constrain(RooArgSet(*ddbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
       }
     }
     break;
   case 0:  // Binned (w/ or w/out smoothing)
     if(includeSignal_){
       if(standaloneTTbar_){
-	constrainedModelFit_ = model_->fitTo( *dataHisto_, Minos(), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+	constrainedModelFit_ = model_->fitTo( *dataHisto_, Minos(), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
       }
       else{
-	constrainedModelFit_ = model_->fitTo( *dataHisto_, Minos(), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+	constrainedModelFit_ = model_->fitTo( *dataHisto_, Minos(), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
       }
     } else{
       if(standaloneTTbar_){
-	constrainedModelFit_ = model_->fitTo( *dataHisto_, Minos(), Constrain(RooArgSet(*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+	constrainedModelFit_ = model_->fitTo( *dataHisto_, Minos(), Constrain(RooArgSet(*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
       }
       else{
-	constrainedModelFit_ = model_->fitTo( *dataHisto_, Minos(), Constrain(RooArgSet(*ddbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+	constrainedModelFit_ = model_->fitTo( *dataHisto_, Minos(), Constrain(RooArgSet(*ddbkgVar_,*mcbkgVar_)), Save(kTRUE),PrintLevel(-1),Verbose(false),Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
       }
     }
     break;
@@ -790,13 +786,13 @@ void TauDileptonPDFBuilderFitter::DrawPerVariableFit(size_t i){
   canvas_->Clear();  
   myFrame_ = myvar_->frame();
   myFrame_->SetTitle("");
-  myFrame_->GetXaxis()->SetTitle(fitVars_[i].getVarName().c_str());
+  myFrame_->GetXaxis()->SetTitle(fitVars_[i]->getVarName().c_str());
   myFrame_->GetYaxis()->SetTitle("Events");
   dataHisto_->plotOn(myFrame_);
   model_->plotOn(myFrame_);
   //    model->plotOn(myFrame, RooFit::LineStyle(kDashed), RooFit::Components(*signalModel), RooFit::LineColor(kGreen));   
   if(includeSignal_) 
-    switch(fitVars_[i].getUnbinned()){
+    switch(fitVars_[i]->getUnbinned()){
     case 1 : // Unbinned
       model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(*u_signalModel_), RooFit::LineColor(kGreen));   
       break;
@@ -825,23 +821,23 @@ void TauDileptonPDFBuilderFitter::DoPerVariableLikelihoodFit(size_t i){
   //      Range(min,max)
   //    );
   
-  switch(fitVars_[i].getUnbinned()){
+  switch(fitVars_[i]->getUnbinned()){
   case 1: // Unbinned
     if(includeSignal_){
-      if(standaloneTTbar_) nll_ = (RooNLLVar*) model_->createNLL( *myDataDS_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
-      else nll_ = (RooNLLVar*) model_->createNLL( *myDataDS_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+      if(standaloneTTbar_) nll_ = (RooNLLVar*) model_->createNLL( *myDataDS_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
+      else nll_ = (RooNLLVar*) model_->createNLL( *myDataDS_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*mcbkgVar_)), Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
     } else{
-      if(standaloneTTbar_) nll_ = (RooNLLVar *) model_->createNLL( *myDataDS_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
-      else nll_ = (RooNLLVar*) model_->createNLL( *myDataDS_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*ddbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+      if(standaloneTTbar_) nll_ = (RooNLLVar *) model_->createNLL( *myDataDS_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
+      else nll_ = (RooNLLVar*) model_->createNLL( *myDataDS_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*ddbkgVar_,*mcbkgVar_)), Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
     }
     break;
   case 0:  // Binned (w/ or w/out smoothing)
     if(includeSignal_){
-      if(standaloneTTbar_) nll_ = (RooNLLVar*) model_->createNLL( *dataHisto_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
-      else nll_ = (RooNLLVar*) model_->createNLL( *dataHisto_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+      if(standaloneTTbar_) nll_ = (RooNLLVar*) model_->createNLL( *dataHisto_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
+      else nll_ = (RooNLLVar*) model_->createNLL( *dataHisto_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*sigVar_,*ddbkgVar_,*mcbkgVar_)), Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
     } else{
-      if(standaloneTTbar_) nll_ = (RooNLLVar*) model_->createNLL( *dataHisto_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
-      else nll_ = (RooNLLVar*) model_->createNLL( *dataHisto_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*ddbkgVar_,*mcbkgVar_)), Range(fitVars_[i].getMin(),fitVars_[i].getMax()));
+      if(standaloneTTbar_) nll_ = (RooNLLVar*) model_->createNLL( *dataHisto_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*ddbkgVar_,*ttbarmcbkgVar_,*mcbkgVar_)), Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
+      else nll_ = (RooNLLVar*) model_->createNLL( *dataHisto_, RooFit::CloneData(kTRUE), Extended(kTRUE), Constrain(RooArgSet(*ddbkgVar_,*mcbkgVar_)), Range(fitVars_[i]->getMin(),fitVars_[i]->getMax()));
     }
     break;
   default : // Dummy - should never arrive here
@@ -859,7 +855,7 @@ void TauDileptonPDFBuilderFitter::DoPerVariableLikelihoodFit(size_t i){
   cout<<endl<<"*******************************************************************************"<<endl;
   cout<<      "*******************************************************************************"<<endl;
   cout<<      "************* IDENTIFIER: "<< identifier_ << "****************************"<<endl;
-  cout<<endl<<"FIT RESULTS for variable"<<fitVars_[i].getVarName()<<endl<<endl;
+  cout<<endl<<"FIT RESULTS for variable"<<fitVars_[i]->getVarName()<<endl<<endl;
   myNllFitResult_->Print("v");
   cout<<endl<<"*******************************************************************************"<<endl;
   cout<<      "*******************************************************************************"<<endl;

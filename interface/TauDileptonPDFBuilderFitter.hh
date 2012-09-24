@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.7 2012/09/19 18:37:32 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.8 2012/09/21 16:39:53 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -137,7 +137,7 @@ private:
 
   // Variables parameters
   size_t nVars_;
-  vector<FitVar> fitVars_;  
+  vector<FitVar*> fitVars_;  
   vector<string> vars_;
   vector<double> mins_;
   vector<double> maxs_;

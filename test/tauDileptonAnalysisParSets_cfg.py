@@ -69,8 +69,6 @@ TauDileptonPDFBuilderFitterParSet = cms.PSet(
     
     baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
     baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
-#    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_bakNew/nomtcutNoNewStuff/nomt-2011-V1-mc-MU-20GeV/"),
-#    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_bakNew/nomtcutNoNewStuff/nomt-2011-V1-data-MU-20GeV/"),
     
     signalFileNameWH   = cms.string("out-wh-pythia-m120.root"),
     signalFileNameHH   = cms.string("out-hh-pythia-m120.root"),
@@ -83,10 +81,10 @@ TauDileptonPDFBuilderFitterParSet = cms.PSet(
     minitreeSelected   = cms.string("lep_tau_Selected"),
     minitreeDataDriven = cms.string("lep_tau_DataDriven"),
 
-    #fitType     = cms.vstring( HIGGS2BKG, HIGGS3BKG, SM2BKG, SM3BKG)
+    #fitType     = cms.vstring( HIGGS2BKG = 0, HIGGS3BKG = 1, SM2BKG = 2, SM3BKG = 3)
     fitType     = cms.vint32( 1),
     #, 2, 3, 0),
-    useOS       = cms.bool(False),
+    useOS       = cms.bool(True),
     
     vars        = cms.vstring( "pt_l", "pt_met", "multiplicity_j", "btagmultiplicity_j", "Dphi_tau_met"),
     mins        = cms.vdouble(      0,      0,        2,                0,                    0            ),
@@ -106,39 +104,6 @@ TauDileptonPDFBuilderFitterParSet = cms.PSet(
 #     0,
 #     3,
 
-#  vars.push_back("rc_t");       mins.push_back(0);  maxs.push_back(1.2); bins.push_back(12);hmin.push_back(0); hmax.push_back(100); unbinned.push_back(0); smoothOrder.push_back(3);
-#  vars.push_back("pt_l");               mins.push_back(0);  maxs.push_back(200); bins.push_back(20);hmin.push_back(0); hmax.push_back(50) ; unbinned.push_back(0); smoothOrder.push_back(5);
-#  //  vars.push_back("pt_t");               mins.push_back(0);  maxs.push_back(200); bins.push_back(20);hmin.push_back(0); hmax.push_back(60) ; unbinned.push_back(0); smoothOrder.push_back(5);
-#  vars.push_back("pt_met");             mins.push_back(0);  maxs.push_back(200); bins.push_back(20);hmin.push_back(0); hmax.push_back(50) ; unbinned.push_back(0); smoothOrder.push_back(5);
-#  vars.push_back("multiplicity_j");     mins.push_back(2);  maxs.push_back(7);   bins.push_back(5); hmin.push_back(0); hmax.push_back(200); unbinned.push_back(0); smoothOrder.push_back(0);
-#  vars.push_back("btagmultiplicity_j"); mins.push_back(0);  maxs.push_back(4);   bins.push_back(4); hmin.push_back(0); hmax.push_back(300); unbinned.push_back(0); smoothOrder.push_back(0);
-#  vars.push_back("Dphi_tau_met");       mins.push_back(0);  maxs.push_back(4.8); bins.push_back(10);hmin.push_back(0); hmax.push_back(100); unbinned.push_back(0); smoothOrder.push_back(3);
-#
-#  //  vars.push_back("Dphi_lepton_met");    mins.push_back(0);  maxs.push_back(200); bins.push_back(50); hmin.push_back(0); hmax.push_back(50);
-#  //  vars.push_back("eta_t");              mins.push_back(0);  maxs.push_back(2.6); bins.push_back(20);hmin.push_back(0); hmax.push_back(60) ; unbinned.push_back(0); smoothOrder.push_back(5);
-#  //  vars.push_back("eta_l");              mins.push_back(0);  maxs.push_back(2.6); bins.push_back(20);hmin.push_back(0); hmax.push_back(60) ; unbinned.push_back(0); smoothOrder.push_back(5);
-#  //  vars.push_back("radius_t");               mins.push_back(0);  maxs.push_back(200); bins.push_back(20); hmin.push_back(0); hmax.push_back(60) ; unbinned.push_back(0); smoothOrder.push_back(5);  
-
-
-#
-#    input = cms.string("@input"),
-#    outdir = cms.string("@outdir"),
-#    kindir = cms.string("@kindir"),
-#    isMC = cms.bool(@isMC),
-#    xsec = cms.double(@xsec),
-#    mctruthmode = cms.int32(@mctruthmode),
-#    saveSummaryTree = cms.bool(@saveSummaryTree),
-#    runSystematics = cms.bool(@runSystematics),
-#    sfMetCut = cms.double(@sfMetCut),
-#    ofMetCut = cms.double(@ofMetCut),
-#    jetPtCut = cms.double(@jetPtCut),
-#    evStart = cms.int32(@evStart),
-#    evEnd = cms.int32(@evEnd),
-#    dirName = cms.string("evAnalyzer/data"),
-#    jesUncFileName = cms.string('${CMSSW_BASE}/src/LIP/Top/data/JEC11_V12_AK5PF_UncertaintySources.txt'),
-#    datapileup = datapileup_710_2012,
-#    useMVA = cms.bool(@useMVA),
-#    tmvaInput =pairSelStudy
     )
 
 
