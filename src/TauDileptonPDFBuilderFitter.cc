@@ -606,7 +606,7 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   cout<<endl<<" PDF data set Entries for distribution : "<<fitVars_[i]->getVarName()   << endl;
   if(includeSignal_) cout << mySignalDSName_ << " unbinned entries: " << sig_N << ". weighted entries: " << nsig << endl;
   cout << myDDBkgDSName_ << " unbinned entries: " << ddbkg_N << ". weighted entries: " << nddbkg << endl;
-  if(standaloneTTbar_) cout<<endl<<" unbinned entries: "<< ttbarmcbkg_N << " , weighted entries : "<< nttbarmcbkg << endl;
+  if(standaloneTTbar_) cout<< myTTBARMCBkgDSName_ <<" unbinned entries: "<< ttbarmcbkg_N << " , weighted entries : "<< nttbarmcbkg << endl;
   cout << myMCBkgDSName_ << " unbinned entries: " << mcbkg_N << ". weighted entries: " << nmcbkg << endl;
   cout << myDataDSName_ << " unbinned entries: " << data_N << ". weighted entries: " << dataHisto_->sum(kFALSE) << endl;
 
