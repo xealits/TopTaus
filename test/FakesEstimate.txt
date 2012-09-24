@@ -1,0 +1,282 @@
+Fakes for 20 GeV tau, omly mu-tau (976 pb^-1)
+-----------------------
+QCD :     (QCDDiJet/TrainedDiJetMCPFlow_pt20_v3.mva, /lustre/lip.pt/data/cmslocal/anayak/TMVA_CMSSW_4_2_4/TrainedFiles/TrainedDiJetDataPFlow_pt20.mva)
+---------------
+estimation from data : no-btag 425.6 1 b-tag 240.5
+estimation from MC : no b-tag 284.582 1 b-tag 154.674  :  156.55
+Residual estimation from MC : no b-tag 55.3728 1 b-tag 37.4244  : 37.87
+Data after Res subtraction : 1 btag : 193.65
+----------------
+WJet  :  (/lustre/lip.pt/data/cmslocal/anayak/TMVA_CMSSW_4_2_4/TrainedFiles/TrainedWMuMCPFlow_pt20.mva, /lustre/lip.pt/data/cmslocal/anayak/TMVA_CMSSW_4_2_4/TrainedFiles/TrainedWMuDataPFlow_pt20.mva)
+----------------
+estimation from data : no-btag 520.2 1 b-tag 297.65
+estimation from MC : no b-tag 379.885 1 b-tag 205.448  : 207.94
+Residual estimation from MC : no b-tag 68.7486 1 b-tag 47.9508  : 48.53
+Data after Res subtraction : 1 btag : 241.331
+------------------------
+(SF for b-tag weight = 1.012138728)
+
+-------------
+30 GeV, only mu-tau
+-------------
+QCD
+---------
+estimation from data : no-btag 151.8 1 b-tag 87.8
+estimation from MC : no b-tag 135.764 1 b-tag 74.5583
+Residual estimation from MC : no b-tag 28.2899 1 b-tag 19.1024
+Data after Res subtraction : 1 btag :
+----------------
+WJet
+-------------
+estimation from data : no-btag 214 1 b-tag 125.7
+estimation from MC : no b-tag 166.842 1 b-tag 95.5572
+Residual estimation from MC : no b-tag 33.4686 1 b-tag 22.8525
+Data after Res subtraction : 1 btag : 
+-------------------
+
+
+Fakes for 20 GeV tau, omly e-tau (204 pb^-1)
+-----------------------
+QCD :     (QCDDiJet/TrainedDiJetMCPFlow_pt20_v3.mva, /lustre/lip.pt/data/cmslocal/anayak/TMVA_CMSSW_4_2_4/TrainedFiles/TrainedDiJetDataPFlow_pt20.mva)
+---------------
+estimation from data : no-btag 75.6 1 b-tag 42.95
+estimation from MC : no b-tag 47.0451 1 b-tag 24.8271
+Residual estimation from MC : no b-tag 8.31988 1 b-tag 6.02665
+Data after Res subtraction : 1 btag : 
+-----------------
+WJet  :  (/lustre/lip.pt/data/cmslocal/anayak/TMVA_CMSSW_4_2_4/TrainedFiles/TrainedWMuMCPFlow_pt20.mva, /lustre/lip.pt/data/cmslocal/anayak/TMVA_CMSSW_4_2_4/TrainedFiles/TrainedWMuDataPFlow_pt20.mva)
+----------------
+estimation from data : no-btag 92.15 1 b-tag 52.35
+estimation from MC : no b-tag 61.1665 1 b-tag 33.0163
+Residual estimation from MC : no b-tag 10.4298 1 b-tag 7.56942
+Data after Res subtraction : 1 btag : 
+
+
+=========================================================================
+Fakes for 30 GeV, e-tau (1.09 fb^-1)
+======================================
+QCD
+------------
+estimation from data : no-btag 126.6 1 b-tag 76.2
+estimation from MC : no b-tag 98.8686 1 b-tag 54.032
+Residual estimation from MC : no b-tag 20.387 1 b-tag 14.804
+Data after Res subtraction : 1 btag : 59.8
+---------------
+WJet
+--------------
+estimation from data : no-btag 170.55 1 b-tag 101.5
+estimation from MC : no b-tag 131.583 1 b-tag 77.7015
+Residual estimation from MC : no b-tag 26.0143 1 b-tag 18.8795
+Data after Res subtraction : 1 btag : 81.64
+--------------------
+
+
+================================
+Fakes for 20 GeV, mu-tau 1.09 fb^-1
+================================
+QCD
+------------
+estimation from data : no-btag 481.3 1 b-tag 274.35
+estimation from MC : no b-tag 318.405 1 b-tag 173.058
+Residual estimation from MC : no b-tag 63.9086 1 b-tag 43.2351
+Data after Res subtraction : 1 btag : 219.5
+
+---------------
+WJet
+--------------
+estimation from data : no-btag 586.75 1 b-tag 337.6
+estimation from MC : no b-tag 425.035 1 b-tag 229.866
+Residual estimation from MC : no b-tag 81.0463 1 b-tag 55.8564
+Data after Res subtraction : 1 btag : 271.6
+
+
+==============================
+Fakes for 2012, mu-tau 5.09/fb 
+==============================
+
+expected from MC (preOS): 237.3 / 151.4
+0.64 factor
+
+--------
+QCD
+--------
+root [0]   .x ComputeTauFake.C("DiJet", 20.0, 1)
+estimation from data : no-btag 219
+estimation from MC : no b-tag 626.437 1 b-tag 0
+Residual estimation from MC : no b-tag 317.851 1 b-tag 0
+
+--------
+WJet
+--------
+estimation from data : no-btag 345.8
+estimation from MC : no b-tag 154.928 1 b-tag 0
+Residual estimation from MC : no b-tag 11.4709 1 b-tag 0
+
+
+
+=============================
+Fakes for 2011, mutau 4.06/fb
+=============================
+
+l+jets OS/1tau: 0.691204589
+all fakes OS/1tau: 0.477858559
+
+
+MC expected (1tau): 151.3+/-28.07
+MC expected (OS): 72.3+/-1.7  (WJet cut to 0)
+MC residual expected (1tau): 41.0471
+
+
+(1tau)
+Data avg(1): 96.0381+/-34.08595
+Data avg: 165.4438+/-23.705
+MC avg: 151.558+/-39.241
+ResMC avg: 17.9562+/-3.945
+
+(OS)
+Data avg(1): 96.0381+/-34.08595
+Data avg: 165.4438+/-23.705
+MC avg: 151.558+/-39.241
+
+-----
+QCD
+-----
+./QCDDiJet/TrainedDiJetDataPFlow_pt20_v3_temp.mva ./QCDDiJet/TrainedDiJetMCPFlow_pt20_v3_temp.mva
+
+estimation from data : no-btag 155.75
+estimation from MC : no b-tag 112.317 1 b-tag 0
+Residual estimation from MC : no b-tag 93.7987 1 b-tag 0
+Residual estimation from MC : no b-tag 14.0112 1 b-tag 0
+Data after Res subtraction(1): 61.9513 
+Data after Res subtraction: 141.7388
+
+
+-----
+WJet
+-----
+./WMuJet/TrainedWMuDataPFlow_pt20_temp.mva ./WMuJet/TrainedWMuMCPFlow_pt20_temp.mva
+estimation from data : no-btag 211.05
+estimation from MC : no b-tag 190.799 1 b-tag 0
+Residual estimation from MC : no b-tag 80.9251 1 b-tag 0
+Residual estimation from MC : no b-tag 21.9012 1 b-tag 0
+Data after Res subtraction(1): 130.1249
+Data after Res subtraction: 189.1488
+
+
+
+########################################  FULL 2011 GOLDEN JSON LUMI ################################
+
+Fakes for mutau, 4625/pb
+------------------------
+l+jets OS/1tau: 0.69178 +/- 0.02098   81.7/118.1  propagate  1.9 2.3
+all fakes OS/1tau: 
+
+
+MC expected (1tau): 171.2 +/- 32.38
+MC expected (OS): 81.7 +/- 1.9  (WJet cut to 0)
+MC residual expected (1tau): 
+
+A 0.69178 +/- 0.02098 B  Data avg: 207.85155 +/- 49.51785 MC avg: 176.158 +/- 50.599
+
+(1tau)
+Data avg: 207.85155 +/- 49.51785
+MC avg: 176.158 +/- 50.599
+ResMC avg: 21.04845 +/- 5.28215
+
+(OS)
+Data avg: 143.42 +/- 34.42
+MC avg: 121.55 +/- 35.09
+
+
+-----
+WMu
+-----
+./WMuJet/TrainedWMuDataPFlow_pt20_new.mva ./WMuJet/TrainedWMuMCPFlow_pt20_new.mva
+estimation from data : no-btag 283.7
+estimation from MC : no b-tag 226.757 1 b-tag 0
+Residual estimation from MC : no b-tag 26.3306 1 b-tag 0
+Data after Res subtraction: 257.3694
+
+-----
+DiJet
+-----
+./QCDDiJet/TrainedDiJetDataPFlow_pt20_v3_temp.mva ./QCDDiJet/TrainedDiJetMCPFlow_pt20_v3_temp.mva
+estimation from data : no-btag 174.1
+estimation from MC : no b-tag 125.559 1 b-tag 0
+Residual estimation from MC : no b-tag 15.7663 1 b-tag 0
+Data after Res subtraction: 158.3337
+
+
+^[[Ar .x ComputeTauFake.C("WMu")
+./WMuJet/TrainedWMuDataPFlow_pt20_new.mva ./WMuJet/TrainedWMuMCPFlow_pt20_new.mva
+estimation from data : no-btag 283.7
+estimation from MC : no b-tag 226.757 1 b-tag 0
+Residual estimation from MC : no b-tag 26.3306 1 b-tag 0
+
+
+^[[Ar[0]  .x ComputeTauFake.C("DiJet")                                                                                                                                           ./QCDDiJet/TrainedDiJetDataPFlow_pt20_v3_temp.mva ./QCDDiJet/TrainedDiJetMCPFlow_pt20_v3_temp.mva
+estimation from data : no-btag 174.1
+estimation from MC : no b-tag 125.559 1 b-tag 0
+Residual estimation from MC : no b-tag 15.7663 1 b-tag 0
+[vischia@fermi04 MyTMVA]$ cat Fake
+
+
+
+########################################  FULL 2011 GOLDEN JSON LUMI ################################
+
+Fakes for mutau, 4904/pb
+------------------------
+l+jets 1tau: 150.5 +/- 2.0
+l+jets OS: 103.8 +/- 1.6
+
+wjets 1tau: 108.5 +/- 30.7
+wjets OS: 62.4 +/- 23.5
+
+all fakes OS/1tau: 0.63074 +/- 0.02973 (binomial deltaE = sqrt{ (1-e)e/TOT }
+
+double os = 166.2; double tau = 263.5; double e = os/tau; double deltaE = sqrt( (1-e)*e/tau  )
+
+
+MC expected (1tau): 263.5 +/- 30.765077604          sqrt(quadratic sum)
+MC expected (OS): 166.2 +/- 23.554405108            sqrt(quadratic sum)
+MC residual expected (1tau): 
+
+
+ 
+	      
+
+(1tau)
+Data avg: 354.8542 +/- 79.3262
+MC avg: 295.8725 +/- 83.2065
+ResMC avg: 32.5458 +/- 10.4738
+                     error on ratio delta(A/) = sqrt( (eA.B)^2 + (A.eB)^2 ) / B^2
+                     error on product delta(AB) = sqrt( (eA.B)^2 + (A.eB)^2 )
+
+double a=354.8542; double ea=79.3262; double b=0.63074; double eb=0.02973; double r=a*b; double deltaR = sqrt(   ea*ea*b*b + a*a*eb*eb )
+double a=295.8725; double ea=83.2065; double b=0.63074; double eb=0.02973; double r=a*b; double deltaR = sqrt(   ea*ea*b*b + a*a*eb*eb )
+
+(OS)
+Data avg: 223.820738107999972 +/- 51.1343379071449675 (23%)
+MC avg: 186.618620649999997 +/- 53.2137215741161711   (28%)
+
+
+-----
+DiJet
+-----
+./tempTraiedFiles/TrainedDiJetDataPFlow_pt20_new.mva ./tempTraiedFiles/TrainedDiJetMCPFlow_pt20_new.mva
+
+estimation from data : no-btag 297.6
+estimation from MC : no b-tag 212.666 1 b-tag 0
+Residual estimation from MC : no b-tag 22.072 1 b-tag 0
+Data after Res subtraction: 275.528
+
+
+-----
+WMu
+-----
+./tempTraiedFiles/TrainedWMuDataPFlow_pt20_new.mva ./tempTraiedFiles/TrainedWMuMCPFlow_pt20_new.mva
+
+estimation from data : no-btag 477.2
+estimation from MC : no b-tag 379.079 1 b-tag 0
+Residual estimation from MC : no b-tag 43.0196 1 b-tag 0
+Data after Res subtraction: 434.1804

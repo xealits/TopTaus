@@ -5,7 +5,6 @@ Repository for tauDilepton analysis
 
 * Will work for ttbar cross section measurement as well as charged higgs search
 
-
 * This started as a porting to a compiled binary approach like LIP/Top, in order
 to remove levels of messiness in the original code to be compiled every time together with
 its libraries
@@ -49,7 +48,7 @@ produceLandSShapes tauDileptonAnalysisParSets_cfg.py
 
 Changelog:
 2012-09-21: shapes producer for lands and multiple likelihood fit for fake rates are ready to use.
-
+2012-09-23: memory problem solved. Now both lands and mlf are usable with multiple variables
 
 
 TODO:
