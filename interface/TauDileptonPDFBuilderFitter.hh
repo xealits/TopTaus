@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.8 2012/09/21 16:39:53 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.9 2012/09/24 14:59:53 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -28,6 +28,7 @@
 #include "RooHistPdf.h"
 #include "RooKeysPdf.h"
 #include "RooGaussian.h"
+//#include "RooPolynomial.h"
 #include "RooAddPdf.h"
 #include "RooProdPdf.h"
 #include "RooFitResult.h"
@@ -100,7 +101,6 @@ private:
   bool standaloneTTbar_;
   string baseIdentifier_;
   double signalStatError_;
-  double ddbkgEstimate_;
   double ddbkgStatError_;
   double ttbarmcbkgStatError_;
   double mcbkgStatError_;
@@ -146,6 +146,8 @@ private:
   vector<double> hmax_;
   vector<Int_t> unbinned_;
   vector<Int_t> smoothOrder_;
+
+  double osCutEff_;
 
   TCanvas* canvas_;
 

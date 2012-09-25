@@ -97,7 +97,9 @@ void LandSShapesProducer::Init(){
   
   minitreeSelected_   = mFitPars.getParameter<std::string>("minitreeSelected");
   minitreeDataDriven_ = mFitPars.getParameter<std::string>("minitreeDataDriven");
-  
+
+  osCutEff_    = mFitPars.getParameter<double>("osCutEff");
+
   vars_        = mFitPars.getParameter<vector<string> >("vars");
   mins_        = mFitPars.getParameter<vector<double> >("mins");
   maxs_        = mFitPars.getParameter<vector<double> >("maxs");
@@ -266,11 +268,12 @@ void LandSShapesProducer::BuildDatasets(size_t i){
   //    cout << "getIsoS      ";
   for(unsigned int ev=0; ev<ddBkgTree_->GetEntries(); ev++){
     ddBkgTree_->GetEntry(ev);
-    if(isOSsig < 0.5) continue;
+    //    if(isOSsig < 0.5) continue;
     myvar_->setVal(myVarAllocator);
     sumWeights_ += myVarWeightAllocator;
-    myvar_weights_->setVal(myVarWeightAllocator);
-    myDDBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+    myvar_weights_->setVal(osCutEff_*myVarWeightAllocator);
+    //if(myVarWeightAllocator == 0) continue;
+    myDDBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),osCutEff_*myVarWeightAllocator);
   }
 
   for(size_t f=0; f<nMcSamples_; f++){
@@ -447,13 +450,13 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
   signalHistWH_->Add(signalHistHH_);
 
-  signalHistWH_->DrawNormalized("hist");
+  signalHistWH_->Draw("hist");
 //  signalHistHH_->DrawNormalized("histsame");
 
-  ddbkgHist_->DrawNormalized("histsame");
+  ddbkgHist_->Draw("histsame");
   for(size_t f=0; f<nMcSamples_; f++)
-    mcbkgHist_[f]->DrawNormalized("histsame");
-  dataHist_->DrawNormalized("histsame");    
+    mcbkgHist_[f]->Draw("histsame");
+  dataHist_->Draw("histsame");    
   leg_->Draw();
 
   canvas_->SaveAs((outFolder_+outputFileName+string(".pdf")).c_str());

@@ -10,6 +10,7 @@
 
 // ROOT includes
 #include "RooMinuit.h"
+#include "RooConstVar.h"
 
 using namespace std;
 using namespace RooFit;
@@ -166,6 +167,8 @@ void TauDileptonPDFBuilderFitter::Init(){
     if(tempFitType[k]==HIGGS3BKG) fitType_.push_back(HIGGS3BKG);
   }
 
+  osCutEff_    = mFitPars.getParameter<double>("osCutEff");
+
   vars_        = mFitPars.getParameter<vector<string> >("vars");
   mins_        = mFitPars.getParameter<vector<double> >("mins");
   maxs_        = mFitPars.getParameter<vector<double> >("maxs");
@@ -214,36 +217,35 @@ void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
   baseIdentifier_="";
   
   // FIXME: hardcoded
-  signalStatError_=8.3; // 6.7; // 8.3 and 0.2 propagation // 6.7 (wh) and 0.2 (hh) propagation  
-  ddbkgEstimate_ = 207.85; //165.4;
-  ddbkgStatError_ = 49.52; //23.7;
+  signalStatError_=8.7; // 6.7; // 8.7 (wh) and 0.2 (hh) propagation 
+  ddbkgStatError_ = 51.13;
   
   switch(fitType_[f]){
   case SM2BKG :
     includeSignal_=false;
     standaloneTTbar_=false;
     baseIdentifier_.append("SM2BKG");
-    mcbkgStatError_ = 6.09; //3.48;
+    mcbkgStatError_ = 17.89; // 2.8*2.8  +0.8*0.8+0.4*0.4+17.6*17.6+1.2*1.2+0.5*0.5 
     break;
   case SM3BKG:
     includeSignal_=false;
     standaloneTTbar_=true;
     baseIdentifier_.append("SM3BKG");
-    ttbarmcbkgStatError_ = 3.4; // 3.0
-    mcbkgStatError_ = 5.05; // 1.76
+    ttbarmcbkgStatError_ = 2.8; // 2.8
+    mcbkgStatError_ = 17.67;// +0.8*0.8+0.4*0.4+17.6*17.6+1.2*1.2+0.5*0.5 
     break;
   case HIGGS2BKG:
     includeSignal_=true;
     standaloneTTbar_=false;
     baseIdentifier_.append("HIGGS2BKG");
-    mcbkgStatError_ = 6.09; // 3.48;
+    mcbkgStatError_ = 17.89; // 2.8*2.8  +0.8*0.8+0.4*0.4+17.6*17.6+1.2*1.2+0.5*0.5 
     break;
   case HIGGS3BKG:
     includeSignal_=true;
     standaloneTTbar_=true;
     baseIdentifier_.append("HIGGS3BKG");
-    ttbarmcbkgStatError_ = 3.4; //3.0;
-    mcbkgStatError_ = 5.05; //1.76;
+    ttbarmcbkgStatError_ = 2.8; // 2.8
+    mcbkgStatError_ = 17.67;// +0.8*0.8+0.4*0.4+17.6*17.6+1.2*1.2+0.5*0.5 
     break;
   default : // Dummy - should never arrive here
     cout<<"Type of fit not available. Check your options motherfucker"<<endl;
@@ -401,11 +403,13 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
   //    cout << "getIsoS      ";
   for(unsigned int ev=0; ev<ddBkgTree_->GetEntries(); ev++){
     ddBkgTree_->GetEntry(ev);
-    if(useOS_ && isOSsig < 0.5) continue;
+    //    if(useOS_ && isOSsig < 0.5) continue;
     myvar_->setVal(myVarAllocator);
     //      sumWeights_ += myVarWeightAllocator;
-    myvar_weights_->setVal(myVarWeightAllocator);
-    myDDBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+    if(useOS_) myvar_weights_->setVal(osCutEff_*myVarWeightAllocator);
+    else myvar_weights_->setVal(myVarWeightAllocator);
+    if(useOS_) myDDBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),osCutEff_*myVarWeightAllocator);
+    else myDDBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
   }
   
   if(standaloneTTbar_){
@@ -593,13 +597,13 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   double ddbkg_N ;  double nddbkg ;
   double ttbarmcbkg_N ;  double nttbarmcbkg ; 
   double mcbkg_N ;  double nmcbkg ; 
-  double data_N  ;   
+  double data_N  ;  double ndata;
   
   if(includeSignal_){ sig_N   = mySignalDS_->numEntries(); nsig   = signalHisto_->sum(kFALSE); }
   ddbkg_N = myDDBkgDS_->numEntries();  nddbkg = ddbkgHisto_->sum(kFALSE);
   if(standaloneTTbar_){ ttbarmcbkg_N = myTTBARMCBkgDS_->numEntries();  nttbarmcbkg = ttbarmcbkgHisto_->sum(kFALSE); }
   mcbkg_N = myMCBkgDS_->numEntries();  nmcbkg = mcbkgHisto_->sum(kFALSE); 
-  data_N  = myDataDS_->numEntries();   
+  data_N  = myDataDS_->numEntries(); ndata = dataHisto_->sum(kFALSE);   
   
   /////////////////////////////////////////////////////////////////////////////////////
   cout<<endl<<"Identifier: "<<identifier_<<", meaning that includeSignal="<<includeSignal_<<", standaloneTTbar="<<standaloneTTbar_<<endl;
@@ -608,7 +612,7 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   cout << myDDBkgDSName_ << " unbinned entries: " << ddbkg_N << ". weighted entries: " << nddbkg << endl;
   if(standaloneTTbar_) cout<< myTTBARMCBkgDSName_ <<" unbinned entries: "<< ttbarmcbkg_N << " , weighted entries : "<< nttbarmcbkg << endl;
   cout << myMCBkgDSName_ << " unbinned entries: " << mcbkg_N << ". weighted entries: " << nmcbkg << endl;
-  cout << myDataDSName_ << " unbinned entries: " << data_N << ". weighted entries: " << dataHisto_->sum(kFALSE) << endl;
+  cout << myDataDSName_ << " unbinned entries: " << data_N << ". weighted entries: " << ndata << endl;
 
   cout<<endl<<endl<<" ******************************************************************************************* "<<endl;
   /////////////////////////////////////////////////////////////////////////////////////
@@ -618,15 +622,13 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   
   double nsignalMean, nsignalSigma, nttbarmcbkgMean, nttbarmcbkgSigma;
   if(includeSignal_) nsignalMean=nsig; nsignalSigma=signalStatError_;
-  double nddbkgMean(ddbkgEstimate_); double nddbkgSigma(ddbkgStatError_);
-  nddbkg = ddbkgEstimate_;
-  cout<<endl<<" ddbkgEstimate = " << ddbkgEstimate_ << ", nddbkgMean = " << nddbkgMean << endl;
+  double nddbkgMean(nddbkg); double nddbkgSigma(ddbkgStatError_);
   if(standaloneTTbar_) nttbarmcbkgMean=nttbarmcbkg; nttbarmcbkgSigma=ttbarmcbkgStatError_;
   double nmcbkgMean(nmcbkg); double nmcbkgSigma(mcbkgStatError_);
   
   if(includeSignal_){
-    if( ! sigVar_         ) sigVar_         = new RooRealVar( "globalSignalVarName",       "globalSignalVarName",         nsig,   0, nsig*2.5);
-    else{ sigVar_->setMin("",0);   sigVar_->setMax("",nsig*3.5);     sigVar_->setVal(nsig); }
+    if( ! sigVar_         ) sigVar_         = new RooRealVar( "globalSignalVarName",       "globalSignalVarName",         nsig,   0, ndata);
+    else{ sigVar_->setMin("",0);   sigVar_->setMax("",ndata);     sigVar_->setVal(nsig); }
     
     if( ! sigMeanVar_   ) sigMeanVar_   = new RooRealVar( "globalSignalMeanVarName",    "globalSignalMeanVarName",      nsignalMean); 
     else{ sigMeanVar_->setVal(nsignalMean);   }
@@ -639,8 +641,8 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   //    if(! ddbkgVar_        ) ddbkgVar_       = new RooRealVar( "globalDDBkgVarName",        "globalDDBkgVarName",          nddbkgMean, 0, nddbkgMean*1.5); 
   //    else{ ddbkgVar_->setMin("",0);   ddbkgVar_->setMax("",nddbkgMean*3.5);     ddbkgVar_->setVal(nddbkgMean);}
   
-  if(! ddbkgVar_        ) ddbkgVar_       = new RooRealVar( "globalDDBkgVarName",        "globalDDBkgVarName",          nddbkg, 0, nddbkg*1.5); 
-  else{ ddbkgVar_->setMin("",0);   ddbkgVar_->setMax("",nddbkg*1.5);     ddbkgVar_->setVal(nddbkg);}
+  if(! ddbkgVar_        ) ddbkgVar_       = new RooRealVar( "globalDDBkgVarName",        "globalDDBkgVarName",          nddbkg, 0, ndata); 
+  else{ ddbkgVar_->setMin("",0);   ddbkgVar_->setMax("",ndata);     ddbkgVar_->setVal(nddbkg);}
   
   if(! ddbkgMeanVar_)     ddbkgMeanVar_   = new RooRealVar( "globalDDBkgMeanVarName", "globalDDBkgMeanVarName",         nddbkgMean); 
   else{ ddbkgMeanVar_->setVal(nddbkgMean);   }
@@ -649,8 +651,8 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   else{ ddbkgSigmaVar_->setVal(nddbkgSigma);   }
   
   if(standaloneTTbar_){
-    if( ! ttbarmcbkgVar_       ) ttbarmcbkgVar_       = new RooRealVar( "globalTTbarMcBkgVarName",        "globalTTbarMcBkgVarName",          nttbarmcbkg, 0, nttbarmcbkg*1.5); 
-    else{ ttbarmcbkgVar_->setMin("",0); ttbarmcbkgVar_->setMax("",nttbarmcbkg*3.5); ttbarmcbkgVar_->setVal(nttbarmcbkg); }
+    if( ! ttbarmcbkgVar_       ) ttbarmcbkgVar_       = new RooRealVar( "globalTTbarMcBkgVarName",        "globalTTbarMcBkgVarName",          nttbarmcbkg, 0, ndata); 
+    else{ ttbarmcbkgVar_->setMin("",0); ttbarmcbkgVar_->setMax("",ndata); ttbarmcbkgVar_->setVal(nttbarmcbkg); }
     
     if( ! ttbarmcbkgMeanVar_   ) ttbarmcbkgMeanVar_   = new RooRealVar( "globalTTbarMcBkgMeanVarName",    "globalTTbarMcBkgMeanVarName",      nttbarmcbkgMean); 
     else{ ttbarmcbkgMeanVar_->setVal(nttbarmcbkgMean);   }
@@ -659,8 +661,8 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
     else{ ttbarmcbkgSigmaVar_->setVal(nttbarmcbkgSigma); }
   }
   
-  if( ! mcbkgVar_       ) mcbkgVar_       = new RooRealVar( "globalMcBkgVarName",        "globalMcBkgVarName",          nmcbkg, 0, nmcbkg*1.5); 
-  else{ mcbkgVar_->setMin("",0); mcbkgVar_->setMax("",nmcbkg*3.5); mcbkgVar_->setVal(nmcbkg); }
+  if( ! mcbkgVar_       ) mcbkgVar_       = new RooRealVar( "globalMcBkgVarName",        "globalMcBkgVarName",          nmcbkg, 0, ndata); 
+  else{ mcbkgVar_->setMin("",0); mcbkgVar_->setMax("",ndata); mcbkgVar_->setVal(nmcbkg); }
   
   if( ! mcbkgMeanVar_   ) mcbkgMeanVar_   = new RooRealVar( "globalMcBkgMeanVarName",    "globalMcBkgMeanVarName",      nmcbkgMean); 
   else{ mcbkgMeanVar_->setVal(nmcbkgMean);   }
@@ -668,11 +670,80 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   if( ! mcbkgSigmaVar_  ) mcbkgSigmaVar_  = new RooRealVar( "globalMcBkgSigmaVarName",   "globalMcBkgSigmaVarName",     nmcbkgSigma ); 
   else{ mcbkgSigmaVar_->setVal(nmcbkgSigma); }
   
+
+
+
+
+
+
+
+  resultsFile_ << endl
+	       << "FIT REPORT FOR " << fitVars_[i]->getVarName() << endl
+	       << "---------------------------------------------------" << endl
+	       << "[Observed] " << ndata << endl 
+	       << "---------------------------------------------------" << endl
+	       << "[H+ expected]" << nsig << endl
+	       << "[DD expected] " <<  nddbkg << endl 
+	       << "[ttbar expected]:" << nttbarmcbkg << " +/- " << nttbarmcbkgSigma << endl
+	       << "[other mc expected]:" << nmcbkg << " +/- " << nmcbkgSigma << endl
+	       << "---------------------------------------------------" << endl;
+
+
+/// test ///  if(includeSignal_){
+/// test ///    if( ! sigVar_         ) sigVar_         = new RooRealVar( "globalSignalVarName",       "globalSignalVarName",         nsig,   0, nsig*2.5);
+/// test ///    else{ sigVar_->setMin("",0);   sigVar_->setMax("",nsig*3.5);     sigVar_->setVal(nsig); }
+/// test ///    
+/// test ///    if( ! sigMeanVar_   ) sigMeanVar_   = new RooRealVar( "globalSignalMeanVarName",    "globalSignalMeanVarName",      nsignalMean); 
+/// test ///    else{ sigMeanVar_->setVal(nsignalMean);   }
+/// test ///    
+/// test ///    if( ! sigSigmaVar_  ) sigSigmaVar_  = new RooRealVar( "globalSignalSigmaVarName",   "globalSignalSigmaVarName",     nsignalSigma ); 
+/// test ///    else{ sigSigmaVar_->setVal(nsignalSigma); }
+/// test ///  }
+/// test ///  
+/// test ///  // FIXME?    
+/// test ///  //    if(! ddbkgVar_        ) ddbkgVar_       = new RooRealVar( "globalDDBkgVarName",        "globalDDBkgVarName",          nddbkgMean, 0, nddbkgMean*1.5); 
+/// test ///  //    else{ ddbkgVar_->setMin("",0);   ddbkgVar_->setMax("",nddbkgMean*3.5);     ddbkgVar_->setVal(nddbkgMean);}
+/// test ///  
+/// test ///  if(! ddbkgVar_        ) ddbkgVar_       = new RooRealVar( "globalDDBkgVarName",        "globalDDBkgVarName",          nddbkg, 0, nddbkg*1.5); 
+/// test ///  else{ ddbkgVar_->setMin("",0);   ddbkgVar_->setMax("",nddbkg*1.5);     ddbkgVar_->setVal(nddbkg);}
+/// test ///  
+/// test ///  if(! ddbkgMeanVar_)     ddbkgMeanVar_   = new RooRealVar( "globalDDBkgMeanVarName", "globalDDBkgMeanVarName",         nddbkgMean); 
+/// test ///  else{ ddbkgMeanVar_->setVal(nddbkgMean);   }
+/// test ///  
+/// test ///  if(! ddbkgSigmaVar_)    ddbkgSigmaVar_  = new RooRealVar( "globalDDBkgSigmaVarName","globalDDBkgSigmaVarName",        nddbkgSigma);  
+/// test ///  else{ ddbkgSigmaVar_->setVal(nddbkgSigma);   }
+/// test ///  
+/// test ///  if(standaloneTTbar_){
+/// test ///    if( ! ttbarmcbkgVar_       ) ttbarmcbkgVar_       = new RooRealVar( "globalTTbarMcBkgVarName",        "globalTTbarMcBkgVarName",          nttbarmcbkg, 0, nttbarmcbkg*1.5); 
+/// test ///    else{ ttbarmcbkgVar_->setMin("",0); ttbarmcbkgVar_->setMax("",nttbarmcbkg*3.5); ttbarmcbkgVar_->setVal(nttbarmcbkg); }
+/// test ///    
+/// test ///    if( ! ttbarmcbkgMeanVar_   ) ttbarmcbkgMeanVar_   = new RooRealVar( "globalTTbarMcBkgMeanVarName",    "globalTTbarMcBkgMeanVarName",      nttbarmcbkgMean); 
+/// test ///    else{ ttbarmcbkgMeanVar_->setVal(nttbarmcbkgMean);   }
+/// test ///    
+/// test ///    if( ! ttbarmcbkgSigmaVar_  ) ttbarmcbkgSigmaVar_  = new RooRealVar( "globalTTbarMcBkgSigmaVarName",   "globalTTbarMcBkgSigmaVarName",     nttbarmcbkgSigma ); 
+/// test ///    else{ ttbarmcbkgSigmaVar_->setVal(nttbarmcbkgSigma); }
+/// test ///  }
+/// test ///  
+/// test ///  if( ! mcbkgVar_       ) mcbkgVar_       = new RooRealVar( "globalMcBkgVarName",        "globalMcBkgVarName",          nmcbkg, 0, nmcbkg*1.5); 
+/// test ///  else{ mcbkgVar_->setMin("",0); mcbkgVar_->setMax("",nmcbkg*3.5); mcbkgVar_->setVal(nmcbkg); }
+/// test ///  
+/// test ///  if( ! mcbkgMeanVar_   ) mcbkgMeanVar_   = new RooRealVar( "globalMcBkgMeanVarName",    "globalMcBkgMeanVarName",      nmcbkgMean); 
+/// test ///  else{ mcbkgMeanVar_->setVal(nmcbkgMean);   }
+/// test ///  
+/// test ///  if( ! mcbkgSigmaVar_  ) mcbkgSigmaVar_  = new RooRealVar( "globalMcBkgSigmaVarName",   "globalMcBkgSigmaVarName",     nmcbkgSigma ); 
+/// test ///  else{ mcbkgSigmaVar_->setVal(nmcbkgSigma); }
   
-  if(includeSignal_) signalConstraint_ = new RooGaussian( signalConstraintName_.c_str(), signalConstraintName_.c_str(), *sigVar_,*sigMeanVar_, *sigSigmaVar_);
-  ddbkgConstraint_ = new RooGaussian( ddbkgConstraintName_.c_str(), ddbkgConstraintName_.c_str(), *ddbkgVar_, *ddbkgMeanVar_, *ddbkgSigmaVar_);   
-  if(standaloneTTbar_) ttbarmcbkgConstraint_ = new RooGaussian( ttbarmcbkgConstraintName_.c_str(), ttbarmcbkgConstraintName_.c_str(), *ttbarmcbkgVar_,*ttbarmcbkgMeanVar_, *ttbarmcbkgSigmaVar_);
-  mcbkgConstraint_ = new RooGaussian( mcbkgConstraintName_.c_str(), mcbkgConstraintName_.c_str(), *mcbkgVar_,*mcbkgMeanVar_, *mcbkgSigmaVar_);
+  
+//  if(includeSignal_) signalConstraint_ = new RooGaussian( signalConstraintName_.c_str(), signalConstraintName_.c_str(), *sigVar_,*sigMeanVar_, *sigSigmaVar_);
+//  ddbkgConstraint_ = new RooGaussian( ddbkgConstraintName_.c_str(), ddbkgConstraintName_.c_str(), *ddbkgVar_, *ddbkgMeanVar_, *ddbkgSigmaVar_);   
+//  if(standaloneTTbar_) ttbarmcbkgConstraint_ = new RooGaussian( ttbarmcbkgConstraintName_.c_str(), ttbarmcbkgConstraintName_.c_str(), *ttbarmcbkgVar_,*ttbarmcbkgMeanVar_, *ttbarmcbkgSigmaVar_);
+//  mcbkgConstraint_ = new RooGaussian( mcbkgConstraintName_.c_str(), mcbkgConstraintName_.c_str(), *mcbkgVar_,*mcbkgMeanVar_, *mcbkgSigmaVar_);
+
+//  if(includeSignal_) signalConstraint_ = new RooGaussian( signalConstraintName_.c_str(), signalConstraintName_.c_str(), *sigVar_,RooConst(nsignalMean), RooConst(nsignalSigma));
+  if(includeSignal_) signalConstraint_ = new RooGaussian( signalConstraintName_.c_str(), signalConstraintName_.c_str(), *sigVar_,RooConst(0), RooConst(nsignalMean));
+  ddbkgConstraint_ = new RooGaussian( ddbkgConstraintName_.c_str(), ddbkgConstraintName_.c_str(), *ddbkgVar_, RooConst(nddbkgMean), RooConst(nddbkgSigma));   
+  if(standaloneTTbar_) ttbarmcbkgConstraint_ = new RooGaussian( ttbarmcbkgConstraintName_.c_str(), ttbarmcbkgConstraintName_.c_str(), *ttbarmcbkgVar_,RooConst(nttbarmcbkgMean), RooConst(nttbarmcbkgSigma));
+  mcbkgConstraint_ = new RooGaussian( mcbkgConstraintName_.c_str(), mcbkgConstraintName_.c_str(), *mcbkgVar_,RooConst(nmcbkgMean), RooConst(nmcbkgSigma));
     
   
   // build the sum model and model with constrains ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -779,6 +850,12 @@ void TauDileptonPDFBuilderFitter::DoPerVariableFit(size_t i){
   default : // Dummy - should never arrive here
     cout<<"Neither binned not unbinned. Check your options motherfucker."<<endl;
   }
+  
+  if(includeSignal_) resultsFile_ << "[H+] "      << sigVar_->getVal() << " +/- " << sigVar_->getError()  << endl;
+  resultsFile_       << "[DD] "      << ddbkgVar_->getVal() << " +/- " << ddbkgVar_->getError()  << endl;
+  if(standaloneTTbar_) resultsFile_       << "[ttbar] "      << ttbarmcbkgVar_->getVal() << " +/- " << ttbarmcbkgVar_->getError()  << endl;
+  resultsFile_       << "[other mc] "      << mcbkgVar_->getVal() << " +/- " << mcbkgVar_->getError()  << endl;
+  resultsFile_       << "---------------------------------------------------" << endl;;
 }
 
 void TauDileptonPDFBuilderFitter::DrawPerVariableFit(size_t i){
@@ -920,6 +997,17 @@ void TauDileptonPDFBuilderFitter::DoCombinedLikelihoodFit(){
   cout<<      "********************** IDENTIFIER: " << identifier_ << "**************************" << endl;
   cout<<endl<<"FINAL FIT RESULTS"<<endl<<endl;
   myNllFitResult_->Print("v");//myRes->printToStream(resultsFile);
+  resultsFile_<<endl<<"*******************************************************************************"<<endl;
+  resultsFile_<<      "*******************************************************************************"<<endl;
+  resultsFile_<<      "********************** IDENTIFIER: " << identifier_ << "**************************" << endl;
+  resultsFile_<<endl<<"FINAL FIT RESULTS"<<endl<<endl;
+
+  if(includeSignal_) resultsFile_ << "[H+] "      << sigVar_->getVal() << " +/- " << sigVar_->getError()  << endl;
+  resultsFile_       << "[DD] "      << ddbkgVar_->getVal() << " +/- " << ddbkgVar_->getError()  << endl;
+  if(standaloneTTbar_) resultsFile_       << "[ttbar] "      << ttbarmcbkgVar_->getVal() << " +/- " << ttbarmcbkgVar_->getError()  << endl;
+  resultsFile_       << "[other mc] "      << mcbkgVar_->getVal() << " +/- " << mcbkgVar_->getError()  << endl;
+  resultsFile_       << "---------------------------------------------------" << endl;;
+
   cout<<endl<<"*******************************************************************************"<<endl;
   cout<<      "*******************************************************************************"<<endl;
   

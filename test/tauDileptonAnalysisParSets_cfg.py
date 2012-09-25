@@ -31,11 +31,11 @@ LandSShapesProducerParSet = cms.PSet(
     ddBkgSampleName      = cms.string("tau-fake3"),
     mcBkgSampleName      = cms.vstring( "tt->ltau3", "tt~->ll3", "singleTop3", "di-boson3", "Z->ee,mumu3", "Z->tautau3" ),
     
-    
+    osCutEff               = cms.double(0.577749097), #223.82/387.4),
     #    "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson"
 
-    minitreeSelected   = cms.string("lep_tau_Selected"),
-    minitreeDataDriven = cms.string("lep_tau_DataDriven"),
+    minitreeSelected   = cms.string("m_tau_Selected"),
+    minitreeDataDriven = cms.string("m_tau_DataDriven"),
 
     uncSources         = cms.vstring("jes", "unc" ),
     
@@ -69,7 +69,7 @@ TauDileptonPDFBuilderFitterParSet = cms.PSet(
     
     baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
     baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
-    
+
     signalFileNameWH   = cms.string("out-wh-pythia-m120.root"),
     signalFileNameHH   = cms.string("out-hh-pythia-m120.root"),
     
@@ -78,13 +78,15 @@ TauDileptonPDFBuilderFitterParSet = cms.PSet(
     ttbarmcBkgFileName = cms.string("out-ttbar_mutau.root"),
     mcBkgFileName      = cms.string("out-mcbkg.root"),
     
-    minitreeSelected   = cms.string("lep_tau_Selected"),
-    minitreeDataDriven = cms.string("lep_tau_DataDriven"),
+    minitreeSelected   = cms.string("m_tau_Selected"),
+    minitreeDataDriven = cms.string("m_tau_DataDriven"),
 
-    #fitType     = cms.vstring( HIGGS2BKG = 0, HIGGS3BKG = 1, SM2BKG = 2, SM3BKG = 3)
-    fitType     = cms.vint32( 1),
+    #fitType     = cms.vstring( HIGGS2BKG = 2, HIGGS3BKG = 3, SM2BKG = 0, SM3BKG = 1)
+    fitType     = cms.vint32( 3),
     #, 2, 3, 0),
     useOS       = cms.bool(True),
+
+    osCutEff               = cms.double(0.577749097), #223.82/387.4),
     
     vars        = cms.vstring( "pt_l", "pt_met", "multiplicity_j", "btagmultiplicity_j", "Dphi_tau_met"),
     mins        = cms.vdouble(      0,      0,        2,                0,                    0            ),

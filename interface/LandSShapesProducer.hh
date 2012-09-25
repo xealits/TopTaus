@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: LandSShapesProducer.hh,v 1.5 2012/09/21 16:39:53 vischia Exp $                                                                                                       
+  \version  $Id: LandSShapesProducer.hh,v 1.6 2012/09/23 14:21:56 vischia Exp $                                                                                                       
 */
 
 
@@ -131,7 +131,7 @@ private:
   vector<TFile*> mcBkgFile_;
   TFile* dataFile_;
 
-
+  double osCutEff_;
 
   // Input trees
   TTree* signalTreeWH_;
