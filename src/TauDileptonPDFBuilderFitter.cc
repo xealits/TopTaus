@@ -366,8 +366,9 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     
     
     // Cross section
-    // FIXME: hardcoded
-    double fhh(0.05*0.05) , fhw( 2*(1-0.05)*0.05) ;      
+    // FIXME: hardcoded. Must bring it to normal values
+    //    double fhh(0.05*0.05) , fhw( 2*(1-0.05)*0.05) ;      
+    double fhh(0.1*0.1) , fhw( 2*(1-0.1)*0.1) ;      
     // Get WH events
     signalTreeWH_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
     signalTreeWH_->SetBranchAddress("weight", &myVarWeightAllocator);
@@ -768,7 +769,8 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
     if(includeSignal_){
       if(standaloneTTbar_){
 	sumModel_ = new RooAddPdf( sumModelName.c_str(),sumModelExp.c_str(), RooArgList( *u_signalModel_, *u_ddbkgModel_, *u_ttbarmcbkgModel_, *u_mcbkgModel_), RooArgList( *sigVar_, *ddbkgVar_, *ttbarmcbkgVar_, *mcbkgVar_) );
-	model_ = new RooProdPdf(sumModelConstrainedName.c_str(),sumModelConstrainedExp.c_str(), RooArgSet(*sumModel_, *signalConstraint_, *ddbkgConstraint_, *ttbarmcbkgConstraint_, *mcbkgConstraint_));
+	//	model_ = new RooProdPdf(sumModelConstrainedName.c_str(),sumModelConstrainedExp.c_str(), RooArgSet(*sumModel_, *signalConstraint_, *ddbkgConstraint_, *ttbarmcbkgConstraint_, *mcbkgConstraint_));
+	model_ = new RooProdPdf(sumModelConstrainedName.c_str(),sumModelConstrainedExp.c_str(), RooArgSet(*sumModel_, *ddbkgConstraint_, *ttbarmcbkgConstraint_, *mcbkgConstraint_));
       }
       else{
 	sumModel_ = new RooAddPdf( sumModelName.c_str(),sumModelExp.c_str(), RooArgList( *u_signalModel_, *u_ddbkgModel_, *u_mcbkgModel_), RooArgList( *sigVar_, *ddbkgVar_, *mcbkgVar_) );

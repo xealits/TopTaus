@@ -280,3 +280,69 @@ estimation from data : no-btag 477.2
 estimation from MC : no b-tag 379.079 1 b-tag 0
 Residual estimation from MC : no b-tag 43.0196 1 b-tag 0
 Data after Res subtraction: 434.1804
+
+
+
+
+################## RECOMPUTATION WJETS CORRECTED ##################################
+########################################  FULL 2011 GOLDEN JSON LUMI ################################
+
+Fakes for mutau, 4904/pb
+------------------------
+l+jets 1tau: 150.5 +/- 2.0
+l+jets OS: 103.8 +/- 1.6
+
+wjets 1tau: 108.5 +/- 30.7
+wjets OS: 62.4 +/- 23.5
+
+just l+jets OS/1tau: 0.69 +/- 0.04
+all fakes OS/1tau: 0.63074 +/- 0.02973 (binomial deltaE = sqrt{ (1-e)e/TOT }
+
+double os = 103.8; double tau = 150.5; double e = os/tau; double deltaE = sqrt( (1-e)*e/tau  )
+double os = 166.2; double tau = 263.5; double e = os/tau; double deltaE = sqrt( (1-e)*e/tau  )
+
+
+MC expected (1tau): 263.5 +/- 30.765077604          sqrt(quadratic sum)
+MC expected (OS): 166.2 +/- 23.554405108            sqrt(quadratic sum)
+MC residual expected (1tau): 
+
+
+ 
+	      
+
+(1tau)
+Data avg: 320.1428 +/- 44.6148
+MC avg: 279.01 +/- 66.344
+ResMC avg: 31.9072 +/- 9.8352 
+                     error on ratio delta(A/) = sqrt( (eA.B)^2 + (A.eB)^2 ) / B^2
+                     error on product delta(AB) = sqrt( (eA.B)^2 + (A.eB)^2 )
+
+double a=320.1428; double ea=44.6148; double b=0.69; double eb=0.04; double r=a*b; double deltaR = sqrt(   ea*ea*b*b + a*a*eb*eb )
+double a=279.01; double ea=66.344; double b=0.69; double eb=0.04; double r=a*b; double deltaR = sqrt(   ea*ea*b*b + a*a*eb*eb )
+
+
+(OS)
+Data avg: 220.90 +/- 33.34 (15%)
+MC avg: 192.52 +/- 47.12 (24%)
+
+
+-----
+DiJet
+-----
+./tempTraiedFiles/TrainedDiJetDataPFlow_pt20_new.mva ./tempTraiedFiles/TrainedDiJetMCPFlow_pt20_new.mva
+
+estimation from data : no-btag 297.6
+estimation from MC : no b-tag 212.666 1 b-tag 0
+Residual estimation from MC : no b-tag 22.072 1 b-tag 0
+Data after Res subtraction: 275.528
+
+
+-----
+WMu
+-----
+/lustre/data3/cmslocal/vischia/MyTMVA_temporaneo/tempTraiedFiles/TrainedWMuDataPFlow_pt20.mva /lustre/data3/cmslocal/vischia/MyTMVA_temporaneo/tempTraiedFiles/TrainedWMuMCPFlow_pt20.mva
+entries 239546
+estimation from data : no-btag 406.5
+estimation from MC : no b-tag 345.354 1 b-tag 0
+Residual estimation from MC : no b-tag 41.7424 1 b-tag 0
+Data after Res subtraction: 364.7576
