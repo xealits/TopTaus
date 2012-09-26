@@ -31,7 +31,7 @@ LandSShapesProducerParSet = cms.PSet(
     ddBkgSampleName      = cms.string("tau-fake3"),
     mcBkgSampleName      = cms.vstring( "tt->ltau3", "tt~->ll3", "singleTop3", "di-boson3", "Z->ee,mumu3", "Z->tautau3" ),
     
-    osCutEff               = cms.double(0.577749097), #223.82/387.4),
+    osCutEff               = cms.double(0.69*220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
     #    "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson"
 
     minitreeSelected   = cms.string("m_tau_Selected"),
@@ -86,16 +86,26 @@ TauDileptonPDFBuilderFitterParSet = cms.PSet(
     #, 2, 3, 0),
     useOS       = cms.bool(True),
 
-    osCutEff               = cms.double(0.577749097), #223.82/387.4),
+    osCutEff               = cms.double(0.69*220.92/242.915),
+    cHiggsBR               = cms.double(0.1),
     
-    vars        = cms.vstring( "pt_l", "pt_met", "multiplicity_j", "btagmultiplicity_j", "Dphi_tau_met"),
-    mins        = cms.vdouble(      0,      0,        2,                0,                    0            ),
-    maxs        = cms.vdouble(    200,    300,      7,                4,                    4.8          ),
-    bins        = cms.vint32(      20,     30,       5,                4,                    10           ),
-    hmin        = cms.vdouble(      0,      0,        0,                0,                    0            ),
-    hmax        = cms.vdouble(    100,    100,      400,              600,                  200          ),
-    unbinned    = cms.vint32(       0,      0,        0,                0,                    0            ),
-    smoothOrder = cms.vint32(       5,      5,        0,                0,                    2            )
+    vars        = cms.vstring( "pt_l",  "multiplicity_j", "btagmultiplicity_j",  "Dphi_tau_met"    ),
+    mins        = cms.vdouble(      0,       2,                0,                     0            ),
+    maxs        = cms.vdouble(    200,     7,                4,                     4.8            ),
+    bins        = cms.vint32(      20,      5,                4,                     10            ),
+    hmin        = cms.vdouble(      0,       0,                0,                     0            ),
+    hmax        = cms.vdouble(    100,     400,              600,                   200            ),
+    unbinned    = cms.vint32(       0,       0,                0,                     0            ),
+    smoothOrder = cms.vint32(       5,       0,                0,                     2            )
+
+#"pt_met",
+#     0,  
+#   300,  
+#    30,  
+#     0,  
+#   100,  
+#     0,  
+#     5,  
 
 #"rc_t",
 #     0,

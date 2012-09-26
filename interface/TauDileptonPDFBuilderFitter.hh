@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.9 2012/09/24 14:59:53 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.10 2012/09/25 00:16:28 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -148,6 +148,7 @@ private:
   vector<Int_t> smoothOrder_;
 
   double osCutEff_;
+  double cHiggsBR_;
 
   TCanvas* canvas_;
 

@@ -320,6 +320,8 @@ ResMC avg: 31.9072 +/- 9.8352
 double a=320.1428; double ea=44.6148; double b=0.69; double eb=0.04; double r=a*b; double deltaR = sqrt(   ea*ea*b*b + a*a*eb*eb )
 double a=279.01; double ea=66.344; double b=0.69; double eb=0.04; double r=a*b; double deltaR = sqrt(   ea*ea*b*b + a*a*eb*eb )
 
+data stat
+double a=320.1428; double ea=0; double b=0.69; double eb=0.04; double r=a*b; double deltaR = sqrt(   ea*ea*b*b + a*a*eb*eb )
 
 (OS)
 Data avg: 220.90 +/- 33.34 (15%)

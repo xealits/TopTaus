@@ -146,6 +146,8 @@ void TauDileptonPDFBuilderFitter::Init(){
   baseDataDir_      = mFitPars.getParameter<std::string>("baseDataDir");
 
   useOS_            = mFitPars.getParameter<bool>("useOS");  
+  cHiggsBR_         = mFitPars.getParameter<double>("cHiggsBR");
+
   signalFileNameWH_   = mFitPars.getParameter<std::string>("signalFileNameWH");
   signalFileNameHH_   = mFitPars.getParameter<std::string>("signalFileNameHH");
   dataFileName_       = mFitPars.getParameter<std::string>("dataFileName");
@@ -218,7 +220,7 @@ void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
   
   // FIXME: hardcoded
   signalStatError_=8.7; // 6.7; // 8.7 (wh) and 0.2 (hh) propagation 
-  ddbkgStatError_ = 51.13;
+  ddbkgStatError_ =35.71;// total error.stat +syst  
   
   switch(fitType_[f]){
   case SM2BKG :
@@ -367,8 +369,8 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     
     // Cross section
     // FIXME: hardcoded. Must bring it to normal values
-    //    double fhh(0.05*0.05) , fhw( 2*(1-0.05)*0.05) ;      
-    double fhh(0.1*0.1) , fhw( 2*(1-0.1)*0.1) ;      
+    double fhh(cHiggsBR_*cHiggsBR_) , fhw( 2*(1-cHiggsBR_)*cHiggsBR_) ;      
+    //double fhh(0.1*0.1) , fhw( 2*(1-0.1)*0.1) ;      
     // Get WH events
     signalTreeWH_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
     signalTreeWH_->SetBranchAddress("weight", &myVarWeightAllocator);
@@ -620,7 +622,6 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   
   
   // Building the constrained models for signal mc bkg ///////////////////////////////////////////////////////////////////////////////////////////////
-  
   double nsignalMean, nsignalSigma, nttbarmcbkgMean, nttbarmcbkgSigma;
   if(includeSignal_) nsignalMean=nsig; nsignalSigma=signalStatError_;
   double nddbkgMean(nddbkg); double nddbkgSigma(ddbkgStatError_);
@@ -945,7 +946,7 @@ void TauDileptonPDFBuilderFitter::DoPerVariableLikelihoodFit(size_t i){
   if(includeSignal_){
     contourPlot_ = minuit.contour( *ddbkgVar_, *sigVar_,1,2,3);
     contourPlot_->GetYaxis()->SetTitle("N(H+), m_{H} = 120 GeV/c2");
-    contourPlot_->GetYaxis()->SetRangeUser(0,600);
+    contourPlot_->GetYaxis()->SetRangeUser(0,200);
   }
   else 
     if(standaloneTTbar_){
@@ -960,7 +961,7 @@ void TauDileptonPDFBuilderFitter::DoPerVariableLikelihoodFit(size_t i){
     }
   contourPlot_->SetTitle("");
   contourPlot_->GetXaxis()->SetTitle("N^{DD}_{Bkg}");
-  contourPlot_->GetXaxis()->SetRange(0,400);
+  contourPlot_->GetXaxis()->SetRangeUser(0,400);
   contourPlot_->Draw();
   canvas_->SaveAs((outFolder_+string("contour_")+identifier_+string(".pdf")).c_str());
   canvas_->SaveAs((outFolder_+string("contour_")+identifier_+string(".png")).c_str());
@@ -1018,7 +1019,7 @@ void TauDileptonPDFBuilderFitter::DoCombinedLikelihoodFit(){
   if(includeSignal_){
     contourPlot_ = minuit.contour( *ddbkgVar_ , *sigVar_,1,2,3);
     contourPlot_->GetYaxis()->SetTitle("N(t#bar{t}#rightarrow l#tau)");
-    contourPlot_->GetYaxis()->SetRangeUser(0,600);
+    contourPlot_->GetYaxis()->SetRangeUser(0,200);
   }
   else{
     if(standaloneTTbar_){
