@@ -371,7 +371,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
 
   
-  string outputFileName = outputFileName_ + string("_") + outputFileNameSuffix_[currentMassPoint_] + fitVars_[i]->getVarName();
+  string outputFileName = outputFileName_ + string("_") + outputFileNameSuffix_[currentMassPoint_] + string("_") + fitVars_[i]->getVarName();
   TFile* outputFile = new TFile((outFolder_+outputFileName+string(".root")).c_str(), "RECREATE");
   
   canvas_->cd();
@@ -422,10 +422,10 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   }
   //    ///////////////////////////////////////////////////////////////////
     
-//  mcbkgHist_.push_back( (TH1*)mcbkgHist_[0]->Clone(  mcBkgSampleName_[nMcSamples_].c_str()) );
-//  mcbkgHist_.push_back( (TH1*)mcbkgHist_[0]->Clone(  mcBkgSampleName_[nMcSamples_+1].c_str()) );
-//  mcbkgHist_[nMcSamples_]->Reset();
-//  mcbkgHist_[nMcSamples_+1]->Reset();
+  mcbkgHist_.push_back( (TH1*)mcbkgHist_[3]->Clone(  mcBkgSampleName_[nMcSamples_].c_str()) );
+  mcbkgHist_.push_back( (TH1*)mcbkgHist_[3]->Clone(  mcBkgSampleName_[nMcSamples_+1].c_str()) );
+  mcbkgHist_[nMcSamples_]->Scale(0.4/mcbkgHist_[nMcSamples_]->Integral());
+  mcbkgHist_[nMcSamples_+1]->Scale(50.6/mcbkgHist_[nMcSamples_+1]->Integral());
 
 
 
@@ -472,8 +472,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   ddbkgHist_->SetName(ddBkgSampleName_.c_str());
   for(size_t f=0; f<nMcSamples_; f++)
     mcbkgHist_[f]->SetName(mcBkgSampleName_[f].c_str());
-//  mcbkgHist_[nMcSamples_]->SetName(mcBkgSampleName_[nMcSamples_].c_str());
-//  mcbkgHist_[nMcSamples_+1]->SetName(mcBkgSampleName_[nMcSamples_+1].c_str());
+  mcbkgHist_[nMcSamples_]->SetName(mcBkgSampleName_[nMcSamples_].c_str());
+  mcbkgHist_[nMcSamples_+1]->SetName(mcBkgSampleName_[nMcSamples_+1].c_str());
   
   dataHist_->SetName(dataSampleName_.c_str());
   

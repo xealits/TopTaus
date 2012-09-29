@@ -1,4 +1,3 @@
-
 #ifndef _TauDileptonPDFBuilderFitter_hh
 #define _TauDileptonPDFBuilderFitter_hh
 
@@ -8,7 +7,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.10 2012/09/25 00:16:28 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.11 2012/09/26 18:29:44 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
