@@ -1,7 +1,8 @@
-#include "TopTauDileptonUtils.hh"
+#include "LIP/TopTaus/interface/Utilities.hh"
 
 // System headers
 #include <iostream>
+#include <cmath>
 
 namespace utilities{
   
@@ -12,7 +13,7 @@ namespace utilities{
       ret = sqrt(temp);
     }
     return ret;
-  };
+  }
   
   
   double StatUtils::getErrorFraction( double a,double b, double err_a, double err_b){
@@ -22,7 +23,7 @@ namespace utilities{
       ret = sqrt(temp);
     }
     return ret;
-  };
+  }
 
 
 

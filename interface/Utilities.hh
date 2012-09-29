@@ -6,6 +6,7 @@
 
 // System headers
 #include <string>
+#include <cstdlib>
 
 // #include "EventSelection/test/RunOverMiniEvents.h" // FIXME was included but it is not necessary at all. Remove after successful compilation
 
@@ -14,6 +15,8 @@
 namespace utilities{
   
   class StatUtils { // FIXME: perhaps put them as inline for quick access?
+
+  protected:
     // Error fractions
     double getErrorFraction( double a,double b);
     double getErrorFraction( double a,double b, double err_a, double err_b);
@@ -22,6 +25,7 @@ namespace utilities{
   };
   
   class EditorialUtils {
+  protected:
     // prepare document for pdf
     void prepareDocument(FILE * myfile);
   }; 
@@ -29,7 +33,7 @@ namespace utilities{
   
   class GenericUtils {
     
-  public : 
+  public :  // FIXME: protected?
     inline std::string get_env_var( std::string const & key ) {                                 
       char * val;                                                                        
       val = getenv( key.c_str() );                                                       

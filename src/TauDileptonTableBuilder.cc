@@ -1,17 +1,25 @@
 #include "LIP/TopTaus/interface/TauDileptonTableBuilder.hh"
 
+#if !defined(__CINT__) || defined(__MAKECINT__)
+
+#include "LIP/TopTaus/interface/CommonDefinitions.hh"
 // System headers
-#include <math.h>
+#include <cmath>
+#include <map>
+
+#endif
 
 // ROOT headers
 #include <TLegendEntry.h>
+#include <TFile.h>
+#include <TH2D.h>
 
 
-#include "LIP/TopTaus/interface/CommonDefinitions.hh"
+using namespace commondefinitions;  
 
 // FIXME: clean code
 namespace tableutils{
-  
+
   enum dataPrecision { D1=1, D2=2, D3=3 };
   
   
