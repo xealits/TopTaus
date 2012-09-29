@@ -1,44 +1,39 @@
-#ifndef  _CommonDefinitions_hh
-#define  _CommonDefinitions_hh
-
+#ifndef _CommonDefinitions_hh
+#define _CommonDefinitions_hh
 // FIXME: honestly, most of this stuff should be moved to cfg files (numerical parameters)
 // Sample enums and such can (and should) remain here
 // xsecs and their errors should remain here. Or in SampleProcessor.
 
-#if !defined(__CINT__) || defined(__MAKECINT__)
-
-#endif
-
 namespace commondefinitions{
   
-  //double LUM_ERR            = 0.045; // check it 
-  double LUM_ERR            = 0.022;
+  //extern double LUM_ERR            = 0.045; // check it 
+  extern double LUM_ERR            ;
   
-  double TAU_ID_ERR         = 0.06;  
+  extern double TAU_ID_ERR         ;  
   
-  double QCD_CS_ERR         = 0.50;
+  extern double QCD_CS_ERR         ;
   
-  double TTBAR_CS_ERR       = 0.10;   
+  extern double TTBAR_CS_ERR       ;   
   
-  double SINGLETOP_CS_ERR   = 0.08;
-  double OTHER_CS_ERR       = 0.04;
+  extern double SINGLETOP_CS_ERR   ;
+  extern double OTHER_CS_ERR       ;
   
-  double LEP_EFF_ERR        = 0.02;        // 3 electrons, 2 muons
-  double TAU_MISSID_ERR     = 0.15;        // BULSHIT //0.15;
+  extern double LEP_EFF_ERR        ;        // 3 electrons, 2 muons
+  extern double TAU_MISSID_ERR     ;        // BULSHIT //0.15;
   
-  double WJETS_CS_ERR       = 0.05;
+  extern double WJETS_CS_ERR       ;
   
-  //  double BTAG_EFF_ERR       = 0.10;
-  double BTAG_EFF_ERR       = 0.;
+  //  extern double BTAG_EFF_ERR       = 0.10;
+  extern double BTAG_EFF_ERR       ;
   
-  double SIGNAL_EFF_ERR     = 0.04;  
+  extern double SIGNAL_EFF_ERR     ;  
   
-  double BTAG_eff_R_ = 0.809769;
-  double BTAG_eff_F_ = 0.164637;
+  extern double BTAG_eff_R_ ;
+  extern double BTAG_eff_F_ ;
   
   
-  double XSEC_EXP_    = 165;//164.4;       //  was 158, 164.4  2.8 (stat.)  11.9 (syst.)  7.4
-  double XSEC_EXP_ERR_= 16./165;          // 14.29/164.4 => exp error, theoretical -> 165 +4/-9 +/-7
+  extern double XSEC_EXP_   ;//164.4;       //  was 158, 164.4  2.8 (stat.)  11.9 (syst.)  7.4
+  extern double XSEC_EXP_ERR_;          // 14.29/164.4 => exp error, theoretical -> 165 +4/-9 +/-7
   
   // SFb_error taken from https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFb-mujet_payload.txt (2011 prescription)
   
@@ -49,7 +44,7 @@ namespace commondefinitions{
   //   Tagger: TCHEL within 30 < pt < 670 GeV, abs(eta) < 2.4, x = pt
   //   SFb = 0.603913*((1.+(0.286361*x))/(1.+(0.170474*x)));
   //*/
-  //   double SFb_error[] = {
+  //   extern double SFb_error[] = {
   //     0.0244956,
   //     0.0237293,
   //     0.0180131,
@@ -70,27 +65,12 @@ namespace commondefinitions{
     Tagger: CSVL within 30 < pt < 670 GeV, abs(eta) < 2.4, x = pt
     SFb = 1.02658*((1.+(0.0195388*x))/(1.+(0.0209145*x)));
   */
-  double SFb_error[] = {
-    0.0188743,
-    0.0161816,
-    0.0139824,
-    0.0152644,
-    0.0161226,
-    0.0157396,
-    0.0161619,
-    0.0168747,
-    0.0257175,
-    0.026424,
-    0.0264928,
-    0.0315127,
-    0.030734,
-    0.0438259 };
-  
+  extern double SFb_error[];  
   
   
   /*  
-      double BTAG_eff_R_ = 0.812272;
-      double BTAG_eff_F_ = 0.17211;
+      extern double BTAG_eff_R_ = 0.812272;
+      extern double BTAG_eff_F_ = 0.17211;
   */
   
   
@@ -257,22 +237,22 @@ namespace commondefinitions{
   
   
   //RUNNING CONDITIONS ////////////////////////////////////////////////
-  //bool run2012_         = true;
-  bool run2012_         = false;
-  bool APPLY_MT_CUT_    = false;
-  //bool APPLY_MT_CUT_    = true;
-  bool applybtagweight_ = false;
-  bool MODE_ = STARTING_AT_LJETS_; //MODE_ = STARTING_AT_LJETSPLUSMET_;
-  /*bool  eChONmuChOFF_ = true; */ 
-  bool eChONmuChOFF_ = false;
-  //double LUM_ = 2217.089; //RUN2011A
-  // double LUM_ =  3929; // /pb  //RUN2011A+RUN2011B
-  //  double LUM_ = 4064;
-  // double LUM_ = 4625.21;
-  double LUM_ = 4903.;
-  int BTAGIND_; double BTAG_CUT_;
+  //extern bool run2012_         = true;
+  extern bool run2012_         ;
+  extern bool APPLY_MT_CUT_    ;
+  //extern bool APPLY_MT_CUT_    = true;
+  extern bool applybtagweight_ ;
+  extern bool MODE_ ; //MODE_ = STARTING_AT_LJETSPLUSMET_;
+  /*extern bool  eChONmuChOFF_ = true; */ 
+  extern bool eChONmuChOFF_ ;
+  //extern double LUM_ = 2217.089; //RUN2011A
+  // extern double LUM_ =  3929; // /pb  //RUN2011A+RUN2011B
+  //  extern double LUM_ = 4064;
+  // extern double LUM_ = 4625.21;
+  extern double LUM_;
+  extern int BTAGIND_; extern double BTAG_CUT_;
   /////////////////////////////////////////////////////////////////////
 
-} // namespace commondefinitions
-  
+ // namespace commondefinitions
+}  
 #endif // _CommonDefinitions_hh
