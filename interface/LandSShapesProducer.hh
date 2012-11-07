@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: LandSShapesProducer.hh,v 1.6 2012/09/23 14:21:56 vischia Exp $                                                                                                       
+  \version  $Id: LandSShapesProducer.hh,v 1.7 2012/09/25 00:16:28 vischia Exp $                                                                                                       
 */
 
 
@@ -50,9 +50,11 @@
 #include "TLegend.h"
 #endif
 
+#include "LIP/TopTaus/interface/Utilities.hh"
+
 #include "LIP/TopTaus/interface/FitVar.hh"
 
-class LandSShapesProducer{
+class LandSShapesProducer: protected utilities::EditorialUtils, utilities::StatUtils {
   
 public :
   
@@ -74,6 +76,10 @@ private:
   void BuildDatasets(size_t);
   //  void BuildPDFs(size_t);
   void DrawTemplates(size_t);
+
+  void StorePerMassSignalShapes();
+  void DrawSignalShapesComparison();
+
   // void BuildConstrainedModels(size_t);
   //  void DoPerVariableFit(size_t);
   //  void DrawPerVariableFit(size_t);
@@ -96,6 +102,7 @@ private:
   TStyle* myStyle_;
 
   // Fit settings
+  bool produceOnly_;
   bool includeSignal_;
   bool standaloneTTbar_;
   string baseIdentifier_;
@@ -120,9 +127,21 @@ private:
   string dataSampleName_;
   string ddBkgSampleName_;
   vector<string> mcBkgSampleName_;
-  
+
+  string signalFancySampleNameWH_;
+  string dataFancySampleName_;
+  string ddBkgFancySampleName_;
+  vector<string> mcBkgFancySampleName_;
+
+  Int_t signalSampleColor_;
+  Int_t ddBkgSampleColor_;
+  vector<Int_t> mcBkgSampleColor_;
+
   TString minitreeSelected_;
   TString minitreeDataDriven_;
+
+  vector<TString> systComponents_;
+  vector<TString> systFancyComponents_;
   
   // Input files
   TFile* signalFileWH_;
@@ -133,12 +152,18 @@ private:
 
   double osCutEff_;
 
-  // Input trees
+  // Input base trees
   TTree* signalTreeWH_;
   TTree* signalTreeHH_; 
   TTree* ddBkgTree_;
   vector<TTree*> mcBkgTree_;
   TTree* dataTree_;
+
+  // Input syst trees
+  vector<TTree*> signalSystTreeWH_;
+  vector<TTree*> signalSystTreeHH_; 
+  vector<TTree*> ddBkgSystTree_;
+  vector<vector<TTree*> > mcBkgSystTree_;
 
   vector<string> uncSources_;
   size_t currentMassPoint_;
@@ -146,6 +171,8 @@ private:
   // Variables parameters
   size_t nVars_;
   size_t nMcSamples_;
+  size_t nSysts_;
+
   vector<FitVar*> fitVars_;  
   vector<string> vars_;
   vector<double> mins_;
@@ -185,6 +212,11 @@ private:
   vector<string> myMCBkgDSName_ ;
   string myDataDSName_       ;
 
+  vector<string> mySignalSystDSNameWH_     ;
+  vector<string> mySignalSystDSNameHH_     ;
+  vector<string> myDDBkgSystDSName_      ;
+  vector<vector<string> > myMCBkgSystDSName_ ;
+
   string signalVarNameWH_     ;
   string signalVarNameHH_     ;
   vector<string> ddbkgVarName_      ;
@@ -195,6 +227,12 @@ private:
   RooDataHist* ddbkgHisto_     ;
   vector<RooDataHist*> mcbkgHisto_     ;
   RooDataHist* dataHisto_      ;
+
+  vector<RooDataHist*> signalSystHistoWH_    ;
+  vector<RooDataHist*> signalSystHistoHH_    ;
+  vector<RooDataHist*> ddbkgSystHisto_     ;
+  vector<vector<RooDataHist*> > mcbkgSystHisto_     ;
+ 
   
   RooDataSet* mySignalDSWH_      ;
   RooDataSet* mySignalDSHH_      ;
@@ -202,12 +240,45 @@ private:
   vector<RooDataSet*> myMCBkgDS_         ; 
   RooDataSet* myDataDS_          ; 
 
+  vector<RooDataSet*> mySignalSystDSWH_      ;
+  vector<RooDataSet*> mySignalSystDSHH_      ;
+  vector<RooDataSet*> myDDBkgSystDS_         ; // Reduced datasets
+  vector<vector<RooDataSet*> >myMCBkgSystDS_         ; 
+
+
+  vector<vector<TH1*> > signalShapesToCompare_;
+  vector<vector<TH1*> > signalShapesToCompareHH_;
+  vector<vector<TH1*> > signalShapesToCompareWH_;
+
+  vector<TH1*> perMassPointSignalShapesToCompare_;
+  vector<TH1*> perMassPointSignalShapesToCompareHH_;
+  vector<TH1*> perMassPointSignalShapesToCompareWH_;
+
   TH1* signalHistWH_;
   TH1* signalHistHH_;
   TH1* ddbkgHist_;
+  TH1* ddbkgHistUp_;  // These are for showing the error bands. Not for LandS
+  TH1* ddbkgHistDown_;// These are for showing the error bands. Not for LandS
   vector<TH1*> mcbkgHist_;
   TH1* dataHist_;
+
+  TH1* signalHistWHStatUp_;
+  TH1* signalHistHHStatUp_;
+  TH1* ddbkgHistStatUp_;
+  vector<TH1*> mcbkgHistStatUp_;
+  TH1* dataHistStatUp_;
+
+  TH1* signalHistWHStatDown_;
+  TH1* signalHistHHStatDown_;
+  TH1* ddbkgHistStatDown_;
+  vector<TH1*> mcbkgHistStatDown_;
+  TH1* dataHistStatDown_;
+
   
+  vector<TH1*> signalSystHistWH_;
+  vector<TH1*> signalSystHistHH_;
+  vector<TH1*> ddbkgSystHist_;
+  vector<vector<TH1*> > mcbkgSystHist_;
 
   TLegend* leg_;
   
