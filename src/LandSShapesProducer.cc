@@ -1483,6 +1483,25 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   } // End if !produceOnly_
 
 
+  
+  
+  // Rescale stat plots
+  signalHistWHStatUp_->Scale(signalHistWH_->Integral()/signalHistWHStatUp_->Integral());
+  signalHistHHStatUp_->Scale(signalHistHH_->Integral()/signalHistHHStatUp_->Integral());
+  ddbkgHistStatUp_->Scale(ddbkgHist_->Integral()/ddbkgHistStatUp_->Integral());
+  for(size_t f=0; f<nMcSamples_+2; f++)
+    mcbkgHistStatUp_[f]->Scale(mcbkgHist_[f]->Integral()/mcbkgHistStatUp_[f]->Integral());
+  dataHistStatUp_->Scale(dataHist_->Integral()/dataHistStatUp_->Integral());
+
+  signalHistWHStatDown_->Scale(signalHistWH_->Integral()/signalHistWHStatDown_->Integral());
+  signalHistHHStatDown_->Scale(signalHistHH_->Integral()/signalHistHHStatDown_->Integral());
+  ddbkgHistStatDown_->Scale(ddbkgHist_->Integral()/ddbkgHistStatDown_->Integral());
+  for(size_t f=0; f<nMcSamples_+2; f++)
+    mcbkgHistStatDown_[f]->Scale(mcbkgHist_[f]->Integral()/mcbkgHistStatDown_[f]->Integral());
+  dataHistStatDown_->Scale(dataHist_->Integral()/dataHistStatDown_->Integral());
+  
+  
+  
   // Set names
   signalHistWH_->SetName(signalSampleNameWH_.c_str());
   signalHistHH_->SetName(signalSampleNameHH_.c_str());
@@ -1510,7 +1529,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 //  mcbkgHist_[nMcSamples_]->SetName(mcBkgSampleName_[nMcSamples_].c_str());
 //  mcbkgHist_[nMcSamples_+1]->SetName(mcBkgSampleName_[nMcSamples_+1].c_str());
   dataHistStatDown_->SetName(dataHist_->GetName()+TString("_")+dataHist_->GetName()+TString("_StatDown"));
-  
+
   // Syst case
   for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
     signalSystHistWH_[a]->SetName(signalSampleNameWH_.c_str()+systFancyComponents_[a]);
