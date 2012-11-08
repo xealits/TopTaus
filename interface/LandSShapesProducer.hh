@@ -8,14 +8,15 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: LandSShapesProducer.hh,v 1.8 2012/11/07 16:27:19 vischia Exp $                                                                                                       
+  \version  $Id: LandSShapesProducer.hh,v 1.9 2012/11/08 14:56:18 vischia Exp $                                                                                                       
 
   TODO List:
   - generalize to array of samples, simplifying the approach and maintainability
   - de-zero the zeroed bins (Pedro suggestion: essentially RooFit (->combine tool) does not like zero bins -> set them to 1E-06
   - multidimensional shapes
   - MVA shapes (creating an external reweighter and not this code)
-            
+  - Define enum for classifying, replacing isSignal_, isFromData_, isDD_
+  - Define a class for all the sample properties, like names, files, trees, classifications, colours and so on
 
 */
 
@@ -101,7 +102,7 @@ private:
   // Output paths
   string outFolder_;
   string outputFileName_;
-  vector<string> outputFileNameSuffix_;
+  vector<string> massPointName_;
   string resultsFileName_; // not used. txt.
   ofstream resultsFile_;
   streambuf* streamToFile_;
@@ -110,75 +111,52 @@ private:
   TStyle* myStyle_;
 
   // Fit settings
+  //  bool includeSignal_;
+  //  bool standaloneTTbar_;
+  
+  // Display/produce settings
+  // Can't do simultaneously at the moment because of renormalization of histograms,
+  // so must revise the code for dropping the need of that
   bool produceOnly_;
-  bool includeSignal_;
-  bool standaloneTTbar_;
-  string baseIdentifier_;
-  double signalStatError_;
-  double ddbkgEstimate_;
-  double ddbkgStatError_;
-  double ttbarmcbkgStatError_;
-  double mcbkgStatError_;
-
+  
   // Input paths
-  TString   baseMCDir_;
-  TString   baseDataDir_;
+  TString   baseDir_;
 
-  vector<string> signalFileNameWH_;
-  vector<string> signalFileNameHH_;
-  TString dataFileName_;
-  TString ddBkgFileName_;
-  vector<TString> mcBkgFileName_;
+  vector<Int_t> isFromData_;
+  vector<Int_t> isDDbkg_;
+  vector<Int_t> isSignal_;
 
-  string signalSampleNameWH_;
-  string signalSampleNameHH_;
-  string dataSampleName_;
-  string ddBkgSampleName_;
-  vector<string> mcBkgSampleName_;
+  vector<TString> inputFileName_; // Build from mass ranges
 
-  string signalFancySampleNameWH_;
-  string dataFancySampleName_;
-  string ddBkgFancySampleName_;
-  vector<string> mcBkgFancySampleName_;
+  vector<string> sampleName_;
 
-  Int_t signalSampleColor_;
-  Int_t ddBkgSampleColor_;
-  vector<Int_t> mcBkgSampleColor_;
+  vector<string> fancySampleName_;
 
-  TString minitreeSelected_;
-  TString minitreeDataDriven_;
+  vector<Int_t> sampleColour_; // Non for data.
+  vector<Int_t> sampleFillStyle_; // Non for data.
+
+  TString minitree_;
 
   vector<TString> systComponents_;
   vector<TString> systFancyComponents_;
   
   // Input files
-  TFile* signalFileWH_;
-  TFile* signalFileHH_;
-  TFile* ddBkgFile_;
-  vector<TFile*> mcBkgFile_;
-  TFile* dataFile_;
+  vector<TFile*> inputFile_;
 
-  double osCutEff_;
+  double osCutEff_; // For DD rescaling
 
   // Input base trees
-  TTree* signalTreeWH_;
-  TTree* signalTreeHH_; 
-  TTree* ddBkgTree_;
-  vector<TTree*> mcBkgTree_;
-  TTree* dataTree_;
+  vector<TTree*> inputTree_;
 
   // Input syst trees
-  vector<TTree*> signalSystTreeWH_;
-  vector<TTree*> signalSystTreeHH_; 
-  vector<TTree*> ddBkgSystTree_;
-  vector<vector<TTree*> > mcBkgSystTree_;
+  vector<vector<TTree*> > systTree_;
 
   vector<string> uncSources_;
   size_t currentMassPoint_;
   size_t nMassPoints_;
   // Variables parameters
   size_t nVars_;
-  size_t nMcSamples_;
+  size_t nSamples_;
   size_t nSysts_;
 
   vector<FitVar*> fitVars_;  
@@ -194,18 +172,6 @@ private:
   TCanvas* canvas_;
 
   // RooFit stuff
-  RooRealVar* sigVar_             ;              
-  RooRealVar* sigMeanVar_         ;              
-  RooRealVar* sigSigmaVar_        ;              
-  RooRealVar* ttbarmcbkgVar_      ;
-  RooRealVar* ttbarmcbkgMeanVar_  ;
-  RooRealVar* ttbarmcbkgSigmaVar_ ;
-  RooRealVar* mcbkgVar_           ;               
-  RooRealVar* mcbkgMeanVar_       ;         
-  RooRealVar* mcbkgSigmaVar_      ;         
-  RooRealVar* ddbkgVar_           ;              
-  RooRealVar* ddbkgMeanVar_       ;         
-  RooRealVar* ddbkgSigmaVar_      ;        
 
   // Per-var stuff
   string identifier_;
@@ -214,45 +180,17 @@ private:
   RooRealVar* myvar_weights_ ;
   RooRealVar* isOSvar_       ;
   
-  string mySignalDSNameWH_     ;
-  string mySignalDSNameHH_     ;
-  string myDDBkgDSName_      ;
-  vector<string> myMCBkgDSName_ ;
-  string myDataDSName_       ;
+  vector<string> myDSName_ ;
 
-  vector<string> mySignalSystDSNameWH_     ;
-  vector<string> mySignalSystDSNameHH_     ;
-  vector<string> myDDBkgSystDSName_      ;
-  vector<vector<string> > myMCBkgSystDSName_ ;
+  vector<vector<string> > mySystDSName_ ; // must have dummy name for zero component (data)
 
-  string signalVarNameWH_     ;
-  string signalVarNameHH_     ;
-  vector<string> ddbkgVarName_      ;
-  string mcbkgVarName_ ;
-  
-  RooDataHist* signalHistoWH_    ;
-  RooDataHist* signalHistoHH_    ;
-  RooDataHist* ddbkgHisto_     ;
-  vector<RooDataHist*> mcbkgHisto_     ;
-  RooDataHist* dataHisto_      ;
+  vector<RooDataHist*> histo_     ;
 
-  vector<RooDataHist*> signalSystHistoWH_    ;
-  vector<RooDataHist*> signalSystHistoHH_    ;
-  vector<RooDataHist*> ddbkgSystHisto_     ;
-  vector<vector<RooDataHist*> > mcbkgSystHisto_     ;
- 
-  
-  RooDataSet* mySignalDSWH_      ;
-  RooDataSet* mySignalDSHH_      ;
-  RooDataSet* myDDBkgDS_         ; // Reduced datasets
-  vector<RooDataSet*> myMCBkgDS_         ; 
-  RooDataSet* myDataDS_          ; 
+  vector<vector<RooDataHist*> > systHisto_     ;
 
-  vector<RooDataSet*> mySignalSystDSWH_      ;
-  vector<RooDataSet*> mySignalSystDSHH_      ;
-  vector<RooDataSet*> myDDBkgSystDS_         ; // Reduced datasets
-  vector<vector<RooDataSet*> >myMCBkgSystDS_         ; 
+  vector<RooDataSet*> myDS_         ; 
 
+  vector<vector<RooDataSet*> >mySystDS_         ; 
 
   vector<vector<TH1*> > signalShapesToCompare_;
   vector<vector<TH1*> > signalShapesToCompareHH_;
@@ -262,31 +200,15 @@ private:
   vector<TH1*> perMassPointSignalShapesToCompareHH_;
   vector<TH1*> perMassPointSignalShapesToCompareWH_;
 
-  TH1* signalHistWH_;
-  TH1* signalHistHH_;
-  TH1* ddbkgHist_;
   TH1* ddbkgHistUp_;  // These are for showing the error bands. Not for LandS
   TH1* ddbkgHistDown_;// These are for showing the error bands. Not for LandS
-  vector<TH1*> mcbkgHist_;
-  TH1* dataHist_;
+  vector<TH1*> hist_;
 
-  TH1* signalHistWHStatUp_;
-  TH1* signalHistHHStatUp_;
-  TH1* ddbkgHistStatUp_;
-  vector<TH1*> mcbkgHistStatUp_;
-  TH1* dataHistStatUp_;
+  vector<TH1*> histStatUp_;
 
-  TH1* signalHistWHStatDown_;
-  TH1* signalHistHHStatDown_;
-  TH1* ddbkgHistStatDown_;
-  vector<TH1*> mcbkgHistStatDown_;
-  TH1* dataHistStatDown_;
-
+  vector<TH1*> histStatDown_;
   
-  vector<TH1*> signalSystHistWH_;
-  vector<TH1*> signalSystHistHH_;
-  vector<TH1*> ddbkgSystHist_;
-  vector<vector<TH1*> > mcbkgSystHist_;
+  vector<vector<TH1*> > systHist_;
 
   TLegend* leg_;
   
