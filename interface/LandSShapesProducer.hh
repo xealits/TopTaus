@@ -8,11 +8,19 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: LandSShapesProducer.hh,v 1.7 2012/09/25 00:16:28 vischia Exp $                                                                                                       
+  \version  $Id: LandSShapesProducer.hh,v 1.8 2012/11/07 16:27:19 vischia Exp $                                                                                                       
+
+  TODO List:
+  - generalize to array of samples, simplifying the approach and maintainability
+  - de-zero the zeroed bins (Pedro suggestion: essentially RooFit (->combine tool) does not like zero bins -> set them to 1E-06
+  - multidimensional shapes
+  - MVA shapes (creating an external reweighter and not this code)
+            
+
 */
 
 
-// FIXME: configure for all the different datacards 
+
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
 
