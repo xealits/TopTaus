@@ -4,7 +4,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: produceLandSShapes.cc,v 1.2 2012/09/19 11:11:09 vischia Exp $                                                                                                       
+  \version  $Id: produceLandSShapes.cc,v 1.3 2012/09/19 18:37:32 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/LandSShapesProducer.hh"
@@ -45,7 +45,6 @@ int main(int argc, char* argv[])
   LandSShapesProducer* myProducer = new LandSShapesProducer(parSet);
   myProducer->Produce();
   cout << "Shapes producer reached its natural end" << endl;
-
 
   return 0;
   

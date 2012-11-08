@@ -7,7 +7,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.11 2012/09/26 18:29:44 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.12 2012/09/29 00:19:12 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -46,12 +46,13 @@
 #include "TH1.h"
 #include "TLegend.h"
 
+#include "LIP/TopTaus/interface/Utilities.hh"
 #include "LIP/TopTaus/interface/FitVar.hh"
 
 #endif
 
 
-class TauDileptonPDFBuilderFitter{
+class TauDileptonPDFBuilderFitter: protected utilities::EditorialUtils {
   
 public :
   typedef enum {SM2BKG=0, SM3BKG, HIGGS2BKG, HIGGS3BKG, N_FITTYPES} FITTYPES;

@@ -11,6 +11,7 @@
 // ROOT includes
 #include "RooMinuit.h"
 #include "RooConstVar.h"
+#include <THStack.h>
 
 using namespace std;
 using namespace RooFit;
@@ -190,10 +191,11 @@ void TauDileptonPDFBuilderFitter::Init(){
     fitVars_.push_back(new FitVar(vars_[i], mins_[i], maxs_[i], bins_[i], hmin_[i], hmax_[i], unbinned_[i], smoothOrder_[i]));
       
   // Set canvas
+  SetTDRStyle();
   canvas_ = new TCanvas("canvas","My plots ",0,0,1000,500);
+  //  canvas_->SetCanvasColor(kWhite);
   canvas_->cd();
   
-  resultsFile_.open ((outFolder_+resultsFileName_).c_str());
  
   //  Uncomment following line in order to redirect stdout to file
   //  streamToFile_ = std::cout.rdbuf(resultsFile_.rdbuf());
@@ -252,7 +254,7 @@ void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
   default : // Dummy - should never arrive here
     cout<<"Type of fit not available. Check your options motherfucker"<<endl;
   }
-
+  resultsFile_.open ((outFolder_+resultsFileName_+string("_")+baseIdentifier_+string(".txt")).c_str());
   likelihoodVector_.clear();
 }
 
@@ -360,9 +362,10 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     // Temp variables for setting branch addresses
     double myVarAllocator, myVarWeightAllocator;
     double isOSsig;
-
-  // Signal dataset from WH and HH
-  if(includeSignal_){
+    
+    double ftt(1);
+    // Signal dataset from WH and HH
+    if(includeSignal_){
     //  mySignalDS     = new RooDataSet(mySignalDSName.c_str(),mySignalDSName.c_str(), signalTree_, RooArgSet(*myvar,*myvar_weights),0,"weight" );
     mySignalDS_         = new RooDataSet(mySignalDSName_.c_str(),mySignalDSName_.c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight"); // This constructor does not accept the cut parameter
     
@@ -370,6 +373,8 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     // Cross section
     // FIXME: hardcoded. Must bring it to normal values
     double fhh(cHiggsBR_*cHiggsBR_) , fhw( 2*(1-cHiggsBR_)*cHiggsBR_) ;      
+    ftt=1;//-fhh-fhw;
+
     //double fhh(0.1*0.1) , fhw( 2*(1-0.1)*0.1) ;      
     // Get WH events
     signalTreeWH_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
@@ -406,7 +411,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
   //    cout << "getIsoS      ";
   for(unsigned int ev=0; ev<ddBkgTree_->GetEntries(); ev++){
     ddBkgTree_->GetEntry(ev);
-    //    if(useOS_ && isOSsig < 0.5) continue;
+    if(useOS_ && isOSsig < 0.5) continue;
     myvar_->setVal(myVarAllocator);
     //      sumWeights_ += myVarWeightAllocator;
     if(useOS_) myvar_weights_->setVal(osCutEff_*myVarWeightAllocator);
@@ -427,9 +432,10 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
       if(useOS_ && isOSsig < 0.5) continue;
       myvar_->setVal(myVarAllocator);
       //      sumWeights_ += myVarWeightAllocator;
-      myvar_weights_->setVal(myVarWeightAllocator);
-      myTTBARMCBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+      myvar_weights_->setVal(myVarWeightAllocator*ftt);
+      myTTBARMCBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator*ftt);
     }
+    ftt=1; // reset it to 1 for the mcBkg not to be scaled in case it does not contain ttbar
   }
 
   
@@ -444,8 +450,8 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
       if(useOS_ && isOSsig < 0.5) continue;
       myvar_->setVal(myVarAllocator);
       //      sumWeights_ += myVarWeightAllocator;
-      myvar_weights_->setVal(myVarWeightAllocator);
-      myMCBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+      myvar_weights_->setVal(myVarWeightAllocator*ftt);
+      myMCBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator*ftt);
     }
 
   myDataDS_         = new RooDataSet(myDataDSName_.c_str(),myDataDSName_.c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight"); // This constructor does not accept the cut parameter
@@ -508,6 +514,9 @@ void TauDileptonPDFBuilderFitter::BuildPDFs(size_t i){
 }
 
 void TauDileptonPDFBuilderFitter::DrawTemplates(size_t i){
+
+  SetTDRStyle();
+
   canvas_->cd();
   canvas_->Clear();
 
@@ -515,40 +524,48 @@ void TauDileptonPDFBuilderFitter::DrawTemplates(size_t i){
   if(includeSignal_){
     signalHist_ = signalHisto_->createHistogram(fitVars_[i]->getVarName().c_str(),fitVars_[i]->getBins() );
     signalHist_->SetOption("0000");
-    signalHist_->SetLineWidth(3);
     signalHist_->SetTitle("");
     signalHist_->GetYaxis()->SetTitle("a.u.");
-    signalHist_->GetYaxis()->SetTitleOffset(1.5);
-    signalHist_->SetLineColor(kGreen);
+    signalHist_->GetYaxis()->SetTitleOffset(0.9);
+//    signalHist_->SetLineWidth(3);
+//    signalHist_->SetLineColor(kGreen);
     signalHist_->SetFillColor(kGreen);
+    signalHist_->SetMarkerColor(kGreen);
+    signalHist_->SetMarkerStyle(21);
   }
   ///////////////////////////////////////////////////////////////////////////////
   
   
   // dd bkg histogram /////////////////////////////////////////////////
   ddbkgHist_ = ddbkgHisto_->createHistogram(fitVars_[i]->getVarName().c_str(),fitVars_[i]->getBins() );
-  ddbkgHist_->SetLineColor(kRed);
+  //ddbkgHist_->SetLineWidth(3);
+  //ddbkgHist_->SetLineColor(kRed);
   ddbkgHist_->SetFillColor(kRed);
-  ddbkgHist_->SetLineWidth(3);
-  ddbkgHist_->SetFillStyle(3017);
+  ddbkgHist_->SetFillStyle(1001);
+  ddbkgHist_->SetMarkerColor(kRed);
+  ddbkgHist_->SetMarkerStyle(21);
   /////////////////////////////////////////////////////////////////////
   
   // ttbar mc bkg histogram ////////////////////////////////////////////////
   if(standaloneTTbar_){
     ttbarmcbkgHist_ = ttbarmcbkgHisto_->createHistogram(fitVars_[i]->getVarName().c_str(),fitVars_[i]->getBins() );   
-    ttbarmcbkgHist_->SetLineColor(kYellow);
+    //ttbarmcbkgHist_->SetLineWidth(3);
+    //ttbarmcbkgHist_->SetLineColor(kYellow);
     ttbarmcbkgHist_->SetFillColor(kYellow);
-    ttbarmcbkgHist_->SetLineWidth(3);
-    ttbarmcbkgHist_->SetFillStyle(3017);
+    ttbarmcbkgHist_->SetFillStyle(1001);
+    ttbarmcbkgHist_->SetMarkerColor(kYellow);
+    ttbarmcbkgHist_->SetMarkerStyle(21);
   }
   ///////////////////////////////////////////////////////////////////
   
   // mc bkg histogram ////////////////////////////////////////////////
   mcbkgHist_ = mcbkgHisto_->createHistogram(fitVars_[i]->getVarName().c_str(),fitVars_[i]->getBins() );   
-  mcbkgHist_->SetLineColor(kBlack);
+  //mcbkgHist_->SetLineWidth(3);
+  //mcbkgHist_->SetLineColor(kBlack);
   mcbkgHist_->SetFillColor(kBlack);
-  mcbkgHist_->SetLineWidth(3);
-  mcbkgHist_->SetFillStyle(3017);
+  mcbkgHist_->SetFillStyle(1001);
+  mcbkgHist_->SetMarkerColor(kBlack);
+  mcbkgHist_->SetMarkerStyle(21);
   ///////////////////////////////////////////////////////////////////
   
   leg_ = new TLegend(0.3,0.665,0.85,0.86,NULL,"brNDC");
@@ -565,30 +582,58 @@ void TauDileptonPDFBuilderFitter::DrawTemplates(size_t i){
   leg_->AddEntry(mcbkgHist_,"mc bkg template","f");
   
   canvas_->cd(); 
-  // Order chosen to have good Y axis boundaries
-  if(standaloneTTbar_){
-    if(fitVars_[i]->getHmax()){ ttbarmcbkgHist_->SetMaximum(fitVars_[i]->getHmax()); ttbarmcbkgHist_->SetMinimum(fitVars_[i]->getHmin());} 
-    ttbarmcbkgHist_->DrawNormalized("hist");
-    mcbkgHist_     ->DrawNormalized("histsame");    
-  }
-  else {
-    if(fitVars_[i]->getHmax()){ mcbkgHist_->SetMaximum(fitVars_[i]->getHmax()); mcbkgHist_->SetMinimum(fitVars_[i]->getHmin());} 
-    mcbkgHist_->DrawNormalized("hist");
-  }
-  
+
+
+
+  // Stacked drawing --------------------------------------
+  THStack hs("hs","stacked");
+
+//  if(standaloneTTbar_)
+//    ttbarmcbkgHist_->Scale(1);
+//  mcbkgHist_->Scale(1);
+//  if(includeSignal_)
+//    signalHist_->Scale(1);
+//  ddbkgHist_->Scale(1);
+
+
+  if(standaloneTTbar_)
+    hs.Add(ttbarmcbkgHist_);
+  hs.Add(mcbkgHist_);
   if(includeSignal_)
-    signalHist_->DrawNormalized("histsame");
-  ddbkgHist_->DrawNormalized("histsame");
-  
-  if(standaloneTTbar_) ttbarmcbkgHist_->DrawNormalized("histsame"); // in order for it to be on top and thus viewable for discriminating it from higgs in rc_t plots
-  
+    hs.Add(signalHist_);
+  hs.Add(ddbkgHist_);
+  hs.Draw();
+
+  // End stacked drawing -----------------------------------------
+
+
+
+
+  // Normal drawing -----------------------------------------
+//  // Order chosen to have good Y axis boundaries
+//  if(standaloneTTbar_){
+//    if(fitVars_[i]->getHmax()){ ttbarmcbkgHist_->SetMaximum(fitVars_[i]->getHmax()); ttbarmcbkgHist_->SetMinimum(fitVars_[i]->getHmin());} 
+//    ttbarmcbkgHist_->DrawNormalized("hist");
+//    mcbkgHist_     ->DrawNormalized("histsame");    
+//  }
+//  else {
+//    if(fitVars_[i]->getHmax()){ mcbkgHist_->SetMaximum(fitVars_[i]->getHmax()); mcbkgHist_->SetMinimum(fitVars_[i]->getHmin());} 
+//    mcbkgHist_->DrawNormalized("hist");
+//  }
+//  
+//  if(includeSignal_)
+//    signalHist_->DrawNormalized("histsame");
+//  ddbkgHist_->DrawNormalized("histsame");
+//  
+//  if(standaloneTTbar_) ttbarmcbkgHist_->DrawNormalized("histsame"); // in order for it to be on top and thus viewable for discriminating it from higgs in rc_t plots
+  // End normal drawing --------------------------------------  
   leg_->Draw();
   canvas_->SaveAs((outFolder_+string("shapes_")+identifier_+string(".pdf")).c_str());
   canvas_->SaveAs((outFolder_+string("shapes_")+identifier_+string(".png")).c_str());
   canvas_->cd();
   canvas_->Clear();
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
+
 }
 
 void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
@@ -862,28 +907,66 @@ void TauDileptonPDFBuilderFitter::DoPerVariableFit(size_t i){
 }
 
 void TauDileptonPDFBuilderFitter::DrawPerVariableFit(size_t i){
+  
+  SetTDRStyle();
+
   canvas_->cd();  
   canvas_->Clear();  
   myFrame_ = myvar_->frame();
   myFrame_->SetTitle("");
   myFrame_->GetXaxis()->SetTitle(fitVars_[i]->getVarName().c_str());
   myFrame_->GetYaxis()->SetTitle("Events");
-  dataHisto_->plotOn(myFrame_);
-  model_->plotOn(myFrame_);
+  myFrame_->GetYaxis()->SetTitleOffset(0.9);
+  dataHisto_->plotOn(myFrame_,Name("data"));
+  model_->plotOn(myFrame_,Name("total"));
   //    model->plotOn(myFrame, RooFit::LineStyle(kDashed), RooFit::Components(*signalModel), RooFit::LineColor(kGreen));   
-  if(includeSignal_) 
-    switch(fitVars_[i]->getUnbinned()){
-    case 1 : // Unbinned
-      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(*u_signalModel_), RooFit::LineColor(kGreen));   
-      break;
-    case 0:  // Binned (w/ or w/out smoothing)
-      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(*b_signalModel_), RooFit::LineColor(kGreen));   
-      break;
-    default : // Dummy - should never arrive here
-      cout<<"Neither binned not unbinned. Check your options motherfucker."<<endl;
+
+  if(includeSignal_){
+    if(standaloneTTbar_){
+      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(b_signalModel_->GetName()), RooFit::LineColor(kGreen+2), RooFit::FillColor(kGreen+2), RooFit::FillStyle(1020), RooFit::DrawOption("l"), RooFit::NormRange("MB"), Name("signal"));   
+      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components((TString(b_signalModel_->GetName())+TString(",")+TString(b_ttbarmcbkgModel_->GetName()))), RooFit::LineColor(kAzure+10), RooFit::FillColor(kAzure+10), RooFit::FillStyle(1020), RooFit::DrawOption("l"), RooFit::NormRange("MB"), Name("ttbarbkg"));   
+      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(TString(b_signalModel_->GetName())+TString(",")+TString(b_ttbarmcbkgModel_->GetName())+TString(",")+TString(b_ddbkgModel_->GetName())), RooFit::LineColor(kRed), RooFit::FillColor(kRed), RooFit::FillStyle(1020), RooFit::DrawOption("l"), RooFit::NormRange("MB"), Name("ddbkg"));   
+      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(TString(b_signalModel_->GetName())+TString(",")+TString(b_ttbarmcbkgModel_->GetName())+TString(",")+TString(b_ddbkgModel_->GetName())+TString(",")+TString(b_mcbkgModel_->GetName())), RooFit::LineColor(49), RooFit::FillColor(49), RooFit::FillStyle(1020), RooFit::DrawOption("l"), RooFit::NormRange("MB"), Name("mcbkg"));   
+    } else{
+      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(b_signalModel_->GetName()), RooFit::LineColor(kGreen+2), RooFit::FillColor(kGreen+2), RooFit::FillStyle(1020), RooFit::DrawOption("l"), RooFit::NormRange("MB"), Name("signal"));   
+      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(TString(b_signalModel_->GetName())+TString(",")+TString(b_ddbkgModel_->GetName())), RooFit::LineColor(kRed), RooFit::FillColor(kRed), RooFit::FillStyle(1020), RooFit::DrawOption("l"), RooFit::NormRange("MB"), Name("ddbkg"));   
+      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(TString(b_signalModel_->GetName())+TString(",")+TString(b_ddbkgModel_->GetName())+TString(",")+TString(b_mcbkgModel_->GetName())), RooFit::LineColor(49), RooFit::FillColor(49), RooFit::FillStyle(1020), RooFit::DrawOption("l"), RooFit::NormRange("MB"), Name("mcbkg"));   
     }
-  
+  }
+  else{
+    if(standaloneTTbar_){
+      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(b_ttbarmcbkgModel_->GetName()), RooFit::LineColor(kAzure+10), RooFit::FillColor(kAzure+10), RooFit::FillStyle(1020), RooFit::DrawOption("l"), RooFit::NormRange("MB"), Name("ttbarbkg"));   
+      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(TString(b_ttbarmcbkgModel_->GetName())+TString(",")+TString(b_ddbkgModel_->GetName())), RooFit::LineColor(kRed), RooFit::FillColor(kRed), RooFit::FillStyle(1020), RooFit::DrawOption("l"), RooFit::NormRange("MB"), Name("ddbkg"));   
+      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(TString(b_ttbarmcbkgModel_->GetName())+TString(",")+TString(b_ddbkgModel_->GetName())+TString(",")+TString(b_mcbkgModel_->GetName())), RooFit::LineColor(49), RooFit::FillColor(49), RooFit::FillStyle(1020), RooFit::DrawOption("l"), RooFit::NormRange("MB"), Name("mcbkg"));   
+    } else{
+      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(b_ddbkgModel_->GetName()), RooFit::LineColor(kRed), RooFit::FillColor(kRed), RooFit::FillStyle(1020), RooFit::DrawOption("l"), RooFit::NormRange("MB"), Name("ddbkg"));   
+      model_->plotOn(myFrame_, RooFit::LineStyle(kDashed), RooFit::Components(TString(b_ddbkgModel_->GetName())+TString(",")+TString(b_mcbkgModel_->GetName())), RooFit::LineColor(49), RooFit::FillColor(49), RooFit::FillStyle(1020), RooFit::DrawOption("l"), RooFit::NormRange("MB"), Name("mcbkg"));   
+    } 
+    }
+
+
   myFrame_->Draw();
+
+  //  TLegend *leg=new TLegend(0.3,0.665,0.85,0.86,NULL,"brNDC");//new TLegend(0.2,0.82,0.55,0.85);
+  //  TLegend *leg = new TLegend(0.7147651,0.6346154,0.9446309,0.9353147,NULL,"brNDC");
+  TLegend *leg = new TLegend(0.75,0.6346154,1.,1.,NULL,"brNDC");
+
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  leg->SetTextFont(42);
+  //  leg->SetNColumns(3);
+  leg->AddEntry("data","Data","p");
+  leg->AddEntry("total","Total","l");
+  if(includeSignal_)
+    leg->AddEntry("signal","Signal","l");
+  leg->AddEntry("ddbkg","DD bkg","l");
+  if(standaloneTTbar_)
+    leg->AddEntry("ttbarbkg","TTbar MC bkg","l");
+  leg->AddEntry("mcbkg","Other MC bkg","l");
+
+  
+  leg->Draw("same");
+
   canvas_->SaveAs((outFolder_+string("modelFit_")+identifier_+string(".pdf")).c_str());
   canvas_->SaveAs((outFolder_+string("modelFit_")+identifier_+string(".png")).c_str());
   canvas_->cd();
@@ -939,10 +1022,12 @@ void TauDileptonPDFBuilderFitter::DoPerVariableLikelihoodFit(size_t i){
   myNllFitResult_->Print("v");
   cout<<endl<<"*******************************************************************************"<<endl;
   cout<<      "*******************************************************************************"<<endl;
+
+  SetTDRStyle();
   
   canvas_->cd();
   canvas_->Clear();
-  
+
   if(includeSignal_){
     contourPlot_ = minuit.contour( *ddbkgVar_, *sigVar_,1,2,3);
     contourPlot_->GetYaxis()->SetTitle("N(H+), m_{H} = 120 GeV/c2");
@@ -962,6 +1047,7 @@ void TauDileptonPDFBuilderFitter::DoPerVariableLikelihoodFit(size_t i){
   contourPlot_->SetTitle("");
   contourPlot_->GetXaxis()->SetTitle("N^{DD}_{Bkg}");
   contourPlot_->GetXaxis()->SetRangeUser(0,400);
+  contourPlot_->GetYaxis()->SetTitleOffset(0.9);
   contourPlot_->Draw();
   canvas_->SaveAs((outFolder_+string("contour_")+identifier_+string(".pdf")).c_str());
   canvas_->SaveAs((outFolder_+string("contour_")+identifier_+string(".png")).c_str());

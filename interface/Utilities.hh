@@ -10,6 +10,11 @@
 
 // #include "EventSelection/test/RunOverMiniEvents.h" // FIXME was included but it is not necessary at all. Remove after successful compilation
 
+class THStack;
+class TGraphErrors;
+class TGraphAsymmErrors;
+class TH1;
+
 #endif
 
 namespace utilities{
@@ -22,12 +27,18 @@ namespace utilities{
     double getErrorFraction( double a,double b, double err_a, double err_b);
     double getErrorFractionWithSqrt(double a, double b);
     double getErrorFractionWithSqrt(double a, double b, double err_a, double err_b);
+    void normalize(THStack& hstack, double norm);
+    void getErrorBands(THStack& stack, TGraphErrors& myError);
+    void getErrorBands(TH1& histo, TGraphErrors& myError);
+    void getErrorBands(TH1& histo, TH1& varUp, TH1& varDown, TGraphAsymmErrors& myError);
   };
   
   class EditorialUtils {
   protected:
     // prepare document for pdf
     void prepareDocument(FILE * myfile);
+
+    void SetTDRStyle();
   }; 
   
   
