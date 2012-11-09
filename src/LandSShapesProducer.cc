@@ -40,7 +40,7 @@ void LandSShapesProducer::Init(){
   //  uncSources_.clear();
   systComponents_.clear();
   systFancyComponents_.clear();
-  nMcSamples_ = 0;
+  nSamples_ = 0;
   nMassPoints_ = 0;
   currentMassPoint_ = 999;
   fitVars_.clear();
@@ -71,10 +71,12 @@ void LandSShapesProducer::Init(){
 
   outFolder_        = mFitPars.getParameter<std::string>("outFolder");
   outputFileName_  = mFitPars.getParameter<std::string>("outputFileName");
-  massPointName_  = mFitPars.getParameter<vector<std::string> >("outputFileNameSuffix");
+  massPointName_  = mFitPars.getParameter<vector<std::string> >("massPointName");
   nMassPoints_ = massPointName_.size();
-  baseMCDir_        = mFitPars.getParameter<std::string>("baseMCDir");
-  baseDataDir_      = mFitPars.getParameter<std::string>("baseDataDir");
+
+  vector<string>baseDirTemp = mFitPars.getParameter<vector<std::string> >("baseDir");
+  for(size_t f=0; f<baseDirTemp.size(); f++)
+    baseDir_.push_back( baseDirTemp[f] );
 
  
   vector<string>inputFileNameTemp = mFitPars.getParameter<vector<std::string> >("inputFileName");
@@ -89,23 +91,24 @@ void LandSShapesProducer::Init(){
   sampleFillStyle_ = mFitPars.getParameter<vector<Int_t> >("sampleFillStyle");
   
   produceOnly_ = mFitPars.getParameter<bool>("produceOnly");
-  
-  minitreeSelected_   = mFitPars.getParameter<std::string>("minitreeSelected");
-  minitreeDataDriven_ = mFitPars.getParameter<std::string>("minitreeDataDriven");
+
+  vector<string>minitreeTemp = mFitPars.getParameter<vector<std::string> >("minitree");
+  for(size_t f=0; f<minitreeTemp.size(); f++)
+    minitree_.push_back( minitreeTemp[f] );
   
   isFromData_       = mFitPars.getParameter<vector<Int_t> >("isFromData"); // Protect data and DD-bkg from syst
   isDDbkg_       = mFitPars.getParameter<vector<Int_t> >("isDDbkg"); // DD
-  isSignal_[f]       = mFitPars.getParameter<vector<Int_t> >("isSignal"); // DD
+  isSignal_       = mFitPars.getParameter<vector<Int_t> >("isSignal"); // DD
   
   vector<string>systComponentsTemp = mFitPars.getParameter<vector<std::string> >("systComponents");
   for(size_t f=0; f<systComponentsTemp.size(); f++)
     systComponents_.push_back( systComponentsTemp[f] );
   
   vector<string>systFancyComponentsTemp = mFitPars.getParameter<vector<std::string> >("systFancyComponents");
-  for(size_t f=0; f<systFancyComponentsTemp.size(); f++){
+  for(size_t f=0; f<systFancyComponentsTemp.size(); f++)
     systFancyComponents_.push_back( systFancyComponentsTemp[f] );
-    
-    
+  
+  
   osCutEff_    = mFitPars.getParameter<double>("osCutEff");
   
   vars_        = mFitPars.getParameter<vector<string> >("vars");
@@ -132,7 +135,7 @@ void LandSShapesProducer::Init(){
   
   for(size_t i=0; i<nVars_; i++)
     fitVars_.push_back( new FitVar(vars_[i], mins_[i], maxs_[i], bins_[i], hmin_[i], hmax_[i], unbinned_[i], smoothOrder_[i]));
-    
+  
   
   // Set canvas
   SetTDRStyle();
@@ -145,7 +148,7 @@ void LandSShapesProducer::Init(){
   
   cout << "Init process complete" << endl;
 }
-
+  
 void LandSShapesProducer::SetOptions(){
   //  myStyle_->SetOptStat(0);
 }
@@ -157,22 +160,25 @@ void LandSShapesProducer::InitMassPoint(size_t s){
   currentMassPoint_ = s;
   inputFile_.clear();
   inputTree_.clear();
+  minitree_.clear();
+  baseDir_.clear();
   
   systTree_.clear();
 
   perMassPointSignalShapesToCompareHH_.clear();
   perMassPointSignalShapesToCompareWH_.clear();
   perMassPointSignalShapesToCompare_  .clear();
-  
-  // Get files
-  for(size_t f=0; f<nSamples_; f++)
-    inputFile_.push_back( TFile::Open(baseDir_   + inputFileName_[f]     ) );
 
+  // Get files
+  for(size_t f=0; f<nSamples_; f++){
+    if( f==1 || f == 2) inputFileName_[f] = inputFileName_[f] + massPointName_[s] + TString(".root"); // Signals name manipulation
+    inputFile_.push_back( TFile::Open(baseDir_[f]   + inputFileName_[f]     ) );
+  }
   cout << "Got files" << endl;
 
   // Get base trees
   for(size_t f=0; f<nSamples_; f++)
-    inputTree_.push_back( (TTree*) inputFile_[f]     ->Get(minitree_) );
+    inputTree_.push_back( (TTree*) inputFile_[f]     ->Get(minitree_[f]) );
   
   cout << "Got base trees " << endl;
   // Get syst trees
@@ -181,8 +187,8 @@ void LandSShapesProducer::InitMassPoint(size_t s){
     vector<TTree*> temp;
     temp.clear();
     for(size_t f=0; f<nSamples_; f++){
-      if(isFromData_[f]) temp.push_back( (TTree*) inputFile_[f] ->Get(minitree_) ); // dummy fill with base minitree. Will not be used, just needed for vectors size
-      temp.push_back( (TTree*) inputFile_[f]     ->Get(minitree_ + systComponents_[a]) );
+      if(isFromData_[f]) temp.push_back( (TTree*) inputFile_[f] ->Get(minitree_[f]) ); // dummy fill with base minitree. Will not be used, just needed for vectors size
+      else temp.push_back( (TTree*) inputFile_[f]     ->Get(minitree_[f] + systComponents_[a]) );
     }
     systTree_.push_back(temp);
   }
@@ -199,7 +205,7 @@ void LandSShapesProducer::InitPerVariableAmbient(size_t i){
   for(size_t a=0; a<nSysts_; a++){
     for(size_t f=0; f<nSamples_; f++){
       cout << "variable " << i << ", syst " << a << ", sample " << f << ", entries " << systTree_[a][f]->GetEntries() << endl;
-      mcBkgSystTree_[a][f]->ResetBranchAddresses();
+      systTree_[a][f]->ResetBranchAddresses();
     }
   }
   
@@ -269,8 +275,6 @@ void LandSShapesProducer::BuildDatasets(size_t i){
   double myVarAllocator, myVarWeightAllocator;
   double isOSsig;
   
-  mySignalDSWH_         = new RooDataSet(mySignalDSNameWH_.c_str(),mySignalDSNameWH_.c_str(),              RooArgSet(*myvar_,*myvar_weights_), "weight"); // This constructor does not accept the cut parameter  
-  
   for(size_t f=0; f<nSamples_; f++){
     myDS_.push_back( new RooDataSet(myDSName_[f].c_str(),myDSName_[f].c_str(), RooArgSet(*myvar_,*myvar_weights_), "weight") ); // This constructor does not accept the cut parameter
     // Get events
@@ -285,11 +289,11 @@ void LandSShapesProducer::BuildDatasets(size_t i){
       sumWeights_ += myVarWeightAllocator;
       if(isDDbkg_[f]){
 	myvar_weights_->setVal(osCutEff_*myVarWeightAllocator);
-	myMCBkgDS_[f]->add(RooArgSet(*myvar_,*myvar_weights_),osCutEff_*myVarWeightAllocator);
+	myDS_[f]->add(RooArgSet(*myvar_,*myvar_weights_),osCutEff_*myVarWeightAllocator);
       }
       else{
 	myvar_weights_->setVal(myVarWeightAllocator);
-	myMCBkgDS_[f]->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+	myDS_[f]->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
       }
     }
   }
@@ -415,8 +419,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
 
 
-  ddbkgHistUp_ =   (TH1*) ddbkgHist_->Clone(ddbkgHist_->GetName() + TString("Up") );
-  ddbkgHistDown_ = (TH1*) ddbkgHist_->Clone(ddbkgHist_->GetName() + TString("Down") );
+  ddbkgHistUp_ =   (TH1*) hist_[3]->Clone(hist_[3]->GetName() + TString("Up") );
+  ddbkgHistDown_ = (TH1*) hist_[3]->Clone(hist_[3]->GetName() + TString("Down") );
 
 
 
@@ -428,10 +432,10 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     hist_[f]->Sumw2();
     if(isSignal_[f]){
       hist_[f]->SetOption("0000"); // What did that do, again? LoL
-      hist_[f]->SetLineColour(sampleColour_[f]);
+      hist_[f]->SetLineColor(sampleColour_[f]);
     }
     else
-      hist_[f]->SetFillColour(sampleColour_[f]);
+      hist_[f]->SetFillColor(sampleColour_[f]);
     hist_[f]->SetLineWidth(3);
     hist_[f]->SetFillStyle(sampleFillStyle_[f]); //1001 for background and data, 0 for signal // 3017);
 
@@ -439,15 +443,15 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
     cout << "sample " << sampleName_[f] << ", integral " << hist_[f]->Integral() << endl;
     if(isDDbkg_[f]){
-      hist_[f]->Scale(222/ddbkgHist_->Integral());
+      hist_[f]->Scale(222./hist_[f]->Integral());
       ddbkgHistUp_ =   (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Up") );
       ddbkgHistDown_ = (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Down") );
       
-      ddbkgHistUp_->SetFillColour(sampleColour_[f]);
+      ddbkgHistUp_->SetFillColor(sampleColour_[f]);
       ddbkgHistUp_->SetLineWidth(3);
       ddbkgHistUp_->SetFillStyle(sampleFillStyle_[f]);//3017);
       
-      ddbkgHistDown_->SetFillColour(sampleColour_[f]);
+      ddbkgHistDown_->SetFillColor(sampleColour_[f]);
       ddbkgHistDown_->SetLineWidth(3);
       ddbkgHistDown_->SetFillStyle(sampleFillStyle_[f]);//3017);
       
@@ -467,10 +471,10 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     if(f>nSamples_-1){ // Repeat colours for newly cloned histos
       if(isSignal_[f]){
 	hist_[f]->SetOption("0000"); // What did that do, again? LoL
-	hist_[f]->SetLineColour(sampleColour_[f]);
+	hist_[f]->SetLineColor(sampleColour_[f]);
       }
       else
-	hist_[f]->SetFillColour(sampleColour_[f]);
+	hist_[f]->SetFillColor(sampleColour_[f]);
       hist_[f]->SetLineWidth(3);
       hist_[f]->SetFillStyle(sampleFillStyle_[f]); //1001 for background and data, 0 for signal // 3017);
     }
@@ -494,7 +498,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
     for(size_t f=0; f<nSamples_; f++){
       systHist_[a][f]->Sumw2();
-      systHist_[a][f]->SetFillColour(sampleColour_[f]);
+      systHist_[a][f]->SetFillColor(sampleColour_[f]);
       systHist_[a][f]->SetFillStyle(sampleFillStyle_[f]);
       if(isDDbkg_[f]){    
 	if(a == 0 || a == 2 || a == 4)
@@ -515,10 +519,10 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 	systHist_[a][f]->Sumw2();
 	if(isSignal_[f]){
 	  systHist_[a][f]->SetOption("0000"); // What did that do, again? LoL
-	  systHist_[a][f]->SetLineColour(sampleColour_[f]);
+	  systHist_[a][f]->SetLineColor(sampleColour_[f]);
 	}
 	else
-	  systHist_[a][f]->SetFillColour(sampleColour_[f]);
+	  systHist_[a][f]->SetFillColor(sampleColour_[f]);
 	systHist_[a][f]->SetLineWidth(3);
 	systHist_[a][f]->SetFillStyle(sampleFillStyle_[f]); //1001 for background and data, 0 for signal // 3017);
       }
@@ -530,10 +534,15 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
 
   if(!produceOnly_){ // For now raw indexes. This will improve.
+    // 0: data
+    // 1: WH
+    // 2: HH
+    // 3: DD
+    // 4: other MCs
     TGraphAsymmErrors ddbkgBands;
     getErrorBands(*(hist_[3]), *ddbkgHistUp_, *ddbkgHistDown_, ddbkgBands);
 
-    ddbkgBands.SetFillColour(1);
+    ddbkgBands.SetFillColor(1);
     ddbkgBands.SetFillStyle(3004);
     ddbkgBands.GetYaxis()->SetTitle("a.u.");
     ddbkgBands.GetYaxis()->SetTitleOffset(0.85);
@@ -547,10 +556,10 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     TLegend* leg2_ = new TLegend(0.23,0.65,0.62,0.80,NULL,"brNDC");
     leg2_->SetTextFont(62);
     leg2_->SetBorderSize(0);
-    leg2_->SetLineColour(1);
+    leg2_->SetLineColor(1);
     leg2_->SetLineStyle(1);
     leg2_->SetLineWidth(1);
-    leg2_->SetFillColour(0);
+    leg2_->SetFillColor(0);
     leg2_->SetFillStyle(0);
     leg2_->AddEntry(hist_[1],"Base","l");
     leg2_->AddEntry(systHist_[0][1],"JESup","l");
@@ -560,10 +569,10 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     leg_ = new TLegend(0.23,0.65,0.62,0.80,NULL,"brNDC");
     leg_->SetTextFont(62);
     leg_->SetBorderSize(0);
-    leg_->SetLineColour(1);
+    leg_->SetLineColor(1);
     leg_->SetLineStyle(1);
     leg_->SetLineWidth(1);
-    leg_->SetFillColour(0);
+    leg_->SetFillColor(0);
     leg_->SetFillStyle(0);
     leg_->AddEntry(hist_[1],"Base","l");
     leg_->AddEntry(systHist_[0][1],"JESup","l");
@@ -577,12 +586,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     systHist_[1][1]->GetXaxis()->SetRangeUser(0.001,1.001);    
     
     systHist_[0][1]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
-    hist_[1]->SetLineColour(1);
-    systHist_[0][1]->SetLineColour(2);
-    systHist_[1][1]->SetLineColour(3);
+    hist_[1]->SetLineColor(1);
+    systHist_[0][1]->SetLineColor(2);
+    systHist_[1][1]->SetLineColor(3);
     systHist_[0][1]->Draw("hist");
     systHist_[1][1]->Draw("histsame");
-    histWH_->Draw("histsame");
+    hist_[1]->Draw("histsame");
     leg_->Draw();
     canvas_->cd(); 
     // Order chosen to have good Y axis boundaries
@@ -590,87 +599,86 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     canvas_->SaveAs((outFolder_+outputFileName+string("_jes_sigVariationsWH.pdf")).c_str());
     canvas_->SaveAs((outFolder_+outputFileName+string("_jes_sigVariationsWH.png")).c_str());
     canvas_->Clear();
-    signalHistWH_->SetLineColour(signalSampleColour_);
+    hist_[1]->SetLineColor(sampleColour_[1]); // Reset line color from black to final one
 
-    signalHistHH_->GetXaxis()->SetRange(0.001,1.001);    
-    signalHistHH_->GetXaxis()->SetRangeUser(0.001,1.001);    
-    signalSystHistHH_[0]->GetXaxis()->SetRange(0.001,1.001);    
-    signalSystHistHH_[0]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    signalSystHistHH_[1]->GetXaxis()->SetRange(0.001,1.001);    
-    signalSystHistHH_[1]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[2]->GetXaxis()->SetRange(0.001,1.001);    
+    hist_[2]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[0][2]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[0][2]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[1][2]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[1][2]->GetXaxis()->SetRangeUser(0.001,1.001);    
 
-    signalSystHistHH_[0]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
-    signalHistHH_->SetLineColour(1);
-    signalSystHistHH_[0]->SetLineColour(2);
-    signalSystHistHH_[1]->SetLineColour(3);
-    signalSystHistHH_[0]->Draw("hist");
-    signalSystHistHH_[1]->Draw("histsame");
-    signalHistHH_->Draw("histsame");
+    systHist_[0][2]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
+    hist_[2]->SetLineColor(1);
+    systHist_[0][2]->SetLineColor(2);
+    systHist_[1][2]->SetLineColor(3);
+    systHist_[0][2]->Draw("hist");
+    systHist_[1][2]->Draw("histsame");
+    hist_[2]->Draw("histsame");
     leg_->Draw();
     canvas_->SaveAs((outFolder_+outputFileName+string("_jes_sigVariationsHH.pdf")).c_str());
     canvas_->SaveAs((outFolder_+outputFileName+string("_jes_sigVariationsHH.png")).c_str());
     canvas_->Clear();
-    signalHistHH_->SetLineColour(signalSampleColour_);
+    hist_[2]->SetLineColor(sampleColour_[2]); // Reset line color from black to final one
     
-    ddbkgSystHist_[0]->SetFillStyle(0);
-    ddbkgSystHist_[1]->SetFillStyle(0);
-    ddbkgHist_->SetFillStyle(0);
+    systHist_[0][3]->SetFillStyle(0);
+    systHist_[1][3]->SetFillStyle(0);
+    hist_[3]->SetFillStyle(0);
 
-    ddbkgHist_->GetXaxis()->SetRange(0.001,1.001);    
-    ddbkgHist_->GetXaxis()->SetRangeUser(0.001,1.001);    
-    ddbkgSystHist_[0]->GetXaxis()->SetRange(0.001,1.001);    
-    ddbkgSystHist_[0]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    ddbkgSystHist_[1]->GetXaxis()->SetRange(0.001,1.001);    
-    ddbkgSystHist_[1]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[3]->GetXaxis()->SetRange(0.001,1.001);    
+    hist_[3]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[0][3]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[0][3]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[1][3]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[1][3]->GetXaxis()->SetRangeUser(0.001,1.001);    
 
-    ddbkgSystHist_[0]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
-    ddbkgHist_->SetMarkerColour(1);
-    ddbkgSystHist_[0]->SetLineColour(2);
-    ddbkgSystHist_[1]->SetLineColour(3);
-    ddbkgSystHist_[0]->Draw("hist");
-    ddbkgSystHist_[1]->Draw("histsame");
-    ddbkgHist_->Draw("same");
+    systHist_[0][3]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
+    hist_[3]->SetMarkerColor(1);
+    systHist_[0][3]->SetLineColor(2);
+    systHist_[1][3]->SetLineColor(3);
+    systHist_[0][3]->Draw("hist");
+    systHist_[1][3]->Draw("histsame");
+    hist_[3]->Draw("same");
     ddbkgBands.Draw("2same");
     leg2_->Draw();
     canvas_->SaveAs((outFolder_+outputFileName+string("_jes_sigVariationsDD.pdf")).c_str());
     canvas_->SaveAs((outFolder_+outputFileName+string("_jes_sigVariationsDD.png")).c_str());
     canvas_->Clear();
-    ddbkgHist_->SetLineColour(ddBkgSampleColour_);
+    hist_[3]->SetLineColor(sampleColour_[3]); // Reset line color from black to final one
 
-    ddbkgSystHist_[0]->SetFillStyle(1001);
-    ddbkgSystHist_[1]->SetFillStyle(1001);
-    ddbkgHist_->SetFillStyle(1001);
+    systHist_[0][3]->SetFillStyle(1001);
+    systHist_[1][3]->SetFillStyle(1001);
+    hist_[3]->SetFillStyle(1001);
     
-    
-    for(size_t f=0; f<nMcSamples_+2; f++){
+    for(size_t f=4; f<nSamples_+2; f++){
       
-      mcbkgSystHist_[0][f]->SetFillStyle(0);
-      mcbkgSystHist_[1][f]->SetFillStyle(0);
-      mcbkgHist_[f]->SetFillStyle(0);
+      systHist_[0][f]->SetFillStyle(0);
+      systHist_[1][f]->SetFillStyle(0);
+      hist_[f]->SetFillStyle(0);
       
-      mcbkgHist_[f]->GetXaxis()->SetRange(0.001,1.001);    
-      mcbkgHist_[f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      mcbkgSystHist_[0][f]->GetXaxis()->SetRange(0.001,1.001);    
-      mcbkgSystHist_[0][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      mcbkgSystHist_[1][f]->GetXaxis()->SetRange(0.001,1.001);    
-      mcbkgSystHist_[1][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      hist_[f]->GetXaxis()->SetRange(0.001,1.001);    
+      hist_[f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      systHist_[0][f]->GetXaxis()->SetRange(0.001,1.001);    
+      systHist_[0][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      systHist_[1][f]->GetXaxis()->SetRange(0.001,1.001);    
+      systHist_[1][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
  
-      mcbkgSystHist_[0][f]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
-      mcbkgHist_[f]->SetLineColour(1);
-      mcbkgSystHist_[0][f]->SetLineColour(2);
-      mcbkgSystHist_[1][f]->SetLineColour(3);
-      mcbkgSystHist_[0][f]->Draw("hist");
-      mcbkgSystHist_[1][f]->Draw("histsame");
-      mcbkgHist_[f]->Draw("histsame");
+      systHist_[0][f]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
+      hist_[f]->SetLineColor(1);
+      systHist_[0][f]->SetLineColor(2);
+      systHist_[1][f]->SetLineColor(3);
+      systHist_[0][f]->Draw("hist");
+      systHist_[1][f]->Draw("histsame");
+      hist_[f]->Draw("histsame");
       leg_->Draw();
-      canvas_->SaveAs((outFolder_+outputFileName+string("_jes_sigVariations")+mcBkgSampleName_[f].c_str()+string(".pdf")).c_str());
-      canvas_->SaveAs((outFolder_+outputFileName+string("_jes_sigVariations")+mcBkgSampleName_[f].c_str()+string(".png")).c_str());
+      canvas_->SaveAs((outFolder_+outputFileName+string("_jes_sigVariations")+sampleName_[f].c_str()+string(".pdf")).c_str());
+      canvas_->SaveAs((outFolder_+outputFileName+string("_jes_sigVariations")+sampleName_[f].c_str()+string(".png")).c_str());
       canvas_->Clear();
       
-      mcbkgHist_[f]->SetLineColour(mcBkgSampleColour_[f]);
-      mcbkgSystHist_[0][f]->SetFillStyle(1001);
-      mcbkgSystHist_[1][f]->SetFillStyle(1001);
-      mcbkgHist_[f]->SetFillStyle(1001);
+      hist_[f]->SetLineColor(sampleColour_[f]);
+      systHist_[0][f]->SetFillStyle(1001);
+      systHist_[1][f]->SetFillStyle(1001);
+      hist_[f]->SetFillStyle(1001);
 
     }
 
@@ -679,46 +687,46 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     leg2_  = new TLegend(0.23,0.65,0.62,0.80,NULL,"brNDC");
     leg2_->SetTextFont(62);
     leg2_->SetBorderSize(0);
-    leg2_->SetLineColour(1);
+    leg2_->SetLineColor(1);
     leg2_->SetLineStyle(1);
     leg2_->SetLineWidth(1);
-    leg2_->SetFillColour(0);
+    leg2_->SetFillColor(0);
     leg2_->SetFillStyle(0);
-    leg2_->AddEntry(signalHistWH_,"Base","l");
-    leg2_->AddEntry(signalSystHistWH_[0],"METup","l");
-    leg2_->AddEntry(signalSystHistWH_[1],"METdown","l");
-    leg2_->AddEntry(&ddbkgBands, "stat+method","f");
+    leg2_->AddEntry(hist_[1],"Base","l");
+    leg2_->AddEntry(systHist_[0][1],"METup","l");
+    leg2_->AddEntry(systHist_[1][1],"METdown","l");
+    leg2_->AddEntry(&ddbkgBands, "stat+method","f"); // Dummy style show
 
 
     leg_ = new TLegend(0.23,0.65,0.62,0.80,NULL,"brNDC");
     leg_->SetTextFont(62);
     leg_->SetBorderSize(0);
-    leg_->SetLineColour(1);
+    leg_->SetLineColor(1);
     leg_->SetLineStyle(1);
     leg_->SetLineWidth(1);
-    leg_->SetFillColour(0);
+    leg_->SetFillColor(0);
     leg_->SetFillStyle(0);
-    leg_->AddEntry(signalHistWH_,"Base","l");
-    leg_->AddEntry(signalSystHistWH_[2],"METup","l");
-    leg_->AddEntry(signalSystHistWH_[3],"METdown","l");
+    leg_->AddEntry(hist_[1],"Base","l");
+    leg_->AddEntry(systHist_[2][1],"METup","l");
+    leg_->AddEntry(systHist_[3][1],"METdown","l");
 
-    signalHistWH_->GetXaxis()->SetRange(0.001,1.001);    
-    signalHistWH_->GetXaxis()->SetRangeUser(0.001,1.001);    
-    signalSystHistWH_[2]->GetXaxis()->SetRange(0.001,1.001);    
-    signalSystHistWH_[2]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    signalSystHistWH_[3]->GetXaxis()->SetRange(0.001,1.001);    
-    signalSystHistWH_[3]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[1]->GetXaxis()->SetRange(0.001,1.001);    
+    hist_[1]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[2][1]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[2][1]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[3][1]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[3][1]->GetXaxis()->SetRangeUser(0.001,1.001);    
 
-    for(int mm=0; mm<signalHistWH_->GetNbinsX(); mm++)
-      cout << "bin: " << mm << ", diff up: " << signalHistWH_->GetBinContent(mm) - signalSystHistWH_[2]->GetBinContent(mm) << ", diff down: " << signalHistWH_->GetBinContent(mm) - signalSystHistWH_[3]->GetBinContent(mm) << endl;
-
-    signalSystHistWH_[2]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
-    signalHistWH_->SetLineColour(1);
-    signalSystHistWH_[2]->SetLineColour(2);
-    signalSystHistWH_[3]->SetLineColour(3);
-    signalSystHistWH_[2]->Draw("hist");
-    signalSystHistWH_[3]->Draw("histsame");
-    signalHistWH_->Draw("histsame");
+//    for(int mm=0; mm<signalHistWH_->GetNbinsX(); mm++)
+//      cout << "bin: " << mm << ", diff up: " << signalHistWH_->GetBinContent(mm) - signalSystHistWH_[2]->GetBinContent(mm) << ", diff down: " << signalHistWH_->GetBinContent(mm) - signalSystHistWH_[3]->GetBinContent(mm) << endl;
+//
+    systHist_[2][1]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
+    hist_[1]->SetLineColor(1);
+    systHist_[2][1]->SetLineColor(2);
+    systHist_[3][1]->SetLineColor(3);
+    systHist_[2][1]->Draw("hist");
+    systHist_[3][1]->Draw("histsame");
+    hist_[1]->Draw("histsame");
     leg_->Draw();
     canvas_->cd(); 
     // Order chosen to have good Y axis boundaries
@@ -726,87 +734,87 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     canvas_->SaveAs((outFolder_+outputFileName+string("_met_sigVariationsWH.pdf")).c_str());
     canvas_->SaveAs((outFolder_+outputFileName+string("_met_sigVariationsWH.png")).c_str());
     canvas_->Clear();
-    signalHistWH_->SetLineColour(signalSampleColour_);
+    hist_[1]->SetLineColor(sampleColour_[1]);
 
-    signalHistHH_->GetXaxis()->SetRange(0.001,1.001);    
-    signalHistHH_->GetXaxis()->SetRangeUser(0.001,1.001);    
-    signalSystHistHH_[2]->GetXaxis()->SetRange(0.001,1.001);    
-    signalSystHistHH_[2]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    signalSystHistHH_[3]->GetXaxis()->SetRange(0.001,1.001);    
-    signalSystHistHH_[3]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[2]->GetXaxis()->SetRange(0.001,1.001);    
+    hist_[2]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[2][2]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[2][2]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[3][2]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[3][2]->GetXaxis()->SetRangeUser(0.001,1.001);    
 
-    signalSystHistHH_[2]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
-    signalHistHH_->SetLineColour(1);
-    signalSystHistHH_[2]->SetLineColour(2);
-    signalSystHistHH_[3]->SetLineColour(3);
-    signalSystHistHH_[2]->Draw("hist");
-    signalSystHistHH_[3]->Draw("histsame");
-    signalHistHH_->Draw("histsame");
+    systHist_[2][2]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
+    hist_[2]->SetLineColor(1);
+    systHist_[2][2]->SetLineColor(2);
+    systHist_[3][2]->SetLineColor(3);
+    systHist_[2][2]->Draw("hist");
+    systHist_[3][2]->Draw("histsame");
+    hist_[2]->Draw("histsame");
     leg_->Draw();
     canvas_->SaveAs((outFolder_+outputFileName+string("_met_sigVariationsHH.pdf")).c_str());
     canvas_->SaveAs((outFolder_+outputFileName+string("_met_sigVariationsHH.png")).c_str());
     canvas_->Clear();
-    signalHistHH_->SetLineColour(signalSampleColour_);
+    hist_[2]->SetLineColor(sampleColour_[2]);
     
-    ddbkgSystHist_[2]->SetFillStyle(0);
-    ddbkgSystHist_[3]->SetFillStyle(0);
-    ddbkgHist_->SetFillStyle(0);
+    systHist_[2][3]->SetFillStyle(0);
+    systHist_[3][3]->SetFillStyle(0);
+    hist_[3]->SetFillStyle(0);
 
-    ddbkgHist_->GetXaxis()->SetRange(0.001,1.001);    
-    ddbkgHist_->GetXaxis()->SetRangeUser(0.001,1.001);    
-    ddbkgSystHist_[2]->GetXaxis()->SetRange(0.001,1.001);    
-    ddbkgSystHist_[2]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    ddbkgSystHist_[3]->GetXaxis()->SetRange(0.001,1.001);    
-    ddbkgSystHist_[3]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[3]->GetXaxis()->SetRange(0.001,1.001);    
+    hist_[3]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[2][3]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[2][3]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[3][3]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[3][3]->GetXaxis()->SetRangeUser(0.001,1.001);    
 
-    ddbkgSystHist_[2]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
-    ddbkgHist_->SetMarkerColour(1);
-    ddbkgSystHist_[2]->SetLineColour(2);
-    ddbkgSystHist_[3]->SetLineColour(3);
-    ddbkgSystHist_[2]->Draw("hist");
-    ddbkgSystHist_[3]->Draw("histsame");
-    ddbkgHist_->Draw("same");
+    systHist_[2][3]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
+    hist_[3]->SetMarkerColor(1);
+    systHist_[2][3]->SetLineColor(2);
+    systHist_[3][3]->SetLineColor(3);
+    systHist_[2][3]->Draw("hist");
+    systHist_[3][3]->Draw("histsame");
+    hist_[3]->Draw("same");
     ddbkgBands.Draw("2same");
     leg2_->Draw();
     canvas_->SaveAs((outFolder_+outputFileName+string("_met_sigVariationsDD.pdf")).c_str());
     canvas_->SaveAs((outFolder_+outputFileName+string("_met_sigVariationsDD.png")).c_str());
     canvas_->Clear();
-    ddbkgHist_->SetLineColour(ddBkgSampleColour_);
+    hist_[3]->SetLineColor(sampleColour_[3]);
     
-    ddbkgSystHist_[2]->SetFillStyle(1001);
-    ddbkgSystHist_[3]->SetFillStyle(1001);
-    ddbkgHist_->SetFillStyle(1001);
+    systHist_[2][3]->SetFillStyle(1001);
+    systHist_[3][3]->SetFillStyle(1001);
+    hist_[3]->SetFillStyle(1001);
 
 
-    for(size_t f=0; f<nMcSamples_+2; f++){
+    for(size_t f=4; f<nSamples_+2; f++){
 
-      mcbkgSystHist_[2][f]->SetFillStyle(0);
-      mcbkgSystHist_[3][f]->SetFillStyle(0);
-      mcbkgHist_[f]->SetFillStyle(0);
+      systHist_[2][f]->SetFillStyle(0);
+      systHist_[3][f]->SetFillStyle(0);
+      hist_[f]->SetFillStyle(0);
 
-      mcbkgHist_[f]->GetXaxis()->SetRange(0.001,1.001);    
-      mcbkgHist_[f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      mcbkgSystHist_[2][f]->GetXaxis()->SetRange(0.001,1.001);    
-      mcbkgSystHist_[2][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      mcbkgSystHist_[3][f]->GetXaxis()->SetRange(0.001,1.001);    
-      mcbkgSystHist_[3][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      hist_[f]->GetXaxis()->SetRange(0.001,1.001);    
+      hist_[f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      systHist_[2][f]->GetXaxis()->SetRange(0.001,1.001);    
+      systHist_[2][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      systHist_[3][f]->GetXaxis()->SetRange(0.001,1.001);    
+      systHist_[3][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
             
-      mcbkgSystHist_[2][f]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
-      mcbkgHist_[f]->SetLineColour(1);
-      mcbkgSystHist_[2][f]->SetLineColour(2);
-      mcbkgSystHist_[3][f]->SetLineColour(3);
-      mcbkgSystHist_[2][f]->Draw("hist");
-      mcbkgSystHist_[3][f]->Draw("histsame");
-      mcbkgHist_[f]->Draw("histsame");
+      systHist_[2][f]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
+      hist_[f]->SetLineColor(1);
+      systHist_[2][f]->SetLineColor(2);
+      systHist_[3][f]->SetLineColor(3);
+      systHist_[2][f]->Draw("hist");
+      systHist_[3][f]->Draw("histsame");
+      hist_[f]->Draw("histsame");
       leg_->Draw();
-      canvas_->SaveAs((outFolder_+outputFileName+string("_met_sigVariations")+mcBkgSampleName_[f].c_str()+string(".pdf")).c_str());
-      canvas_->SaveAs((outFolder_+outputFileName+string("_met_sigVariations")+mcBkgSampleName_[f].c_str()+string(".png")).c_str());
+      canvas_->SaveAs((outFolder_+outputFileName+string("_met_sigVariations")+sampleName_[f].c_str()+string(".pdf")).c_str());
+      canvas_->SaveAs((outFolder_+outputFileName+string("_met_sigVariations")+sampleName_[f].c_str()+string(".png")).c_str());
       canvas_->Clear();
       
-      mcbkgHist_[f]->SetLineColour(mcBkgSampleColour_[f]);
-      mcbkgSystHist_[2][f]->SetFillStyle(1001);
-      mcbkgSystHist_[3][f]->SetFillStyle(1001);
-      mcbkgHist_[f]->SetFillStyle(1001);
+      hist_[f]->SetLineColor(sampleColour_[f]);
+      systHist_[2][f]->SetFillStyle(1001);
+      systHist_[3][f]->SetFillStyle(1001);
+      hist_[f]->SetFillStyle(1001);
 
     }
 
@@ -815,42 +823,42 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     leg2_  = new TLegend(0.23,0.65,0.62,0.80,NULL,"brNDC");
     leg2_->SetTextFont(62);
     leg2_->SetBorderSize(0);
-    leg2_->SetLineColour(1);
+    leg2_->SetLineColor(1);
     leg2_->SetLineStyle(1);
     leg2_->SetLineWidth(1);
-    leg2_->SetFillColour(0);
+    leg2_->SetFillColor(0);
     leg2_->SetFillStyle(0);
-    leg2_->AddEntry(signalHistWH_,"Base","l");
-    leg2_->AddEntry(signalSystHistWH_[0],"JERup","l");
-    leg2_->AddEntry(signalSystHistWH_[1],"JERdown","l");
+    leg2_->AddEntry(hist_[1],"Base","l");
+    leg2_->AddEntry(systHist_[0][1],"JERup","l");
+    leg2_->AddEntry(systHist_[1][1],"JERdown","l");
     leg2_->AddEntry(&ddbkgBands, "stat+method","f");
 
     leg_ = new TLegend(0.23,0.65,0.62,0.80,NULL,"brNDC");
     leg_->SetTextFont(62);
     leg_->SetBorderSize(0);
-    leg_->SetLineColour(1);
+    leg_->SetLineColor(1);
     leg_->SetLineStyle(1);
     leg_->SetLineWidth(1);
-    leg_->SetFillColour(0);
+    leg_->SetFillColor(0);
     leg_->SetFillStyle(0);
-    leg_->AddEntry(signalHistWH_,"Base","l");
-    leg_->AddEntry(signalSystHistWH_[4],"JERup","l");
-    leg_->AddEntry(signalSystHistWH_[5],"JERdown","l");
+    leg_->AddEntry(hist_[1],"Base","l");
+    leg_->AddEntry(systHist_[4][1],"JERup","l");
+    leg_->AddEntry(systHist_[5][1],"JERdown","l");
 
-    signalHistWH_->GetXaxis()->SetRange(0.001,1.001);    
-    signalHistWH_->GetXaxis()->SetRangeUser(0.001,1.001);    
-    signalSystHistWH_[4]->GetXaxis()->SetRange(0.001,1.001);    
-    signalSystHistWH_[4]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    signalSystHistWH_[5]->GetXaxis()->SetRange(0.001,1.001);    
-    signalSystHistWH_[5]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[1]->GetXaxis()->SetRange(0.001,1.001);    
+    hist_[1]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[4][1]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[4][1]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[5][1]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[5][1]->GetXaxis()->SetRangeUser(0.001,1.001);    
     
-    signalSystHistWH_[4]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
-    signalHistWH_->SetLineColour(1);
-    signalSystHistWH_[4]->SetLineColour(2);
-    signalSystHistWH_[5]->SetLineColour(3);
-    signalSystHistWH_[4]->Draw("hist");
-    signalSystHistWH_[5]->Draw("histsame");
-    signalHistWH_->Draw("histsame");
+    systHist_[4][1]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
+    hist_[1]->SetLineColor(1);
+    systHist_[4][1]->SetLineColor(2);
+    systHist_[5][1]->SetLineColor(3);
+    systHist_[4][1]->Draw("hist");
+    systHist_[5][1]->Draw("histsame");
+    hist_[1]->Draw("histsame");
     leg_->Draw();
     canvas_->cd(); 
     // Order chosen to have good Y axis boundaries
@@ -858,130 +866,116 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     canvas_->SaveAs((outFolder_+outputFileName+string("_jer_sigVariationsWH.pdf")).c_str());
     canvas_->SaveAs((outFolder_+outputFileName+string("_jer_sigVariationsWH.png")).c_str());
     canvas_->Clear();
-    signalHistWH_->SetLineColour(signalSampleColour_);
+    hist_[1]->SetLineColor(sampleColour_[1]);
 
-    signalHistHH_->GetXaxis()->SetRange(0.001,1.001);    
-    signalHistHH_->GetXaxis()->SetRangeUser(0.001,1.001);    
-    signalSystHistHH_[4]->GetXaxis()->SetRange(0.001,1.001);    
-    signalSystHistHH_[4]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    signalSystHistHH_[5]->GetXaxis()->SetRange(0.001,1.001);    
-    signalSystHistHH_[5]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[2]->GetXaxis()->SetRange(0.001,1.001);    
+    hist_[2]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[4][2]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[4][2]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[5][2]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[5][2]->GetXaxis()->SetRangeUser(0.001,1.001);    
 
-    signalSystHistHH_[4]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
-    signalHistHH_->SetLineColour(1);
-    signalSystHistHH_[4]->SetLineColour(2);
-    signalSystHistHH_[5]->SetLineColour(3);
-    signalSystHistHH_[4]->Draw("hist");
-    signalSystHistHH_[5]->Draw("histsame");
-    signalHistHH_->Draw("histsame");
+    systHist_[4][2]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
+    hist_[2]->SetLineColor(1);
+    systHist_[4][2]->SetLineColor(2);
+    systHist_[5][2]->SetLineColor(3);
+    systHist_[4][2]->Draw("hist");
+    systHist_[5][2]->Draw("histsame");
+    hist_[2]->Draw("histsame");
     leg_->Draw();
     canvas_->SaveAs((outFolder_+outputFileName+string("_jer_sigVariationsHH.pdf")).c_str());
     canvas_->SaveAs((outFolder_+outputFileName+string("_jer_sigVariationsHH.png")).c_str());
     canvas_->Clear();
-    signalHistHH_->SetLineColour(signalSampleColour_);
+    hist_[2]->SetLineColor(sampleColour_[2]);
     
-    ddbkgSystHist_[4]->SetFillStyle(0);
-    ddbkgSystHist_[5]->SetFillStyle(0);
-    ddbkgHist_->SetFillStyle(0);
+    systHist_[4][3]->SetFillStyle(0);
+    systHist_[5][3]->SetFillStyle(0);
+    hist_[3]->SetFillStyle(0);
 
-    ddbkgHist_->GetXaxis()->SetRange(0.001,1.001);    
-    ddbkgHist_->GetXaxis()->SetRangeUser(0.001,1.001);    
-    ddbkgSystHist_[4]->GetXaxis()->SetRange(0.001,1.001);    
-    ddbkgSystHist_[4]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    ddbkgSystHist_[5]->GetXaxis()->SetRange(0.001,1.001);    
-    ddbkgSystHist_[5]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[3]->GetXaxis()->SetRange(0.001,1.001);    
+    hist_[3]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[4][3]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[4][3]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    systHist_[5][3]->GetXaxis()->SetRange(0.001,1.001);    
+    systHist_[5][3]->GetXaxis()->SetRangeUser(0.001,1.001);    
     
-    ddbkgSystHist_[4]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
-    ddbkgHist_->SetMarkerColour(1);
-    ddbkgSystHist_[4]->SetLineColour(2);
-    ddbkgSystHist_[5]->SetLineColour(3);
-    ddbkgSystHist_[4]->Draw("hist");
-    ddbkgSystHist_[5]->Draw("histsame");
-    ddbkgHist_->Draw("same");
+    systHist_[4][3]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
+    hist_[3]->SetMarkerColor(1);
+    systHist_[4][3]->SetLineColor(2);
+    systHist_[5][3]->SetLineColor(3);
+    systHist_[4][3]->Draw("hist");
+    systHist_[5][3]->Draw("histsame");
+    hist_[3]->Draw("same");
     ddbkgBands.Draw("2same");
     leg2_->Draw();
     canvas_->SaveAs((outFolder_+outputFileName+string("_jer_sigVariationsDD.pdf")).c_str());
     canvas_->SaveAs((outFolder_+outputFileName+string("_jer_sigVariationsDD.png")).c_str());
     canvas_->Clear();
-    ddbkgHist_->SetLineColour(ddBkgSampleColour_);
+    hist_[3]->SetLineColor(sampleColour_[3]);
 
     
-    ddbkgSystHist_[4]->SetFillStyle(1001);
-    ddbkgSystHist_[5]->SetFillStyle(1001);
-    ddbkgHist_->SetFillStyle(1001);
+    systHist_[4][3]->SetFillStyle(1001);
+    systHist_[5][3]->SetFillStyle(1001);
+    hist_[3]->SetFillStyle(1001);
 
 
-    for(size_t f=0; f<nMcSamples_+2; f++){
+    for(size_t f=4; f<nSamples_+2; f++){
 
-      mcbkgSystHist_[4][f]->SetFillStyle(0);
-      mcbkgSystHist_[5][f]->SetFillStyle(0);
-      mcbkgHist_[f]->SetFillStyle(0);
+      systHist_[4][f]->SetFillStyle(0);
+      systHist_[5][f]->SetFillStyle(0);
+      hist_[f]->SetFillStyle(0);
 
-      mcbkgHist_[f]->GetXaxis()->SetRange(0.001,1.001);    
-      mcbkgHist_[f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      mcbkgSystHist_[4][f]->GetXaxis()->SetRange(0.001,1.001);    
-      mcbkgSystHist_[4][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      mcbkgSystHist_[5][f]->GetXaxis()->SetRange(0.001,1.001);    
-      mcbkgSystHist_[5][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      hist_[f]->GetXaxis()->SetRange(0.001,1.001);    
+      hist_[f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      systHist_[4][f]->GetXaxis()->SetRange(0.001,1.001);    
+      systHist_[4][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      systHist_[5][f]->GetXaxis()->SetRange(0.001,1.001);    
+      systHist_[5][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
       
-      mcbkgSystHist_[4][f]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
-      mcbkgHist_[f]->SetLineColour(1);
-      mcbkgSystHist_[4][f]->SetLineColour(2);
-      mcbkgSystHist_[5][f]->SetLineColour(3);
-      mcbkgSystHist_[4][f]->Draw("hist");
-      mcbkgSystHist_[5][f]->Draw("histsame");
-      mcbkgHist_[f]->Draw("histsame");
+      systHist_[4][f]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
+      hist_[f]->SetLineColor(1);
+      systHist_[4][f]->SetLineColor(2);
+      systHist_[5][f]->SetLineColor(3);
+      systHist_[4][f]->Draw("hist");
+      systHist_[5][f]->Draw("histsame");
+      hist_[f]->Draw("histsame");
       leg_->Draw();
-      canvas_->SaveAs((outFolder_+outputFileName+string("_jer_sigVariations")+mcBkgSampleName_[f].c_str()+string(".pdf")).c_str());
-      canvas_->SaveAs((outFolder_+outputFileName+string("_jer_sigVariations")+mcBkgSampleName_[f].c_str()+string(".png")).c_str());
+      canvas_->SaveAs((outFolder_+outputFileName+string("_jer_sigVariations")+sampleName_[f].c_str()+string(".pdf")).c_str());
+      canvas_->SaveAs((outFolder_+outputFileName+string("_jer_sigVariations")+sampleName_[f].c_str()+string(".png")).c_str());
       canvas_->Clear();
       
-      mcbkgHist_[f]->SetLineColour(mcBkgSampleColour_[f]);
-      mcbkgSystHist_[4][f]->SetFillStyle(1001);
-      mcbkgSystHist_[5][f]->SetFillStyle(1001);
-      mcbkgHist_[f]->SetFillStyle(1001);
+      hist_[f]->SetLineColor(sampleColour_[f]);
+      systHist_[4][f]->SetFillStyle(1001);
+      systHist_[5][f]->SetFillStyle(1001);
+      hist_[f]->SetFillStyle(1001);
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     //// END SYST
 
-   //  leg_ = new TLegend(0.3,0.635,0.63,0.93,NULL,"brNDC");
+    //  leg_ = new TLegend(0.3,0.635,0.63,0.93,NULL,"brNDC");
     leg_ = new TLegend(0.23,0.535,0.62,0.93,NULL,"brNDC");
     //  leg_ = new TLegend(0.7147651,0.6346154,0.9446309,0.9353147,NULL,"brNDC");
     //leg_ = new TLegend(0.75,0.6346154,1.,1.,NULL,"brNDC");
     
     leg_->SetTextFont(62);
     leg_->SetBorderSize(0);
-    leg_->SetLineColour(1);
+    leg_->SetLineColor(1);
     leg_->SetLineStyle(1);
     leg_->SetLineWidth(1);
-    leg_->SetFillColour(0);
+    leg_->SetFillColor(0);
     leg_->SetFillStyle(0);
-    leg_->AddEntry(dataHist_,(dataFancySampleName_).c_str(),"lep");
-    leg_->AddEntry(signalHistWH_,signalFancySampleNameWH_.c_str(),"l");
+    leg_->AddEntry(hist_[0],(fancySampleName_[0]).c_str(),"lep");
+    leg_->AddEntry(hist_[1],fancySampleName_[1].c_str(),"l");
     //  leg_->AddEntry(signalHistHH_,signalSampleNameHH_.c_str(),"f");
-    leg_->AddEntry(ddbkgHist_,ddBkgFancySampleName_.c_str(),"f");
-    for(size_t f=0; f<nMcSamples_+2; f++) leg_->AddEntry(mcbkgHist_[f],mcBkgFancySampleName_[f].c_str(),"f");
+    leg_->AddEntry(hist_[3],fancySampleName_[3].c_str(),"f");
+    for(size_t f=4; f<nSamples_+2; f++) leg_->AddEntry(hist_[f],fancySampleName_[f].c_str(),"f");
     // for fig7 // for(size_t f=0; f<nMcSamples_; f++) leg_->AddEntry(mcbkgHist_[f],mcBkgFancySampleName_[f].c_str(),"f");
     canvas_->cd(); 
     // Order chosen to have good Y axis boundaries
-    
-    
-
-    perMassPointSignalShapesToCompareHH_.push_back((TH1*)signalHistHH_->Clone(signalHistHH_->GetName() +TString("comparison") + massPointName_[currentMassPoint_].c_str()) );
-    perMassPointSignalShapesToCompareWH_.push_back((TH1*)signalHistWH_->Clone(signalHistWH_->GetName() +TString("comparison") + massPointName_[currentMassPoint_].c_str()) );
+   
+    perMassPointSignalShapesToCompareHH_.push_back((TH1*)hist_[2]->Clone(hist_[2]->GetName() +TString("comparison") + massPointName_[currentMassPoint_].c_str()) );
+    perMassPointSignalShapesToCompareWH_.push_back((TH1*)hist_[1]->Clone(hist_[1]->GetName() +TString("comparison") + massPointName_[currentMassPoint_].c_str()) );
     
     TH1* higgsH_ = 0;
     double cHiggsBR_ = 0.05; // Perhaps move to cfg file.
@@ -990,57 +984,49 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     //  signalHistHH_->Scale(fhh/signalHistHH_->Integral());
     
     //  signalHistWH_->Add(signalHistHH_, fhh);
-    higgsH_ = signalHistWH_;
+    higgsH_ = hist_[1];
     higgsH_->Scale(fhw/higgsH_->Integral());
-    higgsH_->Add(signalHistHH_,fhh);
+    higgsH_->Add(hist_[2],fhh);
     
     perMassPointSignalShapesToCompare_.push_back((TH1*)higgsH_->Clone(higgsH_->GetName() + TString("totComparison") + massPointName_[currentMassPoint_].c_str() ) );    
     // Stacked drawing -------------------------------------------
     
     
     
-    dataHist_->GetYaxis()->SetTitle("a.u.");
-    dataHist_->GetYaxis()->SetTitleOffset(0.85);
-    dataHist_->GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
-    dataHist_->GetXaxis()->SetTitleOffset(0.85);
+    hist_[0]->GetYaxis()->SetTitle("a.u.");
+    hist_[0]->GetYaxis()->SetTitleOffset(0.85);
+    hist_[0]->GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
+    hist_[0]->GetXaxis()->SetTitleOffset(0.85);
     
-    cout << " DATA HIST BIN 0: " << dataHist_->GetBinContent(0) << " +/- " << dataHist_->GetBinError(0) << endl;
-    cout << " DATA HIST BIN 1: " << dataHist_->GetBinContent(1) << " +/- " << dataHist_->GetBinError(1) << endl;
+    cout << " DATA HIST BIN 0: " << hist_[0]->GetBinContent(0) << " +/- " << hist_[0]->GetBinError(0) << endl;
+    cout << " DATA HIST BIN 1: " << hist_[0]->GetBinContent(1) << " +/- " << hist_[0]->GetBinError(1) << endl;
     
-    signalHistWH_->GetYaxis()->SetTitle("a.u.");
-    signalHistWH_->GetYaxis()->SetTitleOffset(0.85);
-    signalHistWH_->GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
-    signalHistWH_->GetXaxis()->SetTitleOffset(0.85);
+    hist_[1]->GetYaxis()->SetTitle("a.u.");
+    hist_[1]->GetYaxis()->SetTitleOffset(0.85);
+    hist_[1]->GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
+    hist_[1]->GetXaxis()->SetTitleOffset(0.85);
     
     
 
     THStack hs("hs","stacked");
     
-    signalHistHH_->DrawNormalized("histsame");
-    for(size_t f=0; f<nMcSamples_+2; f++){
+    hist_[2]->DrawNormalized("histsame");
+    for(size_t f=3; f<nSamples_+2; f++){
       // for fig7 // for(size_t f=0; f<nMcSamples_; f++){
-      mcbkgHist_[f]->GetYaxis()->SetTitle("a.u.");
-      mcbkgHist_[f]->GetYaxis()->SetTitleOffset(0.85);
-      mcbkgHist_[f]->GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
-      mcbkgHist_[f]->GetXaxis()->SetTitleOffset(0.85);
-      mcbkgHist_[f]->GetXaxis()->SetTitleSize(5);
-      mcbkgHist_[f]->GetXaxis()->SetRange(0.001,1.001);    
-      mcbkgHist_[f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      hs.Add(mcbkgHist_[f],"hist");
+      hist_[f]->GetYaxis()->SetTitle("a.u.");
+      hist_[f]->GetYaxis()->SetTitleOffset(0.85);
+      hist_[f]->GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
+      hist_[f]->GetXaxis()->SetTitleOffset(0.85);
+      hist_[f]->GetXaxis()->SetTitleSize(5);
+      hist_[f]->GetXaxis()->SetRange(0.001,1.001);    
+      hist_[f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      hs.Add(hist_[f],"hist");
     }
-    ddbkgHist_->GetYaxis()->SetTitle("a.u.");
-    ddbkgHist_->GetYaxis()->SetTitleOffset(0.85);
-    ddbkgHist_->GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
-    ddbkgHist_->GetXaxis()->SetTitleOffset(0.85);
-    ddbkgHist_->GetXaxis()->SetTitleSize(5);
-    ddbkgHist_->GetXaxis()->SetRange(0.001,1.001);    
-    ddbkgHist_->GetXaxis()->SetRangeUser(0.001,1.001);    
-    hs.Add(ddbkgHist_,"hist");
     //  dataHist_->SetMarkerStyle(1);
     //  dataHist_->SetMarkerSize(0.8);
     
  
-    cout << "dd integral: " << ddbkgHist_->Integral() << endl;
+    cout << "dd integral: " << hist_[3]->Integral() << endl;
     normalize(hs, 1.);
     hs.SetMaximum(0.4);
     hs.Draw("hist");
@@ -1051,19 +1037,19 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     hs.GetXaxis()->SetTitle("p^{lead.track}/E^{#tau}");
     //  hs.GetXaxis()->SetTitleOffset(1.5);
     
-    dataHist_->Scale(1./dataHist_->Integral());
-    dataHist_->GetXaxis()->SetRange(0.001,1.001);    
-    dataHist_->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[0]->Scale(1./hist_[0]->Integral());
+    hist_[0]->GetXaxis()->SetRange(0.001,1.001);    
+    hist_[0]->GetXaxis()->SetRangeUser(0.001,1.001);    
   
-    dataHist_->Draw("same");
-    higgsH_->Scale(1./signalHistWH_->Integral());
+    hist_[0]->Draw("same");
+    higgsH_->Scale(1./higgsH_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
     higgsH_->GetXaxis()->SetRange(0.001,1.001);    
     higgsH_->GetXaxis()->SetRangeUser(0.001,1.001);    
     higgsH_->Draw("histsame");
     
     TGraphErrors myBkgError;
     getErrorBands(hs, myBkgError);
-    myBkgError.SetFillColour(1);
+    myBkgError.SetFillColor(1);
     myBkgError.SetFillStyle(3004);
     myBkgError.GetYaxis()->SetTitle("a.u.");
     myBkgError.GetYaxis()->SetTitleOffset(0.85);
@@ -1077,7 +1063,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     TGraphErrors mySignalError;
     getErrorBands(*higgsH_, mySignalError);
     mySignalError.SetName("blahSignalError");
-    mySignalError.SetFillColour(616);
+    mySignalError.SetFillColor(616);
     mySignalError.SetFillStyle(3005);
     mySignalError.GetYaxis()->SetTitle("a.u.");
     mySignalError.GetYaxis()->SetTitleOffset(0.85);
@@ -1093,9 +1079,9 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
     TPaveText *pt1 = new TPaveText(0.17,0.45,0.65,0.5, "brNDC");
     pt1->SetBorderSize(1);
-    pt1->SetFillColour(19);
+    pt1->SetFillColor(19);
     pt1->SetFillStyle(0);
-    pt1->SetLineColour(0);
+    pt1->SetLineColor(0);
     pt1->SetTextFont(132);
     pt1->SetTextSize(0.033);
     //  TText *text = pt1->AddText("#splitline{m_{H^{#pm}} = 120 GeV/c^{2},}{BR(t #rightarrow H^{+}b) = 0.05}");
@@ -1105,9 +1091,9 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
     TPaveText *pt = new TPaveText(0.15,0.93,0.9,1.0, "brNDC");
     pt->SetBorderSize(1);
-    pt->SetFillColour(19);
+    pt->SetFillColor(19);
     pt->SetFillStyle(0);
-    pt->SetLineColour(0);
+    pt->SetLineColor(0);
     pt->SetTextFont(132);
     pt->SetTextSize(0.045);
     //TText *text = pt->AddText("#sqrt{s} = 7 TeV,  2.1 fb^{-1}  CMS Preliminary");
@@ -1152,74 +1138,40 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   // Stat filling and histogram putting nonzeroes instead of zeroes (RooFit mojo)
   // Perhaps do a single loop with systs.
   for(size_t f=0; f<nSamples_+2; f++){
-    for(int ibin=0; ibin<hist_[f]->GetNbinsX(); ibin++){
+    for(int ibin=0; ibin<=hist_[f]->GetNbinsX(); ibin++){ // <= is for overflow
+      if(hist_[f]->GetBinContent(ibin) == 0){ // Protection from RooStat/Fit breaking in combine
+	hist_[f]->SetBinContent(ibin, 0.000001);
+	hist_[f]->SetBinError(ibin,0);
+      }
+      // Fill stat uncertainty histograms
       histStatUp_[f]  ->SetBinContent(ibin, hist_[f]->GetBinContent(ibin) + hist_[f]->GetBinError(ibin) );
       histStatDown_[f]->SetBinContent(ibin, hist_[f]->GetBinContent(ibin) - hist_[f]->GetBinError(ibin) );
     }
-
   }
   
-  // Rescale stat plots
-  signalHistWHStatUp_->Scale(signalHistWH_->Integral()/signalHistWHStatUp_->Integral());
-  signalHistHHStatUp_->Scale(signalHistHH_->Integral()/signalHistHHStatUp_->Integral());
-  ddbkgHistStatUp_->Scale(ddbkgHist_->Integral()/ddbkgHistStatUp_->Integral());
-  for(size_t f=0; f<nMcSamples_+2; f++)
-    mcbkgHistStatUp_[f]->Scale(mcbkgHist_[f]->Integral()/mcbkgHistStatUp_[f]->Integral());
-  dataHistStatUp_->Scale(dataHist_->Integral()/dataHistStatUp_->Integral());
+  // Rescale stat plots - they must have the same integral as the base ones
+  for(size_t f=0; f<nSamples_+2; f++){
+    histStatUp_[f]->Scale(hist_[f]->Integral()/histStatUp_[f]->Integral());
+    histStatDown_[f]->Scale(hist_[f]->Integral()/histStatDown_[f]->Integral());
+  }
 
-  signalHistWHStatDown_->Scale(signalHistWH_->Integral()/signalHistWHStatDown_->Integral());
-  signalHistHHStatDown_->Scale(signalHistHH_->Integral()/signalHistHHStatDown_->Integral());
-  ddbkgHistStatDown_->Scale(ddbkgHist_->Integral()/ddbkgHistStatDown_->Integral());
-  for(size_t f=0; f<nMcSamples_+2; f++)
-    mcbkgHistStatDown_[f]->Scale(mcbkgHist_[f]->Integral()/mcbkgHistStatDown_[f]->Integral());
-  dataHistStatDown_->Scale(dataHist_->Integral()/dataHistStatDown_->Integral());
-  
-  
   
   // Set names
-  signalHistWH_->SetName(signalSampleNameWH_.c_str());
-  signalHistHH_->SetName(signalSampleNameHH_.c_str());
-  ddbkgHist_->SetName(ddBkgSampleName_.c_str());
-  for(size_t f=0; f<nMcSamples_+2; f++)
-    mcbkgHist_[f]->SetName(mcBkgSampleName_[f].c_str());
-//  mcbkgHist_[nMcSamples_]->SetName(mcBkgSampleName_[nMcSamples_].c_str());
-//  mcbkgHist_[nMcSamples_+1]->SetName(mcBkgSampleName_[nMcSamples_+1].c_str());
-
-  signalHistWHStatUp_->SetName(signalHistWH_->GetName()+TString("_")+signalHistWH_->GetName()+TString("_StatUp"));
-  signalHistHHStatUp_->SetName(signalHistHH_->GetName()+TString("_")+signalHistHH_->GetName()+TString("_StatUp"));
-  ddbkgHistStatUp_->SetName(ddbkgHist_->GetName()+TString("_")+ddbkgHist_->GetName()+TString("_StatUp"));
-  for(size_t f=0; f<nMcSamples_+2; f++)
-    mcbkgHistStatUp_[f]->SetName(mcBkgSampleName_[f].c_str()+TString("_")+mcBkgSampleName_[f].c_str()+TString("_StatUp"));
-//  mcbkgHist_[nMcSamples_]->SetName(mcBkgSampleName_[nMcSamples_].c_str());
-//  mcbkgHist_[nMcSamples_+1]->SetName(mcBkgSampleName_[nMcSamples_+1].c_str());
-  dataHistStatUp_->SetName(dataHist_->GetName()+TString("_")+dataHist_->GetName()+TString("_StatUp"));
-
-
-  signalHistWHStatDown_->SetName(signalSampleNameWH_.c_str()+TString("_")+signalSampleNameWH_.c_str()+TString("_StatDown"));
-  signalHistHHStatDown_->SetName(signalSampleNameHH_.c_str()+TString("_")+signalSampleNameHH_.c_str()+TString("_StatDown"));
-  ddbkgHistStatDown_->SetName(ddbkgHist_->GetName()+TString("_")+ddbkgHist_->GetName()+TString("_StatDown"));
-  for(size_t f=0; f<nMcSamples_+2; f++)
-    mcbkgHistStatDown_[f]->SetName(mcBkgSampleName_[f].c_str()+TString("_")+mcBkgSampleName_[f].c_str()+TString("_StatDown"));
-//  mcbkgHist_[nMcSamples_]->SetName(mcBkgSampleName_[nMcSamples_].c_str());
-//  mcbkgHist_[nMcSamples_+1]->SetName(mcBkgSampleName_[nMcSamples_+1].c_str());
-  dataHistStatDown_->SetName(dataHist_->GetName()+TString("_")+dataHist_->GetName()+TString("_StatDown"));
+  for(size_t f=0; f<nSamples_+2; f++){
+    hist_[f]->SetName(sampleName_[f].c_str());
+    histStatUp_[f]->SetName(sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatUp")); // Double name because of datacard syntax (indipendent lines for each stat)
+    histStatDown_[f]->SetName(sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatDown")); // Double name because of datacard syntax (indipendent lines for each stat)
+  }
 
   // Syst case
   for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
-    signalSystHistWH_[a]->SetName(signalSampleNameWH_.c_str()+systFancyComponents_[a]);
-    signalSystHistHH_[a]->SetName(signalSampleNameHH_.c_str()+systFancyComponents_[a]);
-    ddbkgSystHist_[a]->SetName(ddBkgSampleName_.c_str()+systFancyComponents_[a]);
-    for(size_t f=0; f<nMcSamples_; f++){
-      mcbkgSystHist_[a][f]->SetName(mcBkgSampleName_[f].c_str()+systFancyComponents_[a]);
+    for(size_t f=0; f<nSamples_+2; f++){
+      systHist_[a][f]->SetName(sampleName_[f].c_str()+systFancyComponents_[a]);
     }
-    mcbkgSystHist_[a][nMcSamples_]->SetName(mcBkgSampleName_[nMcSamples_].c_str()+systFancyComponents_[a]);
-    mcbkgSystHist_[a][nMcSamples_+1]->SetName(mcBkgSampleName_[nMcSamples_+1].c_str()+systFancyComponents_[a]);
   } // End syst loop
-    
+  
   // End syst case
   
-  
-  dataHist_->SetName(dataSampleName_.c_str());
   
   if(produceOnly_){
     outputFile->Write();
@@ -1232,11 +1184,11 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
 }
 
-void LandSShapesProducer::StorePerMassSignalShapes(){
+ void LandSShapesProducer::StorePerMassSignalShapes(){
   for(size_t i=0; i<perMassPointSignalShapesToCompare_.size(); i++){
-    perMassPointSignalShapesToCompare_[i]  ->SetLineColour(currentMassPoint_);
-    perMassPointSignalShapesToCompareHH_[i]->SetLineColour(currentMassPoint_);
-    perMassPointSignalShapesToCompareWH_[i]->SetLineColour(currentMassPoint_);
+    perMassPointSignalShapesToCompare_[i]  ->SetLineColor(currentMassPoint_);
+    perMassPointSignalShapesToCompareHH_[i]->SetLineColor(currentMassPoint_);
+    perMassPointSignalShapesToCompareWH_[i]->SetLineColor(currentMassPoint_);
   }
   signalShapesToCompare_  .push_back(perMassPointSignalShapesToCompare_  );
   signalShapesToCompareHH_.push_back(perMassPointSignalShapesToCompareHH_);
@@ -1254,10 +1206,10 @@ void LandSShapesProducer::DrawSignalShapesComparison(){
   //leg_ = new TLegend(0.75,0.6346154,1.,1.,NULL,"brNDC");
   leg_->SetTextFont(62);
   leg_->SetBorderSize(0);
-  leg_->SetLineColour(1);
+  leg_->SetLineColor(1);
   leg_->SetLineStyle(1);
   leg_->SetLineWidth(1);
-  leg_->SetFillColour(0);
+  leg_->SetFillColor(0);
   leg_->SetFillStyle(0);
   
   for(size_t s=0; s<signalShapesToCompare_.size(); s++){
@@ -1270,7 +1222,7 @@ void LandSShapesProducer::DrawSignalShapesComparison(){
     canvas_->cd();
     for(size_t s=0; s<signalShapesToCompare_.size(); s++){     
       cout << "DEBUG: signalShapesToCompare: " << signalShapesToCompare_[s].size() << endl;
-      signalShapesToCompare_[s][i]->SetLineColour(s);
+      signalShapesToCompare_[s][i]->SetLineColor(s);
       cout << "DEBUG: line color has been set" << endl;
       if(s=0) signalShapesToCompare_[s][i]->Draw("hist");
       else signalShapesToCompare_[s][i]->Draw("histsame");
@@ -1287,7 +1239,7 @@ void LandSShapesProducer::DrawSignalShapesComparison(){
   for(size_t i=0; i<nVars_; i++){
     canvas_->cd();
     for(size_t s=0; s<signalShapesToCompareHH_.size(); s++){     
-      signalShapesToCompareHH_[s][i]->SetLineColour(s);
+      signalShapesToCompareHH_[s][i]->SetLineColor(s);
       if(s=0) signalShapesToCompareHH_[s][i]->Draw("hist");
       else signalShapesToCompareHH_[s][i]->Draw("histsame");
     }
@@ -1301,7 +1253,7 @@ void LandSShapesProducer::DrawSignalShapesComparison(){
   for(size_t i=0; i<nVars_; i++){
     canvas_->cd();
     for(size_t s=0; s<signalShapesToCompareWH_.size(); s++){     
-      signalShapesToCompareWH_[s][i]->SetLineColour(s);
+      signalShapesToCompareWH_[s][i]->SetLineColor(s);
       if(s=0) signalShapesToCompareWH_[s][i]->Draw("hist");
       else signalShapesToCompareWH_[s][i]->Draw("histsame");
     }

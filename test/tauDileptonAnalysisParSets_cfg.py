@@ -5,83 +5,75 @@ import FWCore.ParameterSet.Config as cms
 #########
 
 LandSShapesProducerParSet = cms.PSet(
-    outFolder        = cms.string("shapesForDatacard/"),
+#    outFolder        = cms.string("shapesForDatacard/"),
+    outFolder        = cms.string("testShapes/"),
     outputFileName  = cms.string("shapes"),
-
-
-#    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
-#    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
-
-#    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/mt-2011-V1-mc-MU-20GeV/"),
-#    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/mt-2011-V1-data-MU-20GeV/"),
-
-
-   baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/"),
-   baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-data-MU-20GeV/"),
-
-#    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_bakNew/nomtcut/nomt-2011-V1-mc-MU-20GeV/"),
-#    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_bakNew/nomtcut/nomt-2011-V1-data-MU-20GeV/"),
-
-
-    signalFileNameWH   = cms.vstring("out-wh-pythia-m80.root", "out-wh-pythia-m100.root", "out-wh-pythia-m120.root", "out-wh-pythia-m140.root", "out-wh-pythia-m150.root", "out-wh-pythia-m155.root", "out-wh-pythia-m160.root",),
-    signalFileNameHH   = cms.vstring("out-hh-pythia-m80.root", "out-hh-pythia-m100.root", "out-hh-pythia-m120.root", "out-hh-pythia-m140.root", "out-hh-pythia-m150.root", "out-hh-pythia-m155.root", "out-hh-pythia-m160.root"),
+    massPointName   = cms.vstring("m80", "m100", "m120", "m140", "m150", "m155", "m160"),
     
-    outputFileNameSuffix   = cms.vstring("m80", "m100", "m120", "m140", "m150", "m155", "m160"),
+    #    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
+    #    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
     
-    dataFileName       = cms.string("out-data.root"),
-    #    ddBkgFileName      = cms.string("out-data_rescaled_base.root"),
-    ddBkgFileName      = cms.string("out-data_rescaled.root"),
-    # for fig7 #    mcBkgFileName      = cms.vstring(    "out-ttbar_mutau.root", "out-ttbar_other.root", "out-singletop.root",  "out-wjets.root"  , "out-dibosons.root", "out-zjets.root"    ),
-    mcBkgFileName      = cms.vstring(    "out-ttbar_mutau.root", "out-ttbar_mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
-
-
-    signalSampleNameWH   = cms.string("WH3"),
-    signalSampleNameHH   = cms.string("HH3"),
+    #    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/mt-2011-V1-mc-MU-20GeV/"),
+    #    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/mt-2011-V1-data-MU-20GeV/"),
     
-    #    dataSampleName       = cms.string("data_obs"),
-    #    ddBkgSampleName      = cms.string("tau-fake3"),
-    #    mcBkgSampleName      = cms.vstring( "tt->ltau3", "tt~->ll3", "singleTop3", "di-boson3", "Z->ee,mumu3", "Z->tautau3" ),
-
-    # for fig7 #    dataSampleName       = cms.string("data_obs"),
-    # for fig7 #    ddBkgSampleName      = cms.string("tau_fake3"),
-    # for fig7 #    mcBkgSampleName      = cms.vstring( "tt_ltau3", "tt_ll3", "singleTop3", "wjets" , "di-boson3", "Z_eemumu3",  "Z_tautau3","gog"  ),
-
-    dataSampleName       = cms.string("data_obs"),
-    ddBkgSampleName      = cms.string("tau_fake3"),
-    mcBkgSampleName      = cms.vstring( "tt_ltau3", "tt_ll3", "singleTop3","di_boson3", "Z_eemumu3",  "Z_tautau3" ),
-
-    signalFancySampleNameWH   = cms.string("H^{+}[m_{H^{#pm}} = 120 GeV/c^{2}]"),
-    dataFancySampleName       = cms.string("data"),
-    ddBkgFancySampleName      = cms.string("misidentified #tau_{h}"),
-    mcBkgFancySampleName      = cms.vstring( "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson",  "Z #rightarrow ee,#mu#mu" , "Z #rightarrow #tau#tau" ),
-
-    #    signalSampleColor   = cms.int32(616),
-    signalSampleColor   = cms.int32(1),
-    ddBkgSampleColor    = cms.int32(799),
-# for fig 7 #    mcBkgSampleColor    = cms.vint32( 614, 8, 824, 809,  596, 831, 831, 835 ),
-    mcBkgSampleColor    = cms.vint32( 614, 8, 824,  596, 831, 809),
-                         
-    #osCutEff               = cms.double(0.69*220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
-    osCutEff               = cms.double(220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
-    #    "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson"
-
-    minitreeSelected   = cms.string("m_tau_Selected"),
-    minitreeDataDriven = cms.string("m_tau_DataDriven"),
-
+    
+    baseDir = cms.vstring("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-data-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-data-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/"
+                          ),
+    
+    #    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_bakNew/nomtcut/nomt-2011-V1-mc-MU-20GeV/"),
+    #    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_bakNew/nomtcut/nomt-2011-V1-data-MU-20GeV/"),
+    
+    
+    # obsolete format # for fig7 #    mcBkgFileName      = cms.vstring(    "out-ttbar_mutau.root", "out-ttbar_other.root", "out-singletop.root",  "out-wjets.root"  , "out-dibosons.root", "out-zjets.root"    ),
+    inputFileName      = cms.vstring( "out-data.root", "out-wh-pythia-", "out-hh-pythia-", "out-data_rescaled.root", "out-ttbar_mutau.root", "out-ttbar_mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
+    
+    # is it *really* needed that "3" that was told it is necessary in the lands framework?
+    sampleName      = cms.vstring( "data_obs", "WH3", "HH3", "tau_fake3", "tt_ltau3", "tt_ll3", "singleTop3","di_boson3", "Z_eemumu3",  "Z_tautau3" ),
+    
+    fancySampleName      = cms.vstring("data", "H^{+}[m_{H^{#pm}} = 120 GeV/c^{2}]", "H^{+}[m_{H^{#pm}} = 120 GeV/c^{2}]", "misidentified #tau_{h}", "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson",  "Z #rightarrow ee,#mu#mu" , "Z #rightarrow #tau#tau" ),
+    
+    # obsolete format # for fig 7 #    mcBkgSampleColor    = cms.vint32( 614, 8, 824, 809,  596, 831, 831, 835 ),
+    sampleColour    = cms.vint32( 1,    1, 1, 799,  614,    8,   824,  596, 831, 809),
+    #sampleColour    = cms.vint32( 1, 616, 616, 799, 614, 8, 824,  596, 831, 809),
+    sampleFillStyle = cms.vint32( 1001, 0, 0, 1001, 1001, 1001,  1001, 1001, 1001, 1001),
+    
+    produceOnly = cms.bool(True),
+    
+    minitree = cms.vstring("m_tau_Selected",
+                           "m_tau_Selected",
+                           "m_tau_DataDriven",
+                           "m_tau_Selected",
+                           "m_tau_Selected",
+                           "m_tau_Selected"
+                           ),
+    
+    isFromData  = cms.vint32( 1, 0, 0, 1, 0, 0, 0, 0, 0, 0),
+    isDDbkg     = cms.vint32( 0, 0, 0, 1, 0, 0, 0, 0, 0, 0),
+    isSignal    = cms.vint32( 0, 1, 1, 0, 0, 0, 0, 0, 0, 0),
+    
     # jes +/-, met +/-, jer +/-
     systComponents = cms.vstring(
     "_plus"    , "_minus"    ,
     "_uncplus" , "_uncminus" ,
     "_jerplus" , "_jerminus" 
     ),
-
+    
     systFancyComponents = cms.vstring(
     "_jesUp"    , "_jesDown"    ,
     "_metUp" , "_metDown" ,
     "_jerUp" , "_jerDown" 
     ),
+    
+    #osCutEff               = cms.double(0.69*220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
+    osCutEff               = cms.double(220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
 
-    produceOnly = cms.bool(True),
     
     #fitType     = cms.vstring( HIGGS2BKG, HIGGS3BKG, SM2BKG, SM3BKG)
     #    fitType     = cms.vint32( 0),

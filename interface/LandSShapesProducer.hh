@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: LandSShapesProducer.hh,v 1.9 2012/11/08 14:56:18 vischia Exp $                                                                                                       
+  \version  $Id: LandSShapesProducer.hh,v 1.10 2012/11/08 18:18:14 vischia Exp $                                                                                                       
 
   TODO List:
   - generalize to array of samples, simplifying the approach and maintainability
@@ -120,7 +120,8 @@ private:
   bool produceOnly_;
   
   // Input paths
-  TString   baseDir_;
+  // Condense in sampleclass->GetBaseDir
+  vector<TString> baseDir_;
 
   vector<Int_t> isFromData_;
   vector<Int_t> isDDbkg_;
@@ -135,8 +136,9 @@ private:
   vector<Int_t> sampleColour_; // Non for data.
   vector<Int_t> sampleFillStyle_; // Non for data.
 
-  TString minitree_;
-
+  // Condense in sampleclass->GetMinitreeName
+  vector<TString> minitree_;
+  
   vector<TString> systComponents_;
   vector<TString> systFancyComponents_;
   
