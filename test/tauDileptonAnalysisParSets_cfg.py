@@ -13,10 +13,27 @@ LandSShapesProducerParSet = cms.PSet(
     #    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
     #    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
     
-    #    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/mt-2011-V1-mc-MU-20GeV/"),
-    #    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/mt-2011-V1-data-MU-20GeV/"),
     
-    
+#    baseDir = cms.vstring("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/nomtcut/nomt-2011-V1-data-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/nomtcut/nomt-2011-V1-data-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/"
+#                          ),
+
+#    baseDir = cms.vstring("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-data-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-data-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/"
+#                          ),
+
     baseDir = cms.vstring("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-data-MU-20GeV/",
                           "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
                           "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
@@ -26,7 +43,7 @@ LandSShapesProducerParSet = cms.PSet(
                           "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
                           "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/"
                           ),
-    
+
     #    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_bakNew/nomtcut/nomt-2011-V1-mc-MU-20GeV/"),
     #    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_bakNew/nomtcut/nomt-2011-V1-data-MU-20GeV/"),
     
@@ -35,12 +52,12 @@ LandSShapesProducerParSet = cms.PSet(
     inputFileName      = cms.vstring( "out-data.root", "out-wh-pythia-", "out-hh-pythia-", "out-data_rescaled.root", "out-ttbar_mutau.root", "out-ttbar_mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
     
     # is it *really* needed that "3" that was told it is necessary in the lands framework?
-    sampleName      = cms.vstring( "data_obs", "WH3", "HH3", "tau_fake3", "tt_ltau3", "tt_ll3", "singleTop3","di_boson3", "Z_eemumu3",  "Z_tautau3" ),
+    sampleName      = cms.vstring( "data_obs", "WH3", "HH3", "tau_fake3", "tt_ltau3", "tt_ll3", "singleTop3","di_boson3", "Z_tautau3",  "Z_eemumu3" ),
     
-    fancySampleName      = cms.vstring("data", "H^{+}[m_{H^{#pm}} = 120 GeV/c^{2}]", "H^{+}[m_{H^{#pm}} = 120 GeV/c^{2}]", "misidentified #tau_{h}", "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson",  "Z #rightarrow ee,#mu#mu" , "Z #rightarrow #tau#tau" ),
+    fancySampleName      = cms.vstring("data", "H^{+}[m_{H^{#pm}} = 120 GeV/c^{2}]", "H^{+}[m_{H^{#pm}} = 120 GeV/c^{2}]", "misidentified #tau_{h}", "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson",  "Z #rightarrow #tau#tau", "Z #rightarrow ee,#mu#mu"),
     
     # obsolete format # for fig 7 #    mcBkgSampleColor    = cms.vint32( 614, 8, 824, 809,  596, 831, 831, 835 ),
-    sampleColour    = cms.vint32( 1,    1, 1, 799,  614,    8,   824,  596, 831, 809),
+    sampleColour    = cms.vint32( 1,    1, 1, 799,  614,    8,   824,  596, 809, 831),
     #sampleColour    = cms.vint32( 1, 616, 616, 799, 614, 8, 824,  596, 831, 809),
     sampleFillStyle = cms.vint32( 1001, 0, 0, 1001, 1001, 1001,  1001, 1001, 1001, 1001),
     
@@ -48,7 +65,9 @@ LandSShapesProducerParSet = cms.PSet(
     
     minitree = cms.vstring("m_tau_Selected",
                            "m_tau_Selected",
+                           "m_tau_Selected",
                            "m_tau_DataDriven",
+                           "m_tau_Selected",
                            "m_tau_Selected",
                            "m_tau_Selected",
                            "m_tau_Selected"
@@ -80,6 +99,9 @@ LandSShapesProducerParSet = cms.PSet(
     #, 2, 3, 0),
 
     vars        = cms.vstring("rc_t"),
+#    mins        = cms.vdouble(  0.0),
+#    maxs        = cms.vdouble(  1.001),
+#    bins        = cms.vint32(     10),
     mins        = cms.vdouble(  -0.099),
     maxs        = cms.vdouble(   1.001),
     bins        = cms.vint32(     11),

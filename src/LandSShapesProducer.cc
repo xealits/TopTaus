@@ -3,6 +3,7 @@
 
 // System includes
 #include <sstream>
+#include <algorithm>
 
 // CMSSW includes
 #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
@@ -52,6 +53,9 @@ void LandSShapesProducer::Init(){
   hmax_.clear();
   unbinned_.clear(); 
   smoothOrder_.clear();
+
+  minitree_.clear();
+  baseDir_.clear();
 
   signalShapesToCompare_.clear();
   signalShapesToCompareHH_.clear();
@@ -160,8 +164,6 @@ void LandSShapesProducer::InitMassPoint(size_t s){
   currentMassPoint_ = s;
   inputFile_.clear();
   inputTree_.clear();
-  minitree_.clear();
-  baseDir_.clear();
   
   systTree_.clear();
 
@@ -171,8 +173,11 @@ void LandSShapesProducer::InitMassPoint(size_t s){
 
   // Get files
   for(size_t f=0; f<nSamples_; f++){
-    if( f==1 || f == 2) inputFileName_[f] = inputFileName_[f] + massPointName_[s] + TString(".root"); // Signals name manipulation
-    inputFile_.push_back( TFile::Open(baseDir_[f]   + inputFileName_[f]     ) );
+    TString myTempFileName = inputFileName_[f];
+    if( f==1 || f == 2) myTempFileName = inputFileName_[f] + massPointName_[s] + TString(".root"); // Signals name manipulation
+    cout << "Opening file " << baseDir_[f]   + myTempFileName << " opened." << endl;
+    inputFile_.push_back( TFile::Open(baseDir_[f]   + myTempFileName  ) );
+    cout << "File " << baseDir_[f]   + myTempFileName << " opened." << endl;
   }
   cout << "Got files" << endl;
 
@@ -418,12 +423,6 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
 
 
-
-  ddbkgHistUp_ =   (TH1*) hist_[3]->Clone(hist_[3]->GetName() + TString("Up") );
-  ddbkgHistDown_ = (TH1*) hist_[3]->Clone(hist_[3]->GetName() + TString("Down") );
-
-
-
   //  /////////////////////////////////////////////////////////////////////
   
   // mc bkg histogram ////////////////////////////////////////////////
@@ -461,11 +460,23 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     }
   }
   //    ///////////////////////////////////////////////////////////////////
-    
+  
+   
   hist_.push_back( (TH1*)hist_[nSamples_-1]->Clone( sampleName_[nSamples_].c_str())   ); // nSamples-1 Must always be di-bosons
   hist_.push_back( (TH1*)hist_[nSamples_-1]->Clone( sampleName_[nSamples_+1].c_str()) ); // nSamples-1 Must always be di-bosons
-  hist_[nSamples_]->Scale(0.4/hist_[nSamples_]->Integral());      // Normalize to sample
-  hist_[nSamples_+1]->Scale(50.6/hist_[nSamples_+1]->Integral()); // Normalize to sample
+  hist_[nSamples_]  ->Sumw2();
+  hist_[nSamples_+1]->Sumw2();
+
+  hist_[nSamples_]->Scale(50.5/hist_[nSamples_]->Integral());      // Normalize to sample
+  hist_[nSamples_+1]->Scale(0.4/hist_[nSamples_+1]->Integral()); // Normalize to sample
+
+  cout << "sample " << sampleName_[nSamples_] << ", integral " << hist_[nSamples_]->Integral() << endl;
+  cout << "sample " << sampleName_[nSamples_+1] << ", integral " << hist_[nSamples_+1]->Integral() << endl;
+
+  ddbkgHistUp_ =   (TH1*) hist_[3]->Clone(hist_[3]->GetName() + TString("Up") );
+  ddbkgHistDown_ = (TH1*) hist_[3]->Clone(hist_[3]->GetName() + TString("Down") );
+
+
 
   for(size_t f=0; f<nSamples_+2; f++){
     if(f>nSamples_-1){ // Repeat colours for newly cloned histos
@@ -479,9 +490,11 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       hist_[f]->SetFillStyle(sampleFillStyle_[f]); //1001 for background and data, 0 for signal // 3017);
     }
 
-    hist_[f]->Sumw2();
-    histStatUp_  .push_back( (TH1*)hist_[f]->Clone(hist_[f]->GetName() + TString("StatUp")));
-    histStatDown_.push_back( (TH1*)hist_[f]->Clone(hist_[f]->GetName() + TString("StatDown")));
+    //    hist_[f]->Sumw2();
+    histStatUp_  .push_back( (TH1*)hist_[f]->Clone(hist_[f]->GetName() + TString("_StatUp")));
+    histStatDown_.push_back( (TH1*)hist_[f]->Clone(hist_[f]->GetName() + TString("_StatDown")));
+    histStatUp_[f]->Sumw2();
+    histStatDown_[f]->Sumw2();
   }
 
   
@@ -511,8 +524,11 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
     systHist_[a].push_back( (TH1*)systHist_[a][nSamples_-1]->Clone(  sampleName_[nSamples_].c_str()) );
     systHist_[a].push_back( (TH1*)systHist_[a][nSamples_-1]->Clone(  sampleName_[nSamples_+1].c_str()) );
-    systHist_[a][nSamples_]->Scale(0.4/systHist_[a][nSamples_]->Integral());
-    systHist_[a][nSamples_+1]->Scale(50.6/systHist_[a][nSamples_+1]->Integral());
+    systHist_[a][nSamples_]  ->Sumw2();
+    systHist_[a][nSamples_+1]->Sumw2();
+
+    systHist_[a][nSamples_]  ->Scale( (50.5/systHist_[a][nSamples_]->Integral()  )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )    );
+    systHist_[a][nSamples_+1]->Scale( (0.4/systHist_[a][nSamples_+1]->Integral() )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )  );
     
     for(size_t f=0; f<nSamples_+2; f++){
       if(f>nSamples_-1){ // Repeat colours for newly cloned histos
@@ -526,12 +542,13 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 	systHist_[a][f]->SetLineWidth(3);
 	systHist_[a][f]->SetFillStyle(sampleFillStyle_[f]); //1001 for background and data, 0 for signal // 3017);
       }
+      cout << "sample " << sampleName_[f] << "" << systComponents_[a] << ", integral " << systHist_[a][f]->Integral() << endl;
     }
   } // End loop on systs
   
   /// End produce plots - syst case
-
-
+  
+  
 
   if(!produceOnly_){ // For now raw indexes. This will improve.
     // 0: data
@@ -1137,17 +1154,44 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   
   // Stat filling and histogram putting nonzeroes instead of zeroes (RooFit mojo)
   // Perhaps do a single loop with systs.
+  
+
+  
   for(size_t f=0; f<nSamples_+2; f++){
-    for(int ibin=0; ibin<=hist_[f]->GetNbinsX(); ibin++){ // <= is for overflow
+    for(int ibin=1; ibin<=hist_[f]->GetNbinsX(); ibin++){ // <= is for overflow
+
+      hist_[nSamples_]->Scale(50.5/hist_[nSamples_]->Integral());      // Normalize to sample
+      hist_[nSamples_+1]->Scale(0.4/hist_[nSamples_+1]->Integral()); // Normalize to sample
+  
+      //      if(f == 1 | f == 2)
+      if(ibin==1 && hist_[f]->GetBinContent(ibin) != 0){
+	hist_[f]->SetBinError(ibin,  hist_[f]->GetBinContent(ibin) * hist_[f]->GetBinError(ibin+1)/hist_[f]->GetBinContent(ibin+1)  );
+	cout << "bin " << ibin << ", bin error: " << hist_[f]->GetBinError(ibin) << endl;
+	//	if(f<nSamples_){
+	//	  cout << "sample " << hist_[f]->GetName();
+	//	  cout << ", bincontent scaled " <<    myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral() << endl;
+	//	  hist_[f]->SetBinError(ibin, sqrt( myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral()     ) );
+	//	  cout << "done sample " << hist_[f]->GetName() << ", bincontent scaled " <<    myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral() << endl;
+	//	} else{
+	//	  cout << "sample " << hist_[f]->GetName();
+	//	  cout << ", bincontent scaled " <<    myDS_[nSamples_-1]->numEntries()*hist_[nSamples_-1]->GetBinContent(ibin)/hist_[nSamples_-1]->Integral() << endl;
+	//	  hist_[f]->SetBinError(ibin, sqrt( myDS_[nSamples_-1]->numEntries()*hist_[nSamples_-1]->GetBinContent(ibin)/hist_[nSamples_-1]->Integral()     ) );
+	//	}
+      }
+
       if(hist_[f]->GetBinContent(ibin) == 0){ // Protection from RooStat/Fit breaking in combine
-	hist_[f]->SetBinContent(ibin, 0.000001);
-	hist_[f]->SetBinError(ibin,0);
+	hist_[f]->SetBinContent(ibin, 1e-6);
+	cout << hist_[f]->GetName() << " has 0 bin with content " << hist_[f]->GetBinContent(ibin) << " and error " << hist_[f]->GetBinError(ibin) << endl;
+	//	hist_[f]->SetBinError(ibin,0);
       }
       // Fill stat uncertainty histograms
-      histStatUp_[f]  ->SetBinContent(ibin, hist_[f]->GetBinContent(ibin) + hist_[f]->GetBinError(ibin) );
-      histStatDown_[f]->SetBinContent(ibin, hist_[f]->GetBinContent(ibin) - hist_[f]->GetBinError(ibin) );
+      histStatUp_[f]  ->SetBinContent(ibin, std::max( hist_[f]->GetBinContent(ibin) + hist_[f]->GetBinError(ibin) , 0. ) );
+      histStatDown_[f]->SetBinContent(ibin, std::max( hist_[f]->GetBinContent(ibin) - hist_[f]->GetBinError(ibin) , 0. ) );
     }
   }
+
+//  hist_[nSamples_]->Scale(50.5/hist_[nSamples_]->Integral());      // Normalize to sample
+//  hist_[nSamples_+1]->Scale(0.4/hist_[nSamples_+1]->Integral()); // Normalize to sample
   
   // Rescale stat plots - they must have the same integral as the base ones
   for(size_t f=0; f<nSamples_+2; f++){
@@ -1155,13 +1199,44 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     histStatDown_[f]->Scale(hist_[f]->Integral()/histStatDown_[f]->Integral());
   }
 
-  
+
+  for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+    for(size_t f=0; f<nSamples_+2; f++){
+      for(int ibin=1; ibin<=systHist_[a][f]->GetNbinsX(); ibin++){ // <= is for overflow
+	
+	if(ibin==1 && systHist_[a][f]->GetBinContent(ibin) != 0){
+	  systHist_[a][f]->SetBinError(ibin,  systHist_[a][f]->GetBinContent(ibin) * systHist_[a][f]->GetBinError(ibin+1)/systHist_[a][f]->GetBinContent(ibin+1)  );
+	  //	if(f<nSamples_){
+	  //	  cout << "sample " << hist_[f]->GetName();
+	  //	  cout << ", bincontent scaled " <<    myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral() << endl;
+	  //	  hist_[f]->SetBinError(ibin, sqrt( myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral()     ) );
+	  //	  cout << "done sample " << hist_[f]->GetName() << ", bincontent scaled " <<    myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral() << endl;
+	  //	} else{
+	  //	  cout << "sample " << hist_[f]->GetName();
+	  //	  cout << ", bincontent scaled " <<    myDS_[nSamples_-1]->numEntries()*hist_[nSamples_-1]->GetBinContent(ibin)/hist_[nSamples_-1]->Integral() << endl;
+	  //	  hist_[f]->SetBinError(ibin, sqrt( myDS_[nSamples_-1]->numEntries()*hist_[nSamples_-1]->GetBinContent(ibin)/hist_[nSamples_-1]->Integral()     ) );
+	  //	}
+	}
+	
+	if(systHist_[a][f]->GetBinContent(ibin) == 0){ // Protection from RooStat/Fit breaking in combine
+	  systHist_[a][f]->SetBinContent(ibin, 1e-6);
+	  cout << systHist_[a][f]->GetName() << " has 0 bin error " << systHist_[a][f]->GetBinError(ibin) << endl;
+	  //	hist_[f]->SetBinError(ibin,0);
+	}
+      }
+    }
+    
+  }
   // Set names
   for(size_t f=0; f<nSamples_+2; f++){
     hist_[f]->SetName(sampleName_[f].c_str());
     histStatUp_[f]->SetName(sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatUp")); // Double name because of datacard syntax (indipendent lines for each stat)
     histStatDown_[f]->SetName(sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatDown")); // Double name because of datacard syntax (indipendent lines for each stat)
-  }
+ 
+//    hist_[f]->Sumw2();
+//    histStatUp_[f]->Sumw2();
+//    histStatDown_[f]->Sumw2();
+ }
 
   // Syst case
   for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
