@@ -62,6 +62,7 @@ LandSShapesProducerParSet = cms.PSet(
     sampleFillStyle = cms.vint32( 1001, 0, 0, 1001, 1001, 1001,  1001, 1001, 1001, 1001),
     
     produceOnly = cms.bool(True),
+    doMultiDimensionalShapes = cms.bool(False),
     
     minitree = cms.vstring("m_tau_Selected",
                            "m_tau_Selected",

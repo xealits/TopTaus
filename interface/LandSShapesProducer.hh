@@ -8,7 +8,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: LandSShapesProducer.hh,v 1.10 2012/11/08 18:18:14 vischia Exp $                                                                                                       
+  \version  $Id: LandSShapesProducer.hh,v 1.11 2012/11/09 18:22:04 vischia Exp $                                                                                                       
 
   TODO List:
   - generalize to array of samples, simplifying the approach and maintainability
@@ -118,7 +118,7 @@ private:
   // Can't do simultaneously at the moment because of renormalization of histograms,
   // so must revise the code for dropping the need of that
   bool produceOnly_;
-  
+  bool doMultiDimensionalShapes_;
   // Input paths
   // Condense in sampleclass->GetBaseDir
   vector<TString> baseDir_;
@@ -194,6 +194,7 @@ private:
 
   vector<vector<RooDataSet*> >mySystDS_         ; 
 
+  vector<vector<TH1*> > masterHist_;
   vector<vector<TH1*> > signalShapesToCompare_;
   vector<vector<TH1*> > signalShapesToCompareHH_;
   vector<vector<TH1*> > signalShapesToCompareWH_;

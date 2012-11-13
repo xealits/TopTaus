@@ -53,6 +53,7 @@ void LandSShapesProducer::Init(){
   hmax_.clear();
   unbinned_.clear(); 
   smoothOrder_.clear();
+  masterHist_.clear();
 
   minitree_.clear();
   baseDir_.clear();
@@ -95,6 +96,7 @@ void LandSShapesProducer::Init(){
   sampleFillStyle_ = mFitPars.getParameter<vector<Int_t> >("sampleFillStyle");
   
   produceOnly_ = mFitPars.getParameter<bool>("produceOnly");
+  doMultiDimensionalShapes_       = mFitPars.getParameter<bool>("doMultiDimensionalShapes"); 
 
   vector<string>minitreeTemp = mFitPars.getParameter<vector<std::string> >("minitree");
   for(size_t f=0; f<minitreeTemp.size(); f++)
@@ -103,6 +105,8 @@ void LandSShapesProducer::Init(){
   isFromData_       = mFitPars.getParameter<vector<Int_t> >("isFromData"); // Protect data and DD-bkg from syst
   isDDbkg_       = mFitPars.getParameter<vector<Int_t> >("isDDbkg"); // DD
   isSignal_       = mFitPars.getParameter<vector<Int_t> >("isSignal"); // DD
+
+
   
   vector<string>systComponentsTemp = mFitPars.getParameter<vector<std::string> >("systComponents");
   for(size_t f=0; f<systComponentsTemp.size(); f++)
@@ -1185,8 +1189,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 	//	hist_[f]->SetBinError(ibin,0);
       }
       // Fill stat uncertainty histograms
-      histStatUp_[f]  ->SetBinContent(ibin, std::max( hist_[f]->GetBinContent(ibin) + hist_[f]->GetBinError(ibin) , 0. ) );
-      histStatDown_[f]->SetBinContent(ibin, std::max( hist_[f]->GetBinContent(ibin) - hist_[f]->GetBinError(ibin) , 0. ) );
+      histStatUp_[f]  ->SetBinContent(ibin, std::max( hist_[f]->GetBinContent(ibin) + hist_[f]->GetBinError(ibin) , 1e-6 ) );
+      histStatDown_[f]->SetBinContent(ibin, std::max( hist_[f]->GetBinContent(ibin) - hist_[f]->GetBinError(ibin) , 1e-6 ) );
     }
   }
 
@@ -1244,12 +1248,35 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       systHist_[a][f]->SetName(sampleName_[f].c_str()+systFancyComponents_[a]);
     }
   } // End syst loop
+
   
   // End syst case
   
   
   if(produceOnly_){
     outputFile->Write();
+
+    if(doMultiDimensionalShapes_){
+      vector<TH1*> tempMasterHist;
+      tempMasterHist.clear();
+      // Store histograms
+      for(size_t f=0; f<nSamples_+2; f++){
+	tempMasterHist.push_back(  (TH1*) hist_[f]        ->Clone( TString( hist_[f]        ->GetName() + fitVars_[i]->getVarName())  ));
+	tempMasterHist.push_back(  (TH1*) histStatUp_[f]  ->Clone( TString( histStatUp_[f]  ->GetName() + fitVars_[i]->getVarName())  ));
+	tempMasterHist.push_back(  (TH1*) histStatDown_[f]->Clone( TString( histStatDown_[f]->GetName() + fitVars_[i]->getVarName())  ));
+	
+      }
+      
+      // Syst case
+      for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+	for(size_t f=0; f<nSamples_+2; f++){
+	  tempMasterHist.push_back( (TH1*) systHist_[a][f]->Clone( TString( systHist_[a][f]->GetName() + fitVars_[i]->getVarName() ) ));
+	}
+      } // End syst loop
+      masterHist_.push_back( tempMasterHist );
+    }
+    // ---
+
     outputFile->Close();
   }
 
