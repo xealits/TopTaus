@@ -6,7 +6,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: FitVar.hh,v 1.1 2012/09/19 18:37:32 vischia Exp $                                                                                                       
+  \version  $Id: FitVar.hh,v 1.2 2012/09/23 14:21:56 vischia Exp $                                                                                                       
 */
 
 //#if !defined(__CINT__) || defined(__MAKECINT__)
@@ -32,6 +32,7 @@ public:
   double getMin();
   double getMax();
   int getBins();
+  double getBinStep();
   double getHmin();
   double getHmax();
   Int_t getUnbinned();

@@ -37,6 +37,10 @@ int FitVar::getBins(){
   return bins_;
 }
 
+double FitVar::getBinStep(){
+  return (max_-min_)/bins_;
+}
+
 double FitVar::getHmin(){
   return hmin_;
 }

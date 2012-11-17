@@ -53,8 +53,7 @@ void LandSShapesProducer::Init(){
   hmax_.clear();
   unbinned_.clear(); 
   smoothOrder_.clear();
-  masterHist_.clear();
-
+  
   minitree_.clear();
   baseDir_.clear();
 
@@ -156,7 +155,7 @@ void LandSShapesProducer::Init(){
   
   cout << "Init process complete" << endl;
 }
-  
+
 void LandSShapesProducer::SetOptions(){
   //  myStyle_->SetOptStat(0);
 }
@@ -170,6 +169,10 @@ void LandSShapesProducer::InitMassPoint(size_t s){
   inputTree_.clear();
   
   systTree_.clear();
+
+  masterHist_.clear();
+  masterHistNames_.clear();
+  masterShapes_.clear();
 
   perMassPointSignalShapesToCompareHH_.clear();
   perMassPointSignalShapesToCompareWH_.clear();
@@ -236,7 +239,7 @@ void LandSShapesProducer::InitPerVariableAmbient(size_t i){
   histStatUp_.clear();
   histStatDown_.clear();
   systHist_.clear();
-
+  
   histo_.clear();
   systHisto_.clear();
 
@@ -414,17 +417,17 @@ void LandSShapesProducer::BuildDatasets(size_t i){
 
 
 void LandSShapesProducer::DrawTemplates(size_t i){
-
+  
   // Open file for storing shapes
   string outputFileName = outputFileName_ + string("_") + massPointName_[currentMassPoint_] + string("_") + fitVars_[i]->getVarName();
   TFile* outputFile;
-  if(produceOnly_)
+  if(produceOnly_ && !doMultiDimensionalShapes_)
     outputFile = new TFile((outFolder_+outputFileName+string(".root")).c_str(), "RECREATE");
   
   // Reset canvas
   canvas_->cd();
   canvas_->Clear();
-
+  
 
 
   //  /////////////////////////////////////////////////////////////////////
@@ -441,8 +444,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       hist_[f]->SetFillColor(sampleColour_[f]);
     hist_[f]->SetLineWidth(3);
     hist_[f]->SetFillStyle(sampleFillStyle_[f]); //1001 for background and data, 0 for signal // 3017);
-
-
+    
+    
 
     cout << "sample " << sampleName_[f] << ", integral " << hist_[f]->Integral() << endl;
     if(isDDbkg_[f]){
@@ -465,7 +468,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   }
   //    ///////////////////////////////////////////////////////////////////
   
-   
+  
   hist_.push_back( (TH1*)hist_[nSamples_-1]->Clone( sampleName_[nSamples_].c_str())   ); // nSamples-1 Must always be di-bosons
   hist_.push_back( (TH1*)hist_[nSamples_-1]->Clone( sampleName_[nSamples_+1].c_str()) ); // nSamples-1 Must always be di-bosons
   hist_[nSamples_]  ->Sumw2();
@@ -480,8 +483,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   ddbkgHistUp_ =   (TH1*) hist_[3]->Clone(hist_[3]->GetName() + TString("Up") );
   ddbkgHistDown_ = (TH1*) hist_[3]->Clone(hist_[3]->GetName() + TString("Down") );
 
-
-
+  
+  
   for(size_t f=0; f<nSamples_+2; f++){
     if(f>nSamples_-1){ // Repeat colours for newly cloned histos
       if(isSignal_[f]){
@@ -493,14 +496,14 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       hist_[f]->SetLineWidth(3);
       hist_[f]->SetFillStyle(sampleFillStyle_[f]); //1001 for background and data, 0 for signal // 3017);
     }
-
+    
     //    hist_[f]->Sumw2();
     histStatUp_  .push_back( (TH1*)hist_[f]->Clone(hist_[f]->GetName() + TString("_StatUp")));
     histStatDown_.push_back( (TH1*)hist_[f]->Clone(hist_[f]->GetName() + TString("_StatDown")));
     histStatUp_[f]->Sumw2();
     histStatDown_[f]->Sumw2();
   }
-
+  
   
   /// Produce plots - syst case
   for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
@@ -530,7 +533,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     systHist_[a].push_back( (TH1*)systHist_[a][nSamples_-1]->Clone(  sampleName_[nSamples_+1].c_str()) );
     systHist_[a][nSamples_]  ->Sumw2();
     systHist_[a][nSamples_+1]->Sumw2();
-
+    
     systHist_[a][nSamples_]  ->Scale( (50.5/systHist_[a][nSamples_]->Integral()  )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )    );
     systHist_[a][nSamples_+1]->Scale( (0.4/systHist_[a][nSamples_+1]->Integral() )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )  );
     
@@ -703,7 +706,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
     }
 
-
+    
     ////////////////////////////
     leg2_  = new TLegend(0.23,0.65,0.62,0.80,NULL,"brNDC");
     leg2_->SetTextFont(62);
@@ -808,7 +811,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
 
     for(size_t f=4; f<nSamples_+2; f++){
-
+      
       systHist_[2][f]->SetFillStyle(0);
       systHist_[3][f]->SetFillStyle(0);
       hist_[f]->SetFillStyle(0);
@@ -888,7 +891,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     canvas_->SaveAs((outFolder_+outputFileName+string("_jer_sigVariationsWH.png")).c_str());
     canvas_->Clear();
     hist_[1]->SetLineColor(sampleColour_[1]);
-
+    
     hist_[2]->GetXaxis()->SetRange(0.001,1.001);    
     hist_[2]->GetXaxis()->SetRangeUser(0.001,1.001);    
     systHist_[4][2]->GetXaxis()->SetRange(0.001,1.001);    
@@ -969,9 +972,9 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       systHist_[4][f]->SetFillStyle(1001);
       systHist_[5][f]->SetFillStyle(1001);
       hist_[f]->SetFillStyle(1001);
-
+      
     }
-
+    
     //// END SYST
 
     //  leg_ = new TLegend(0.3,0.635,0.63,0.93,NULL,"brNDC");
@@ -1150,23 +1153,23 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     
-
+    
     
   } // End if !produceOnly_
-
+  
 
   
   // Stat filling and histogram putting nonzeroes instead of zeroes (RooFit mojo)
   // Perhaps do a single loop with systs.
   
-
+  
   
   for(size_t f=0; f<nSamples_+2; f++){
     for(int ibin=1; ibin<=hist_[f]->GetNbinsX(); ibin++){ // <= is for overflow
-
+      
       hist_[nSamples_]->Scale(50.5/hist_[nSamples_]->Integral());      // Normalize to sample
       hist_[nSamples_+1]->Scale(0.4/hist_[nSamples_+1]->Integral()); // Normalize to sample
-  
+      
       //      if(f == 1 | f == 2)
       if(ibin==1 && hist_[f]->GetBinContent(ibin) != 0){
 	hist_[f]->SetBinError(ibin,  hist_[f]->GetBinContent(ibin) * hist_[f]->GetBinError(ibin+1)/hist_[f]->GetBinContent(ibin+1)  );
@@ -1194,16 +1197,16 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     }
   }
 
-//  hist_[nSamples_]->Scale(50.5/hist_[nSamples_]->Integral());      // Normalize to sample
-//  hist_[nSamples_+1]->Scale(0.4/hist_[nSamples_+1]->Integral()); // Normalize to sample
+  //  hist_[nSamples_]->Scale(50.5/hist_[nSamples_]->Integral());      // Normalize to sample
+  //  hist_[nSamples_+1]->Scale(0.4/hist_[nSamples_+1]->Integral()); // Normalize to sample
   
   // Rescale stat plots - they must have the same integral as the base ones
   for(size_t f=0; f<nSamples_+2; f++){
     histStatUp_[f]->Scale(hist_[f]->Integral()/histStatUp_[f]->Integral());
     histStatDown_[f]->Scale(hist_[f]->Integral()/histStatDown_[f]->Integral());
   }
-
-
+  
+  
   for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
     for(size_t f=0; f<nSamples_+2; f++){
       for(int ibin=1; ibin<=systHist_[a][f]->GetNbinsX(); ibin++){ // <= is for overflow
@@ -1229,61 +1232,118 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 	}
       }
     }
-    
   }
   // Set names
-  for(size_t f=0; f<nSamples_+2; f++){
-    hist_[f]->SetName(sampleName_[f].c_str());
-    histStatUp_[f]->SetName(sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatUp")); // Double name because of datacard syntax (indipendent lines for each stat)
-    histStatDown_[f]->SetName(sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatDown")); // Double name because of datacard syntax (indipendent lines for each stat)
- 
-//    hist_[f]->Sumw2();
-//    histStatUp_[f]->Sumw2();
-//    histStatDown_[f]->Sumw2();
- }
-
-  // Syst case
-  for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+  if(!doMultiDimensionalShapes_){
+    
     for(size_t f=0; f<nSamples_+2; f++){
-      systHist_[a][f]->SetName(sampleName_[f].c_str()+systFancyComponents_[a]);
-    }
-  } // End syst loop
-
-  
-  // End syst case
-  
-  
-  if(produceOnly_){
-    outputFile->Write();
-
-    if(doMultiDimensionalShapes_){
-      vector<TH1*> tempMasterHist;
-      tempMasterHist.clear();
-      // Store histograms
-      for(size_t f=0; f<nSamples_+2; f++){
-	tempMasterHist.push_back(  (TH1*) hist_[f]        ->Clone( TString( hist_[f]        ->GetName() + fitVars_[i]->getVarName())  ));
-	tempMasterHist.push_back(  (TH1*) histStatUp_[f]  ->Clone( TString( histStatUp_[f]  ->GetName() + fitVars_[i]->getVarName())  ));
-	tempMasterHist.push_back(  (TH1*) histStatDown_[f]->Clone( TString( histStatDown_[f]->GetName() + fitVars_[i]->getVarName())  ));
-	
-      }
+      hist_[f]->SetName(sampleName_[f].c_str());
+      histStatUp_[f]->SetName(sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatUp")); // Double name because of datacard syntax (indipendent lines for each stat)
+      histStatDown_[f]->SetName(sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatDown")); // Double name because of datacard syntax (indipendent lines for each stat)
       
-      // Syst case
-      for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
-	for(size_t f=0; f<nSamples_+2; f++){
-	  tempMasterHist.push_back( (TH1*) systHist_[a][f]->Clone( TString( systHist_[a][f]->GetName() + fitVars_[i]->getVarName() ) ));
-	}
-      } // End syst loop
-      masterHist_.push_back( tempMasterHist );
+      //    hist_[f]->Sumw2();
+      //    histStatUp_[f]->Sumw2();
+      //    histStatDown_[f]->Sumw2();
     }
-    // ---
+    
+    // Syst case
+    for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+      for(size_t f=0; f<nSamples_+2; f++){
+	systHist_[a][f]->SetName(sampleName_[f].c_str()+systFancyComponents_[a]);
+      }
+    } // End syst loop
+    // End syst case
+  } // End if do multidimensional shapes
 
-    outputFile->Close();
+  if(produceOnly_ && !doMultiDimensionalShapes_)
+    outputFile->Write();
+  
+  if(doMultiDimensionalShapes_){
+    cout << "Now filling multiDim list of histos" << endl;
+    
+    vector<TH1*> tempMasterHist;
+    vector<TString> tempMasterHistNames;
+    tempMasterHist.clear();
+    tempMasterHistNames.clear();
+    // Store histograms
+    for(size_t f=0; f<nSamples_+2; f++){
+      tempMasterHist.push_back(  (TH1*) hist_[f]        ->Clone( TString( hist_[f]        ->GetName() + fitVars_[i]->getVarName())  ));
+      tempMasterHist.push_back(  (TH1*) histStatUp_[f]  ->Clone( TString( histStatUp_[f]  ->GetName() + fitVars_[i]->getVarName())  ));
+      tempMasterHist.push_back(  (TH1*) histStatDown_[f]->Clone( TString( histStatDown_[f]->GetName() + fitVars_[i]->getVarName())  ));
+      
+      tempMasterHistNames.push_back( sampleName_[f].c_str() 							     );
+      tempMasterHistNames.push_back( sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatUp")   );
+      tempMasterHistNames.push_back( sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatDown") );
+    }
+    
+    // Syst case
+    for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+      for(size_t f=0; f<nSamples_+2; f++){
+	tempMasterHist.push_back( (TH1*) systHist_[a][f]->Clone( TString( systHist_[a][f]->GetName() + fitVars_[i]->getVarName() ) ));
+	tempMasterHistNames.push_back( sampleName_[f].c_str()+systFancyComponents_[a] );
+      }
+    }
+    // End syst loop
+    cout << "Stored temp histograms" << endl;
+    masterHist_.push_back( tempMasterHist );
+    masterHistNames_.push_back( tempMasterHistNames );
+    cout << "Stored master histograms" << endl;
   }
-
-
- 
+  // ---
+  
+  if(produceOnly_ && !doMultiDimensionalShapes_)
+     outputFile->Close();
+  
   cout << "File closed" << endl;
+  
+}
 
+void LandSShapesProducer::UnfoldMultiDimensionalShape(){
+  
+  // Is 2D. Must translate into genericD
+
+  masterShapes_.clear(); // Just to be sure
+  
+  cout << "Unfolding shapes" << endl;
+
+  // Open file for storing shapes
+  string outputFileName = outputFileName_ + string("_") + massPointName_[currentMassPoint_] + string("_") /* + string("multiDimShape_")*/ + fitVars_[0]->getVarName();// + string("_") + fitVars_[1]->getVarName();
+  TFile* outputFile;
+  if(produceOnly_ && doMultiDimensionalShapes_)
+    outputFile = new TFile((outFolder_+outputFileName+string(".root")).c_str(), "RECREATE");
+  cout << "File opened" << endl;
+  
+  // First cycle, to create histos
+  for(size_t iHist=0; iHist<masterHist_[0].size(); iHist++){
+    masterShapes_.push_back( (TH1*) masterHist_[0][iHist]->Clone() );
+    double nBins = masterHist_[0][iHist]->GetNbinsX() + masterHist_[1][iHist]->GetNbinsX();
+    cout << masterHist_[0][iHist]->GetName() << " has " << masterHist_[0][iHist]->GetNbinsX() << " bins, " << masterHist_[1][iHist]->GetName() << " has " << masterHist_[1][iHist]->GetNbinsX() << " bins. BinStep is " << fitVars_[0]->getBinStep() << endl;
+    masterShapes_[iHist]->SetBins(nBins, fitVars_[0]->getMin() , nBins * fitVars_[0]->getBinStep()); // 10 is personalized reset of binstep to 1 from 0.1
+    masterShapes_[iHist]->SetName( masterHistNames_[0][iHist] ); // the others are the same
+  }
+  
+  cout << "Master shapes created" << endl;
+  // Fill the bins (it is necessary to fill with the cloned one too, because SetBins destroys contents)
+  for(size_t iHist=0; iHist<masterHist_[0].size(); iHist++){
+    for (int ibin=0; ibin <= masterHist_[0][iHist]->GetNbinsX(); ibin++){
+      masterShapes_[iHist]->SetBinContent(ibin,       masterHist_[0][iHist]->GetBinContent(ibin) );
+      masterShapes_[iHist]->SetBinError(    ibin,     masterHist_[0][iHist]->GetBinError(ibin) );
+    }
+    for (int ibin=0; ibin <= masterHist_[1][iHist]->GetNbinsX(); ibin++){
+      masterShapes_[iHist]->SetBinContent(ibin + masterHist_[0][iHist]->GetNbinsX() , masterHist_[1][iHist]->GetBinContent(ibin) );
+      masterShapes_[iHist]->SetBinError(  ibin + masterHist_[0][iHist]->GetNbinsX() , masterHist_[1][iHist]->GetBinError(ibin) );
+    }
+
+    masterShapes_[iHist]->Scale(masterHist_[0][iHist]->Integral() / masterShapes_[iHist]->Integral() );
+  }
+  cout << "Master shapes bins are ok" << endl;
+
+  //  masterHist_.clear(); // In order not to have that into the rootfile // See that
+
+  if(produceOnly_ && doMultiDimensionalShapes_)
+    outputFile->Write();
+  
+  outputFile->Close();
 }
 
  void LandSShapesProducer::StorePerMassSignalShapes(){
@@ -1386,7 +1446,8 @@ void LandSShapesProducer::Produce(){
       //    BuildPDFs(i);
       
       DrawTemplates(i);
-      
+
+
       //    BuildConstrainedModels(i);
       //    
       //    DoPerVariableFit(i);
@@ -1396,7 +1457,9 @@ void LandSShapesProducer::Produce(){
       //    DoPerVariableLikelihoodFit(i);
       
     }
-    
+
+    if(doMultiDimensionalShapes_)
+      UnfoldMultiDimensionalShape();
     //    StorePerMassSignalShapes();
   }
   //  DoCombinedLikelihoodFit();

@@ -1,23 +1,18 @@
-
 #ifndef _LandSShapesProducer_hh
 #define _LandSShapesProducer_hh
 
 /**                                                                                                                                                                              
-  \class    LandSShapesProducer LandSShapesProducer.cc "UserCode/LIP/TopTaus/interface/LandSShapesProducer.hh"                                                                     
-  \brief    executable for performing multivariable likelihood fit in order to improve estimation of N_fakes
-  
-  \author   Pietro Vischia
-
-  \version  $Id: LandSShapesProducer.hh,v 1.11 2012/11/09 18:22:04 vischia Exp $                                                                                                       
-
-  TODO List:
+																						 \class    LandSShapesProducer LandSShapesProducer.cc "UserCode/LIP/TopTaus/interface/LandSShapesProducer.hh"                                                                   																						 \brief    executable for performing multivariable likelihood fit in order to improve estimation of N_fakes
+																						 																						 \author   Pietro Vischia
+																						 																						 \version  $Id: LandSShapesProducer.hh,v 1.12 2012/11/13 16:59:08 vischia Exp $                                                                                                       
+																																												 TODO List:
   - generalize to array of samples, simplifying the approach and maintainability
   - de-zero the zeroed bins (Pedro suggestion: essentially RooFit (->combine tool) does not like zero bins -> set them to 1E-06
   - multidimensional shapes
   - MVA shapes (creating an external reweighter and not this code)
   - Define enum for classifying, replacing isSignal_, isFromData_, isDD_
   - Define a class for all the sample properties, like names, files, trees, classifications, colours and so on
-
+  
 */
 
 
@@ -85,10 +80,11 @@ private:
   void BuildDatasets(size_t);
   //  void BuildPDFs(size_t);
   void DrawTemplates(size_t);
-
+  
+  void UnfoldMultiDimensionalShape();
   void StorePerMassSignalShapes();
   void DrawSignalShapesComparison();
-
+  
   // void BuildConstrainedModels(size_t);
   //  void DoPerVariableFit(size_t);
   //  void DrawPerVariableFit(size_t);
@@ -152,7 +148,7 @@ private:
 
   // Input syst trees
   vector<vector<TTree*> > systTree_;
-
+  
   vector<string> uncSources_;
   size_t currentMassPoint_;
   size_t nMassPoints_;
@@ -187,36 +183,38 @@ private:
   vector<vector<string> > mySystDSName_ ; // must have dummy name for zero component (data)
 
   vector<RooDataHist*> histo_     ;
-
+  
   vector<vector<RooDataHist*> > systHisto_     ;
-
+  
   vector<RooDataSet*> myDS_         ; 
-
+  
   vector<vector<RooDataSet*> >mySystDS_         ; 
-
+  
   vector<vector<TH1*> > masterHist_;
+  vector<vector<TString> > masterHistNames_;
+  vector<TH1*> masterShapes_;
   vector<vector<TH1*> > signalShapesToCompare_;
   vector<vector<TH1*> > signalShapesToCompareHH_;
   vector<vector<TH1*> > signalShapesToCompareWH_;
-
+  
   vector<TH1*> perMassPointSignalShapesToCompare_;
   vector<TH1*> perMassPointSignalShapesToCompareHH_;
   vector<TH1*> perMassPointSignalShapesToCompareWH_;
-
+  
   TH1* ddbkgHistUp_;  // These are for showing the error bands. Not for LandS
   TH1* ddbkgHistDown_;// These are for showing the error bands. Not for LandS
   vector<TH1*> hist_;
-
+  
   vector<TH1*> histStatUp_;
-
+  
   vector<TH1*> histStatDown_;
   
   vector<vector<TH1*> > systHist_;
-
+  
   TLegend* leg_;
   
   double sumWeights_;
-
+  
 };
 
 #endif //_TauDileptonPDFBuilderFitter_hh
