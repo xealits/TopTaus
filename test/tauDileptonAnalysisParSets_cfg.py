@@ -130,8 +130,8 @@ TauDileptonPDFBuilderFitterParSet = cms.PSet(
     outFolder        = cms.string("likelihoodFit/"),
     resultsFileName  = cms.string("likelihoodResults"),
     
-    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
-    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
+    baseMCDir        = cms.string("/lustre/data3/cmslocal/samples/CMSSW_5_2_5/mc/processed-v1-muon/mt-2012-V1-mc-MU-20GeV/"),
+    baseDataDir      = cms.string("/lustre/data3/cmslocal/samples/CMSSW_5_2_5/data/processed-v1-muon/mt-2012-V1-data-MU-20GeV/"),
 
     signalFileNameWH   = cms.string("out-wh-pythia-m120.root"),
     signalFileNameHH   = cms.string("out-hh-pythia-m120.root"),
@@ -145,9 +145,9 @@ TauDileptonPDFBuilderFitterParSet = cms.PSet(
     minitreeDataDriven = cms.string("m_tau_DataDriven"),
 
     #fitType     = cms.vstring( HIGGS2BKG = 2, HIGGS3BKG = 3, SM2BKG = 0, SM3BKG = 1)
-    fitType     = cms.vint32( 3),
+    fitType     = cms.vint32( 1),
     #, 2, 3, 0),
-    useOS       = cms.bool(True),
+    useOS       = cms.bool(False),
 
     osCutEff               = cms.double(0.69*220.92/242.915),
     cHiggsBR               = cms.double(0.01),
