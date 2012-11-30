@@ -202,8 +202,8 @@ void TauDileptonPDFBuilderFitter::Init(){
 
   // Open files and get trees
   // ddBkg is the only to be taken from data driven estimation (tree)
-  signalFileWH_   = TFile::Open(baseMCDir_   + signalFileNameWH_  ); signalTreeWH_   = (TTree*) signalFileWH_  ->Get(minitreeSelected_);
-  signalFileHH_   = TFile::Open(baseMCDir_   + signalFileNameHH_  ); signalTreeHH_   = (TTree*) signalFileHH_  ->Get(minitreeSelected_);
+//  signalFileWH_   = TFile::Open(baseMCDir_   + signalFileNameWH_  ); signalTreeWH_   = (TTree*) signalFileWH_  ->Get(minitreeSelected_);
+//  signalFileHH_   = TFile::Open(baseMCDir_   + signalFileNameHH_  ); signalTreeHH_   = (TTree*) signalFileHH_  ->Get(minitreeSelected_);
   ddBkgFile_      = TFile::Open(baseDataDir_   + ddBkgFileName_     ); ddBkgTree_      = (TTree*) ddBkgFile_     ->Get(minitreeDataDriven_);
   ttbarmcBkgFile_ = TFile::Open(baseMCDir_   + ttbarmcBkgFileName_); ttbarmcBkgTree_ = (TTree*) ttbarmcBkgFile_->Get(minitreeSelected_);
   mcBkgFile_      = TFile::Open(baseMCDir_   + mcBkgFileName_     ); mcBkgTree_      = (TTree*) mcBkgFile_     ->Get(minitreeSelected_);
@@ -261,8 +261,8 @@ void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
 void TauDileptonPDFBuilderFitter::InitPerVariableAmbient(size_t i){
 
   // Totally necessary (otherwise branches remain tied to the variables and datasets get messed up for nVars_>1)
-  signalTreeWH_   ->ResetBranchAddresses();
-  signalTreeHH_   ->ResetBranchAddresses();
+//  signalTreeWH_   ->ResetBranchAddresses();
+//  signalTreeHH_   ->ResetBranchAddresses();
   ddBkgTree_      ->ResetBranchAddresses();
   ttbarmcBkgTree_ ->ResetBranchAddresses();
   mcBkgTree_      ->ResetBranchAddresses();
@@ -379,7 +379,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     // Get WH events
     signalTreeWH_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
     signalTreeWH_->SetBranchAddress("weight", &myVarWeightAllocator);
-    signalTreeWH_->SetBranchAddress("is_os", &isOSsig);
+    //    signalTreeWH_->SetBranchAddress("is_os", &isOSsig);
     for(unsigned int ev=0; ev<signalTreeWH_->GetEntries(); ev++){
       signalTreeWH_->GetEntry(ev);
       if(useOS_ && isOSsig<0.5) continue;
@@ -391,7 +391,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     // Get HH events
     signalTreeHH_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
     signalTreeHH_->SetBranchAddress("weight", &myVarWeightAllocator);
-    signalTreeHH_->SetBranchAddress("is_os", &isOSsig);
+    // signalTreeHH_->SetBranchAddress("is_os", &isOSsig);
     //    cout << "getIsoS      ";
     for(unsigned int ev=0; ev<signalTreeHH_->GetEntries(); ev++){
       signalTreeHH_->GetEntry(ev);
@@ -407,7 +407,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
   // Get DD events
   ddBkgTree_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
   ddBkgTree_->SetBranchAddress("weight", &myVarWeightAllocator);
-  ddBkgTree_->SetBranchAddress("is_os", &isOSsig);
+  // ddBkgTree_->SetBranchAddress("is_os", &isOSsig);
   //    cout << "getIsoS      ";
   for(unsigned int ev=0; ev<ddBkgTree_->GetEntries(); ev++){
     ddBkgTree_->GetEntry(ev);
@@ -425,7 +425,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     // Get TTMCBkg events
     ttbarmcBkgTree_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
     ttbarmcBkgTree_->SetBranchAddress("weight", &myVarWeightAllocator);
-    ttbarmcBkgTree_->SetBranchAddress("is_os", &isOSsig);
+    //  ttbarmcBkgTree_->SetBranchAddress("is_os", &isOSsig);
     //    cout << "getIsoS      ";
     for(unsigned int ev=0; ev<ttbarmcBkgTree_->GetEntries(); ev++){
       ttbarmcBkgTree_->GetEntry(ev);
@@ -443,7 +443,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     // Get MCBkg events
     mcBkgTree_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
     mcBkgTree_->SetBranchAddress("weight", &myVarWeightAllocator);
-    mcBkgTree_->SetBranchAddress("is_os", &isOSsig);
+    //   mcBkgTree_->SetBranchAddress("is_os", &isOSsig);
     //    cout << "getIsoS      ";
     for(unsigned int ev=0; ev<mcBkgTree_->GetEntries(); ev++){
       mcBkgTree_->GetEntry(ev);
@@ -458,7 +458,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     // Get Data events
     dataTree_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
     dataTree_->SetBranchAddress("weight", &myVarWeightAllocator);
-    dataTree_->SetBranchAddress("is_os", &isOSsig);
+    //  dataTree_->SetBranchAddress("is_os", &isOSsig);
     //    cout << "getIsoS      ";
     for(unsigned int ev=0; ev<dataTree_->GetEntries(); ev++){
       dataTree_->GetEntry(ev);
