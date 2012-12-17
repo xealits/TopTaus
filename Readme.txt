@@ -13,17 +13,17 @@ its libraries
 Installation
 ------------
 
-# 55x
+# 537
 export SCRAM_ARCH=slc5_amd64_gcc462
-scramv1 project CMSSW CMSSW_5_2_3_patch2
-cd CMSSW_5_2_3_patch2/src/
-cvs co -p UserCode/LIP/TopTaus/TAGS.txt | sh
+scramv1 project CMSSW CMSSW_5_3_7
+cd CMSSW_5_3_7/src/
+cvs co -p UserCode/LIP/TopTaus/TAGS_2012.txt | sh
 
 # 444
 export SCRAM_ARCH=slc5_amd64_gcc434
 scramv1 project CMSSW CMSSW_4_4_4
 cd CMSSW_4_4_4/src
-cvs co -p UserCode/LIP/TopTaus/TAGS.txt | sh
+cvs co -p UserCode/LIP/TopTaus/TAGS_2011.txt | sh
 
 Local test run (local data file at LIP)
 cmsRun LIP/TopTaus/test/createDataPattuple_cfg.py /lustre/data3/cmslocal/samples/CMSSW_5_2_5/test/Run2012B_SingleMu_AOD_PromptReco-v1_000_193_998_0C7DCC80-4E9D-E111-B22A-001D09F25267.root pattuple.root inclusive_mu
