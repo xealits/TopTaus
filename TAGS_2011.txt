@@ -1,5 +1,5 @@
-CMSSW_4_4_4 instructions:
--------------------------
+# CMSSW_4_4_4 instructions:
+# -------------------------
 # PAT recipe V08-09-11-00
 addpkg DataFormats/PatCandidates V06-05-01
 addpkg PhysicsTools/PatAlgos V08-09-11-00
@@ -27,5 +27,3 @@ cat download.url | xargs wget
 cd ../../../
 cvs co -r V12-12-17 -d LIP/TopTaus UserCode/LIP/TopTaus
 
-CMSSW_5_3_7 instructions:
--------------------------------
