@@ -49,15 +49,12 @@ produceLandSShapes tauDileptonAnalysisParSets_cfg.py
 Changelog:
 2012-09-21: shapes producer for lands and multiple likelihood fit for fake rates are ready to use.
 2012-09-23: memory problem solved. Now both lands and mlf are usable with multiple variables
-
+2012-12-17: 2011 tagged (V12-12-17), start 2012 heavy developing and code porting
 
 TODO:
 
 - Pattuple producer 
-  --> Check tauID discriminators. Still no answer from TauID HN. Sent another email soliciting clarifications.
-  --> Check gsfElectrons/pfElectrons (wrote to Sadia and Tae Jeong)
-  --> Remove PF2PAT from everything, and make sure HEEP ID is not used (bugs described in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=177218 )
-
+  --> At the end do not remove PF2PAT from everything, and make sure HEEP ID is not used (bugs described in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=177218 )
 
 - Ntuples producer --> Convert plugin
 
