@@ -169,8 +169,8 @@ void teenyWeenySignalCutsComparison(){
 
   vector<TString> histLabels;
 
-  histLabels.push_back( "ME_{T} #ge 40GeV" );
-  histLabels.push_back( "#ge 1 btag" );
+  histLabels.push_back( "E_{T}^{miss} #geq 40GeV" );
+  histLabels.push_back( "#geq 1 b-tag" );
   histLabels.push_back( "N_{#tau} = 1");
   histLabels.push_back( "OS");
 
@@ -325,9 +325,13 @@ void teenyWeenySignalCutsComparison(){
   pt1->SetLineColor(0);
   pt1->SetTextFont(132);
   pt1->SetTextSize(0.033);
-  TText *text = pt1->AddText("BR(t #rightarrow H^{+}b) = 0.05");
+  //  TText *text = pt1->AddText("BR(t #rightarrow H^{+}b) = 0.05");
 
-  
+  HH_met->GetXaxis()->SetTitle("H^{+} mass [GeV]");
+  WH_met->GetXaxis()->SetTitle("H^{+} mass [GeV]");
+
+  HH_met->GetYaxis()->SetTitle("Cut efficiency (%)");
+  WH_met->GetYaxis()->SetTitle("Cut efficiency (%)");
 
 
   TCanvas* myCanva = new TCanvas("signalCutEffs","signalCutEffs",2000,2000);

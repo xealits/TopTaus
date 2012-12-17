@@ -4,7 +4,7 @@
 /**                                                                                                                                                                              
 																						 \class    LandSShapesProducer LandSShapesProducer.cc "UserCode/LIP/TopTaus/interface/LandSShapesProducer.hh"                                                                   																						 \brief    executable for performing multivariable likelihood fit in order to improve estimation of N_fakes
 																						 																						 \author   Pietro Vischia
-																						 																						 \version  $Id: LandSShapesProducer.hh,v 1.12 2012/11/13 16:59:08 vischia Exp $                                                                                                       
+																						 																						 \version  $Id: LandSShapesProducer.hh,v 1.13 2012/11/17 04:40:45 vischia Exp $                                                                                                       
 																																												 TODO List:
   - generalize to array of samples, simplifying the approach and maintainability
   - de-zero the zeroed bins (Pedro suggestion: essentially RooFit (->combine tool) does not like zero bins -> set them to 1E-06
@@ -51,6 +51,7 @@
 #include "TTree.h"
 #include "TCanvas.h"
 #include "TH1.h"
+#include "TH2.h"
 #include "TLegend.h"
 #endif
 
@@ -81,7 +82,7 @@ private:
   //  void BuildPDFs(size_t);
   void DrawTemplates(size_t);
   
-  void UnfoldMultiDimensionalShape();
+  void UnrollMultiDimensionalShape();
   void StorePerMassSignalShapes();
   void DrawSignalShapesComparison();
   
@@ -115,6 +116,7 @@ private:
   // so must revise the code for dropping the need of that
   bool produceOnly_;
   bool doMultiDimensionalShapes_;
+  bool unsplitUncertainties_;
   // Input paths
   // Condense in sampleclass->GetBaseDir
   vector<TString> baseDir_;
@@ -122,6 +124,10 @@ private:
   vector<Int_t> isFromData_;
   vector<Int_t> isDDbkg_;
   vector<Int_t> isSignal_;
+
+  double displayMin_;
+  double displayMax_;
+
 
   vector<TString> inputFileName_; // Build from mass ranges
 
@@ -175,6 +181,7 @@ private:
   string identifier_;
   
   RooRealVar* myvar_         ;
+  RooRealVar* myvarMultiD_   ;
   RooRealVar* myvar_weights_ ;
   RooRealVar* isOSvar_       ;
   
@@ -193,6 +200,7 @@ private:
   vector<vector<TH1*> > masterHist_;
   vector<vector<TString> > masterHistNames_;
   vector<TH1*> masterShapes_;
+
   vector<vector<TH1*> > signalShapesToCompare_;
   vector<vector<TH1*> > signalShapesToCompareHH_;
   vector<vector<TH1*> > signalShapesToCompareWH_;
@@ -210,7 +218,18 @@ private:
   vector<TH1*> histStatDown_;
   
   vector<vector<TH1*> > systHist_;
-  
+ 
+  vector<TH2D*> th2_;
+  vector<TH2D*> th2StatUp_;
+  vector<TH2D*> th2StatDown_;
+  vector<vector<TH2D*> > th2Syst_;
+
+  vector<TH1D*> unrolled_;
+  vector<TH1D*> unrolledStatUp_;
+  vector<TH1D*> unrolledStatDown_;
+  vector<vector<TH1D*> > unrolledSyst_;
+
+ 
   TLegend* leg_;
   
   double sumWeights_;

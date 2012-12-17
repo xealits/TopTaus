@@ -5,8 +5,9 @@ import FWCore.ParameterSet.Config as cms
 #########
 
 LandSShapesProducerParSet = cms.PSet(
-#    outFolder        = cms.string("shapesForDatacard/"),
-    outFolder        = cms.string("testMultiDimensionalShapes/"),
+    #    outFolder        = cms.string("shapesForDatacard/"),
+    outFolder        = cms.string("shapes/"),
+    #    outFolder        = cms.string("testMultiDimensionalShapes/"),
     outputFileName  = cms.string("shapes"),
     massPointName   = cms.vstring("m80", "m100", "m120", "m140", "m150", "m155", "m160"),
     
@@ -14,15 +15,15 @@ LandSShapesProducerParSet = cms.PSet(
     #    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
     
     
-#    baseDir = cms.vstring("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/nomtcut/nomt-2011-V1-data-MU-20GeV/",
-#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
-#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
-#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/nomtcut/nomt-2011-V1-data-MU-20GeV/",
-#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
-#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
-#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
-#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/"
-#                          ),
+    baseDir = cms.vstring("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/nomtcut/nomt-2011-V1-data-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/nomtcut/nomt-2011-V1-data-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
+                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/"
+                          ),
 
 #    baseDir = cms.vstring("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-data-MU-20GeV/",
 #                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/",
@@ -34,15 +35,15 @@ LandSShapesProducerParSet = cms.PSet(
 #                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_jerRun_2011--11-02/nomtcut/nomt-2011-V1-mc-MU-20GeV/"
 #                          ),
 
-    baseDir = cms.vstring("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-data-MU-20GeV/",
-                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
-                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
-                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-data-MU-20GeV/",
-                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
-                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
-                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
-                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/"
-                          ),
+#    baseDir = cms.vstring("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-data-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-data-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/",
+#                          "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/"
+#                          ),
 
     #    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_bakNew/nomtcut/nomt-2011-V1-mc-MU-20GeV/"),
     #    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_bakNew/nomtcut/nomt-2011-V1-data-MU-20GeV/"),
@@ -54,15 +55,16 @@ LandSShapesProducerParSet = cms.PSet(
     # is it *really* needed that "3" that was told it is necessary in the lands framework?
     sampleName      = cms.vstring( "data_obs", "WH3", "HH3", "tau_fake3", "tt_ltau3", "tt_ll3", "singleTop3","di_boson3", "Z_tautau3",  "Z_eemumu3" ),
     
-    fancySampleName      = cms.vstring("data", "H^{+}[m_{H^{#pm}} = 120 GeV/c^{2}]", "H^{+}[m_{H^{#pm}} = 120 GeV/c^{2}]", "misidentified #tau_{h}", "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson",  "Z #rightarrow #tau#tau", "Z #rightarrow ee,#mu#mu"),
+    fancySampleName      = cms.vstring("data", "H^{+}[m_{H^{#pm}} = 120 GeV]", "H^{+}[m_{H^{#pm}} = 120 GeV]", "misidentified #tau_{h}", "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson","Z #rightarrow #tau#tau", "Z #rightarrow ee,#mu#mu"),
     
     # obsolete format # for fig 7 #    mcBkgSampleColor    = cms.vint32( 614, 8, 824, 809,  596, 831, 831, 835 ),
-    sampleColour    = cms.vint32( 1,    1, 1, 799,  614,    8,   824,  596, 809, 831),
+    sampleColour    = cms.vint32( 1,    1, 1, 799,  614,    8,   824,  596, 831, 809),
     #sampleColour    = cms.vint32( 1, 616, 616, 799, 614, 8, 824,  596, 831, 809),
     sampleFillStyle = cms.vint32( 1001, 0, 0, 1001, 1001, 1001,  1001, 1001, 1001, 1001),
     
     produceOnly = cms.bool(True),
-    doMultiDimensionalShapes = cms.bool(True),
+    doMultiDimensionalShapes = cms.bool(False),
+    unsplitUncertainties = cms.bool(False),
     
     minitree = cms.vstring("m_tau_Selected",
                            "m_tau_Selected",
@@ -102,23 +104,56 @@ LandSShapesProducerParSet = cms.PSet(
 #    mins        = cms.vdouble(  0.0),
 #    maxs        = cms.vdouble(  1.001),
 #    bins        = cms.vint32(     10),
-    vars        = cms.vstring("rc_t"  , "Dphi_tau_met"   ),
-    mins        = cms.vdouble(  -0.099,      0           ),
-    maxs        = cms.vdouble(   1.001,    4.8           ),
-    bins        = cms.vint32(     11  ,     10           ),
-    hmin        = cms.vdouble(     0  ,      0           ),
-    hmax        = cms.vdouble(   200  ,    200           ),
-    unbinned    = cms.vint32(      0  ,      0           ),
-    smoothOrder = cms.vint32(      3  ,      3           ),   
-    
-#    "pt_t", 
-#         0, 
-#       200, 
-#        20, 
-#         0, 
-#       100, 
-#         0, 
-#         5, 
+
+
+
+
+    vars        = cms.vstring( "rc_t"    ),
+    mins        = cms.vdouble(   -0.099  ),
+    maxs        = cms.vdouble(    1.001  ),
+    bins        = cms.vint32(      11     ),
+    hmin        = cms.vdouble(      0    ),
+    hmax        = cms.vdouble(    200    ),
+    unbinned    = cms.vint32(       0    ),
+    smoothOrder = cms.vint32(       3    ),   
+
+#    vars        = cms.vstring( "rc_t"  ,"Dphi_tau_met"  ),
+#    mins        = cms.vdouble(   -0.099,     0           ),
+#    maxs        = cms.vdouble(    1.001,   4.8          ),
+#    bins        = cms.vint32(      6  ,    5          ),
+#    hmin        = cms.vdouble(      0  ,     0          ),
+#    hmax        = cms.vdouble(    200  ,   200          ),
+#    unbinned    = cms.vint32(       0  ,     0          ),
+#    smoothOrder = cms.vint32(       3  ,     3          ),   
+
+
+#    vars        = cms.vstring( "rc_t"    , "pt_t"  ),
+#    mins        = cms.vdouble(   -0.099  ,      0   ),
+#    maxs        = cms.vdouble(    1.001  ,    200  ),
+#    bins        = cms.vint32(      6    ,     5  ),
+#    hmin        = cms.vdouble(      0    ,      0  ),
+#    hmax        = cms.vdouble(    200    ,    100  ),
+#    unbinned    = cms.vint32(       0    ,      0  ),
+#    smoothOrder = cms.vint32(       3    ,      5  ),   
+
+
+# for multiD    vars        = cms.vstring("rc_t"  , "Dphi_tau_met"   ),
+# for multiD    mins        = cms.vdouble(  -0.099,      0           ),
+# for multiD    maxs        = cms.vdouble(   1.001,    4.8           ),
+# for multiD    bins        = cms.vint32(     11  ,     10           ),
+# for multiD    hmin        = cms.vdouble(     0  ,      0           ),
+# for multiD    hmax        = cms.vdouble(   200  ,    200           ),
+# for multiD    unbinned    = cms.vint32(      0  ,      0           ),
+# for multiD    smoothOrder = cms.vint32(      3  ,      3           ),   
+
+#    "pt_t", ,      "pt_t" 
+#         0, ,          -20
+#       200, ,         200 
+#        20, ,          11 
+#         0, ,           0 
+#       100, ,         100 
+#         0, ,           0 
+#         5, ,           5 
     
     
     #    vars        = cms.vstring("rc_t",   "pt_l", "pt_met", "multiplicity_j", "btagmultiplicity_j",    ),
@@ -142,11 +177,11 @@ LandSShapesProducerParSet = cms.PSet(
     )
 
 TauDileptonPDFBuilderFitterParSet = cms.PSet(
-    outFolder        = cms.string("likelihoodFit/"),
+    outFolder        = cms.string("likelihoodFit_test/"),
     resultsFileName  = cms.string("likelihoodResults"),
     
-    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
-    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
+    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/"),
+    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-data-MU-20GeV/"),
 
     signalFileNameWH   = cms.string("out-wh-pythia-m120.root"),
     signalFileNameHH   = cms.string("out-hh-pythia-m120.root"),
