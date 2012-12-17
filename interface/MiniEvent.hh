@@ -61,7 +61,7 @@
 #include "TClonesArray.h"
 #include "TVectorD.h"
 #include "TFractionFitter.h"
-#include "lipcms/EventSelection/test/RunOverMiniEvents.h"
+//#include "lipcms/EventSelection/test/RunOverMiniEvents.h"
 
 #ifdef _STANDALONE  // FIXME: wtf is that???
 #include "LIP/TopTaus/interface/MiniTree.hh"

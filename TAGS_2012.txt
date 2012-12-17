@@ -12,8 +12,15 @@ addpkg FWCore/GuiBrowsers V00-00-70
 addpkg RecoParticleFlow/PFProducer V15-02-06
 
 # Tau ID recipes
-addpkg RecoTauTag/RecoTau V01-04-20
-addpkg RecoTauTag/Configuration V01-04-08
+addpkg  RecoTauTag/RecoTau         V01-04-21
+addpkg  RecoTauTag/Configuration   V01-04-08
+addpkg  CondFormats/EgammaObjects  V00-04-00
+
+# Should be the same as
+# addpkg RecoTauTag/RecoTau V01-04-20
+# addpkg RecoTauTag/Configuration V01-04-08
+# # Fix bug with high pt taus: https://indico.cern.ch/getFile.py/access?contribId=0&resId=0&materialId=slides&confId=177212
+# cvs up -r 1.17 RecoTauTag/RecoTau/plugins/RecoTauBuilderCombinatoricPlugin.cc
 
 # TopRevEventSel
 cvs co -r V00-00-13 -d EGamma/EGammaAnalysisTools UserCode/EGamma/EGammaAnalysisTools
