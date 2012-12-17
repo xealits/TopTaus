@@ -36,6 +36,12 @@ LandSShapesProducer::LandSShapesProducer(string parSet):
 
 void LandSShapesProducer::Init(){
 
+  displayMin_ = 0.001;
+  displayMax_ = 1.001;
+
+//  displayMin_ = 0.;
+//  displayMax_ = 200.;
+  
   // Clear vectors
   nVars_ = 0;
   //  uncSources_.clear();
@@ -97,6 +103,8 @@ void LandSShapesProducer::Init(){
   produceOnly_ = mFitPars.getParameter<bool>("produceOnly");
   doMultiDimensionalShapes_       = mFitPars.getParameter<bool>("doMultiDimensionalShapes"); 
 
+  unsplitUncertainties_       = mFitPars.getParameter<bool>("unsplitUncertainties"); // The finnish guys for some reason stack all the variations simultaneously.
+
   vector<string>minitreeTemp = mFitPars.getParameter<vector<std::string> >("minitree");
   for(size_t f=0; f<minitreeTemp.size(); f++)
     minitree_.push_back( minitreeTemp[f] );
@@ -148,6 +156,7 @@ void LandSShapesProducer::Init(){
   SetTDRStyle();
   canvas_ = new TCanvas("canvas","My plots ",0,0,1000,1000);
   canvas_->cd();
+  // set logy
   
   resultsFile_.open ((outFolder_+resultsFileName_).c_str());
   //  Uncomment following line in order to redirect stdout to file
@@ -163,6 +172,17 @@ void LandSShapesProducer::SetOptions(){
 void LandSShapesProducer::InitMassPoint(size_t s){
 
   cout << "Initializing mass point " << endl;
+
+  th2_         .clear();
+  th2StatUp_   .clear();
+  th2StatDown_ .clear();
+  th2Syst_     .clear();
+
+  unrolled_         .clear();
+  unrolledStatUp_   .clear();
+  unrolledStatDown_ .clear();
+  unrolledSyst_     .clear();
+  
 
   currentMassPoint_ = s;
   inputFile_.clear();
@@ -259,8 +279,19 @@ void LandSShapesProducer::InitPerVariableAmbient(size_t i){
   myvar_           = new RooRealVar(fitVars_[i]->getVarName().c_str(), fitVars_[i]->getVarName().c_str(), fitVars_[i]->getMin(), fitVars_[i]->getMax());  myvar_->setBins(fitVars_[i]->getBins()); 
   myvar_weights_   = new RooRealVar("weight","weight",0,1000);
   isOSvar_         = new RooRealVar("is_os","is_os",0,2);
-  
-  
+
+  // In multidimensional case, add the next variable too
+  if(doMultiDimensionalShapes_){
+    size_t nextVar;
+    if(i <nVars_-1)
+      nextVar = i+1;
+    else if(i== nVars_-1)
+      nextVar = i-1;
+    myvarMultiD_ = new RooRealVar(fitVars_[nextVar]->getVarName().c_str(), fitVars_[nextVar]->getVarName().c_str(), fitVars_[nextVar]->getMin(), fitVars_[nextVar]->getMax());
+    myvarMultiD_->setBins(fitVars_[nextVar]->getBins());
+  }
+
+
   //Define data sets /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   for(size_t f=0; f<nSamples_; f++){
     myDSName_.push_back( fitVars_[i]->getVarName().c_str() + sampleName_[f] + massPointName_[currentMassPoint_] );
@@ -286,67 +317,172 @@ void LandSShapesProducer::BuildDatasets(size_t i){
   // Temp variables for setting branch addresses
   double myVarAllocator, myVarWeightAllocator;
   double isOSsig;
-  
-  for(size_t f=0; f<nSamples_; f++){
-    myDS_.push_back( new RooDataSet(myDSName_[f].c_str(),myDSName_[f].c_str(), RooArgSet(*myvar_,*myvar_weights_), "weight") ); // This constructor does not accept the cut parameter
-    // Get events
-    inputTree_[f]->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
-    inputTree_[f]->SetBranchAddress("weight", &myVarWeightAllocator);
-    inputTree_[f]->SetBranchAddress("is_os", &isOSsig);
-    //    cout << "getIsoS      ";
-    for(unsigned int ev=0; ev<inputTree_[f]->GetEntries(); ev++){
-      inputTree_[f]->GetEntry(ev);
-      if(isOSsig < 0.5 || myVarAllocator < fitVars_[i]->getMin()) continue;
-      myvar_->setVal(myVarAllocator);
-      sumWeights_ += myVarWeightAllocator;
-      if(isDDbkg_[f]){
-	myvar_weights_->setVal(osCutEff_*myVarWeightAllocator);
-	myDS_[f]->add(RooArgSet(*myvar_,*myvar_weights_),osCutEff_*myVarWeightAllocator);
-      }
-      else{
-	myvar_weights_->setVal(myVarWeightAllocator);
-	myDS_[f]->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
-      }
-    }
-  }
 
-  cout << "Got base datasets" << endl;
-  
-  ///// Syst get
-  for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
-    vector<RooDataSet*> temp;
-    temp.clear();
-    for(size_t f=0; f<nSamples_; f++){
-      temp.push_back( new RooDataSet(mySystDSName_[a][f].c_str(),mySystDSName_[a][f].c_str(), RooArgSet(*myvar_,*myvar_weights_), "weight") ); // This constructor does not accept the cut parameter
+
+
+  // In multidimensional case, add the next variable too
+  if(doMultiDimensionalShapes_){
+    size_t nextVar;
+    cout << "i is " << i << ", and nVars_-1 is " << nVars_-1 << endl;
+    if(i <nVars_-1){
+      cout << "I am inside" << endl;
+      nextVar = i+1;
+      //      else if(i== nVars_-1)
+      //	nextVar = i-1;
+      
+      
+      double myNextVarAllocator;
+      
+      for(size_t f=0; f<nSamples_; f++){
+	
+	th2_.push_back(new TH2D(massPointName_[currentMassPoint_] + sampleName_[f] + fitVars_[i]->getVarName().c_str() + TString("th2") , fitVars_[i]->getVarName().c_str() + TString("th2"), fitVars_[i]->getBins(), fitVars_[i]->getMin(), fitVars_[i]->getMax(), fitVars_[nextVar]->getBins(), fitVars_[nextVar]->getMin(), fitVars_[nextVar]->getMax())    );
+	th2StatUp_.push_back(new TH2D(massPointName_[currentMassPoint_] + sampleName_[f] + fitVars_[i]->getVarName().c_str() + TString("th2StatUp") , fitVars_[i]->getVarName().c_str() + TString("th2StatUp"), fitVars_[i]->getBins(), fitVars_[i]->getMin(), fitVars_[i]->getMax(), fitVars_[nextVar]->getBins(), fitVars_[nextVar]->getMin(), fitVars_[nextVar]->getMax())    );
+	th2StatDown_.push_back(new TH2D(massPointName_[currentMassPoint_] + sampleName_[f] + fitVars_[i]->getVarName().c_str() + TString("th2StatDown") , fitVars_[i]->getVarName().c_str() + TString("th2StatDown"), fitVars_[i]->getBins(), fitVars_[i]->getMin(), fitVars_[i]->getMax(), fitVars_[nextVar]->getBins(), fitVars_[nextVar]->getMin(), fitVars_[nextVar]->getMax())    );
+	th2_[f]->Sumw2();
+	th2StatUp_[f]->Sumw2();
+	th2StatDown_[f]->Sumw2();
+	
+	myDS_.push_back( new RooDataSet(myDSName_[f].c_str(),myDSName_[f].c_str(), RooArgSet(*myvar_,*myvarMultiD_,*myvar_weights_), "weight") ); // This constructor does not accept the cut parameter
+	// Get events
+	inputTree_[f]->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
+	inputTree_[f]->SetBranchAddress(fitVars_[nextVar]->getVarName().c_str(), &myNextVarAllocator);
+	inputTree_[f]->SetBranchAddress("weight", &myVarWeightAllocator);
+	inputTree_[f]->SetBranchAddress("is_os", &isOSsig);
+	//    cout << "getIsoS      ";
+	for(unsigned int ev=0; ev<inputTree_[f]->GetEntries(); ev++){
+	  inputTree_[f]->GetEntry(ev);
+	  if(isOSsig < 0.5 || myVarAllocator < fitVars_[i]->getMin()) continue;
+	  if(nextVar== i-1 ) continue;
+	  myvar_->setVal(myVarAllocator);
+	  myvarMultiD_->setVal(myNextVarAllocator);
+	  sumWeights_ += myVarWeightAllocator;
+	  if(isDDbkg_[f]){
+	    myvar_weights_->setVal(osCutEff_*myVarWeightAllocator);
+	    myDS_[f]->add(RooArgSet(*myvar_,*myvar_weights_),osCutEff_*myVarWeightAllocator);
+	  }
+	  else{
+	    myvar_weights_->setVal(myVarWeightAllocator);
+	    myDS_[f]->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+	  }
+	  
+	  th2_[f]->Fill(myVarAllocator, myNextVarAllocator, myVarWeightAllocator);
+	  //	  cout << "Filled th2 with " << myVarAllocator << ", " << myNextVarAllocator << ", " << myVarWeightAllocator << endl;
+	}
+      }
+      
+      
+      cout << "Got base datasets" << endl;
+      
+      ///// Syst get
+      for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+	
+	vector<TH2D*> tempTh2;
+	tempTh2.clear();
+	
+	vector<RooDataSet*> temp;
+	temp.clear();
+	for(size_t f=0; f<nSamples_; f++){
+	  tempTh2.push_back(new TH2D(massPointName_[currentMassPoint_] + sampleName_[f] + fitVars_[i]->getVarName().c_str() + systComponents_[a] + TString("th2") , fitVars_[i]->getVarName().c_str() + systComponents_[a] + TString("th2"), fitVars_[i]->getBins(), fitVars_[i]->getMin(), fitVars_[i]->getMax(), fitVars_[nextVar]->getBins(), fitVars_[nextVar]->getMin(), fitVars_[nextVar]->getMax())    );
+	  tempTh2[f]->Sumw2();
+	  temp.push_back( new RooDataSet(mySystDSName_[a][f].c_str(),mySystDSName_[a][f].c_str(), RooArgSet(*myvar_,*myvarMultiD_,*myvar_weights_), "weight") ); // This constructor does not accept the cut parameter
+	}
+	mySystDS_.push_back(temp);
+	th2Syst_.push_back(tempTh2);
+	for(size_t f=0; f<nSamples_; f++){
+	  // Get MCBkg events
+	  systTree_[a][f]->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
+	  systTree_[a][f]->SetBranchAddress(fitVars_[nextVar]->getVarName().c_str(), &myNextVarAllocator);
+	  systTree_[a][f]->SetBranchAddress("weight", &myVarWeightAllocator);
+	  systTree_[a][f]->SetBranchAddress("is_os", &isOSsig);
+	  //    cout << "getIsoS      ";
+	  for(unsigned int ev=0; ev<systTree_[a][f]->GetEntries(); ev++){
+	    systTree_[a][f]->GetEntry(ev);
+	    if(isOSsig < 0.5 || myVarAllocator < fitVars_[i]->getMin()) continue;
+	    if(nextVar== i-1 ) continue;
+	    myvar_->setVal(myVarAllocator);
+	    myvarMultiD_->setVal(myNextVarAllocator);
+	    sumWeights_ += myVarWeightAllocator;
+	    if(isDDbkg_[f]){
+	      myvar_weights_->setVal(osCutEff_*myVarWeightAllocator);
+	      mySystDS_[a][f]->add(RooArgSet(*myvar_,*myvar_weights_),osCutEff_*myVarWeightAllocator);
+	    }
+	    else{
+	      myvar_weights_->setVal(myVarWeightAllocator);
+	      mySystDS_[a][f]->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+	    }
+	    th2Syst_[a][f]->Fill(myVarAllocator, myNextVarAllocator, myVarWeightAllocator);
+	    //	    cout << "Filled th2 with " << myVarAllocator << ", " << myNextVarAllocator << ", " << myVarWeightAllocator << endl;
+	  }
+	}
+	
+      } // End loop on syst components
+      ///// End syst get
     }
-    mySystDS_.push_back(temp);
+    cout << "Done multiD stuff" << endl;
+  }
+  else {
+  
     for(size_t f=0; f<nSamples_; f++){
-      // Get MCBkg events
-      systTree_[a][f]->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
-      systTree_[a][f]->SetBranchAddress("weight", &myVarWeightAllocator);
-      systTree_[a][f]->SetBranchAddress("is_os", &isOSsig);
+      myDS_.push_back( new RooDataSet(myDSName_[f].c_str(),myDSName_[f].c_str(), RooArgSet(*myvar_,*myvar_weights_), "weight") ); // This constructor does not accept the cut parameter
+      // Get events
+      inputTree_[f]->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
+      inputTree_[f]->SetBranchAddress("weight", &myVarWeightAllocator);
+      inputTree_[f]->SetBranchAddress("is_os", &isOSsig);
       //    cout << "getIsoS      ";
-      for(unsigned int ev=0; ev<systTree_[a][f]->GetEntries(); ev++){
-	systTree_[a][f]->GetEntry(ev);
+      for(unsigned int ev=0; ev<inputTree_[f]->GetEntries(); ev++){
+	inputTree_[f]->GetEntry(ev);
 	if(isOSsig < 0.5 || myVarAllocator < fitVars_[i]->getMin()) continue;
 	myvar_->setVal(myVarAllocator);
 	sumWeights_ += myVarWeightAllocator;
 	if(isDDbkg_[f]){
 	  myvar_weights_->setVal(osCutEff_*myVarWeightAllocator);
-	  mySystDS_[a][f]->add(RooArgSet(*myvar_,*myvar_weights_),osCutEff_*myVarWeightAllocator);
+	  myDS_[f]->add(RooArgSet(*myvar_,*myvar_weights_),osCutEff_*myVarWeightAllocator);
 	}
 	else{
 	  myvar_weights_->setVal(myVarWeightAllocator);
-	  mySystDS_[a][f]->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+	  myDS_[f]->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
 	}
       }
     }
-    
-  } // End loop on syst components
-  ///// End syst get
-  
-  cout << "Got syst datasets" << endl;
 
+    cout << "Got base datasets" << endl;
+    
+    ///// Syst get
+    for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+      vector<RooDataSet*> temp;
+      temp.clear();
+      for(size_t f=0; f<nSamples_; f++){
+	temp.push_back( new RooDataSet(mySystDSName_[a][f].c_str(),mySystDSName_[a][f].c_str(), RooArgSet(*myvar_,*myvar_weights_), "weight") ); // This constructor does not accept the cut parameter
+      }
+      mySystDS_.push_back(temp);
+      for(size_t f=0; f<nSamples_; f++){
+	// Get MCBkg events
+	systTree_[a][f]->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocator);
+	systTree_[a][f]->SetBranchAddress("weight", &myVarWeightAllocator);
+	systTree_[a][f]->SetBranchAddress("is_os", &isOSsig);
+	//    cout << "getIsoS      ";
+	for(unsigned int ev=0; ev<systTree_[a][f]->GetEntries(); ev++){
+	  systTree_[a][f]->GetEntry(ev);
+	  if(isOSsig < 0.5 || myVarAllocator < fitVars_[i]->getMin()) continue;
+	  myvar_->setVal(myVarAllocator);
+	  sumWeights_ += myVarWeightAllocator;
+	  if(isDDbkg_[f]){
+	    myvar_weights_->setVal(osCutEff_*myVarWeightAllocator);
+	    mySystDS_[a][f]->add(RooArgSet(*myvar_,*myvar_weights_),osCutEff_*myVarWeightAllocator);
+	  }
+	  else{
+	    myvar_weights_->setVal(myVarWeightAllocator);
+	    mySystDS_[a][f]->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+	  }
+	}
+      }
+      
+    } // End loop on syst components
+    ///// End syst get
+    
+
+  cout << "Got syst datasets" << endl;
+  
   
   cout << "All datasets built" << endl;
   
@@ -373,7 +509,7 @@ void LandSShapesProducer::BuildDatasets(size_t i){
     cout << myDSName_[f] << " unbinned entries: " << myDS_[f]->numEntries() << ". weighted entries: " << histo_[f]->sum(kFALSE) << endl;
   
   cout << "BuildDatasets successful" << endl;
-
+  
 
 
   /// Build binned clones - syst case
@@ -388,10 +524,10 @@ void LandSShapesProducer::BuildDatasets(size_t i){
     
     for(size_t f=0; f<nSamples_; f++)
       cout << mySystDSName_[a][f] << " unbinned entries: " << mySystDS_[a][f]->numEntries() << ". weighted entries: " << systHisto_[a][f]->sum(kFALSE) << endl;
-   
+    
   } // End syst loop
     /// End build binned clones - syst case
-  
+  }  
   cout << "BuildDatasets successful" << endl;
 }
 
@@ -573,8 +709,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     ddbkgBands.GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
     ddbkgBands.GetXaxis()->SetTitleOffset(0.85);
     ddbkgBands.GetXaxis()->SetTitleSize(5);
-    ddbkgBands.GetXaxis()->SetRange(0.001,1.001);    
-    ddbkgBands.GetXaxis()->SetRangeUser(0.001,1.001);    
+    ddbkgBands.GetXaxis()->SetRange(displayMin_,displayMax_);    
+    ddbkgBands.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
 
 
     TLegend* leg2_ = new TLegend(0.23,0.65,0.62,0.80,NULL,"brNDC");
@@ -602,12 +738,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     leg_->AddEntry(systHist_[0][1],"JESup","l");
     leg_->AddEntry(systHist_[1][1],"JESdown","l");
 
-    hist_[1]->GetXaxis()->SetRange(0.001,1.001);    
-    hist_[1]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[0][1]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[0][1]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[1][1]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[1][1]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[1]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    hist_[1]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[0][1]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[0][1]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[1][1]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[1][1]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     
     systHist_[0][1]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
     hist_[1]->SetLineColor(1);
@@ -625,12 +761,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     canvas_->Clear();
     hist_[1]->SetLineColor(sampleColour_[1]); // Reset line color from black to final one
 
-    hist_[2]->GetXaxis()->SetRange(0.001,1.001);    
-    hist_[2]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[0][2]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[0][2]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[1][2]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[1][2]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[2]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    hist_[2]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[0][2]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[0][2]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[1][2]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[1][2]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
 
     systHist_[0][2]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
     hist_[2]->SetLineColor(1);
@@ -649,12 +785,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     systHist_[1][3]->SetFillStyle(0);
     hist_[3]->SetFillStyle(0);
 
-    hist_[3]->GetXaxis()->SetRange(0.001,1.001);    
-    hist_[3]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[0][3]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[0][3]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[1][3]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[1][3]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[3]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    hist_[3]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[0][3]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[0][3]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[1][3]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[1][3]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
 
     systHist_[0][3]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
     hist_[3]->SetMarkerColor(1);
@@ -680,12 +816,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       systHist_[1][f]->SetFillStyle(0);
       hist_[f]->SetFillStyle(0);
       
-      hist_[f]->GetXaxis()->SetRange(0.001,1.001);    
-      hist_[f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      systHist_[0][f]->GetXaxis()->SetRange(0.001,1.001);    
-      systHist_[0][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      systHist_[1][f]->GetXaxis()->SetRange(0.001,1.001);    
-      systHist_[1][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      hist_[f]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+      hist_[f]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+      systHist_[0][f]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+      systHist_[0][f]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+      systHist_[1][f]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+      systHist_[1][f]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
  
       systHist_[0][f]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
       hist_[f]->SetLineColor(1);
@@ -734,12 +870,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     leg_->AddEntry(systHist_[2][1],"METup","l");
     leg_->AddEntry(systHist_[3][1],"METdown","l");
 
-    hist_[1]->GetXaxis()->SetRange(0.001,1.001);    
-    hist_[1]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[2][1]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[2][1]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[3][1]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[3][1]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[1]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    hist_[1]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[2][1]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[2][1]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[3][1]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[3][1]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
 
 //    for(int mm=0; mm<signalHistWH_->GetNbinsX(); mm++)
 //      cout << "bin: " << mm << ", diff up: " << signalHistWH_->GetBinContent(mm) - signalSystHistWH_[2]->GetBinContent(mm) << ", diff down: " << signalHistWH_->GetBinContent(mm) - signalSystHistWH_[3]->GetBinContent(mm) << endl;
@@ -760,12 +896,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     canvas_->Clear();
     hist_[1]->SetLineColor(sampleColour_[1]);
 
-    hist_[2]->GetXaxis()->SetRange(0.001,1.001);    
-    hist_[2]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[2][2]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[2][2]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[3][2]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[3][2]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[2]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    hist_[2]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[2][2]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[2][2]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[3][2]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[3][2]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
 
     systHist_[2][2]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
     hist_[2]->SetLineColor(1);
@@ -784,12 +920,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     systHist_[3][3]->SetFillStyle(0);
     hist_[3]->SetFillStyle(0);
 
-    hist_[3]->GetXaxis()->SetRange(0.001,1.001);    
-    hist_[3]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[2][3]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[2][3]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[3][3]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[3][3]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[3]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    hist_[3]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[2][3]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[2][3]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[3][3]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[3][3]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
 
     systHist_[2][3]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
     hist_[3]->SetMarkerColor(1);
@@ -816,12 +952,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       systHist_[3][f]->SetFillStyle(0);
       hist_[f]->SetFillStyle(0);
 
-      hist_[f]->GetXaxis()->SetRange(0.001,1.001);    
-      hist_[f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      systHist_[2][f]->GetXaxis()->SetRange(0.001,1.001);    
-      systHist_[2][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      systHist_[3][f]->GetXaxis()->SetRange(0.001,1.001);    
-      systHist_[3][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      hist_[f]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+      hist_[f]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+      systHist_[2][f]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+      systHist_[2][f]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+      systHist_[3][f]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+      systHist_[3][f]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
             
       systHist_[2][f]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
       hist_[f]->SetLineColor(1);
@@ -869,12 +1005,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     leg_->AddEntry(systHist_[4][1],"JERup","l");
     leg_->AddEntry(systHist_[5][1],"JERdown","l");
 
-    hist_[1]->GetXaxis()->SetRange(0.001,1.001);    
-    hist_[1]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[4][1]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[4][1]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[5][1]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[5][1]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[1]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    hist_[1]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[4][1]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[4][1]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[5][1]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[5][1]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     
     systHist_[4][1]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
     hist_[1]->SetLineColor(1);
@@ -892,12 +1028,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     canvas_->Clear();
     hist_[1]->SetLineColor(sampleColour_[1]);
     
-    hist_[2]->GetXaxis()->SetRange(0.001,1.001);    
-    hist_[2]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[4][2]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[4][2]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[5][2]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[5][2]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[2]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    hist_[2]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[4][2]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[4][2]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[5][2]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[5][2]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
 
     systHist_[4][2]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
     hist_[2]->SetLineColor(1);
@@ -916,12 +1052,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     systHist_[5][3]->SetFillStyle(0);
     hist_[3]->SetFillStyle(0);
 
-    hist_[3]->GetXaxis()->SetRange(0.001,1.001);    
-    hist_[3]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[4][3]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[4][3]->GetXaxis()->SetRangeUser(0.001,1.001);    
-    systHist_[5][3]->GetXaxis()->SetRange(0.001,1.001);    
-    systHist_[5][3]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[3]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    hist_[3]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[4][3]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[4][3]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    systHist_[5][3]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    systHist_[5][3]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     
     systHist_[4][3]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
     hist_[3]->SetMarkerColor(1);
@@ -949,12 +1085,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       systHist_[5][f]->SetFillStyle(0);
       hist_[f]->SetFillStyle(0);
 
-      hist_[f]->GetXaxis()->SetRange(0.001,1.001);    
-      hist_[f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      systHist_[4][f]->GetXaxis()->SetRange(0.001,1.001);    
-      systHist_[4][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      systHist_[5][f]->GetXaxis()->SetRange(0.001,1.001);    
-      systHist_[5][f]->GetXaxis()->SetRangeUser(0.001,1.001);    
+      hist_[f]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+      hist_[f]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+      systHist_[4][f]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+      systHist_[4][f]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+      systHist_[5][f]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+      systHist_[5][f]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
       
       systHist_[4][f]->GetXaxis()->SetTitle("R = p_{T}^{lead.track}/E^{#tau}");
       hist_[f]->SetLineColor(1);
@@ -992,8 +1128,18 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     leg_->AddEntry(hist_[0],(fancySampleName_[0]).c_str(),"lep");
     leg_->AddEntry(hist_[1],fancySampleName_[1].c_str(),"l");
     //  leg_->AddEntry(signalHistHH_,signalSampleNameHH_.c_str(),"f");
+
+
+    // Because colour printer is a nobrainer
     leg_->AddEntry(hist_[3],fancySampleName_[3].c_str(),"f");
-    for(size_t f=4; f<nSamples_+2; f++) leg_->AddEntry(hist_[f],fancySampleName_[f].c_str(),"f");
+    leg_->AddEntry(hist_[8],fancySampleName_[8].c_str(),"f");
+    leg_->AddEntry(hist_[7],fancySampleName_[7].c_str(),"f");
+    leg_->AddEntry(hist_[6],fancySampleName_[6].c_str(),"f");
+    leg_->AddEntry(hist_[5],fancySampleName_[5].c_str(),"f");
+    leg_->AddEntry(hist_[4],fancySampleName_[4].c_str(),"f");
+
+//    leg_->AddEntry(hist_[3],fancySampleName_[3].c_str(),"f");
+//    for(size_t f=4; f<nSamples_+2; f++) leg_->AddEntry(hist_[f],fancySampleName_[f].c_str(),"f");
     // for fig7 // for(size_t f=0; f<nMcSamples_; f++) leg_->AddEntry(mcbkgHist_[f],mcBkgFancySampleName_[f].c_str(),"f");
     canvas_->cd(); 
     // Order chosen to have good Y axis boundaries
@@ -1042,10 +1188,15 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       hist_[f]->GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
       hist_[f]->GetXaxis()->SetTitleOffset(0.85);
       hist_[f]->GetXaxis()->SetTitleSize(5);
-      hist_[f]->GetXaxis()->SetRange(0.001,1.001);    
-      hist_[f]->GetXaxis()->SetRangeUser(0.001,1.001);    
-      hs.Add(hist_[f],"hist");
+      hist_[f]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+      hist_[f]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+      if(isDDbkg_[f] == 0) hs.Add(hist_[f],"hist");
     }
+    
+    for(size_t f=3; f<nSamples_+2; f++){
+      if(isDDbkg_[f]) hs.Add(hist_[f],"hist");
+    }
+    
     //  dataHist_->SetMarkerStyle(1);
     //  dataHist_->SetMarkerSize(0.8);
     
@@ -1054,21 +1205,21 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     normalize(hs, 1.);
     hs.SetMaximum(0.4);
     hs.Draw("hist");
-    hs.GetXaxis()->SetRange(0.001,1.001);    
-    hs.GetXaxis()->SetRangeUser(0.001,1.001);    
+    hs.GetXaxis()->SetRange(displayMin_,displayMax_);    
+    hs.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     hs.GetYaxis()->SetTitle("a.u.");
     //  hs.GetYaxis()->SetTitleOffset(1.5);
     hs.GetXaxis()->SetTitle("p^{lead.track}/E^{#tau}");
     //  hs.GetXaxis()->SetTitleOffset(1.5);
     
     hist_[0]->Scale(1./hist_[0]->Integral());
-    hist_[0]->GetXaxis()->SetRange(0.001,1.001);    
-    hist_[0]->GetXaxis()->SetRangeUser(0.001,1.001);    
+    hist_[0]->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    hist_[0]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
   
     hist_[0]->Draw("same");
     higgsH_->Scale(1./higgsH_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
-    higgsH_->GetXaxis()->SetRange(0.001,1.001);    
-    higgsH_->GetXaxis()->SetRangeUser(0.001,1.001);    
+    higgsH_->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    higgsH_->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     higgsH_->Draw("histsame");
     
     TGraphErrors myBkgError;
@@ -1080,8 +1231,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     myBkgError.GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
     myBkgError.GetXaxis()->SetTitleOffset(0.85);
     myBkgError.GetXaxis()->SetTitleSize(5);
-    myBkgError.GetXaxis()->SetRange(0.001,1.001);    
-    myBkgError.GetXaxis()->SetRangeUser(0.001,1.001);    
+    myBkgError.GetXaxis()->SetRange(displayMin_,displayMax_);    
+    myBkgError.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     myBkgError.Draw("2");
     
     TGraphErrors mySignalError;
@@ -1094,8 +1245,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     mySignalError.GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
     mySignalError.GetXaxis()->SetTitleOffset(0.85);
     mySignalError.GetXaxis()->SetTitleSize(5);
-    mySignalError.GetXaxis()->SetRange(0.001,1.001);    
-    mySignalError.GetXaxis()->SetRangeUser(0.001,1.001);    
+    mySignalError.GetXaxis()->SetRange(displayMin_,displayMax_);    
+    mySignalError.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     mySignalError.Draw("2");
     
     leg_->AddEntry(myBkgError.GetName(),"bkg total unc.","f");
@@ -1107,9 +1258,9 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     pt1->SetFillStyle(0);
     pt1->SetLineColor(0);
     pt1->SetTextFont(132);
-    pt1->SetTextSize(0.033);
+    pt1->SetTextSize(0.055);
     //  TText *text = pt1->AddText("#splitline{m_{H^{#pm}} = 120 GeV/c^{2},}{BR(t #rightarrow H^{+}b) = 0.05}");
-    TText *text = pt1->AddText("BR(t #rightarrow H^{+}b) = 0.05");
+    TText *text = pt1->AddText("B(t #rightarrow H^{+}b) = 0.05");
     text->SetTextAlign(11);
     pt1->Draw("same");
     
@@ -1194,6 +1345,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       // Fill stat uncertainty histograms
       histStatUp_[f]  ->SetBinContent(ibin, std::max( hist_[f]->GetBinContent(ibin) + hist_[f]->GetBinError(ibin) , 1e-6 ) );
       histStatDown_[f]->SetBinContent(ibin, std::max( hist_[f]->GetBinContent(ibin) - hist_[f]->GetBinError(ibin) , 1e-6 ) );
+      cout << "==================================" << hist_[f]->GetName() << ": statUp " << hist_[f]->GetBinContent(ibin) + hist_[f]->GetBinError(ibin) << ", statDown " << hist_[f]->GetBinContent(ibin) - hist_[f]->GetBinError(ibin) << endl;
     }
   }
 
@@ -1206,33 +1358,92 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     histStatDown_[f]->Scale(hist_[f]->Integral()/histStatDown_[f]->Integral());
   }
   
-  
-  for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
-    for(size_t f=0; f<nSamples_+2; f++){
-      for(int ibin=1; ibin<=systHist_[a][f]->GetNbinsX(); ibin++){ // <= is for overflow
-	
-	if(ibin==1 && systHist_[a][f]->GetBinContent(ibin) != 0){
-	  systHist_[a][f]->SetBinError(ibin,  systHist_[a][f]->GetBinContent(ibin) * systHist_[a][f]->GetBinError(ibin+1)/systHist_[a][f]->GetBinContent(ibin+1)  );
-	  //	if(f<nSamples_){
-	  //	  cout << "sample " << hist_[f]->GetName();
-	  //	  cout << ", bincontent scaled " <<    myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral() << endl;
-	  //	  hist_[f]->SetBinError(ibin, sqrt( myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral()     ) );
-	  //	  cout << "done sample " << hist_[f]->GetName() << ", bincontent scaled " <<    myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral() << endl;
-	  //	} else{
-	  //	  cout << "sample " << hist_[f]->GetName();
-	  //	  cout << ", bincontent scaled " <<    myDS_[nSamples_-1]->numEntries()*hist_[nSamples_-1]->GetBinContent(ibin)/hist_[nSamples_-1]->Integral() << endl;
-	  //	  hist_[f]->SetBinError(ibin, sqrt( myDS_[nSamples_-1]->numEntries()*hist_[nSamples_-1]->GetBinContent(ibin)/hist_[nSamples_-1]->Integral()     ) );
-	  //	}
-	}
-	
-	if(systHist_[a][f]->GetBinContent(ibin) == 0){ // Protection from RooStat/Fit breaking in combine
-	  systHist_[a][f]->SetBinContent(ibin, 1e-6);
-	  cout << systHist_[a][f]->GetName() << " has 0 bin error " << systHist_[a][f]->GetBinError(ibin) << endl;
+  if(!unsplitUncertainties_){ // the correct thing to do
+    for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+      for(size_t f=0; f<nSamples_+2; f++){
+	for(int ibin=1; ibin<=systHist_[a][f]->GetNbinsX(); ibin++){ // <= is for overflow
+	  
+	  if(ibin==1 && systHist_[a][f]->GetBinContent(ibin) != 0){
+	    systHist_[a][f]->SetBinError(ibin,  systHist_[a][f]->GetBinContent(ibin) * systHist_[a][f]->GetBinError(ibin+1)/systHist_[a][f]->GetBinContent(ibin+1)  );
+	    //	if(f<nSamples_){
+	    //	  cout << "sample " << hist_[f]->GetName();
+	    //	  cout << ", bincontent scaled " <<    myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral() << endl;
+	    //	  hist_[f]->SetBinError(ibin, sqrt( myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral()     ) );
+	    //	  cout << "done sample " << hist_[f]->GetName() << ", bincontent scaled " <<    myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral() << endl;
+	    //	} else{
+	    //	  cout << "sample " << hist_[f]->GetName();
+	    //	  cout << ", bincontent scaled " <<    myDS_[nSamples_-1]->numEntries()*hist_[nSamples_-1]->GetBinContent(ibin)/hist_[nSamples_-1]->Integral() << endl;
+	    //	  hist_[f]->SetBinError(ibin, sqrt( myDS_[nSamples_-1]->numEntries()*hist_[nSamples_-1]->GetBinContent(ibin)/hist_[nSamples_-1]->Integral()     ) );
+	    //	}
+	  }
+	  
+	  if(systHist_[a][f]->GetBinContent(ibin) == 0){ // Protection from RooStat/Fit breaking in combine
+	    systHist_[a][f]->SetBinContent(ibin, 1e-6);
+	    cout << systHist_[a][f]->GetName() << " has 0 bin error " << systHist_[a][f]->GetBinError(ibin) << endl;
 	  //	hist_[f]->SetBinError(ibin,0);
+	  }
 	}
       }
-    }
-  }
+    } // end loop on syst components
+  } // End of the correct way
+  else{ // The finnish way: JES, JER, MET are stacked one over the other like if they were correlated
+   
+    for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+      for(size_t f=0; f<nSamples_+2; f++){
+	for(int ibin=1; ibin<=systHist_[a][f]->GetNbinsX(); ibin++){ // <= is for overflow
+	  
+	  if(ibin==1 && systHist_[a][f]->GetBinContent(ibin) != 0){
+	    systHist_[a][f]->SetBinError(ibin,  systHist_[a][f]->GetBinContent(ibin) * systHist_[a][f]->GetBinError(ibin+1)/systHist_[a][f]->GetBinContent(ibin+1)  );
+	    //	if(f<nSamples_){
+	    //	  cout << "sample " << hist_[f]->GetName();
+	    //	  cout << ", bincontent scaled " <<    myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral() << endl;
+	    //	  hist_[f]->SetBinError(ibin, sqrt( myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral()     ) );
+	    //	  cout << "done sample " << hist_[f]->GetName() << ", bincontent scaled " <<    myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral() << endl;
+	    //	} else{
+	    //	  cout << "sample " << hist_[f]->GetName();
+	    //	  cout << ", bincontent scaled " <<    myDS_[nSamples_-1]->numEntries()*hist_[nSamples_-1]->GetBinContent(ibin)/hist_[nSamples_-1]->Integral() << endl;
+	    //	  hist_[f]->SetBinError(ibin, sqrt( myDS_[nSamples_-1]->numEntries()*hist_[nSamples_-1]->GetBinContent(ibin)/hist_[nSamples_-1]->Integral()     ) );
+	    //	}
+	  }
+
+	  
+
+	  
+//	  if(systHist_[a][f]->GetBinContent(ibin) == 0){ // Protection from RooStat/Fit breaking in combine
+//	    systHist_[a][f]->SetBinContent(ibin, 1e-6);
+//	    cout << systHist_[a][f]->GetName() << " has 0 bin error " << systHist_[a][f]->GetBinError(ibin) << endl;
+//	    //	hist_[f]->SetBinError(ibin,0);
+//	  }
+	}
+      }
+    } // end loop on syst components
+    
+    for(size_t f=0; f<nSamples_+2; f++){
+      systHist_[0][f]->Add(systHist_[2][f], 1);
+      systHist_[0][f]->Add(systHist_[4][f], 1);
+      systHist_[0][f]->Add(hist_[f], -2);
+
+      systHist_[1][f]->Add(systHist_[3][f], 1);
+      systHist_[1][f]->Add(systHist_[5][f], 1);
+      systHist_[1][f]->Add(hist_[f], -2);
+
+      for(int ibin=1; ibin<=systHist_[0][f]->GetNbinsX(); ibin++){ // <= is for overflow
+	if(systHist_[0][f]->GetBinContent(ibin) == 0){ // Protection from RooStat/Fit breaking in combine
+	  systHist_[0][f]->SetBinContent(ibin, 1e-6);
+	}
+      }
+
+      for(int ibin=1; ibin<=systHist_[1][f]->GetNbinsX(); ibin++){ // <= is for overflow
+	if(systHist_[1][f]->GetBinContent(ibin) == 0){ // Protection from RooStat/Fit breaking in combine
+	  systHist_[1][f]->SetBinContent(ibin, 1e-6);
+	}
+      }
+
+    }    
+    
+
+  } // End of the finnish way 
+
   // Set names
   if(!doMultiDimensionalShapes_){
     
@@ -1298,13 +1509,13 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   
 }
 
-void LandSShapesProducer::UnfoldMultiDimensionalShape(){
+void LandSShapesProducer::UnrollMultiDimensionalShape(){
   
   // Is 2D. Must translate into genericD
 
   masterShapes_.clear(); // Just to be sure
   
-  cout << "Unfolding shapes" << endl;
+  cout << "Unrolling shapes" << endl;
 
   // Open file for storing shapes
   string outputFileName = outputFileName_ + string("_") + massPointName_[currentMassPoint_] + string("_") /* + string("multiDimShape_")*/ + fitVars_[0]->getVarName();// + string("_") + fitVars_[1]->getVarName();
@@ -1312,33 +1523,141 @@ void LandSShapesProducer::UnfoldMultiDimensionalShape(){
   if(produceOnly_ && doMultiDimensionalShapes_)
     outputFile = new TFile((outFolder_+outputFileName+string(".root")).c_str(), "RECREATE");
   cout << "File opened" << endl;
+
+
   
-  // First cycle, to create histos
-  for(size_t iHist=0; iHist<masterHist_[0].size(); iHist++){
-    masterShapes_.push_back( (TH1*) masterHist_[0][iHist]->Clone() );
-    double nBins = masterHist_[0][iHist]->GetNbinsX() + masterHist_[1][iHist]->GetNbinsX();
-    cout << masterHist_[0][iHist]->GetName() << " has " << masterHist_[0][iHist]->GetNbinsX() << " bins, " << masterHist_[1][iHist]->GetName() << " has " << masterHist_[1][iHist]->GetNbinsX() << " bins. BinStep is " << fitVars_[0]->getBinStep() << endl;
-    masterShapes_[iHist]->SetBins(nBins, fitVars_[0]->getMin() , nBins * fitVars_[0]->getBinStep()); // 10 is personalized reset of binstep to 1 from 0.1
-    masterShapes_[iHist]->SetName( masterHistNames_[0][iHist] ); // the others are the same
+//  unrolled_         .clear();
+//  unrolledStatUp_   .clear();
+//  unrolledStatDown_ .clear();
+//  unrolledSyst_     .clear();
+
+  th2_.push_back( (TH2D*)th2_[nSamples_-1]->Clone( sampleName_[nSamples_].c_str()   + TString(th2_[nSamples_-1]->GetName() ))   ); // nSamples-1 Must always be di-bosons
+  th2_.push_back( (TH2D*)th2_[nSamples_-1]->Clone( sampleName_[nSamples_+1].c_str() + TString(th2_[nSamples_-1]->GetName() )) ); // nSamples-1 Must always be di-bosons
+  th2_[nSamples_]  ->Sumw2();
+  th2_[nSamples_+1]->Sumw2();
+  
+  // Create unrolled stuff
+  for(size_t f=0; f<nSamples_+2; f++){
+    int nBins = th2_[f]->GetXaxis()->GetNbins() * th2_[f]->GetYaxis()->GetNbins();
+    unrolled_.push_back( new TH1D(sampleName_[f].c_str(), sampleName_[f].c_str(),  nBins, 0 , nBins   ));
+    unrolledStatUp_.push_back( new TH1D(sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatUp"),sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatUp"), nBins, 0 , nBins ) );
+    unrolledStatDown_.push_back( new TH1D(sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatDown"), sampleName_[f].c_str()+TString("_")+sampleName_[f].c_str()+TString("_StatDown"),  nBins, 0, nBins  ) );
+
+    
+    unrolled_[f]->Sumw2();
+    unrolledStatUp_[f]->Sumw2();
+    unrolledStatDown_[f]->Sumw2();
   }
   
-  cout << "Master shapes created" << endl;
-  // Fill the bins (it is necessary to fill with the cloned one too, because SetBins destroys contents)
-  for(size_t iHist=0; iHist<masterHist_[0].size(); iHist++){
-    for (int ibin=0; ibin <= masterHist_[0][iHist]->GetNbinsX(); ibin++){
-      masterShapes_[iHist]->SetBinContent(ibin,       masterHist_[0][iHist]->GetBinContent(ibin) );
-      masterShapes_[iHist]->SetBinError(    ibin,     masterHist_[0][iHist]->GetBinError(ibin) );
-    }
-    for (int ibin=0; ibin <= masterHist_[1][iHist]->GetNbinsX(); ibin++){
-      masterShapes_[iHist]->SetBinContent(ibin + masterHist_[0][iHist]->GetNbinsX() , masterHist_[1][iHist]->GetBinContent(ibin) );
-      masterShapes_[iHist]->SetBinError(  ibin + masterHist_[0][iHist]->GetNbinsX() , masterHist_[1][iHist]->GetBinError(ibin) );
-    }
+  // Syst case
+  for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+    vector<TH1D*> unrolledSystTemp;
+    unrolledSystTemp.clear();
+    for(size_t f=0; f<nSamples_+2; f++){
+      int nBins = th2_[f]->GetXaxis()->GetNbins() * th2_[f]->GetYaxis()->GetNbins();
+      unrolledSystTemp.push_back( new TH1D(sampleName_[f].c_str()+systFancyComponents_[a], sampleName_[f].c_str()+systFancyComponents_[a], nBins, 0,  nBins  ));
+      unrolledSystTemp[f]->Sumw2();
 
-    masterShapes_[iHist]->Scale(masterHist_[0][iHist]->Integral() / masterShapes_[iHist]->Integral() );
+    }
+    unrolledSyst_.push_back(unrolledSystTemp);
+  } // End syst loop
+    // End syst case
+  
+  // End create unrolled stuff
+  
+  // Fill statUp/Down
+
+  // Stat filling and histogram putting nonzeroes instead of zeroes (RooFit mojo)
+  // Perhaps do a single loop with systs.
+
+ 
+  
+  for(size_t f=0; f<nSamples_+2; f++){
+    int ibin = 1;
+    for(int xbin=1; xbin<th2_[f]->GetXaxis()->GetNbins(); xbin++){ // <= is for overflow
+      for(int ybin=1; ybin<th2_[f]->GetYaxis()->GetNbins(); ybin++){ // <= is for overflow
+	//	int ibin = th2_[f]->GetBin(xbin,ybin);
+	Double_t val =th2_[f]->GetBinContent(xbin,ybin);
+	unrolled_[f]->SetBinContent(ibin, val);
+	unrolled_[f]->SetBinError(ibin, th2_[f]->GetBinError(xbin,ybin));
+	cout << "histogram " << unrolled_[f]->GetName() << ": th2 has bin " << ibin << " - ["<<xbin<<","<<ybin<<"] th2:" <<  val << ", th1: " << unrolled_[f]->GetBinContent(ibin) << endl;
+	if(unrolled_[f]->GetBinContent(ibin) == 0)
+	  unrolled_[f]->SetBinContent(ibin, 1e-6); // Protection from RooStat/Fit breaking in combine
+	unrolledStatUp_[f]  ->SetBinContent(ibin, std::max( th2_[f]->GetBinContent(xbin,ybin) + th2_[f]->GetBinError(xbin,ybin), 1e-6 ) );
+	unrolledStatDown_[f]->SetBinContent(ibin, std::max( th2_[f]->GetBinContent(xbin,ybin) - th2_[f]->GetBinError(xbin,ybin), 1e-6 ) );
+
+	ibin++;
+      }
+    }
   }
-  cout << "Master shapes bins are ok" << endl;
 
-  //  masterHist_.clear(); // In order not to have that into the rootfile // See that
+    
+  unrolled_[nSamples_]->Scale(50.5/unrolled_[nSamples_]->Integral());      // Normalize to sample
+  unrolled_[nSamples_+1]->Scale(0.4/unrolled_[nSamples_+1]->Integral()); // Normalize to sample
+
+  
+  // Rescale stat plots - they must have the same integral as the base ones
+  for(size_t f=0; f<nSamples_+2; f++){
+    if(isDDbkg_[f])
+      unrolled_[f]->Scale(222./unrolled_[f]->Integral());
+    
+    unrolledStatUp_[f]  ->Scale(unrolled_[f]->Integral()/unrolledStatUp_[f]->Integral());
+    unrolledStatDown_[f]->Scale(unrolled_[f]->Integral()/unrolledStatDown_[f]->Integral());
+  }
+  
+  
+  for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+    th2Syst_[a].push_back( (TH2D*)th2Syst_[a][nSamples_-1]->Clone( sampleName_[nSamples_].c_str()  + systComponents_[a])   ); // nSamples-1 Must always be di-bosons
+    th2Syst_[a].push_back( (TH2D*)th2Syst_[a][nSamples_-1]->Clone( sampleName_[nSamples_+1].c_str()+ systComponents_[a]) ); // nSamples-1 Must always be di-bosons
+    th2Syst_[a][nSamples_]  ->Sumw2();
+    th2Syst_[a][nSamples_+1]->Sumw2();
+
+    for(size_t f=0; f<nSamples_+2; f++){
+      int ibin=1;
+      for(int xbin=1; xbin<th2_[f]->GetXaxis()->GetNbins(); xbin++){ // <= is for overflow
+	for(int ybin=1; ybin<th2_[f]->GetYaxis()->GetNbins(); ybin++){ // <= is for overflow
+	  unrolledSyst_[a][f]->SetBinContent(ibin, th2Syst_[a][f]->GetBinContent(xbin,ybin));
+	  if(unrolledSyst_[a][f]->GetBinContent(ibin) == 0) // Protection from RooStat/Fit breaking in combine
+	    unrolledSyst_[a][f]->SetBinContent(ibin, 1e-6);
+	  ibin++;
+	}
+      }
+    }
+    unrolledSyst_[a][nSamples_]->Scale(50.5/unrolledSyst_[a][nSamples_]->Integral());      // Normalize to sample
+    unrolledSyst_[a][nSamples_+1]->Scale(0.4/unrolledSyst_[a][nSamples_+1]->Integral()); // Normalize to sample
+
+  }
+
+  //////  // First cycle, to create histos
+  //////  for(size_t iHist=0; iHist<masterHist_[0].size(); iHist++){
+  //////    masterShapes_.push_back( (TH1*) masterHist_[0][iHist]->Clone() );
+  //////    double nBins = masterHist_[0][iHist]->GetNbinsX() + masterHist_[1][iHist]->GetNbinsX();
+  //////    cout << masterHist_[0][iHist]->GetName() << " has " << masterHist_[0][iHist]->GetNbinsX() << " bins, " << masterHist_[1][iHist]->GetName() << " has " << masterHist_[1][iHist]->GetNbinsX() << " bins. BinStep is " << fitVars_[0]->getBinStep() << endl;
+  //////    masterShapes_[iHist]->SetBins(nBins, fitVars_[0]->getMin() , nBins * fitVars_[0]->getBinStep()); // 10 is personalized reset of binstep to 1 from 0.1
+  //////    masterShapes_[iHist]->SetName( masterHistNames_[0][iHist] ); // the others are the same
+  //////  }
+  //////  
+  //////  cout << "Master shapes created" << endl;
+  //////  // Fill the bins (it is necessary to fill with the cloned one too, because SetBins destroys contents)
+  //////  for(size_t iHist=0; iHist<masterHist_[0].size(); iHist++){
+  //////    for (int ibin=0; ibin <= masterHist_[0][iHist]->GetNbinsX(); ibin++){
+  //////      masterShapes_[iHist]->SetBinContent(ibin,       masterHist_[0][iHist]->GetBinContent(ibin) );
+  //////      masterShapes_[iHist]->SetBinError(    ibin,     masterHist_[0][iHist]->GetBinError(ibin) );
+  //////    }
+  //////    for (int ibin=0; ibin <= masterHist_[1][iHist]->GetNbinsX(); ibin++){
+  //////      masterShapes_[iHist]->SetBinContent(ibin + masterHist_[0][iHist]->GetNbinsX() , masterHist_[1][iHist]->GetBinContent(ibin) );
+  //////      masterShapes_[iHist]->SetBinError(  ibin + masterHist_[0][iHist]->GetNbinsX() , masterHist_[1][iHist]->GetBinError(ibin) );
+  //////    }
+  //////
+  //////    masterShapes_[iHist]->Scale(masterHist_[0][iHist]->Integral() / masterShapes_[iHist]->Integral() );
+//////  }
+//////  cout << "Master shapes bins are ok" << endl;
+  
+ //  masterHist_.clear(); // In order not to have that into the rootfile // See that
+
+
+
+
 
   if(produceOnly_ && doMultiDimensionalShapes_)
     outputFile->Write();
@@ -1437,15 +1756,22 @@ void LandSShapesProducer::Produce(){
     
     InitMassPoint(s);
     
+    cout << "=============================================================================" << endl;
+    cout << "============================= MASS POINT: " << s << " ===============================" << endl;
+    cout << "=============================================================================" << endl;
     for(size_t i = 0; i< nVars_; i++){
-      
+
+
+
       InitPerVariableAmbient(i);
-      
+
+      cout << "============================= VARIABLE: " << i << ": init ambient completed ===============================" << endl;            
       BuildDatasets(i);
-      
+      cout << "============================= VARIABLE: " << i << ": datasets built ===============================" << endl;      
       //    BuildPDFs(i);
       
-      DrawTemplates(i);
+      if(!doMultiDimensionalShapes_)
+	DrawTemplates(i);
 
 
       //    BuildConstrainedModels(i);
@@ -1458,8 +1784,10 @@ void LandSShapesProducer::Produce(){
       
     }
 
+    cout << "============================= MASS POINT: " << s << " ended processing of variables ===============================" << endl;
     if(doMultiDimensionalShapes_)
-      UnfoldMultiDimensionalShape();
+      UnrollMultiDimensionalShape();
+    cout << "============================= MASS POINT: " << s << " unrolled stuff ===============================" << endl;
     //    StorePerMassSignalShapes();
   }
   //  DoCombinedLikelihoodFit();

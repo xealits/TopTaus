@@ -221,7 +221,7 @@ void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
   baseIdentifier_="";
   
   // FIXME: hardcoded
-  signalStatError_=8.7; // 6.7; // 8.7 (wh) and 0.2 (hh) propagation 
+  signalStatError_= 6.5;  //  antiMuTight: 6.5 (wh) and 0.1 (hh) propagation                  8.7; //                   6.7; // 8.7 (wh) and 0.2 (hh) propagation 
   ddbkgStatError_ =35.71;// total error.stat +syst  
   
   switch(fitType_[f]){
@@ -229,7 +229,7 @@ void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
     includeSignal_=false;
     standaloneTTbar_=false;
     baseIdentifier_.append("SM2BKG");
-    mcbkgStatError_ = 17.89; // 2.8*2.8  +0.8*0.8+0.4*0.4+17.6*17.6+1.2*1.2+0.5*0.5 
+    mcbkgStatError_ = 17.89; // 2.8*2.8  +0.8*0.8+0.4*0.4+17.6*17.6+1.2*1.2+0.5*0.5  // MUST UPDATE
     break;
   case SM3BKG:
     includeSignal_=false;
@@ -242,7 +242,7 @@ void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
     includeSignal_=true;
     standaloneTTbar_=false;
     baseIdentifier_.append("HIGGS2BKG");
-    mcbkgStatError_ = 17.89; // 2.8*2.8  +0.8*0.8+0.4*0.4+17.6*17.6+1.2*1.2+0.5*0.5 
+    mcbkgStatError_ = 17.89; // 2.8*2.8  +0.8*0.8+0.4*0.4+17.6*17.6+1.2*1.2+0.5*0.5  // MUST UPDATE
     break;
   case HIGGS3BKG:
     includeSignal_=true;
@@ -375,6 +375,7 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     // FIXME: hardcoded. Must bring it to normal values
     double fhh(cHiggsBR_*cHiggsBR_) , fhw( 2*(1-cHiggsBR_)*cHiggsBR_) ;      
     ftt=1;//-fhh-fhw;
+    //    ftt=1-fhh-fhw;
 
     //double fhh(0.1*0.1) , fhw( 2*(1-0.1)*0.1) ;      
     // Get WH events
