@@ -25,5 +25,5 @@ cvs co -r V00-00-13 -d EGamma/EGammaAnalysisTools UserCode/EGamma/EGammaAnalysis
 cd EGamma/EGammaAnalysisTools/data
 cat download.url | xargs wget
 cd ../../../
-cvs co -r V12-12-17 -d LIP/TopTaus UserCode/LIP/TopTaus
+cvs co -r V12-12-21 -d LIP/TopTaus UserCode/LIP/TopTaus
 
