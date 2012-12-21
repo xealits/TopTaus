@@ -1387,7 +1387,23 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     } // end loop on syst components
   } // End of the correct way
   else{ // The finnish way: JES, JER, MET are stacked one over the other like if they were correlated
-   
+    
+    // Stack them
+    for(size_t f=0; f<nSamples_+2; f++){
+      systHist_[0][f]->Add(systHist_[2][f],1);
+      systHist_[0][f]->Add(systHist_[4][f],1);
+      systHist_[0][f]->Add(hist_[f],-2);
+      
+      systHist_[1][f]->Add(systHist_[3][f],1);
+      systHist_[1][f]->Add(systHist_[5][f],1);
+      systHist_[1][f]->Add(hist_[f],-2);
+      
+      systHist_[0][f]->Scale(hist_[f]->Integral()/systHist_[0][f]->Integral());
+      systHist_[1][f]->Scale(hist_[f]->Integral()/systHist_[1][f]->Integral());
+
+    }
+
+ 
     for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
       for(size_t f=0; f<nSamples_+2; f++){
 	for(int ibin=1; ibin<=systHist_[a][f]->GetNbinsX(); ibin++){ // <= is for overflow
@@ -1458,11 +1474,18 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     }
     
     // Syst case
-    for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+    if(!unsplitUncertainties_){ // Correct way
+      for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+	for(size_t f=0; f<nSamples_+2; f++){
+	  systHist_[a][f]->SetName(sampleName_[f].c_str()+systFancyComponents_[a]);
+	}
+      } // End syst loop
+    } else{ // Finnish way (all stacked)
       for(size_t f=0; f<nSamples_+2; f++){
-	systHist_[a][f]->SetName(sampleName_[f].c_str()+systFancyComponents_[a]);
+	systHist_[0][f]->SetName(sampleName_[f].c_str()+TString("_7Up"));
+	systHist_[1][f]->SetName(sampleName_[f].c_str()+TString("_7Down"));
       }
-    } // End syst loop
+    }
     // End syst case
   } // End if do multidimensional shapes
 
