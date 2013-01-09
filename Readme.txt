@@ -14,19 +14,19 @@ Installation
 ------------
 
 # 537
-export SCRAM_ARCH=slc5_amd64_gcc462
+setenv SCRAM_ARCH slc5_amd64_gcc462
 scramv1 project CMSSW CMSSW_5_3_7
 cd CMSSW_5_3_7/src/
 cvs co -p UserCode/LIP/TopTaus/TAGS_2012.txt | sh
 
-export SCRAM_ARCH=slc5_amd64_gcc462
+setenv SCRAM_ARCH slc5_amd64_gcc462
 scramv1 project CMSSW CMSSW_5_3_7_patch4
 cd CMSSW_5_3_7_patch4/src/
 cvs co -p UserCode/LIP/TopTaus/TAGS_2012.txt | sh
 
 
 # 444
-export SCRAM_ARCH=slc5_amd64_gcc434
+setenv SCRAM_ARCH slc5_amd64_gcc434
 scramv1 project CMSSW CMSSW_4_4_4
 cd CMSSW_4_4_4/src
 cvs co -p UserCode/LIP/TopTaus/TAGS_2011.txt | sh
