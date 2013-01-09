@@ -1,26 +1,26 @@
 # CMSSW_5_3_7 instructions:
 # -------------------------
 
-
-# PAT recipe V08-09-50 
-addpkg DataFormats/PatCandidates V06-05-06-04
-addpkg PhysicsTools/PatAlgos     V08-09-50
+# PAT recipe V08-09-51
+addpkg DataFormats/PatCandidates V06-05-06-05
+addpkg PhysicsTools/PatAlgos     V08-09-51
 addpkg DataFormats/StdDictionaries V00-02-14
 addpkg FWCore/GuiBrowsers V00-00-70
+
 
 # To add the latest EGM isolation definition
 addpkg RecoParticleFlow/PFProducer V15-02-06
 
-# Tau ID recipes
-addpkg  RecoTauTag/RecoTau         V01-04-21
-addpkg  RecoTauTag/Configuration   V01-04-08
-addpkg  CondFormats/EgammaObjects  V00-04-00
+# To add the latest Tau discriminators
+addpkg RecoTauTag/RecoTau V01-04-23
+addpkg RecoTauTag/Configuration V01-04-10
 
-# Should be the same as
-# addpkg RecoTauTag/RecoTau V01-04-20
-# addpkg RecoTauTag/Configuration V01-04-08
-# # Fix bug with high pt taus: https://indico.cern.ch/getFile.py/access?contribId=0&resId=0&materialId=slides&confId=177212
-# cvs up -r 1.17 RecoTauTag/RecoTau/plugins/RecoTauBuilderCombinatoricPlugin.cc
+
+#ALERT! Note: Due to changes in tau reconstruction, it is necessary rerun the tau sequence (see Tau ID recommendedation):
+#
+#process.load("RecoTauTag.Configuration.RecoPFTauTag_cff")
+#
+#and add process.recoTauClassicHPSSequence to your path. 
 
 # TopRevEventSel
 cvs co -r V00-00-13 -d EGamma/EGammaAnalysisTools UserCode/EGamma/EGammaAnalysisTools
@@ -28,7 +28,34 @@ cd EGamma/EGammaAnalysisTools/data
 cat download.url | xargs wget
 cd ../../../
 
-
 # LIP/TopTaus code for analysis. 2012 is HEAD now
 cvs co -d LIP/TopTaus UserCode/LIP/TopTaus
+
+
+
+### Old
+###  # PAT recipe V08-09-50 
+###  addpkg DataFormats/PatCandidates V06-05-06-04
+###  addpkg PhysicsTools/PatAlgos     V08-09-50
+###  addpkg DataFormats/StdDictionaries V00-02-14
+###  addpkg FWCore/GuiBrowsers V00-00-70
+###  
+###  # To add the latest EGM isolation definition
+###  addpkg RecoParticleFlow/PFProducer V15-02-06
+###  
+###  # Tau ID recipes - new Newtonmas set (HCP + new discriminants)
+###  cvs co -r V01-04-23 RecoTauTag/RecoTau 
+###  cvs co -r V01-04-10 RecoTauTag/Configuration
+###  cvs co -r V00-04-00 CondFormats/EgammaObjects
+###  
+###  cvs up -r 1.31.6.4 PhysicsTools/PatAlgos/python/producersLayer1/tauProducer_cfi.py
+###  cvs up -r 1.52.10.4 PhysicsTools/PatAlgos/python/tools/tauTools.py
+###  
+###  # Should be the same as (the updated tag corresponding to)
+###  # addpkg RecoTauTag/RecoTau V01-04-20
+###  # addpkg RecoTauTag/Configuration V01-04-08
+###  # # Fix bug with high pt taus: https://indico.cern.ch/getFile.py/access?contribId=0&resId=0&materialId=slides&confId=177212
+###  # cvs up -r 1.17 RecoTauTag/RecoTau/plugins/RecoTauBuilderCombinatoricPlugin.cc
+
+
 
