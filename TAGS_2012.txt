@@ -14,7 +14,7 @@ addpkg RecoParticleFlow/PFProducer V15-02-06
 # To add the latest Tau discriminators
 addpkg RecoTauTag/RecoTau V01-04-23
 addpkg RecoTauTag/Configuration V01-04-10
-
+addpkg CondFormats/EgammaObjects V00-04-00
 
 #ALERT! Note: Due to changes in tau reconstruction, it is necessary rerun the tau sequence (see Tau ID recommendedation):
 #
