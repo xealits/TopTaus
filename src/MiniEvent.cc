@@ -2,8 +2,25 @@
 
 using namespace std;
 
+PhysicsObject::PhysicsObject( TLorentzVector* p4, TVectorD* info):
+  TLorentzVector(*p4),
+  info_(info)
+{
+}
+
+TVectorD* PhysicsObject::GetInfo()
+{
+  return info_; 
+}
+
+PhysicsObjectPair::PhysicsObjectPair()
+{
+}
+
 namespace event
 {
+
+
 
   //
   unsigned int Reader::AssignMiniEventTreeFrom(TFile *f, TString tag, TString path)

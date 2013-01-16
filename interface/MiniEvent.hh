@@ -80,17 +80,15 @@ using namespace std;
 
 class PhysicsObject : public TLorentzVector
 {
- public:
+public:
   
   /**
      @short CTOR
   */
   PhysicsObject() : TLorentzVector(0,0,0,0), info_(0) { }
-  PhysicsObject( TLorentzVector *p4, TVectorD *info)
-    : TLorentzVector(*p4), 
-      info_(info)
-    { }
-  
+  PhysicsObject( TLorentzVector*, TVectorD*);
+
+
   /**
      @short CTOR (2)
   */
@@ -103,7 +101,7 @@ class PhysicsObject : public TLorentzVector
      @short returns the info associated to the object
      @param i the index where the info should be found
      @return the value of the info
-   */
+  */
   Double_t operator[](int i) const
   {
     return (*info_)[i];
@@ -112,7 +110,7 @@ class PhysicsObject : public TLorentzVector
   {
     return (*info_)[i];
   }
-
+  
   /**
      @short can be used to sort a container of physics objects
      use as sort(myvec.begin(), myvec.end(), PhysicsObject::PtOrder);
@@ -126,22 +124,22 @@ class PhysicsObject : public TLorentzVector
     }
 
   static bool BtagOrder(PhysicsObject a, PhysicsObject b)
-    { 
-      return (a[12]>b[12]); 
-    }
-
+  { 
+    return (a[12]>b[12]); 
+  }
+  
   //the extra info
-  TVectorD *GetInfo() { return info_; }
+  TVectorD *GetInfo();
   TVectorD *info_;
-
+  
   /**
      @short DTOR
-   */
+  */
   ~PhysicsObject() {};
-
- private: 
   
-  ClassDef(PhysicsObject,4)    
+private: 
+  
+  //  ClassDef(PhysicsObject,4);    
 };
 
 
@@ -156,7 +154,7 @@ class PhysicsObjectPair : public TLorentzVector
   /**
      @short CTOR
   */
-  PhysicsObjectPair() { }
+  PhysicsObjectPair();
   PhysicsObjectPair(PhysicsObject &a, PhysicsObject &b)
     :  TLorentzVector(a+b), physPair_(a,b), sumPt_(0), dR_(0), dilType_(""), dilCode_(0)
   {
@@ -252,7 +250,7 @@ class PhysicsObjectPair : public TLorentzVector
   TString dilType_;
   unsigned int dilCode_;
 
-  ClassDef(PhysicsObjectPair,4)
+  //  ClassDef(PhysicsObjectPair,4);
 };
 
 typedef std::vector<PhysicsObject> PhysicsObjectCollection;
