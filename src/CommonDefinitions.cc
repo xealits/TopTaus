@@ -5,7 +5,7 @@
 // Sample enums and such can (and should) remain here
 // xsecs and their errors should remain here. Or in SampleProcessor.
 
-using namespace commondefinitions;
+namespace commondefinitions{
   
   //double LUM_ERR            = 0.045; // check it 
   double LUM_ERR            = 0.022;
@@ -123,3 +123,4 @@ using namespace commondefinitions;
 
  // namespace commondefinitions
   
+}
