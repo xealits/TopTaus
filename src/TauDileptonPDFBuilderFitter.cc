@@ -218,6 +218,10 @@ void TauDileptonPDFBuilderFitter::SetOptions(){
 }
 
 void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
+  
+  // Clear corr vars array (for BuildDatasetsWithCorrelations)
+  myvars_.clear();
+  
   baseIdentifier_="";
   
   // FIXME: hardcoded
@@ -258,6 +262,165 @@ void TauDileptonPDFBuilderFitter::InitFitSettings(size_t f){
   likelihoodVector_.clear();
 }
 
+void TauDileptonPDFBuilderFitter::BuildDatasetWithCorrelations(size_t f){
+  // Build single dataset with all variables in order to be able to plot correlations
+  cout<<"BuildDatasetWithCorrelations start"<<endl;
+  signalTreeWH_   ->ResetBranchAddresses();
+  signalTreeHH_   ->ResetBranchAddresses();
+  ddBkgTree_      ->ResetBranchAddresses();
+  ttbarmcBkgTree_ ->ResetBranchAddresses();
+  mcBkgTree_      ->ResetBranchAddresses();
+  dataTree_       ->ResetBranchAddresses();
+  myvars_.clear();
+  cout<<"BuildDatasetWithCorrelations: reset stuff"<<endl;
+
+  for(size_t i=0; i<nVars_; i++){
+    myvars_.push_back( new RooRealVar(fitVars_[i]->getVarName().c_str(), fitVars_[i]->getVarName().c_str(), fitVars_[i]->getMin(), fitVars_[i]->getMax()));
+    myvars_[i]->setBins(fitVars_[i]->getBins()); 
+  }
+    myvar_weightsGlob_   = new RooRealVar("weight","weight",0,1000);
+  
+  RooArgSet varList(*myvar_weightsGlob_); // blah
+  
+  for(size_t i=0; i<nVars_; i++)
+    varList.add(*(myvars_[i]));
+  cout<<"BuildDatasetWithCorrelations: argset is set, lol"<<endl;
+
+  //  RooArgSet(*myvar_,*myvar_weightsGlob_),  
+
+
+  // Temp variables for setting branch addresses
+  std::vector<double> myVarAllocatorVec;
+  myVarAllocatorVec.clear();
+  for(size_t i=0; i<nVars_; i++)
+    myVarAllocatorVec.push_back(0);
+  
+  double myVarWeightAllocator;
+  double isOSsig;
+  
+  double ftt(1);
+  // Signal dataset from WH and HH
+  if(includeSignal_){
+    mySignalDSGlob_         = new RooDataSet(mySignalDSName_.c_str(),mySignalDSName_.c_str(), varList, "weight"); // This constructor does not accept the cut parameter
+    
+    
+    // Cross section
+    // FIXME: hardcoded. Must bring it to normal values
+    double fhh(cHiggsBR_*cHiggsBR_) , fhw( 2*(1-cHiggsBR_)*cHiggsBR_) ;      
+    ftt=1;//-fhh-fhw;
+    //    ftt=1-fhh-fhw;
+    
+    //double fhh(0.1*0.1) , fhw( 2*(1-0.1)*0.1) ;      
+    // Get WH events
+    for(size_t i=0; i<nVars_; i++)
+      signalTreeWH_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocatorVec[i]);
+    signalTreeWH_->SetBranchAddress("weight", &myVarWeightAllocator);
+    signalTreeWH_->SetBranchAddress("is_os", &isOSsig);
+    for(unsigned int ev=0; ev<signalTreeWH_->GetEntries(); ev++){
+      signalTreeWH_->GetEntry(ev);
+      if(useOS_ && isOSsig<0.5) continue;
+      for(size_t i=0; i<nVars_; i++)
+	myvars_[i]->setVal(myVarAllocatorVec[i]);
+      //	myvar_->setVal(myVarAllocator);
+      sumWeights_ += myVarWeightAllocator;
+      myvar_weightsGlob_->setVal(fhw*myVarWeightAllocator);
+      mySignalDSGlob_->add(varList,fhw*myVarWeightAllocator);
+    }
+    // Get HH events
+    for(size_t i=0; i<nVars_; i++)
+      signalTreeHH_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocatorVec[i]);
+    signalTreeHH_->SetBranchAddress("weight", &myVarWeightAllocator);
+    signalTreeHH_->SetBranchAddress("is_os", &isOSsig);
+    //    cout << "getIsoS      ";
+    for(unsigned int ev=0; ev<signalTreeHH_->GetEntries(); ev++){
+      signalTreeHH_->GetEntry(ev);
+      if(useOS_ && isOSsig < 0.5) continue;
+      for(size_t i=0; i<nVars_; i++)
+	myvars_[i]->setVal(myVarAllocatorVec[i]);
+      sumWeights_ += myVarWeightAllocator;
+      myvar_weightsGlob_->setVal(fhh*myVarWeightAllocator);
+      mySignalDSGlob_->add(varList,fhh*myVarWeightAllocator);
+    }
+  }
+  
+  myDDBkgDSGlob_         = new RooDataSet(myDDBkgDSName_.c_str(),myDDBkgDSName_.c_str(), varList, "weight"); // This constructor does not accept the cut parameter
+  // Get DD events
+  for(size_t i=0; i<nVars_; i++)
+    ddBkgTree_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocatorVec[i]);
+  ddBkgTree_->SetBranchAddress("weight", &myVarWeightAllocator);
+  ddBkgTree_->SetBranchAddress("is_os", &isOSsig);
+  //    cout << "getIsoS      ";
+  for(unsigned int ev=0; ev<ddBkgTree_->GetEntries(); ev++){
+    ddBkgTree_->GetEntry(ev);
+    if(useOS_ && isOSsig < 0.5) continue;
+    for(size_t i=0; i<nVars_; i++)
+      myvars_[i]->setVal(myVarAllocatorVec[i]);
+    //      sumWeights_ += myVarWeightAllocator;
+    if(useOS_) myvar_weightsGlob_->setVal(osCutEff_*myVarWeightAllocator);
+    else myvar_weightsGlob_->setVal(myVarWeightAllocator);
+    if(useOS_) myDDBkgDSGlob_->add(varList,osCutEff_*myVarWeightAllocator);
+    else myDDBkgDSGlob_->add(varList,myVarWeightAllocator);
+  }
+  
+  if(standaloneTTbar_){
+    myTTBARMCBkgDSGlob_         = new RooDataSet(myTTBARMCBkgDSName_.c_str(),myTTBARMCBkgDSName_.c_str(), varList, "weight"); // This constructor does not accept the cut parameter
+    // Get TTMCBkg events
+    for(size_t i=0; i<nVars_; i++)
+      ttbarmcBkgTree_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocatorVec[i]);
+    ttbarmcBkgTree_->SetBranchAddress("weight", &myVarWeightAllocator);
+    ttbarmcBkgTree_->SetBranchAddress("is_os", &isOSsig);
+    //    cout << "getIsoS      ";
+    for(unsigned int ev=0; ev<ttbarmcBkgTree_->GetEntries(); ev++){
+      ttbarmcBkgTree_->GetEntry(ev);
+      if(useOS_ && isOSsig < 0.5) continue;
+      for(size_t i=0; i<nVars_; i++)
+	myvars_[i]->setVal(myVarAllocatorVec[i]);
+      //      sumWeights_ += myVarWeightAllocator;
+      myvar_weightsGlob_->setVal(myVarWeightAllocator*ftt);
+      myTTBARMCBkgDSGlob_->add(varList,myVarWeightAllocator*ftt);
+    }
+    ftt=1; // reset it to 1 for the mcBkg not to be scaled in case it does not contain ttbar
+  }
+
+  
+  myMCBkgDSGlob_         = new RooDataSet(myMCBkgDSName_.c_str(),myMCBkgDSName_.c_str(), varList, "weight"); // This constructor does not accept the cut parameter
+  // Get MCBkg events
+  for(size_t i=0; i<nVars_; i++)
+    mcBkgTree_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocatorVec[i]);
+  mcBkgTree_->SetBranchAddress("weight", &myVarWeightAllocator);
+  mcBkgTree_->SetBranchAddress("is_os", &isOSsig);
+  //    cout << "getIsoS      ";
+  for(unsigned int ev=0; ev<mcBkgTree_->GetEntries(); ev++){
+      mcBkgTree_->GetEntry(ev);
+      if(useOS_ && isOSsig < 0.5) continue;
+      for(size_t i=0; i<nVars_; i++)
+	myvars_[i]->setVal(myVarAllocatorVec[i]);
+      //      sumWeights_ += myVarWeightAllocator;
+      myvar_weightsGlob_->setVal(myVarWeightAllocator*ftt);
+      myMCBkgDSGlob_->add(varList,myVarWeightAllocator*ftt);
+  }
+  
+  myDataDSGlob_         = new RooDataSet(myDataDSName_.c_str(),myDataDSName_.c_str(), varList, "weight"); // This constructor does not accept the cut parameter
+  // Get Data events
+  for(size_t i=0; i<nVars_; i++)
+    dataTree_->SetBranchAddress(fitVars_[i]->getVarName().c_str(), &myVarAllocatorVec[i]);
+  dataTree_->SetBranchAddress("weight", &myVarWeightAllocator);
+  dataTree_->SetBranchAddress("is_os", &isOSsig);
+  //    cout << "getIsoS      ";
+  for(unsigned int ev=0; ev<dataTree_->GetEntries(); ev++){
+    dataTree_->GetEntry(ev);
+    if(useOS_ && isOSsig < 0.5) continue;
+    for(size_t i=0; i<nVars_; i++)
+      myvars_[i]->setVal(myVarAllocatorVec[i]);
+    //      sumWeights_ += myVarWeightAllocator;
+    myvar_weightsGlob_->setVal(myVarWeightAllocator);
+    myDataDSGlob_->add(varList,myVarWeightAllocator);
+  }
+  
+  
+  cout<<"BuildDatasetWithCorrelations has been run correctly"<<endl;  
+}
+
 void TauDileptonPDFBuilderFitter::InitPerVariableAmbient(size_t i){
 
   // Totally necessary (otherwise branches remain tied to the variables and datasets get messed up for nVars_>1)
@@ -287,7 +450,6 @@ void TauDileptonPDFBuilderFitter::InitPerVariableAmbient(size_t i){
   myvar_weights_   = new RooRealVar("weight","weight",0,1000);
   isOSvar_         = new RooRealVar("is_os","is_os",0,2);
   
-
   //Define data sets /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   mySignalDSName_= fitVars_[i]->getVarName().c_str() + string("_mySignalDS");
   myDDBkgDSName_ = fitVars_[i]->getVarName().c_str() + string("_myDDBkgDS");
@@ -1149,6 +1311,7 @@ void TauDileptonPDFBuilderFitter::DoFit(){
     
     // Set fit settings
     InitFitSettings(f);
+    BuildDatasetWithCorrelations(f);
     
     for(size_t i = 0; i< nVars_; i++){
       

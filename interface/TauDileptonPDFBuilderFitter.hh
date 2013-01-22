@@ -7,7 +7,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.12 2012/09/29 00:19:12 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.13 2012/11/08 14:40:14 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -71,6 +71,7 @@ private:
   void Init();
   void SetOptions();
   void InitFitSettings(size_t);
+  void BuildDatasetWithCorrelations(size_t);
   void InitPerVariableAmbient(size_t);
   void BuildDatasets(size_t);
   void BuildPDFs(size_t);
@@ -172,7 +173,11 @@ private:
   RooRealVar* myvar_         ;
   RooRealVar* myvar_weights_ ;
   RooRealVar* isOSvar_       ;
-  
+
+  // Manage multiD DS for correlations
+  std::vector<RooRealVar*> myvars_;
+  RooRealVar* myvar_weightsGlob_;
+
   string mySignalDSName_     ;
   string myDDBkgDSName_      ;
   string myTTBARMCBkgDSName_ ;
@@ -206,6 +211,17 @@ private:
   RooDataSet* myTTBARMCBkgDS_ ;
   RooDataSet* myMCBkgDS_      ; 
   RooDataSet* myDataDS_       ; 
+
+  RooDataSet* mySignalDSGlob_      ;
+  RooDataSet* unrMyDDBkgDSGlob_      ; // Unreduced datasets for OS cut
+  RooDataSet* unrMyTTBARMCBkgDSGlob_ ;
+  RooDataSet* unrMyMCBkgDSGlob_      ; 
+  RooDataSet* unrMyDataDSGlob_       ; 
+  RooDataSet* myDDBkgDSGlob_      ; // Reduced datasets
+  RooDataSet* myTTBARMCBkgDSGlob_ ;
+  RooDataSet* myMCBkgDSGlob_      ; 
+  RooDataSet* myDataDSGlob_       ; 
+
 
   RooDataHist* signalHisto_    ;
   RooDataHist* ttbarmcbkgHisto_;
