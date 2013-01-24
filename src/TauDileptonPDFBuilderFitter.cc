@@ -633,28 +633,28 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
       myDataDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
     }
 
-
-//  string myOsCut = "is_os>0.5";
-//  unrMyDDBkgDS_      = new RooDataSet(myDDBkgDSName_.c_str(), myDDBkgDSName_.c_str(),  ddBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
-//  myDDBkgDS_ = (RooDataSet*) unrMyDDBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-//  if(standaloneTTbar_){
-//    unrMyTTBARMCBkgDS_ = new RooDataSet(myTTBARMCBkgDSName_.c_str(), myTTBARMCBkgDSName_.c_str(),  ttbarmcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
-//    myTTBARMCBkgDS_ = (RooDataSet*) unrMyTTBARMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-//  }
-//  unrMyMCBkgDS_      = new RooDataSet(myMCBkgDSName_.c_str(), myMCBkgDSName_.c_str(),  mcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
-//  myMCBkgDS_ = (RooDataSet*) unrMyMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-//  unrMyDataDS_       = new RooDataSet(myDataDSName_.c_str(),  myDataDSName_.c_str(),   dataTree_,   RooArgSet(*myvar_,*isOSvar_), myOsCut.c_str() );
-//  myDataDS_ = (RooDataSet*) unrMyDataDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-//  
-  // Build binned clones
-  if(includeSignal_)
-    signalHisto_ = mySignalDS_->binnedClone();
-  ddbkgHisto_ = myDDBkgDS_->binnedClone();
-  if(standaloneTTbar_)
-    ttbarmcbkgHisto_  = myTTBARMCBkgDS_->binnedClone(); 
-  mcbkgHisto_ = myMCBkgDS_->binnedClone();
-  dataHisto_  = myDataDS_ ->binnedClone();
-  
+    // Old.
+    //  string myOsCut = "is_os>0.5";
+    //  unrMyDDBkgDS_      = new RooDataSet(myDDBkgDSName_.c_str(), myDDBkgDSName_.c_str(),  ddBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
+    //  myDDBkgDS_ = (RooDataSet*) unrMyDDBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+    //  if(standaloneTTbar_){
+    //    unrMyTTBARMCBkgDS_ = new RooDataSet(myTTBARMCBkgDSName_.c_str(), myTTBARMCBkgDSName_.c_str(),  ttbarmcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
+    //    myTTBARMCBkgDS_ = (RooDataSet*) unrMyTTBARMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+    //  }
+    //  unrMyMCBkgDS_      = new RooDataSet(myMCBkgDSName_.c_str(), myMCBkgDSName_.c_str(),  mcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
+    //  myMCBkgDS_ = (RooDataSet*) unrMyMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+    //  unrMyDataDS_       = new RooDataSet(myDataDSName_.c_str(),  myDataDSName_.c_str(),   dataTree_,   RooArgSet(*myvar_,*isOSvar_), myOsCut.c_str() );
+    //  myDataDS_ = (RooDataSet*) unrMyDataDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+    //  
+    // Build binned clones
+    if(includeSignal_)
+      signalHisto_ = mySignalDS_->binnedClone();
+    ddbkgHisto_ = myDDBkgDS_->binnedClone();
+    if(standaloneTTbar_)
+      ttbarmcbkgHisto_  = myTTBARMCBkgDS_->binnedClone(); 
+    mcbkgHisto_ = myMCBkgDS_->binnedClone();
+    dataHisto_  = myDataDS_ ->binnedClone();
+    
 }
 
 void TauDileptonPDFBuilderFitter::BuildPDFs(size_t i){
