@@ -43,27 +43,48 @@ Multiple likelihood fit for improving tau fakes uncertainty
 -----------------------------------------------------------
 runTauDileptonPDFBuilderFitter tauDileptonAnalysisParSets_cfg.py
 
+Relevant parameters: straightforward cfg file. Must write doc here, though
 
 Produce shapes:
 ---------------
 produceLandSShapes tauDileptonAnalysisParSets_cfg.py
 
-
+Relevant parameters: straightforward cfg file. Must write doc here, though
 
 
 
 Changelog:
-2012-09-21: shapes producer for lands and multiple likelihood fit for fake rates are ready to use.
-2012-09-23: memory problem solved. Now both lands and mlf are usable with multiple variables
+2013-01-23: Likelihood fitter for tau fakes has RooDataset which will take into account correlations
+            when performing the combined fit. Must just switch likelihoods to use it and to
+	    product of likelihoods
 2012-12-17: 2011 tagged (V12-12-17), start 2012 heavy developing and code porting
+2012-09-23: memory problem solved. Now both lands and mlf are usable with multiple variables
+2012-09-21: shapes producer for lands and multiple likelihood fit for fake rates are ready to use.
 
 TODO:
 
+- Make the unbinned fit work, caralho
+
+- Apply single RooDataset per sample to LandSShapesProducer too
+
+- Rework of LandSShapesProducer and PDFBuilderFitter
+  --> New structure: -> single class for building datasets and models
+                     -> one inheriting class for shapes production, storing and plotting (LandSShapesProducer)
+		     -> one inheriting class for fitting, saving and plotting (PDFBuilderFitter)
+		     -> perhaps one single executable with switch via ParSet in config file
 - Pattuple producer 
-  --> At the end do not remove PF2PAT from everything, and make sure HEEP ID is not used (bugs described in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=177218 )
+  --> Acquire and improve version from 2013-01-23 - must upload to lipcms svn - in order to use
+      multicrab in the future
 
 - Ntuples producer --> Convert plugin
 
 - Analysis code --> Convert Nuno's code
 
 - MVA code --> port to binary and commit
+
+- Tau energy scale for main analysis code. 
+
+- Split fake contribution into e and mu
+  --> Evan/Monica 2013-01-23: "there are different scale factors for e and mu fakes to be applied,
+      so you better split the two components in the cutflow yields table"
+      
