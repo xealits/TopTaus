@@ -1,12 +1,11 @@
 # CMSSW_5_3_7 instructions:
 # -------------------------
 
-# PAT recipe V08-09-51
-addpkg DataFormats/PatCandidates V06-05-06-05
-addpkg PhysicsTools/PatAlgos     V08-09-51
+# PAT recipe V08-09-52
+addpkg DataFormats/PatCandidates V06-05-06-06
+addpkg PhysicsTools/PatAlgos     V08-09-52
 addpkg DataFormats/StdDictionaries V00-02-14
 addpkg FWCore/GuiBrowsers V00-00-70
-
 
 # To add the latest EGM isolation definition
 addpkg RecoParticleFlow/PFProducer V15-02-06
@@ -46,18 +45,30 @@ cvs co -r V00-00-08 DataFormats/TrackerCommon
 cvs co -r V01-09-05 RecoLocalTracker/SubCollectionProducers
 # Tracking POG filters section
 cvs co -r V01-00-11-01 DPGAnalysis/Skims
-V00-10-10-06 DPGAnalysis/SiStripTools
+cvs co -r V00-10-10-06 DPGAnalysis/SiStripTools
 cvs co -r V00-00-08 DataFormats/TrackerCommon
 cvs co -r V01-09-05 RecoLocalTracker/SubCollectionProducers 
 
-# MET corrections
-cvs co -r V04-06-09 JetMETCorrections/Type1MET 
-cvs co -r V03-09-23 PhysicsTools/PatUtils      
-cvs co -r V00-00-13 CommonTools/RecoUtils      
+# MET corrections (should be already included in PAT Sequence
+# addpkg  JetMETCorrections/Type1MET V04-06-09
+# addpkg  PhysicsTools/PatUtils      V03-09-23
+# addpkg  CommonTools/RecoUtils      V00-00-13
+
+
+# Try
+#addpkg CommonTools/ParticleFlow V00-03-16                              
+#addpkg CommonTools/RecoAlgos V00-03-23      
+#addpkg CommonTools/RecoUtils V00-00-13
+##addpkg PhysicsTools/PatAlgos V08-09-23      
+##addpkg PhysicsTools/PatUtils V03-09-23      
+#addpkg DataFormats/ParticleFlowCandidate V15-03-03
+#addpkg DataFormats/TrackReco V10-02-02      
+#addpkg DataFormats/VertexReco V02-00-04      
+##addpkg DataFormats/StdDictionaries V00-02-14 
 
 
 # LIP/TopTaus code for analysis. 2012 is HEAD now
-cvs co -d LIP/TopTaus UserCode/LIP/TopTaus
+#cvs co -d LIP/TopTaus UserCode/LIP/TopTaus
 
 
 
