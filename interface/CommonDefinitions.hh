@@ -5,6 +5,13 @@
 // xsecs and their errors should remain here. Or in SampleProcessor.
 
 namespace commondefinitions{
+
+  enum tanc_fr_Disc     { TANCFR_ONE   = 24, TANCFR_HALF   = 25, TANCFR_QUARTER = 26, TANCFR_TENTH = 27 };
+  
+  enum tau_hpsIso_Disc  { HPS_LOOSEISO = 25, HPS_MEDIUMISO = 26, HPS_TIGHTISO   = 27 };
+  
+  enum TauType          { PFTAU, CALOTAU, HPSTAU, PFLOWTAU, HPSTANCTAU, UNKNOWNTAU };
+
   
   //extern double LUM_ERR            = 0.045; // check it 
   extern double LUM_ERR            ;
