@@ -63,7 +63,9 @@ Relevant parameters: straightforward cfg file. Must write doc here, though
 
 
 
-Changelog:
+Changelog for major updates:
+2013-02-07: added scripts/getTriggers.sh for easy trigger and prescales fetching
+	    (will be crucial in particular for etau channel, later on)
 2013-01-23: Likelihood fitter for tau fakes has RooDataset which will take into account correlations
             when performing the combined fit. Must just switch likelihoods to use it and to
 	    product of likelihoods
