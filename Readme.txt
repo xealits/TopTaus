@@ -39,6 +39,16 @@ cmsRun LIP/TopTaus/test/createDataPattuple_cfg.py /lustre/data3/cmslocal/samples
 Instructions for running analysis
 ---------------------------------
 
+Finding HLT trigger on a per-run-range basis, together with the prescale
+------------------------------------------------------------------------
+ssh lxplus.cern.ch # needed for access to database
+cvs co HLTrigger/Tools/python
+scram b
+cd HLTrigger/Tools/python
+source $CMSSW_BASE/LIP/TopTaus/scripts/getTriggers.sh
+This will fetch the list of triggers, and depending on what you comment will print or not the prescales table. (see TODO list)
+
+
 Multiple likelihood fit for improving tau fakes uncertainty
 -----------------------------------------------------------
 runTauDileptonPDFBuilderFitter tauDileptonAnalysisParSets_cfg.py
@@ -62,6 +72,9 @@ Changelog:
 2012-09-21: shapes producer for lands and multiple likelihood fit for fake rates are ready to use.
 
 TODO:
+
+- scripts/getTriggers.hs: implement running through sh getTriggers.sh PARS, in order to allow to choose
+  at runtime whether to print the prescales table or just the triggers
 
 - Make the unbinned fit work, caralho
 

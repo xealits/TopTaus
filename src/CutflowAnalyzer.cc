@@ -5,9 +5,9 @@
 #include <fstream>
 #include <stdio.h>
 
-#include "ObjectSelector.hh"
-#include "AnalysisMonitoring.hh"
-#include "UncertaintyCalculator.hh"
+//#include "ObjectSelector.hh"
+//#include "AnalysisMonitoring.hh"
+//#include "UncertaintyCalculator.hh"
 #include "BTagSFUtil.hh"
 
 #include "PhysicsTools/Utilities/interface/LumiReweightingStandAlone.h"

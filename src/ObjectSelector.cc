@@ -8,6 +8,8 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 
 using namespace std;
+using namespace commondefinitions;
+
 
 ObjectSelector::ObjectSelector( double tauPtCut ):
   TAU_PT_MIN_(tauPtCut)
@@ -20,8 +22,8 @@ ObjectSelector::ObjectSelector( double tauPtCut ):
   //      BTAGIND_=12; BTAG_CUT_ = 1.7;      // TCHEL
   
   // FIXME: move to cfg
-  if( run2012_ ) { BTAGIND_=33; BTAG_CUT_ = 0.679;} // CSVM 
-  else { BTAGIND_=33; BTAG_CUT_=0.679 ;}  //  CSVM
+  if( commondefinitions::run2012_ ) { commondefinitions::BTAGIND_=33; commondefinitions::BTAG_CUT_ = 0.679;} // CSVM 
+  else { commondefinitions::BTAGIND_=33; commondefinitions::BTAG_CUT_=0.679 ;}  //  CSVM
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   // residual corrections in data ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,10 +31,13 @@ ObjectSelector::ObjectSelector( double tauPtCut ):
   //vector<JetCorrectorParameters> vParam; vParam.push_back(*resCorPar_);
   //resFactors_     = new FactorizedJetCorrector(vParam);  
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  setLeptonPlusJetsSelection();
+  
+  SetLeptonPlusJetsSelection();
+
 }
 
-void ObjectSelector::SetLeptonPlusJetsSelection{
+void ObjectSelector::SetLeptonPlusJetsSelection(){
+
   // by default apply lepton + jet selection
   leptonPlusJetsSelection_=true;
   
@@ -79,7 +84,7 @@ void ObjectSelector::SetLeptonPlusJetsSelection{
   LOOSE_M_PT_MIN_     = 10;
   RHO_AEFF_M_         = 0.112;
   
-  if(run2012_){
+  if(commondefinitions::run2012_){
     M_RELISO_MAX_  = 0.1; //cone 0.4
   }
   ///////////////////////////////////////////////////
@@ -255,7 +260,7 @@ void ObjectSelector::PreSelectJets( bool isData, vector<double>& jerFactors, dou
     
     if(jerFactors.size() !=0 ) jetPt = jerFactors[i]*jetPt;
     
-    if(isData) jetPt = getJetResidualPt(vJ[i]);
+    if(isData) jetPt = GetJetResidualPt(vJ[i]);
     
     double corr(0);
     
@@ -463,8 +468,7 @@ void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject
 	
         // use tight electron discrimination
         if( tau_dis_electron < 3 ){ continue;}
-	/*
-	/*
+
         if     ( requiredProngs == 0 ){ if (numberOfProngs!=1 && numberOfProngs!=3) continue; }
         else if( requiredProngs == 1 ){ if (numberOfProngs!=1)                      continue; }
         else if( requiredProngs == 3 ){ if (numberOfProngs!=3)                      continue; }
@@ -494,7 +498,7 @@ void ObjectSelector::GetObjectsBasedOnPt(
       double jetEta = TMath::Abs(v[obj_ind].Eta());
       double jetPt = TMath::Abs(v[obj_ind].Pt());
       
-      if(isData) jetPt = getJetResidualPt( v[obj_ind]);
+      if(isData) jetPt = GetJetResidualPt( v[obj_ind]);
       
       if(jerFactors.size() !=0 ) jetPt = jetPt*jerFactors[obj_ind];
       
