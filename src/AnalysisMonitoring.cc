@@ -85,7 +85,7 @@ void AnalysisMonitoring::buildTrees(TFile* f){
   
       
   // Build Trees ////////////////////////////////////////////////////////////////////////////  
-  for(int c=0;c<channels.size();c++){
+  for(size_t c=0;c<channels.size();c++){
     TString selectedTreeName          = channels[c]+TString("_Selected");
     TString dataDrivenTreeName        = channels[c]+TString("_DataDriven");
     TString selectedPlusTreeName      = channels[c]+TString("_Selected_plus");
@@ -171,7 +171,7 @@ void AnalysisMonitoring::buildTrees(TFile* f){
   map<TString,TTree *>::iterator it;
   for( it=treeMap_.begin(); it!=treeMap_.end(); it++ ){
     TString treeName = (*it).first;
-    for(int b = 0; b < branchNames.size(); b++){
+    for(size_t b = 0; b < branchNames.size(); b++){
       TString varQualifier  = branchNames[b]+TString("/D");   
       TBranch * myBranch  = ((*it).second)->Branch( (branchNames[b]).Data(), new Double_t ,varQualifier.Data()) ;
     }

@@ -22,7 +22,7 @@ using namespace utilities;
 
 namespace tableutils{
 
-  class TauDileptonTableBuilder : private StatUtils, private EditorialUtils { // GenericUtils not needed apparently
+  class TauDileptonTableBuilder : protected StatUtils, private EditorialUtils { // GenericUtils not needed apparently
     
   public :
     void mcTable(  int detailed, bool includeSoverB, bool printAllErrors, bool higgs, TString key, TString name, bool syst1, bool syst2, bool syst3 );

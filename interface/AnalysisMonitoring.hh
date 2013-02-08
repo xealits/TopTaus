@@ -6,7 +6,7 @@
   
   \author   Pietro Vischia, pietro.vischia@gmail.com
 
-  \version  $Id: AnalysisMonitoring.hh,v 1.1 2013/02/01 19:34:47 vischia Exp $                                                                                                       
+  \version  $Id: AnalysisMonitoring.hh,v 1.2 2013/02/07 15:32:31 vischia Exp $                                                                                                       
 */
 
 // System headers
@@ -32,9 +32,9 @@
 // Forward declarations
 
 using namespace std;
+using namespace tableutils;
 
-
-class AnalysisMonitoring : public TauDileptonTableBuilder, public HistogramBuilder, public SampleProcessor {
+class AnalysisMonitoring : protected TauDileptonTableBuilder, public HistogramBuilder, public SampleProcessor {
   
 public:
   

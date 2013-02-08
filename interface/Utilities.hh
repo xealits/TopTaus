@@ -23,6 +23,7 @@ namespace utilities{
 
   protected:
     // Error fractions
+
     double getErrorFraction( double a,double b);
     double getErrorFraction( double a,double b, double err_a, double err_b);
     double getErrorFractionWithSqrt(double a, double b);
