@@ -59,11 +59,15 @@ Produce shapes:
 ---------------
 produceLandSShapes tauDileptonAnalysisParSets_cfg.py
 
-Relevant parameters: straightforward cfg file. Must write doc here, though
+Relevant parameters: straightforward cfg file.
+- produceOnly: (necessary because in plots HH and WH are rescaled, in rootfile not)
+	       -True: just produces rootfile with all the shapes, no plot.
+	       -False: just produces plots, no rootfile.
 
 
 
 Changelog for major updates:
+2013-02-08: ended base porting of the code. Now must move stuff to config file.
 2013-02-07: added scripts/getTriggers.sh for easy trigger and prescales fetching
 	    (will be crucial in particular for etau channel, later on)
 2013-01-23: Likelihood fitter for tau fakes has RooDataset which will take into account correlations
@@ -88,12 +92,15 @@ TODO:
 		     -> one inheriting class for fitting, saving and plotting (PDFBuilderFitter)
 		     -> perhaps one single executable with switch via ParSet in config file
 - Pattuple producer 
-  --> Acquire and improve version from 2013-01-23 - must upload to lipcms svn - in order to use
+  --> Acquire and improve version from 2013-01-23 - must upload from lipcms svn - in order to use
       multicrab in the future
 
 - Ntuples producer --> Convert plugin
 
-- Analysis code --> Convert Nuno's code
+- Analysis code:
+                 --> move hardcoded parameters to configuration file via edm::ParameterSet (minimize the need for recompiling)
+		 --> import batch submission and modify process in order to run on a given subset of events.
+		     (add s.th like void processEvents(uint firstEv, uint lastEv, string dataset){ if(string...) CutflowAnalyzer::process_ttbar(.. process(firstEv, lastEv) ..)  }
 
 - MVA code --> port to binary and commit
 
