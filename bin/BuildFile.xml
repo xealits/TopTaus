@@ -2,5 +2,6 @@
 <environment>
  <bin name="runTauDileptonPDFBuilderFitter"  file="runTauDileptonPDFBuilderFitter.cc"></bin> 
  <bin name="produceLandSShapes"  file="produceLandSShapes.cc"></bin> 
+ <bin name="physicsAnalysis"  file="physicsAnalysis.cc"></bin> 
 </environment>
 <Flags CXXFLAGS="-g"/>
