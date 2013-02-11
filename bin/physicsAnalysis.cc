@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 0.1 2013/02/08 14:40:14 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.1 2013/02/08 18:05:26 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -57,8 +57,11 @@ int main(int argc, char* argv[])
   
   std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;
   
-  //  myProducer->Produce();
-  //  cout << "Shapes producer reached its natural end" << endl;
+
+  analyzer->process_ttbar();
+
+
+  cout << "physicsAnalysis reached its natural end" << endl;
   
   return 0;
   

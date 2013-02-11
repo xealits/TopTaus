@@ -98,7 +98,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   jecUnc_data_ak5_jpt_ = jecUnc_ak5_pf_;
   //////////////////////////////////////
   
-  //jerUnc_ak5_pf_pt_  = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5PF.txt"),true); // Temporarily disabled
+  jerUnc_ak5_pf_pt_  = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5PF.txt"),true); // Temporarily disabled
   //  jerUnc_ak5_jpt_pt_ = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5JPT.txt"),true);    
   
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -614,17 +614,17 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
   if( jer_       > 0 ){ add = TString("_jerplus");    }if( jer_       < 0 ){ add = TString("_jerminus");   }
   if( btagunc_   > 0 ){ add = TString("_bplus");      }if( btagunc_   < 0 ){ add = TString("_bminus");     }
   if( unbtagunc_ > 0 ){ add = TString("_unbplus");    }if( unbtagunc_ < 0 ){ add = TString("_unbminus");   }
-
-
+  
+  
   TString evYields          = TString("cutflow_yields")    + add;     
   TString evYieldsMC        = TString("cutflow_yields_mc") + add;   
   TString evYieldsMCTrigger = TString("cutflow_mc_triggErr");
   TString opt("optimization");
-
+  
   SelectionMonitor * myMon    = tauDileptonYieldsMons_[myKey];    // monitor for the event yields
   SelectionMonitor * myMCMon(0);                                  // monitor for the event yields for MC
- 
-
+  
+  
   // see if we are processing data, if we are processing MC get channel code ////////////////////////////////
   int input_channel = (int)(*(TVectorD *)ev->eventClassif->At(0))[0];
   int channel(-1); int tauDilCh;

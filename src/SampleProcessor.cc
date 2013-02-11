@@ -50,15 +50,22 @@
 	
     //oFolder_ = TString("/soft/lip-sw/cmssw/users/nalmeida/new/nalmeida/sw424/Physics/UserCode/nalmeida/TopTauDileptons2012/");  
     //iFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/mc/mTrees-v3-B/");  
-    oFolder_ = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/");
-    iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/mc/minitrees-muon-Fall11/");
+    //    oFolder_ = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/");
+    //    iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/mc/minitrees-muon-Fall11/");
+
+    // Temp 2012
+    oFolder_ = TString("/lustre/data3/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDildata/temp/");
+    iFolder_ = TString("/lustre/data3/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDildata/temp/");
+
+
 
     // Folders at CERN
     //oFolder_ = TString("/afs/cern.ch/work/n/nalmeida/private/CMSSW_5_2_5/src/lipcms/Physics/TopTauDileptons2012/test/");   
 	
     //iFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/mc/mTrees-v3-B/");
-    if( run2012_ ) iFolder_ = TString("/lustre/lip.pt/data/cmslocal/fnguyen/");   
-
+    // if( run2012_ ) iFolder_ = TString("/lustre/lip.pt/data/cmslocal/fnguyen/");   
+    // Temp 2012
+    if( run2012_ ) iFolder_ = TString("/lustre/data3/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDildata/temp/");   
 
     if( pu_ == PUPLUS  ) oFolder_ += TString("puplus-"); else if ( pu_ == PUMINUS ) oFolder_ += TString("puminus-");
 
@@ -76,8 +83,9 @@
 
     if( eChONmuChOFF_ ) iDFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/data/mTrees-v3-B/");  
     //else              iDFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/data/mTrees-v3/");  
-    else                iDFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/data/minitrees-muon-2011/");  
-   
+    //   else                iDFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/data/minitrees-muon-2011/");  
+    // Temp 2012
+    else                iDFolder_ = TString("/lustre/data3/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDildata/temp/");  
 
 
     // LIP
@@ -85,11 +93,12 @@
     //oDFolder_  = TString("/afs/cern.ch/work/n/nalmeida/private/CMSSW_5_2_5/src/lipcms/Physics/TopTauDileptons2012/test");
 
     if( run2012_ ) iDFolder_ = TString("/lustre/lip.pt/data/cmslocal/fnguyen/");  
+    // Temp 2012
+    if( run2012_ ) iDFolder_ = TString("/lustre/data3/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDildata/temp/");  
     //if( run2012_ ) iDFolder_ = TString("/lip-sw/cmssw/users/nalmeida/new/CMSSW_5_2_5/src/lipcms/Physics/TopTauDileptons2012/mt-2012-V1-data-MU-20GeV/");  
-    oDFolder_  = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/");
-
-
-
+    //    oDFolder_  = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/");
+    // Temp 2012
+    oDFolder_  = TString("/lustre/data3/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDildata/temp/");
 
 
 

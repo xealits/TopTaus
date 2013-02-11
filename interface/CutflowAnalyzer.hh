@@ -6,7 +6,7 @@
   
   \author   Pietro Vischia, pietro.vischia@gmail.com
 
-  \version  $Id: CutflowAnalyzer.hh,v 1.1 2013/02/01 19:34:47 vischia Exp $                                                                                                       
+  \version  $Id: CutflowAnalyzer.hh,v 1.2 2013/02/08 15:20:46 vischia Exp $                                                                                                       
 */
 
 // System headers
@@ -33,7 +33,7 @@ using namespace std;
 
 
 
-class CutflowAnalyzer : public UncertaintyCalculator, protected AnalysisMonitoring, public ObjectSelector, public GenericUtils {
+class CutflowAnalyzer : public UncertaintyCalculator, public AnalysisMonitoring, public ObjectSelector, public GenericUtils {
 public:
   
   CutflowAnalyzer(double);
