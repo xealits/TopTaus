@@ -68,6 +68,7 @@ Relevant parameters: straightforward cfg file.
 
 Changelog for major updates:
 2013-02-11: updated JEC uncertainty sources.
+	    Temporarily disabled JER, in order to check the correct usage (in the twiki there is "Spring10")
 2013-02-08: ended base porting of the code. Now must move stuff to config file.
 2013-02-07: added scripts/getTriggers.sh for easy trigger and prescales fetching
 	    (will be crucial in particular for etau channel, later on)

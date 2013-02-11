@@ -88,9 +88,8 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   
   //  JetCorrectorParameters * jcp = new JetCorrectorParameters(analysisFolder+string("/JEC11_V12_AK5PF_UncertaintySources.txt"), "Total");
   JetCorrectorParameters * jcp = new JetCorrectorParameters(analysisFolder+string("/Fall12_V7_DATA_UncertaintySources_AK5PFchs.txt"), "Total"); // Must implement splitting by sources
-  cout<<endl<<"JetCorrectorParameters acquired"<<endl;
   jecUnc_ak5_pf_ = new JetCorrectionUncertainty( *jcp );
-  
+  cout<<endl<<"JetCorrectorParameters acquired"<<endl;
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   //Not used //////////////////////////
@@ -99,7 +98,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   jecUnc_data_ak5_jpt_ = jecUnc_ak5_pf_;
   //////////////////////////////////////
   
-  jerUnc_ak5_pf_pt_  = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5PF.txt"),true);
+  //jerUnc_ak5_pf_pt_  = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5PF.txt"),true); // Temporarily disabled
   //  jerUnc_ak5_jpt_pt_ = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5JPT.txt"),true);    
   
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
