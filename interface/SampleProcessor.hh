@@ -69,8 +69,15 @@ public :
   */
 
   // FIXME: parametrize with hadd on a per-10 basis (quicker in lip batch)
+  
   void process_data_RunA();
+  void process_data_RunAr();
   void process_data_RunB();
+  void process_data_RunC1();
+  void process_data_RunC2();
+  void process_data_RunD();
+
+  
   void process_ttbar();
   void process_ttbar_bychannel();
   void process_singletop();

@@ -796,200 +796,200 @@ void SampleProcessor::process_dibosons(){
 
 
 
+
 void SampleProcessor::process_data_RunA(){
 
   url_ = DATA_URL;
 
-
   // DON't FORGET TO SET MUTAU ON
   if( ! eChONmuChOFF_ && ! run2012_){ 
-    // Muon inclusive samples
-
     process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
-    //  process(true,url_,iDFolder_+TString("Muon_RunB_ReReco.root"),oDFolder_+TString("out-Muon_RunB_ReReco.root"),keys_);
-//    //RUN 2011A
-//    process(true,url_,iDFolder_+TString("Muon_1.root"),oDFolder_+TString("out-Muon_1.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_2.root"),oDFolder_+TString("out-Muon_2.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_3.root"),oDFolder_+TString("out-Muon_3.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_4.root"),oDFolder_+TString("out-Muon_4.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_5.root"),oDFolder_+TString("out-Muon_5.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_6.root"),oDFolder_+TString("out-Muon_6.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_7.root"),oDFolder_+TString("out-Muon_7.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_8.root"),oDFolder_+TString("out-Muon_8.root"),keys_);
-//
-//    process(true,url_,iDFolder_+TString("Muon_9.root"),oDFolder_+TString("out-Muon_9a.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_9_05Aug.root"),oDFolder_+TString("out-Muon_9b.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_9_v5.root"),oDFolder_+TString("out-Muon_9c.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_10.root"),oDFolder_+TString("out-Muon_10.root"),keys_);
-//
-//
-//    //RUN 2011B
-//    process(true,url_,iDFolder_+TString("Muon_RunB_1.root"),oDFolder_+TString("out-Muon_RunB_1.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_RunB_2.root"),oDFolder_+TString("out-Muon_RunB_2.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_RunB_3.root"),oDFolder_+TString("out-Muon_RunB_3.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_RunB_4.root"),oDFolder_+TString("out-Muon_RunB_4.root"),keys_);
-
-
-
-
-
   }
 
   if( ! eChONmuChOFF_ && run2012_){ 
-
-    //test sample
-    //process(true,url_,iDFolder_+TString("Monitor_data_tau.root"),oDFolder_+TString("out-test.root"),keys_);
-
-
-    process(true,url_,iDFolder_+TString("dataTryall204.root"),oDFolder_+TString("out-test.root"),keys_);
-
-/*
-    // Muon inclusive samples
-    process(true,url_,iDFolder_+TString("Muon_1.root"),oDFolder_+TString("out-Muon_1.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_2.root"),oDFolder_+TString("out-Muon_2.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_3.root"),oDFolder_+TString("out-Muon_3.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_4.root"),oDFolder_+TString("out-Muon_4.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_5.root"),oDFolder_+TString("out-Muon_5.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_6.root"),oDFolder_+TString("out-Muon_6.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_7.root"),oDFolder_+TString("out-Muon_7.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_8.root"),oDFolder_+TString("out-Muon_8.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_9.root"),oDFolder_+TString("out-Muon_9.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_9_05Aug.root"),oDFolder_+TString("out-Muon_9_05Aug.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_9_v5.root"),oDFolder_+TString("out-Muon_9_v5.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_10.root"),oDFolder_+TString("out-Muon_10.root"),keys_);
-*/
-
-
+    process(true,url_,iDFolder_+TString("Muon_RunA.root"),oDFolder_+TString("out-Muon_RunA.root"),keys_);
   }
-
-
 /*
   else{ 
     // inclusive electron trigger
     process(true,url_,iDFolder_+TString("Electron_1.root"), oDFolder_+TString("out-Electron_1.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_2.root"), oDFolder_+TString("out-Electron_2.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_3.root"), oDFolder_+TString("out-Electron_3.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_4.root"), oDFolder_+TString("out-Electron_4.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_5.root"), oDFolder_+TString("out-Electron_5.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_6.root"), oDFolder_+TString("out-Electron_6.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_7.root"), oDFolder_+TString("out-Electron_7.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_8.root"), oDFolder_+TString("out-Electron_8.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_9.root"), oDFolder_+TString("out-Electron_9.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_10.root"), oDFolder_+TString("out-Electron_10.root"),keys_);
   }
 */
-
+/*
   else if(! eChONmuChOFF_ && ! run2012_ ) {
-    // electron+2jets+mht samples
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_5.root"), oDFolder_+TString("out-eJTrigMatch_5.root"),keys_);
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_6.root"), oDFolder_+TString("out-eJTrigMatch_6.root"),keys_);
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_7.root"), oDFolder_+TString("out-eJTrigMatch_7.root"),keys_);
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_8.root"), oDFolder_+TString("out-eJTrigMatch_8.root"),keys_);
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_9_aug05Reco.root"), oDFolder_+TString("out-eJTrigMatch_9.root"),keys_);
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_10.root"), oDFolder_+TString("out-eJTrigMatch_10.root"),keys_);
+  electron+2jets+mht samples
+  process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
   }
-  
-
+*/  
 }
+
+
+
+void SampleProcessor::process_data_RunAr(){
+
+  url_ = DATA_URL;
+
+  // DON't FORGET TO SET MUTAU ON
+  if( ! eChONmuChOFF_ && ! run2012_){ 
+    process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
+  }
+
+  if( ! eChONmuChOFF_ && run2012_){ 
+    process(true,url_,iDFolder_+TString("Muon_RunAr.root"),oDFolder_+TString("out-Muon_RunAr.root"),keys_);
+  }
+/*
+  else{ 
+    // inclusive electron trigger
+    process(true,url_,iDFolder_+TString("Electron_1.root"), oDFolder_+TString("out-Electron_1.root"),keys_);
+  }
+*/
+/*
+  else if(! eChONmuChOFF_ && ! run2012_ ) {
+  electron+2jets+mht samples
+  process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
+  }
+*/  
+}
+
 
 
 void SampleProcessor::process_data_RunB(){
 
   url_ = DATA_URL;
 
-
   // DON't FORGET TO SET MUTAU ON
   if( ! eChONmuChOFF_ && ! run2012_){ 
-    // Muon inclusive samples
-
-    //    process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_RunB_ReReco.root"),oDFolder_+TString("out-Muon_RunB_ReReco.root"),keys_);
-//    //RUN 2011A
-//    process(true,url_,iDFolder_+TString("Muon_1.root"),oDFolder_+TString("out-Muon_1.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_2.root"),oDFolder_+TString("out-Muon_2.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_3.root"),oDFolder_+TString("out-Muon_3.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_4.root"),oDFolder_+TString("out-Muon_4.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_5.root"),oDFolder_+TString("out-Muon_5.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_6.root"),oDFolder_+TString("out-Muon_6.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_7.root"),oDFolder_+TString("out-Muon_7.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_8.root"),oDFolder_+TString("out-Muon_8.root"),keys_);
-//
-//    process(true,url_,iDFolder_+TString("Muon_9.root"),oDFolder_+TString("out-Muon_9a.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_9_05Aug.root"),oDFolder_+TString("out-Muon_9b.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_9_v5.root"),oDFolder_+TString("out-Muon_9c.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_10.root"),oDFolder_+TString("out-Muon_10.root"),keys_);
-//
-//
-//    //RUN 2011B
-//    process(true,url_,iDFolder_+TString("Muon_RunB_1.root"),oDFolder_+TString("out-Muon_RunB_1.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_RunB_2.root"),oDFolder_+TString("out-Muon_RunB_2.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_RunB_3.root"),oDFolder_+TString("out-Muon_RunB_3.root"),keys_);
-//    process(true,url_,iDFolder_+TString("Muon_RunB_4.root"),oDFolder_+TString("out-Muon_RunB_4.root"),keys_);
-
-
-
-
-
+    process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
   }
 
   if( ! eChONmuChOFF_ && run2012_){ 
-
-    //test sample
-    //process(true,url_,iDFolder_+TString("Monitor_data_tau.root"),oDFolder_+TString("out-test.root"),keys_);
-
-
-    process(true,url_,iDFolder_+TString("dataTryall204.root"),oDFolder_+TString("out-test.root"),keys_);
-
-/*
-    // Muon inclusive samples
-    process(true,url_,iDFolder_+TString("Muon_1.root"),oDFolder_+TString("out-Muon_1.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_2.root"),oDFolder_+TString("out-Muon_2.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_3.root"),oDFolder_+TString("out-Muon_3.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_4.root"),oDFolder_+TString("out-Muon_4.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_5.root"),oDFolder_+TString("out-Muon_5.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_6.root"),oDFolder_+TString("out-Muon_6.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_7.root"),oDFolder_+TString("out-Muon_7.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_8.root"),oDFolder_+TString("out-Muon_8.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_9.root"),oDFolder_+TString("out-Muon_9.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_9_05Aug.root"),oDFolder_+TString("out-Muon_9_05Aug.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_9_v5.root"),oDFolder_+TString("out-Muon_9_v5.root"),keys_);
-    process(true,url_,iDFolder_+TString("Muon_10.root"),oDFolder_+TString("out-Muon_10.root"),keys_);
-*/
-
-
+    process(true,url_,iDFolder_+TString("Muon_RunB.root"),oDFolder_+TString("out-Muon_RunB.root"),keys_);
   }
-
-
 /*
   else{ 
     // inclusive electron trigger
     process(true,url_,iDFolder_+TString("Electron_1.root"), oDFolder_+TString("out-Electron_1.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_2.root"), oDFolder_+TString("out-Electron_2.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_3.root"), oDFolder_+TString("out-Electron_3.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_4.root"), oDFolder_+TString("out-Electron_4.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_5.root"), oDFolder_+TString("out-Electron_5.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_6.root"), oDFolder_+TString("out-Electron_6.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_7.root"), oDFolder_+TString("out-Electron_7.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_8.root"), oDFolder_+TString("out-Electron_8.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_9.root"), oDFolder_+TString("out-Electron_9.root"),keys_);
-    process(true,url_,iDFolder_+TString("Electron_10.root"), oDFolder_+TString("out-Electron_10.root"),keys_);
   }
 */
-
+/*
   else if(! eChONmuChOFF_ && ! run2012_ ) {
-    // electron+2jets+mht samples
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_5.root"), oDFolder_+TString("out-eJTrigMatch_5.root"),keys_);
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_6.root"), oDFolder_+TString("out-eJTrigMatch_6.root"),keys_);
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_7.root"), oDFolder_+TString("out-eJTrigMatch_7.root"),keys_);
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_8.root"), oDFolder_+TString("out-eJTrigMatch_8.root"),keys_);
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_9_aug05Reco.root"), oDFolder_+TString("out-eJTrigMatch_9.root"),keys_);
-    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_10.root"), oDFolder_+TString("out-eJTrigMatch_10.root"),keys_);
+  electron+2jets+mht samples
+  process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
   }
-  
-
+*/  
 }
+
+
+
+void SampleProcessor::process_data_RunC1(){
+
+  url_ = DATA_URL;
+
+  // DON't FORGET TO SET MUTAU ON
+  if( ! eChONmuChOFF_ && ! run2012_){ 
+    process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
+  }
+
+  if( ! eChONmuChOFF_ && run2012_){ 
+    process(true,url_,iDFolder_+TString("Muon_RunC1.root"),oDFolder_+TString("out-Muon_RunC1.root"),keys_);
+  }
+/*
+  else{ 
+    // inclusive electron trigger
+    process(true,url_,iDFolder_+TString("Electron_1.root"), oDFolder_+TString("out-Electron_1.root"),keys_);
+  }
+*/
+/*
+  else if(! eChONmuChOFF_ && ! run2012_ ) {
+  electron+2jets+mht samples
+  process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
+  }
+*/  
+}
+
+
+
+void SampleProcessor::process_data_RunC2(){
+
+  url_ = DATA_URL;
+
+  // DON't FORGET TO SET MUTAU ON
+  if( ! eChONmuChOFF_ && ! run2012_){ 
+    process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
+  }
+
+  if( ! eChONmuChOFF_ && run2012_){ 
+    process(true,url_,iDFolder_+TString("Muon_RunC2.root"),oDFolder_+TString("out-Muon_RunC2.root"),keys_);
+  }
+/*
+  else{ 
+    // inclusive electron trigger
+    process(true,url_,iDFolder_+TString("Electron_1.root"), oDFolder_+TString("out-Electron_1.root"),keys_);
+  }
+*/
+/*
+  else if(! eChONmuChOFF_ && ! run2012_ ) {
+  electron+2jets+mht samples
+  process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
+  }
+*/  
+}
+
+
+
+void SampleProcessor::process_data_RunD(){
+
+  url_ = DATA_URL;
+
+  // DON't FORGET TO SET MUTAU ON
+  if( ! eChONmuChOFF_ && ! run2012_){ 
+    process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
+  }
+
+  if( ! eChONmuChOFF_ && run2012_){ 
+    process(true,url_,iDFolder_+TString("Muon_RunD.root"),oDFolder_+TString("out-Muon_RunD.root"),keys_);
+  }
+/*
+  else{ 
+    // inclusive electron trigger
+    process(true,url_,iDFolder_+TString("Electron_1.root"), oDFolder_+TString("out-Electron_1.root"),keys_);
+  }
+*/
+/*
+  else if(! eChONmuChOFF_ && ! run2012_ ) {
+  electron+2jets+mht samples
+  process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
+  }
+*/  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 void SampleProcessor::process_triggersamples_mht(){

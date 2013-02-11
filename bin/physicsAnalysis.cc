@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.2 2013/02/11 15:03:12 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.3 2013/02/11 16:20:45 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -59,12 +59,30 @@ int main(int argc, char* argv[])
   
   std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;
   
-
-  if(runOn == "ttbar")
-    analyzer->process_ttbar();
+  
+  if(runOn ==      "data_muonA")          analyzer->process_data_RunA()         ;
+  else if(runOn == "data_muonAr")         analyzer->process_data_RunAr()        ;
+  else if(runOn == "data_muonB")          analyzer->process_data_RunB()         ;
+  else if(runOn == "data_muonC1")         analyzer->process_data_RunC1()        ;
+  else if(runOn == "data_muonC2")         analyzer->process_data_RunC2()        ;
+  else if(runOn == "data_muonD")          analyzer->process_data_RunD()         ;
+  else if(runOn == "dibosons")            analyzer->process_dibosons()           ;
+  else if(runOn == "hh_higgs_bychannel")  analyzer->process_hh_higgs_bychannel() ;
+  else if(runOn == "hh_higgs")            analyzer->process_hh_higgs()           ;
+  else if(runOn == "qcd")                 analyzer->process_qcd()                ;
+  else if(runOn == "singletop")           analyzer->process_singletop()          ;
+  else if(runOn == "trigger_mht")         analyzer->process_trigger_mht()        ;
+  else if(runOn == "trigger_mhtjets")     analyzer->process_trigger_mhtjets()    ;
+  else if(runOn == "ttbar_bychannel")     analyzer->process_ttbar_bychannel()    ;
+  else if(runOn == "ttbar_unc")           analyzer->process_ttbar_unc()          ;
+  else if(runOn == "ttbar")               analyzer->process_ttbar()              ;
+  else if(runOn == "wh_higgs_bychannel")  analyzer->process_wh_higgs_bychannel() ;
+  else if(runOn == "wh_higgs")            analyzer->process_wh_higgs()           ;
+  else if(runOn == "wjets")               analyzer->process_wjets()              ;
+  else if(runOn == "zjets")               analyzer->process_zjets()              ;
   else
     cout << "Sample does not exist" << endl;
-
+  
   cout << "physicsAnalysis reached its natural end" << endl;
   
   return 0;
