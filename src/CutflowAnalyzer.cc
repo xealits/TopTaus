@@ -71,8 +71,8 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   string cmsswFolder      = get_env_var("CMSSW_BASE");
   string jerFolder        = cmsswFolder+string("/src/CondFormats/JetMETObjects/data/");
   
-  string lipcmsBaseFolder = cmsswFolder + string("/LIP/TopTaus/data/");// get_env_var("LIPCMS_BASE");
-  string analysisFolder   = lipcmsBaseFolder+string("/Physics/TopTauDileptons2012/");
+  string lipcmsBaseFolder = cmsswFolder + string("/LIP/TopTaus/");// get_env_var("LIPCMS_BASE");
+  string analysisFolder   = lipcmsBaseFolder+string("data/");
   
   
   
