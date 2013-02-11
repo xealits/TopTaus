@@ -71,7 +71,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   string cmsswFolder      = get_env_var("CMSSW_BASE");
   string jerFolder        = cmsswFolder+string("/src/CondFormats/JetMETObjects/data/");
   
-  string lipcmsBaseFolder = get_env_var("LIPCMS_BASE");
+  string lipcmsBaseFolder = cmsswFolder + string("/LIP/TopTaus/data/");// get_env_var("LIPCMS_BASE");
   string analysisFolder   = lipcmsBaseFolder+string("/Physics/TopTauDileptons2012/");
   
   
@@ -86,7 +86,9 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   //cout<<endl<<" FILE 1 : "<<(analysisFolder+string("/JEC11_V12_AK5PF_UncertaintySources.txt"))<<endl;
   //cout<<endl<<" FILE 2 : "<<(jerFolder+string("/Spring10_PtResolution_AK5JPT.txt"))<<endl;
   
-  JetCorrectorParameters * jcp = new JetCorrectorParameters(analysisFolder+string("/JEC11_V12_AK5PF_UncertaintySources.txt"), "Total");
+  //  JetCorrectorParameters * jcp = new JetCorrectorParameters(analysisFolder+string("/JEC11_V12_AK5PF_UncertaintySources.txt"), "Total");
+  JetCorrectorParameters * jcp = new JetCorrectorParameters(analysisFolder+string("/Fall12_V7_DATA_UncertaintySources_AK5PFchs.txt"), "Total"); // Must implement splitting by sources
+  
   jecUnc_ak5_pf_ = new JetCorrectionUncertainty( *jcp );
   
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +100,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   //////////////////////////////////////
   
   jerUnc_ak5_pf_pt_  = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5PF.txt"),true);
-  jerUnc_ak5_jpt_pt_ = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5JPT.txt"),true);    
+  //  jerUnc_ak5_jpt_pt_ = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5JPT.txt"),true);    
   
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   

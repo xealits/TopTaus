@@ -67,6 +67,7 @@ Relevant parameters: straightforward cfg file.
 
 
 Changelog for major updates:
+2013-02-11: updated JEC uncertainty sources.
 2013-02-08: ended base porting of the code. Now must move stuff to config file.
 2013-02-07: added scripts/getTriggers.sh for easy trigger and prescales fetching
 	    (will be crucial in particular for etau channel, later on)
@@ -78,7 +79,7 @@ Changelog for major updates:
 2012-09-21: shapes producer for lands and multiple likelihood fit for fake rates are ready to use.
 
 TODO:
-
+- split JEC uncertainty sources into the 16 components.
 - scripts/getTriggers.hs: implement running through sh getTriggers.sh PARS, in order to allow to choose
   at runtime whether to print the prescales table or just the triggers
 
