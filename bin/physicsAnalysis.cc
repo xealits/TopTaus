@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.1 2013/02/08 18:05:26 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.2 2013/02/11 15:03:12 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -42,12 +42,14 @@ int main(int argc, char* argv[])
   AutoLibraryLoader::enable();
   
   //check arguments
-  if ( argc < 2 ) {
-    std::cout << "Usage : " << argv[0] << " parameters_cfg.py" << std::endl;
+  if ( argc < 3 ) {
+    std::cout << "Usage : " << argv[0] << " parameters_cfg.py sample" << std::endl;
     return 0;
   }
   
   string parSet(argv[1]);
+  string runOn(argv[2]);
+
   const edm::ParameterSet &pSet = edm::readPSetsFrom(parSet)->getParameter<edm::ParameterSet>("PhysicsAnalysisParSet");
   
   double tauPtCut = pSet.getParameter<double>("tauPtCut");
@@ -58,8 +60,10 @@ int main(int argc, char* argv[])
   std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;
   
 
-  analyzer->process_ttbar();
-
+  if(runOn == "ttbar")
+    analyzer->process_ttbar();
+  else
+    cout << "Sample does not exist" << endl;
 
   cout << "physicsAnalysis reached its natural end" << endl;
   
