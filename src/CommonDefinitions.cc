@@ -117,7 +117,8 @@ namespace commondefinitions{
   // double LUM_ =  3929; // /pb  //RUN2011A+RUN2011B
   //  double LUM_ = 4064;
   // double LUM_ = 4625.21;
-  double LUM_ = 4903.;
+  //  double LUM_ = 4903.; // 2011 final
+  double LUM_ = 14801.27; // 2012 start
   int BTAGIND_; double BTAG_CUT_;
   /////////////////////////////////////////////////////////////////////
 

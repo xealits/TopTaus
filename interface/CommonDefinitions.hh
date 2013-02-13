@@ -237,8 +237,13 @@ namespace commondefinitions{
    WH150_URL,  HH150_URL,
    WH155_URL,  HH155_URL,
    WH160_URL,  HH160_URL,
-   TBH250_URL
-
+   
+   TBH180_URL,  
+   TBH190_URL,  
+   TBH200_URL,  
+   TBH220_URL, 
+   TBH250_URL,
+   TBH300_URL
   };
 
   

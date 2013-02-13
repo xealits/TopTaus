@@ -119,148 +119,215 @@
     
     
     for (int i=0; i<200; i++ ){ defaultXSections_.push_back(0); }
-
-    defaultXSections_[DATA_URL]      = 0.;         
-    defaultXSections_[TTBAR_URL]     = 165;  //NNLO aproximation +- 10 old was 157.5 
-
-    defaultXSections_[W_ENU_URL]     = 10438; //NNLO 31314/3 =10438 //NLO 28000/3 = 9333 // xsec 7899 WToENu_TuneZ2_7TeV-pythia6/Fall10-START38_V12-v1                 
-    defaultXSections_[W_MUNU_URL]    = 10438;
-    defaultXSections_[W_TAUNU_URL]   = 10438; 
-
-
-    // ALPGEN SAMPLES
-    /*
-     W0Jets           /W0Jets_TuneD6T_7TeV-alpgen-tauola                                                    2.003e+04
-     W1Jets_0to100    /W1Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    3.693e+03
-     W1Jets_100to300  /W1Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     7.197e+01
-     W2Jets_0to100    /W2Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    9.434e+02
-     W2Jets_100to300  /W2Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     6.718e+01
-     W3Jets_0to100    /W3Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    2.087e+02
-     W3Jets_100to300  /W3Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     3.243e+01
-     W4Jets_0to100    /W4Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    4.446e+01
-     W4Jets_100to300  /W4Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     1.138e+01
-     W5Jets_0to100    /W5Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    1.111e+01
-     W5Jets_100to300  /W5Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     3.789e+00 
-    */
-
-    // total 
-    // w0 ->      2.024e+04 //Z2
-    // W0 ->D6    2.003e+04
-
-    defaultXSections_[W0J_URL]         = 20030.*1.3;
-    defaultXSections_[W1JA_URL]        = 3693.*1.3;
-    defaultXSections_[W1JB_URL]        = 71.97*1.3;
-    defaultXSections_[W2JA_URL]        = 943.4*1.3;
-    defaultXSections_[W2JB_URL]        = 67.18*1.3;
-    defaultXSections_[W3JA_URL]        = 208.7*1.3;
-    defaultXSections_[W3JB_URL]        = 32.43*1.3;
-    defaultXSections_[W4JA_URL]        = 44.46*1.3;
-    defaultXSections_[W4JB_URL]        = 11.38*1.3;
-    defaultXSections_[W5JA_URL]        = 11.11*1.3;
-    defaultXSections_[W5JB_URL]        = 3.789*1.3;
-
-    defaultXSections_[WJMADGRAPH_URL]  = 31314;
-
-    defaultXSections_[TT0J_URL]        = 49.17*2.1768;
-    defaultXSections_[TT1J_URL]        = 17.97*2.1768 ;
-    defaultXSections_[TT2J_URL]        = 4.279*2.1768 ;
-    defaultXSections_[TT3J_URL]        = 0.7951*2.1768 ;
-    defaultXSections_[TT4J_URL]        = 0.1404*2.1768 ;
-
-
-    /*
-    defaultXSections_[DY_HIGHLL_URL]     = 3048;
-    defaultXSections_[DY_EE_URL]         = 650;
-    defaultXSections_[DY_MM_URL]         = 650;
-    defaultXSections_[DY_TAUTAU_URL]     = 650;
-    */
-
-    //defaultXSections_[DY_10TO50_URL]          = 310;  //NLO 310 // xsec = 310  eff=0.18 DYJetsToLL_TuneD6T_M-10To50_7TeV-madgraph-tauola (on madgraph we do not apply eff)
-
-   // the number is LO cross section (3x310 pb) with a k-factor to correct for NLO (1.33). The actual source of this - I don't know.
-    defaultXSections_[DY_10TO50_URL]          = 12369;
-    defaultXSections_[DY_FROM50_URL]          = 3048; //NNLO 3048 //NLO 2800// xsec= 2321  eff=0.44 DYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola 
-  
-
-   /* Fall 2010 samples
-    defaultXSections_[S_URL]                  = 1.49;     
-    defaultXSections_[T_URL]                  = 20.93 ;    
-    defaultXSections_[W_URL]                  = 10.6;   
-   */
-
-
-
-
-/*
-
-t+ (s-channel) 	MCFM 	-- 	NLO 	Inclusive 	2.72 	+0.07-0.06 (±0.08), Total = +0.11 - 0.10 	Inclusive top decay, PDF errors also includes alphas
-t- (s-channel) 	MCFM 	-- 	NLO 	Inclusive 	1.49 	+0.04-0.03 (±0.08), Total = +0.09-0.08 	Inclusive top decay, PDF errors also includes alphas 
-
-t+ (t-channel) 	MCFM 	-- 	NLO 	Inclusive 	42.6 	+0.9-0.8 (±2.2), Total = +2.4-2.3 	Inclusive top decay, PDF errors also includes alphas
-t- (t-channel) 	MCFM 	-- 	NLO 	Inclusive 	22.0 	+0.6-0.3 (±0.8), Total = +0.10-0.8 	Inclusive top decay, PDF errors also includes alphas 
-
-W+tbar   	MCFM 	-- 	NLO 	Inclusive 	5.3 	±0.6 	--
-W-t 	        MCFM 	-- 	NLO 	Inclusive 	5.3 	±0.6 	-- 
-*/
-
-
-
-
-    defaultXSections_[S_URL]                  = 2.72;     
-    defaultXSections_[T_URL]                  = 42.6;    
-    //defaultXSections_[W_URL]                = 5.3;   //WARNING :: This is old
-    defaultXSections_[W_URL]                  = 7.87;  
-
     
-    defaultXSections_[A_S_URL]                = 1.49;    
-    defaultXSections_[A_T_URL]                = 22;    
-    //defaultXSections_[A_W_URL]              = 5.3;   //WARNING :: use the new value
-    defaultXSections_[A_W_URL]                = 7.87;  
+    if( run2012_ ) {
+      defaultXSections_[DATA_URL]      = 0.;         
+      defaultXSections_[TTBAR_URL]     = 234.;  //Kidonakis - approx. NNLO - Inclusive - 234+10-)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) - Top mass: m(top)=173GeV, Default scales: muF=muR=mt, PDF: MSTW2008 NNLO 
+      
+      defaultXSections_[W_ENU_URL]     = 12085.7; //NNLO 36257.2/3 = 12085.7 - NNLO - W->lv, l=e,m,t - Inclusive W production, BR(W->lv) included, l=e,m,t, PDF error also includes alphas 
+      defaultXSections_[W_MUNU_URL]    = 12085.7;
+      defaultXSections_[W_TAUNU_URL]   = 12085.7; 
+      
+      defaultXSections_[DY_10TO50_URL]          = 11050.0; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-10To50filter_8TeV-madgraph&campid=Summer12
+      defaultXSections_[DY_FROM50_URL]          = 3503.71; //
 
+      defaultXSections_[S_URL]                  = 3.79;     
+      defaultXSections_[T_URL]                  = 56.4;    
+      defaultXSections_[W_URL]                  = 11.1;  
+      
+      
+      defaultXSections_[A_S_URL]                = 1.76;    
+      defaultXSections_[A_T_URL]                = 30.7;    
+      defaultXSections_[A_W_URL]                = 11.1;
 
-   
+      //fn defaultXSections_[QCD_EM20TO30_URL]       = 2454400.; not considered!!!
+      defaultXSections_[QCD_EM30TO80_URL]       = 4615893.; // 74330000. eff 0.0621 http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_30_80_EMEnriched_TuneZ2star_8TeV_pythia6&campid=Summer12
+      defaultXSections_[QCD_EM80TO170_URL]      = 183294.9; // 1191000. eff 0.1539 http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_80_170_EMEnriched_TuneZ2star_8TeV_pythia6&campid=Summer12
+      
+      //fn defaultXSections_[QCD_BCTOE20TO30_URL]    = 132160; not considered!!! 
+      defaultXSections_[QCD_BCTOE30TO80_URL]    = 167040.; // 74240000. eff 0.00225 http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_30_80_BCtoE_TuneZ2star_8TeV_pythia6&campid=Summer12
+      defaultXSections_[QCD_BCTOE80TO170_URL]   = 12981.9; //1191000. 0.0109 http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_80_170*&campid=Summer12         
+      
+      defaultXSections_[QCD_MU_URL]             = 134680.; //364000000. eff 3.7E-4 http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6&campid=Summer12
+      
+      
+      defaultXSections_[QCD_PHOTON30TO50_URL]   = 19931.62;        
+      defaultXSections_[QCD_PHOTON50TO80_URL]   = 3322.309;         
+      defaultXSections_[QCD_PHOTON80TO120_URL]  = 558.2865;        
+      defaultXSections_[QCD_PHOTON120TO170_URL] = 108.0068;
+      
+      //fn xsections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat8TeV
+      defaultXSections_[WW_URL]                 = 54.838;
+      defaultXSections_[WZ_URL]                 = 32.3;
+      defaultXSections_[ZZ_URL]                 = 17.627;
+      
+      defaultXSections_[CTRLWW_URL]             = 234; 
+      defaultXSections_[WH80_URL]               = 234;            
+      defaultXSections_[HH80_URL]               = 234;                                           
+      defaultXSections_[WH100_URL]              = 234;                                          
+      defaultXSections_[HH100_URL]              = 234;                                        
+      defaultXSections_[WH120_URL]              = 234;                                          
+      defaultXSections_[HH120_URL]              = 234;                                          
+      defaultXSections_[WH140_URL]              = 234;                                          
+      defaultXSections_[HH140_URL]              = 234; 
+      defaultXSections_[WH150_URL]              = 234; 
+      defaultXSections_[HH150_URL]              = 234; 
+      defaultXSections_[WH155_URL]              = 234; 
+      defaultXSections_[HH155_URL]              = 234; 
+      defaultXSections_[WH160_URL]              = 234;                                           
+      defaultXSections_[HH160_URL]              = 234;                                                                                 
+      
+      defaultXSections_[TBH180_URL]             = 234;  
+      defaultXSections_[TBH190_URL]             = 234;  
+      defaultXSections_[TBH200_URL]             = 234;  
+      defaultXSections_[TBH220_URL]             = 234; 
+      defaultXSections_[TBH250_URL]             = 234;
+      defaultXSections_[TBH300_URL]             = 234;
 
-	                          
-    defaultXSections_[QCD_EM20TO30_URL]       = 2454400.;     //xsec =236000000 eff=0.0104 QCD_Pt-20to30_EMEnriched_TuneZ2_7TeV-pythia6
-    defaultXSections_[QCD_EM30TO80_URL]       = 3866200.;     //xsec =59480000  eff=0.065  QCD_Pt-30to80_EMEnriched_TuneZ2_7TeV-pythia6 
-    defaultXSections_[QCD_EM80TO170_URL]      = 139500.;      //xsec =900000    eff=0.155  QCD_Pt-80to170_EMEnriched_TuneZ2_7TeV-pythia6 
+      
+    } else {
+      
+      defaultXSections_[DATA_URL]      = 0.;         
+      defaultXSections_[TTBAR_URL]     = 165;  //NNLO aproximation +- 10 old was 157.5 
+      
+      defaultXSections_[W_ENU_URL]     = 10438; //NNLO 31314/3 =10438 //NLO 28000/3 = 9333 // xsec 7899 WToENu_TuneZ2_7TeV-pythia6/Fall10-START38_V12-v1                 
+      defaultXSections_[W_MUNU_URL]    = 10438;
+      defaultXSections_[W_TAUNU_URL]   = 10438; 
+      
+      
+      // ALPGEN SAMPLES
+      /*
+	W0Jets           /W0Jets_TuneD6T_7TeV-alpgen-tauola                                                    2.003e+04
+	W1Jets_0to100    /W1Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    3.693e+03
+	W1Jets_100to300  /W1Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     7.197e+01
+	W2Jets_0to100    /W2Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    9.434e+02
+	W2Jets_100to300  /W2Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     6.718e+01
+	W3Jets_0to100    /W3Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    2.087e+02
+	W3Jets_100to300  /W3Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     3.243e+01
+	W4Jets_0to100    /W4Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    4.446e+01
+	W4Jets_100to300  /W4Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     1.138e+01
+	W5Jets_0to100    /W5Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    1.111e+01
+	W5Jets_100to300  /W5Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     3.789e+00 
+      */
+      
+      // total 
+      // w0 ->      2.024e+04 //Z2
+      // W0 ->D6    2.003e+04
+      
+      defaultXSections_[W0J_URL]         = 20030.*1.3;
+      defaultXSections_[W1JA_URL]        = 3693.*1.3;
+      defaultXSections_[W1JB_URL]        = 71.97*1.3;
+      defaultXSections_[W2JA_URL]        = 943.4*1.3;
+      defaultXSections_[W2JB_URL]        = 67.18*1.3;
+      defaultXSections_[W3JA_URL]        = 208.7*1.3;
+      defaultXSections_[W3JB_URL]        = 32.43*1.3;
+      defaultXSections_[W4JA_URL]        = 44.46*1.3;
+      defaultXSections_[W4JB_URL]        = 11.38*1.3;
+      defaultXSections_[W5JA_URL]        = 11.11*1.3;
+      defaultXSections_[W5JB_URL]        = 3.789*1.3;
+      
+      defaultXSections_[WJMADGRAPH_URL]  = 31314;
+      
+      defaultXSections_[TT0J_URL]        = 49.17*2.1768;
+      defaultXSections_[TT1J_URL]        = 17.97*2.1768 ;
+      defaultXSections_[TT2J_URL]        = 4.279*2.1768 ;
+      defaultXSections_[TT3J_URL]        = 0.7951*2.1768 ;
+      defaultXSections_[TT4J_URL]        = 0.1404*2.1768 ;
+      
+      
+      /*
+	defaultXSections_[DY_HIGHLL_URL]     = 3048;
+	defaultXSections_[DY_EE_URL]         = 650;
+	defaultXSections_[DY_MM_URL]         = 650;
+	defaultXSections_[DY_TAUTAU_URL]     = 650;
+      */
+      
+      //defaultXSections_[DY_10TO50_URL]          = 310;  //NLO 310 // xsec = 310  eff=0.18 DYJetsToLL_TuneD6T_M-10To50_7TeV-madgraph-tauola (on madgraph we do not apply eff)
 
-    defaultXSections_[QCD_BCTOE20TO30_URL]    = 132160;       //xsec = 236000000 eff=0.00056 QCD_Pt-20to30_BCtoE_TuneZ2_7TeV-pythia6 
-    defaultXSections_[QCD_BCTOE30TO80_URL]    = 136804;       //xsec = 59480000  eff=0.00230 QCD_Pt-30to80_BCtoE_TuneZ2_7TeV-pythia6 
-    defaultXSections_[QCD_BCTOE80TO170_URL]   = 9360;         //xsec = 900000    eff=0.0104  QCD_Pt-80to170_BCtoE_TuneZ2_7TeV-pythia6   
+      // the number is LO cross section (3x310 pb) with a k-factor to correct for NLO (1.33). The actual source of this - I don't know.
+      defaultXSections_[DY_10TO50_URL]          = 12369;
+      defaultXSections_[DY_FROM50_URL]          = 3048; //NNLO 3048 //NLO 2800// xsec= 2321  eff=0.44 DYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola 
+      
+      
+      /* Fall 2010 samples
+	 defaultXSections_[S_URL]                  = 1.49;     
+	 defaultXSections_[T_URL]                  = 20.93 ;    
+	 defaultXSections_[W_URL]                  = 10.6;   
+      */
+      
+      
+      
 
-    defaultXSections_[QCD_PHOTON30TO50_URL]   = 16690;        //xsec = 1.669e+04   G_Pt_30to50_TuneZ2_7TeV_pythia6                 
-    defaultXSections_[QCD_PHOTON50TO80_URL]   = 2722;         //xsec = 2.722e+03   G_Pt_50to80_TuneZ2_7TeV_pythia6                         
-    defaultXSections_[QCD_PHOTON80TO120_URL]  = 447.2;        //xsec = 4.472e+02   G_Pt_80to120_TuneZ2_7TeV_pythia6
-    defaultXSections_[QCD_PHOTON120TO170_URL] = 84.1;	        //xsec = 8.417e+01   G_Pt_120to170_TuneZ2_7TeV_pythia6
-                                        
-    //defaultXSections_[QCD_MU_URL]           = 349988;       //xsec=296600000 	eff=0.00118  QCD_Pt-20_MuEnrichedPt-10_TuneZ2_7TeV-pythia6 //79688.;                                    
-    defaultXSections_[QCD_MU_URL]             = 84679;        //xsec=296600000 	eff=0.002855 QCD_Pt-20_MuEnrichedPt-15_TuneZ2_7TeV-pythia6      
+      /*
+	
+      t+ (s-channel) 	MCFM 	-- 	NLO 	Inclusive 	2.72 	+0.07-0.06 (±0.08), Total = +0.11 - 0.10 	Inclusive top decay, PDF errors also includes alphas
+      t- (s-channel) 	MCFM 	-- 	NLO 	Inclusive 	1.49 	+0.04-0.03 (±0.08), Total = +0.09-0.08 	Inclusive top decay, PDF errors also includes alphas 
+      
+      t+ (t-channel) 	MCFM 	-- 	NLO 	Inclusive 	42.6 	+0.9-0.8 (±2.2), Total = +2.4-2.3 	Inclusive top decay, PDF errors also includes alphas
+      t- (t-channel) 	MCFM 	-- 	NLO 	Inclusive 	22.0 	+0.6-0.3 (±0.8), Total = +0.10-0.8 	Inclusive top decay, PDF errors also includes alphas 
+      
+      W+tbar   	MCFM 	-- 	NLO 	Inclusive 	5.3 	±0.6 	--
+      W-t 	        MCFM 	-- 	NLO 	Inclusive 	5.3 	±0.6 	-- 
+      */
+      
+      
+      
+      
+      defaultXSections_[S_URL]                  = 2.72;     
+      defaultXSections_[T_URL]                  = 42.6;    
+      //defaultXSections_[W_URL]                = 5.3;   //WARNING :: This is old
+      defaultXSections_[W_URL]                  = 7.87;  
+      
+      
+      defaultXSections_[A_S_URL]                = 1.49;    
+      defaultXSections_[A_T_URL]                = 22;    
+      //defaultXSections_[A_W_URL]              = 5.3;   //WARNING :: use the new value
+      defaultXSections_[A_W_URL]                = 7.87;  
+      
 
+      
+      
+      
+      defaultXSections_[QCD_EM20TO30_URL]       = 2454400.;     //xsec =236000000 eff=0.0104 QCD_Pt-20to30_EMEnriched_TuneZ2_7TeV-pythia6
+      defaultXSections_[QCD_EM30TO80_URL]       = 3866200.;     //xsec =59480000  eff=0.065  QCD_Pt-30to80_EMEnriched_TuneZ2_7TeV-pythia6 
+      defaultXSections_[QCD_EM80TO170_URL]      = 139500.;      //xsec =900000    eff=0.155  QCD_Pt-80to170_EMEnriched_TuneZ2_7TeV-pythia6 
+      
+      defaultXSections_[QCD_BCTOE20TO30_URL]    = 132160;       //xsec = 236000000 eff=0.00056 QCD_Pt-20to30_BCtoE_TuneZ2_7TeV-pythia6 
+      defaultXSections_[QCD_BCTOE30TO80_URL]    = 136804;       //xsec = 59480000  eff=0.00230 QCD_Pt-30to80_BCtoE_TuneZ2_7TeV-pythia6 
+      defaultXSections_[QCD_BCTOE80TO170_URL]   = 9360;         //xsec = 900000    eff=0.0104  QCD_Pt-80to170_BCtoE_TuneZ2_7TeV-pythia6   
+      
+      defaultXSections_[QCD_PHOTON30TO50_URL]   = 16690;        //xsec = 1.669e+04   G_Pt_30to50_TuneZ2_7TeV_pythia6                 
+      defaultXSections_[QCD_PHOTON50TO80_URL]   = 2722;         //xsec = 2.722e+03   G_Pt_50to80_TuneZ2_7TeV_pythia6                         
+      defaultXSections_[QCD_PHOTON80TO120_URL]  = 447.2;        //xsec = 4.472e+02   G_Pt_80to120_TuneZ2_7TeV_pythia6
+      defaultXSections_[QCD_PHOTON120TO170_URL] = 84.1;	        //xsec = 8.417e+01   G_Pt_120to170_TuneZ2_7TeV_pythia6
+      
+      //defaultXSections_[QCD_MU_URL]           = 349988;       //xsec=296600000 	eff=0.00118  QCD_Pt-20_MuEnrichedPt-10_TuneZ2_7TeV-pythia6 //79688.;                                    
+      defaultXSections_[QCD_MU_URL]             = 84679;        //xsec=296600000 	eff=0.002855 QCD_Pt-20_MuEnrichedPt-15_TuneZ2_7TeV-pythia6      
+      
 
-    // xsections taken from CMS-AN-10-337
-    defaultXSections_[WW_URL]                 = 43;
-    defaultXSections_[WZ_URL]                 = 18.2;
-    defaultXSections_[ZZ_URL]                 = 5.9;
-
-    defaultXSections_[CTRLWW_URL]             = 165; 
-    defaultXSections_[WH80_URL]               = 165;            
-    defaultXSections_[HH80_URL]               = 165;                                           
-    defaultXSections_[WH100_URL]              = 165;                                          
-    defaultXSections_[HH100_URL]              = 165;                                        
-    defaultXSections_[WH120_URL]              = 165;                                          
-    defaultXSections_[HH120_URL]              = 165;                                          
-    defaultXSections_[WH140_URL]              = 165;                                          
-    defaultXSections_[HH140_URL]              = 165; 
-    defaultXSections_[WH150_URL]              = 165; 
-    defaultXSections_[HH150_URL]              = 165; 
-    defaultXSections_[WH155_URL]              = 165; 
-    defaultXSections_[HH155_URL]              = 165; 
-    defaultXSections_[WH160_URL]              = 165;                                           
-    defaultXSections_[HH160_URL]              = 165;                                                                                 
-
-    defaultXSections_[TBH250_URL]                = 165;           
-
+      // xsections taken from CMS-AN-10-337
+      defaultXSections_[WW_URL]                 = 43;
+      defaultXSections_[WZ_URL]                 = 18.2;
+      defaultXSections_[ZZ_URL]                 = 5.9;
+      
+      defaultXSections_[CTRLWW_URL]             = 165; 
+      defaultXSections_[WH80_URL]               = 165;            
+      defaultXSections_[HH80_URL]               = 165;                                           
+      defaultXSections_[WH100_URL]              = 165;                                          
+      defaultXSections_[HH100_URL]              = 165;                                        
+      defaultXSections_[WH120_URL]              = 165;                                          
+      defaultXSections_[HH120_URL]              = 165;                                          
+      defaultXSections_[WH140_URL]              = 165;                                          
+      defaultXSections_[HH140_URL]              = 165; 
+      defaultXSections_[WH150_URL]              = 165; 
+      defaultXSections_[HH150_URL]              = 165; 
+      defaultXSections_[WH155_URL]              = 165; 
+      defaultXSections_[HH155_URL]              = 165; 
+      defaultXSections_[WH160_URL]              = 165;                                           
+      defaultXSections_[HH160_URL]              = 165;                                                                                 
+      
+      defaultXSections_[TBH250_URL]                = 165;           
+    }
   }
 
 
@@ -458,7 +525,14 @@ int SampleProcessor::codeChannel(int i, int urlCode){
     urlCode == WH155_URL || urlCode == HH155_URL ||
     urlCode == WH160_URL || urlCode == HH160_URL 
   )                                          {  ret = HIGGS_CH;     }
-  else if( urlCode == TBH250_URL               ){  ret = TBH_CH;       }                   
+  else if( 
+	  urlCode == TBH180_URL || 
+	  urlCode == TBH190_URL ||
+	  urlCode == TBH200_URL ||
+	  urlCode == TBH220_URL ||
+	  urlCode == TBH250_URL ||
+	  urlCode == TBH300_URL
+	  ){  ret = TBH_CH;       }                   
   else if( i == ETAU                        ){  ret = ETAU_CH;      } 
   else if( i == MUTAU                       ){  ret = MUTAU_CH;     } 
   else if( i == EJETS                       ){  ret = EJETS_CH;     }
@@ -752,14 +826,24 @@ void SampleProcessor::process_wh_higgs_bychannel(){
 
 
 void SampleProcessor::process_tbh_higgs_bychannel(){
+  url_ = TBH180_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m180.root"), oFolder_+TString("out-tbh-pythia-m180_mutau.root"),keys_, MUTAU_); 
+  url_ = TBH190_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m190.root"), oFolder_+TString("out-tbh-pythia-m190_mutau.root"),keys_, MUTAU_); 
+  url_ = TBH200_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m200.root"), oFolder_+TString("out-tbh-pythia-m200_mutau.root"),keys_, MUTAU_); 
+  url_ = TBH220_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m220.root"), oFolder_+TString("out-tbh-pythia-m220_mutau.root"),keys_, MUTAU_); 
   url_ = TBH250_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m250.root"), oFolder_+TString("out-tbh-pythia-m250_mutau.root"),keys_, MUTAU_); 
-  //tbh-pythia-m190.root  tbh-pythia-m200.root  tbh-pythia-m220.root  tbh-pythia-m250.root
+  url_ = TBH300_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m300.root"), oFolder_+TString("out-tbh-pythia-m300_mutau.root"),keys_, MUTAU_); 
+  
 }
 
 
 void SampleProcessor::process_tbh_higgs(){
-  //tbh-pythia-m190.root  tbh-pythia-m200.root  tbh-pythia-m220.root  tbh-pythia-m250.root
+  url_ = TBH180_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m180.root"), oFolder_+TString("out-tbh-pythia-m180.root"),keys_); 
+  url_ = TBH190_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m190.root"), oFolder_+TString("out-tbh-pythia-m190.root"),keys_); 
+  url_ = TBH200_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m200.root"), oFolder_+TString("out-tbh-pythia-m200.root"),keys_); 
+  url_ = TBH220_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m220.root"), oFolder_+TString("out-tbh-pythia-m220.root"),keys_); 
   url_ = TBH250_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m250.root"), oFolder_+TString("out-tbh-pythia-m250.root"),keys_); 
+  url_ = TBH300_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m300.root"), oFolder_+TString("out-tbh-pythia-m300.root"),keys_); 
+
 
 }
 
