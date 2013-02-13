@@ -28,8 +28,8 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   //if(run2012_)dataWeightsFile = new TFile("");
   
   if(!run2012_){
-    dataWeightsFile = new TFile("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/2011_DataPileUpHistogram.root");
-    if(!dataWeightsFile){ cout<<endl<<"File : /lustre/data3/cmslocal/samples/CMSSW_4_4_4/2011_DataPileUpHistogram.root not found .. "<<endl; exit(0);}
+    dataWeightsFile = new TFile("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/data/pileup/2012full_DataPileupHistogram.root");
+    if(!dataWeightsFile){ cout<<endl<<"File : /lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/data/pileup/2012full_DataPileupHistogram.root not found .. "<<endl; exit(0);}
     
     TH1D * hist = (TH1D *) dataWeightsFile->Get("pileup");
     
