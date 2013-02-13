@@ -303,9 +303,9 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   h = new TH1D("pt_e",                "e;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
   h = new TH1D("pt_m",                "m;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("pt_j",                "j;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h = new TH1D("pt_j1",               "j;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h = new TH1D("pt_j2",               "j;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
-  h = new TH1D("pt_j3",               "j;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("pt_j1",               "j1;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("pt_j2",               "j2;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("pt_j3",               "j3;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
   h = new TH1D("pt_t",                "t;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
 
   //eta phi of taus
@@ -321,6 +321,9 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   // btag //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   h = new TH1D("btag_j",              "j;btag; Entries",200,-20,20);            addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("btagmultiplicity_j",  "j;N_{b-tags}; Entries",4,0,4);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("btagmultiplicity_j1", "j1;N_{b-tags}; Entries",4,0,4);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("btagmultiplicity_j2", "j2;N_{b-tags}; Entries",4,0,4);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("btagmultiplicity_j3", "j3;N_{b-tags}; Entries",4,0,4);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h->GetXaxis()->SetBinLabel(1,"0"); h->GetXaxis()->SetBinLabel(2,"1"); h->GetXaxis()->SetBinLabel(3,"2"); h->GetXaxis()->SetBinLabel(4,"#geq3");
 
   h = new TH1D("corrected_btagmultiplicity_j",  "j;N_{b-tags}; Entries",4,0,4);       addHistoToMonitors(h,h->GetName(), stepsMons, keys);
@@ -342,7 +345,14 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   //h->GetXaxis()->SetBinLabel(1,"0"); h->GetXaxis()->SetBinLabel(2,"1"); h->GetXaxis()->SetBinLabel(3,"2"); h->GetXaxis()->SetBinLabel(4,"#geq3"); 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
-  
+  // Mass between lepton and jet
+  h = new TH1D("m_muj1","l; m_{ #mu j_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_muj2","l; m_{ #mu j_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_muj3","l; m_{ #mu j_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+
+  h = new TH1D("m_ej1","l; m_{ ej_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_ej2","l; m_{ ej_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_ej3","l; m_{ ej_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
 
   //debug ////////////////////////////////////////////////////////////////////////////////////////////////////////////
   h = new TH1D("dphij1j2","l; #Delta#Phij_{1}j_{2};",60,0,3.15); addHistoToMonitors(h,h->GetName(), stepsMons, keys);

@@ -67,6 +67,8 @@ Relevant parameters: straightforward cfg file.
 
 
 Changelog for major updates:
+2013-02-13: updated with 2012 cross sections - must check sample-specific ones
+	    jet pt, btag, mlj added for leadingjet/nlj/nnlj
 2013-02-11: updated JEC uncertainty sources
 	    code is running on samples
 	    lip-batch submission implemented
@@ -81,6 +83,10 @@ Changelog for major updates:
 2012-09-21: shapes producer for lands and multiple likelihood fit for fake rates are ready to use.
 
 TODO:
+- btagmulticorrected splitting by leadjet/nlj/nnlj
+
+- check sample-specific 2012 cross-sections
+
 - split JEC uncertainty sources into the 16 components.
 
 - scripts/getTriggers.hs: implement running through sh getTriggers.sh PARS, in order to allow to choose
