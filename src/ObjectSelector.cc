@@ -376,6 +376,8 @@ void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject
     if( tau_dis_muon == 0 || tau_dis_electron < 2 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;        //LooseMedium
     //if( tau_dis_muon < 2 || tau_dis_electron < 3 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;       //TightTight
     
+
+    if( tau_dis_muon == 3 || tau_dis_electron < 2 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;        //TightMedium
     // If putting electron descrimination against electron to tight no muons pass...  
     // if( tau_dis_muon == 0 || tau_dis_electron < 2.5 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

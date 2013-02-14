@@ -607,7 +607,9 @@ void SampleProcessor::process_ttbar(){
 
 
   //NORMAL SAMPLE
-  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar.root"),keys_);
+  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1.root"),keys_);
+  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2.root"),keys_);
+
   //process(false, url_, iFolder_ + TString("AllTTJets_TuneZ2star_8TeV-madgraph-tauola.root"), oFolder_+TString("out-ttbar.root"),keys_);
   
   
@@ -703,7 +705,8 @@ void SampleProcessor::process_singletop(){
   
   //SINGLE TOP
   url_= S_URL; process(false, url_, iFolder_ + TString("stop_s.root"),     oFolder_ + TString("out-stop_s.root"),keys_);   
-  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t.root"),     oFolder_ + TString("out-stop_t.root"),keys_);  
+  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t_v1.root"),     oFolder_ + TString("out-stop_t_v1.root"),keys_);  
+  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t_v2.root"),     oFolder_ + TString("out-stop_t_v2.root"),keys_);  
   url_= W_URL; process(false, url_, iFolder_ + TString("stop_tW-DR.root"), oFolder_ + TString("out-stop-DR_tW.root"),keys_); 
 
   //ANTI SINGLE TOP
@@ -721,7 +724,8 @@ void SampleProcessor::process_wjets(){
 
   // WARNING W+jets with new pgid info
   url_= WJMADGRAPH_URL;
-  process(false, url_, iFolder_ + TString("WJetsToLNu.root"), oFolder_+TString("out-wjets.root"),keys_);
+  process(false, url_, iFolder_ + TString("WJetsToLNu_v1.root"), oFolder_+TString("out-wjets_v1.root"),keys_);
+  process(false, url_, iFolder_ + TString("WJetsToLNu_v2.root"), oFolder_+TString("out-wjets_v2.root"),keys_);
 
 
   // Trigger efficiencies study //////////////////////////////////////////////////////////////////////////
@@ -747,12 +751,12 @@ void SampleProcessor::process_zjets(){
 
 void SampleProcessor::process_hh_higgs(){
 
-  url_ = HH80_URL;  process(false, url_, iFolder_ + TString("hh-pythia-m80.root"),  oFolder_+TString("out-hh-pythia-m80.root"),keys_);  
+  //  url_ = HH80_URL;  process(false, url_, iFolder_ + TString("hh-pythia-m80.root"),  oFolder_+TString("out-hh-pythia-m80.root"),keys_);  
   url_ = HH100_URL; process(false, url_, iFolder_ + TString("hh-pythia-m100.root"), oFolder_+TString("out-hh-pythia-m100.root"),keys_); 
   url_ = HH120_URL; process(false, url_, iFolder_ + TString("hh-pythia-m120.root"), oFolder_+TString("out-hh-pythia-m120.root"),keys_); 
   url_ = HH140_URL; process(false, url_, iFolder_ + TString("hh-pythia-m140.root"), oFolder_+TString("out-hh-pythia-m140.root"),keys_); 
   url_ = HH150_URL; process(false, url_, iFolder_ + TString("hh-pythia-m150.root"), oFolder_+TString("out-hh-pythia-m150.root"),keys_); 
-  url_ = HH155_URL; process(false, url_, iFolder_ + TString("hh-pythia-m155.root"), oFolder_+TString("out-hh-pythia-m155.root"),keys_); 
+  //  url_ = HH155_URL; process(false, url_, iFolder_ + TString("hh-pythia-m155.root"), oFolder_+TString("out-hh-pythia-m155.root"),keys_); 
   url_ = HH155_URL; process(false, url_, iFolder_ + TString("hh-pythia-m160.root"), oFolder_+TString("out-hh-pythia-m160.root"),keys_); 
 
 
@@ -769,12 +773,12 @@ void SampleProcessor::process_hh_higgs_bychannel(){
 //  url_ = HH160_URL; process(false, url_, iFolder_ + TString("hh-pythia-m160.root"), oFolder_+TString("out-hh-pythia-m160_etau.root"),keys_, ETAU_); 
 
   
-  url_ = HH80_URL;  process(false, url_, iFolder_ + TString("hh-pythia-m80.root"),  oFolder_+TString("out-hh-pythia-m80_mutau.root"), keys_, MUTAU_);  
+//  url_ = HH80_URL;  process(false, url_, iFolder_ + TString("hh-pythia-m80.root"),  oFolder_+TString("out-hh-pythia-m80_mutau.root"), keys_, MUTAU_);  
   url_ = HH100_URL; process(false, url_, iFolder_ + TString("hh-pythia-m100.root"), oFolder_+TString("out-hh-pythia-m100_mutau.root"),keys_, MUTAU_); 
   url_ = HH120_URL; process(false, url_, iFolder_ + TString("hh-pythia-m120.root"), oFolder_+TString("out-hh-pythia-m120_mutau.root"),keys_, MUTAU_); 
   url_ = HH140_URL; process(false, url_, iFolder_ + TString("hh-pythia-m140.root"), oFolder_+TString("out-hh-pythia-m140_mutau.root"),keys_, MUTAU_); 
   url_ = HH150_URL; process(false, url_, iFolder_ + TString("hh-pythia-m150.root"), oFolder_+TString("out-hh-pythia-m150_mutau.root"),keys_, MUTAU_); 
-  url_ = HH155_URL; process(false, url_, iFolder_ + TString("hh-pythia-m155.root"), oFolder_+TString("out-hh-pythia-m155_mutau.root"),keys_, MUTAU_); 
+  // url_ = HH155_URL; process(false, url_, iFolder_ + TString("hh-pythia-m155.root"), oFolder_+TString("out-hh-pythia-m155_mutau.root"),keys_, MUTAU_); 
   url_ = HH160_URL; process(false, url_, iFolder_ + TString("hh-pythia-m160.root"), oFolder_+TString("out-hh-pythia-m160_mutau.root"),keys_, MUTAU_); 
 
 }
@@ -822,6 +826,7 @@ void SampleProcessor::process_wh_higgs_bychannel(){
   url_ = WH155_URL; process(false, url_, iFolder_ + TString("wh-pythia-m155.root"), oFolder_+TString("out-wh-pythia-m155_mutau.root"),keys_, MUTAU_); 
   url_ = WH160_URL; process(false, url_, iFolder_ + TString("wh-pythia-m160.root"), oFolder_+TString("out-wh-pythia-m160_mutau.root"),keys_, MUTAU_); 
 
+
 }
 
 
@@ -831,7 +836,7 @@ void SampleProcessor::process_tbh_higgs_bychannel(){
   url_ = TBH200_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m200.root"), oFolder_+TString("out-tbh-pythia-m200_mutau.root"),keys_, MUTAU_); 
   url_ = TBH220_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m220.root"), oFolder_+TString("out-tbh-pythia-m220_mutau.root"),keys_, MUTAU_); 
   url_ = TBH250_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m250.root"), oFolder_+TString("out-tbh-pythia-m250_mutau.root"),keys_, MUTAU_); 
-  url_ = TBH300_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m300.root"), oFolder_+TString("out-tbh-pythia-m300_mutau.root"),keys_, MUTAU_); 
+  //  url_ = TBH300_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m300.root"), oFolder_+TString("out-tbh-pythia-m300_mutau.root"),keys_, MUTAU_); 
   
 }
 
@@ -842,7 +847,7 @@ void SampleProcessor::process_tbh_higgs(){
   url_ = TBH200_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m200.root"), oFolder_+TString("out-tbh-pythia-m200.root"),keys_); 
   url_ = TBH220_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m220.root"), oFolder_+TString("out-tbh-pythia-m220.root"),keys_); 
   url_ = TBH250_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m250.root"), oFolder_+TString("out-tbh-pythia-m250.root"),keys_); 
-  url_ = TBH300_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m300.root"), oFolder_+TString("out-tbh-pythia-m300.root"),keys_); 
+  //  url_ = TBH300_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m300.root"), oFolder_+TString("out-tbh-pythia-m300.root"),keys_); 
 
 
 }
@@ -852,9 +857,9 @@ void SampleProcessor::process_qcd(){
 
      
   url_= QCD_EM30TO80_URL;     process(false,url_, iFolder_ + TString("qcd_EM_Pt30to80.root"),     oFolder_ + TString("out-qcd_EM_Pt30to80.root"),keys_); 
-  url_= QCD_EM80TO170_URL;    process(false,url_, iFolder_ + TString("qcd_EM_Pt80to170.root"),    oFolder_ + TString("out-qcd_EM_Pt80to170.root"),keys_);    
+  //  url_= QCD_EM80TO170_URL;    process(false,url_, iFolder_ + TString("qcd_EM_Pt80to170.root"),    oFolder_ + TString("out-qcd_EM_Pt80to170.root"),keys_);    
   url_= QCD_BCTOE30TO80_URL;  process(false,url_, iFolder_ + TString("qcd_30to80_BCtoE.root"),    oFolder_ + TString("out-qcd_30to80_BCtoE.root"),keys_);  
-  url_= QCD_BCTOE80TO170_URL; process(false,url_, iFolder_ + TString("qcd_80to170_BCtoE.root"),   oFolder_ + TString("out-qcd_80to170_BCtoE.root"),keys_);  
+  //  url_= QCD_BCTOE80TO170_URL; process(false,url_, iFolder_ + TString("qcd_80to170_BCtoE.root"),   oFolder_ + TString("out-qcd_80to170_BCtoE.root"),keys_);  
  
   url_= QCD_PHOTON30TO50_URL;   process(false,url_, iFolder_ + TString("PhotonJets_30to50.root"),   oFolder_ + TString("out-PhotonJets_30to50.root"),keys_);  
   url_= QCD_PHOTON50TO80_URL;   process(false,url_, iFolder_ + TString("PhotonJets_50to80.root"),   oFolder_ + TString("out-PhotonJets_50to80.root"),keys_);  
@@ -862,9 +867,8 @@ void SampleProcessor::process_qcd(){
   url_= QCD_PHOTON120TO170_URL; process(false,url_, iFolder_ + TString("PhotonJets_120to170.root"), oFolder_ + TString("out-PhotonJets_120to170.root"),keys_); 
 
   // mu + jets specific samples
-  url_= QCD_MU_URL; process(false, url_, iFolder_ + TString("qcdmu15_20toinf.root"), oFolder_ + TString("out-qcdmu15_20toinf.root"),keys_);   
+  //  url_= QCD_MU_URL; process(false, url_, iFolder_ + TString("qcdmu15_20toinf.root"), oFolder_ + TString("out-qcdmu15_20toinf.root"),keys_);   
 
- 
  
 }
 
@@ -919,7 +923,7 @@ void SampleProcessor::process_data_RunAr(){
   }
 
   if( ! eChONmuChOFF_ && run2012_){ 
-    process(true,url_,iDFolder_+TString("Muon_RunAr.root"),oDFolder_+TString("out-Muon_RunAr.root"),keys_);
+    process(true,url_,iDFolder_+TString("Muon_RunA_06AugRecover.root"),oDFolder_+TString("out-Muon_RunA_06AugRecover.root"),keys_);
   }
 /*
   else{ 
@@ -949,6 +953,8 @@ void SampleProcessor::process_data_RunB(){
   if( ! eChONmuChOFF_ && run2012_){ 
     process(true,url_,iDFolder_+TString("Muon_RunB.root"),oDFolder_+TString("out-Muon_RunB.root"),keys_);
   }
+
+
 /*
   else{ 
     // inclusive electron trigger
