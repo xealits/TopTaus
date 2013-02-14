@@ -105,8 +105,8 @@ namespace commondefinitions{
   
   
   //RUNNING CONDITIONS ////////////////////////////////////////////////
-  //bool run2012_         = true;
-  bool run2012_         = false;
+  bool run2012_         = true;
+  //  bool run2012_         = false;
   bool APPLY_MT_CUT_    = false;
   //bool APPLY_MT_CUT_    = true;
   bool applybtagweight_ = false;

@@ -16,7 +16,10 @@ SCRIPTS=$LIPCMS_BASE/scripts/lip-batch/
 
 source $VO_CMS_SW_DIR/cmsset_default.sh
 
-cmsenv
+# cmsenv non funzia, sacripante, even if it is already defined as an alias in cmsset_default.sh. Perhaps aliases are not activated in scripts?
 
 cd $LIPCMS_BASE;
+eval `scramv1 runtime -sh` ;
+
+
 

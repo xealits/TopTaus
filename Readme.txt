@@ -1,24 +1,21 @@
 -----------------------------------
 Repository for tauDilepton analysis
 -----------------------------------
-* This is the manual. Read the fucking manual.
+* This is the manual. Read the fucking manual +BEFORE+ running the code.
+
+* For help: pietro.vischia atPlzNoSpam gmail.com / pietro.vischia atPlzNoSpam cern.ch
 
 * Will work for ttbar cross section measurement as well as charged higgs search
 
 * This started as a porting to a compiled binary approach like LIP/Top, in order
 to remove levels of messiness in the original code to be compiled every time together with
-its libraries
+its libraries - whoah running time is already 1/2 than before, LoL
 
 ------------
 Installation
 ------------
 
 # 537
-setenv SCRAM_ARCH slc5_amd64_gcc462
-scramv1 project CMSSW CMSSW_5_3_7
-cd CMSSW_5_3_7/src/
-cvs co -p UserCode/LIP/TopTaus/TAGS_2012.txt | sh
-
 setenv SCRAM_ARCH slc5_amd64_gcc462
 scramv1 project CMSSW CMSSW_5_3_7_patch4
 cd CMSSW_5_3_7_patch4/src/
@@ -31,13 +28,13 @@ scramv1 project CMSSW CMSSW_4_4_4
 cd CMSSW_4_4_4/src
 cvs co -p UserCode/LIP/TopTaus/TAGS_2011.txt | sh
 
-Local test run (local data file at LIP)
-cmsRun LIP/TopTaus/test/createDataPattuple_cfg.py /lustre/data3/cmslocal/samples/CMSSW_5_2_5/test/Run2012B_SingleMu_AOD_PromptReco-v1_000_193_998_0C7DCC80-4E9D-E111-B22A-001D09F25267.root pattuple.root inclusive_mu
-
-
 ---------------------------------
 Instructions for running analysis
 ---------------------------------
+
+# Local test run (local data file at LIP)
+# obsolete, must update: cmsRun LIP/TopTaus/test/createDataPattuple_cfg.py /lustre/data3/cmslocal/samples/CMSSW_5_2_5/test/Run2012B_SingleMu_AOD_PromptReco-v1_000_193_998_0C7DCC80-4E9D-E111-B22A-001D09F25267.root pattuple.root inclusive_mu
+
 
 Finding HLT trigger on a per-run-range basis, together with the prescale
 ------------------------------------------------------------------------
@@ -64,9 +61,26 @@ Relevant parameters: straightforward cfg file.
 	       -True: just produces rootfile with all the shapes, no plot.
 	       -False: just produces plots, no rootfile.
 
+Run physicsAnalysis - this corresponds to the PhysicsAnalyzer code
+------------------------------------------------------------------
+- interactively:
+  physicsAnalysis test/physicsAnalysisParSets_cfg.py sample
+  (where "sample" is ttbar, wjets, etc. Strings can be found in bin/physicsAnalysis.cc)
+- on the LIP batch:
+  cd scripts/lip-batch/
+  EDIT all the job-*.sh in order to change the script path to your local installation.
+  Writing soon a sed script for doing that in a single command soon.
+  EDIT the *output* paths in src/SampleProcessor.cc. The input are fixed (53X production)
+  Changing soon that to read from the cfg file soon. Soon.
+  sh submit-jobs.sh
+  EDIT combineResults.sh to the output directory you do want
+  RUN lipcms/Plotter2012/Plotter.C as you wish
+  RUN lipcms/TopTauDileptons/PhysicsAnalyzer.C table production strings as you wish
+  Soon integrate that as an option of physicsAnalysis to run interactively.
+- have fun
 
 
-Changelog for major updates:
+CHANGELOG for major updates:
 2013-02-13: updated with 2012 cross sections - must check sample-specific ones
 	    jet pt, btag, mlj added for leadingjet/nlj/nnlj
 2013-02-11: updated JEC uncertainty sources
@@ -82,7 +96,20 @@ Changelog for major updates:
 2012-09-23: memory problem solved. Now both lands and mlf are usable with multiple variables
 2012-09-21: shapes producer for lands and multiple likelihood fit for fake rates are ready to use.
 
+FIXED TAGS:
+- V12-12-21 / V12-12-17: 2011 code.
+
+
+
 TODO:
+- Write a sed script for doing that in a single command soon.
+
+- Change output file paths to be read from the cfg file soon. Soon.
+
+- Edit combineResults.sh to give as an input a user defined directory
+
+- Integrate plotter and table actual calculation as an option of physicsAnalysis to run interactively.
+
 - btagmulticorrected splitting by leadjet/nlj/nnlj
 
 - check sample-specific 2012 cross-sections

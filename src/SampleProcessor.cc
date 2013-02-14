@@ -7,6 +7,7 @@
 // ROOT headers
 
 
+
   SampleProcessor::SampleProcessor(double tauPtCut) {
     
     outFile_=0;
@@ -54,8 +55,8 @@
     //    iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/mc/minitrees-muon-Fall11/");
 
     // Temp 2012
-    oFolder_ = TString("/lustre/data3/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDildata/temp/");
-    iFolder_ = TString("/lustre/data3/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDildata/temp/");
+    oFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");
+    iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");
 
 
 
@@ -65,7 +66,7 @@
     //iFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/mc/mTrees-v3-B/");
     // if( run2012_ ) iFolder_ = TString("/lustre/lip.pt/data/cmslocal/fnguyen/");   
     // Temp 2012
-    if( run2012_ ) iFolder_ = TString("/lustre/data3/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDildata/temp/");   
+    if( run2012_ ) iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");   
 
     if( pu_ == PUPLUS  ) oFolder_ += TString("puplus-"); else if ( pu_ == PUMINUS ) oFolder_ += TString("puminus-");
 
@@ -85,7 +86,7 @@
     //else              iDFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/data/mTrees-v3/");  
     //   else                iDFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/data/minitrees-muon-2011/");  
     // Temp 2012
-    else                iDFolder_ = TString("/lustre/data3/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDildata/temp/");  
+    else                iDFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");  
 
 
     // LIP
@@ -94,11 +95,11 @@
 
     if( run2012_ ) iDFolder_ = TString("/lustre/lip.pt/data/cmslocal/fnguyen/");  
     // Temp 2012
-    if( run2012_ ) iDFolder_ = TString("/lustre/data3/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDildata/temp/");  
+    if( run2012_ ) iDFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");  
     //if( run2012_ ) iDFolder_ = TString("/lip-sw/cmssw/users/nalmeida/new/CMSSW_5_2_5/src/lipcms/Physics/TopTauDileptons2012/mt-2012-V1-data-MU-20GeV/");  
     //    oDFolder_  = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/");
     // Temp 2012
-    oDFolder_  = TString("/lustre/data3/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDildata/temp/");
+    oDFolder_  = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");
 
 
 
@@ -127,6 +128,8 @@
       defaultXSections_[W_ENU_URL]     = 12085.7; //NNLO 36257.2/3 = 12085.7 - NNLO - W->lv, l=e,m,t - Inclusive W production, BR(W->lv) included, l=e,m,t, PDF error also includes alphas 
       defaultXSections_[W_MUNU_URL]    = 12085.7;
       defaultXSections_[W_TAUNU_URL]   = 12085.7; 
+
+      defaultXSections_[WJMADGRAPH_URL]  = 36257.2;
       
       defaultXSections_[DY_10TO50_URL]          = 11050.0; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-10To50filter_8TeV-madgraph&campid=Summer12
       defaultXSections_[DY_FROM50_URL]          = 3503.71; //
@@ -687,14 +690,17 @@ void SampleProcessor::process_ttbar_bychannel(){
 
 
   //  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_etau.root"),keys_,  ETAU_  );    
-  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_mutau.root"),keys_, MUTAU_ ); 
+  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mutau.root"),keys_, MUTAU_ ); 
+  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mutau.root"),keys_, MUTAU_ ); 
   
    
   // dd bkg
-  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_ddbkg.root"),keys_, TTBAR_DDBKG_);   
+  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_ddbkg.root"),keys_, TTBAR_DDBKG_);   
+  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_ddbkg.root"),keys_, TTBAR_DDBKG_);   
 
   // mc bkg
-  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_mcbkg.root"),keys_, TTBAR_MCBKG_ );
+  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mcbkg.root"),keys_, TTBAR_MCBKG_ );
+  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mcbkg.root"),keys_, TTBAR_MCBKG_ );
 
 
 }
@@ -786,7 +792,7 @@ void SampleProcessor::process_hh_higgs_bychannel(){
 
 void SampleProcessor::process_wh_higgs(){
 
-  url_ = WH80_URL;  process(false, url_, iFolder_ + TString("wh-pythia-m80.root"), oFolder_+TString("out-wh-pythia-m80.root"),keys_  ); 
+  //  url_ = WH80_URL;  process(false, url_, iFolder_ + TString("wh-pythia-m80.root"), oFolder_+TString("out-wh-pythia-m80.root"),keys_  ); 
   url_ = WH100_URL; process(false, url_, iFolder_ + TString("wh-pythia-m100.root"), oFolder_+TString("out-wh-pythia-m100.root"),keys_); 
   url_ = WH120_URL; process(false, url_, iFolder_ + TString("wh-pythia-m120.root"), oFolder_+TString("out-wh-pythia-m120.root"),keys_); 
   url_ = WH140_URL; process(false, url_, iFolder_ + TString("wh-pythia-m140.root"), oFolder_+TString("out-wh-pythia-m140.root"),keys_); 
@@ -817,7 +823,7 @@ void SampleProcessor::process_wh_higgs_bychannel(){
 //  url_ = WH155_URL; process(false, url_, iFolder_ + TString("wh-pythia-m155.root"), oFolder_+TString("out-wh-pythia-m155_etau.root"),keys_, ETAU_); 
 //  url_ = WH160_URL; process(false, url_, iFolder_ + TString("wh-pythia-m160.root"), oFolder_+TString("out-wh-pythia-m160_etau.root"),keys_, ETAU_); 
 
-  url_ = WH80_URL;  process(false, url_, iFolder_ + TString("wh-pythia-m80.root"),  oFolder_+TString("out-wh-pythia-m80_mutau.root"),keys_,  MUTAU_); 
+//  url_ = WH80_URL;  process(false, url_, iFolder_ + TString("wh-pythia-m80.root"),  oFolder_+TString("out-wh-pythia-m80_mutau.root"),keys_,  MUTAU_); 
   url_ = WH100_URL; process(false, url_, iFolder_ + TString("wh-pythia-m100.root"), oFolder_+TString("out-wh-pythia-m100_mutau.root"),keys_, MUTAU_); 
   url_ = WH120_URL; process(false, url_, iFolder_ + TString("wh-pythia-m120.root"), oFolder_+TString("out-wh-pythia-m120_mutau.root"),keys_, MUTAU_); 
   url_ = WH140_URL; process(false, url_, iFolder_ + TString("wh-pythia-m140.root"), oFolder_+TString("out-wh-pythia-m140_mutau.root"),keys_, MUTAU_); 
@@ -854,7 +860,6 @@ void SampleProcessor::process_tbh_higgs(){
 
 
 void SampleProcessor::process_qcd(){
-
      
   url_= QCD_EM30TO80_URL;     process(false,url_, iFolder_ + TString("qcd_EM_Pt30to80.root"),     oFolder_ + TString("out-qcd_EM_Pt30to80.root"),keys_); 
   //  url_= QCD_EM80TO170_URL;    process(false,url_, iFolder_ + TString("qcd_EM_Pt80to170.root"),    oFolder_ + TString("out-qcd_EM_Pt80to170.root"),keys_);    

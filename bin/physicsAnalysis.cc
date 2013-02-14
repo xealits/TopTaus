@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.4 2013/02/11 16:42:20 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.5 2013/02/13 13:21:47 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -78,6 +78,8 @@ int main(int argc, char* argv[])
   else if(runOn == "ttbar")               analyzer->process_ttbar()              ;
   else if(runOn == "wh_higgs_bychannel")  analyzer->process_wh_higgs_bychannel() ;
   else if(runOn == "wh_higgs")            analyzer->process_wh_higgs()           ;
+  else if(runOn == "tbh_higgs_bychannel") analyzer->process_tbh_higgs_bychannel() ;
+  else if(runOn == "tbh_higgs")           analyzer->process_tbh_higgs()           ;
   else if(runOn == "wjets")               analyzer->process_wjets()              ;
   else if(runOn == "zjets")               analyzer->process_zjets()              ;
   else

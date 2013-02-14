@@ -1596,22 +1596,32 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
 
   // lepton-jet mass (lead, sublead, subsublead jet) //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if(e_v.size()>0){ 
-    TLorentzVector v_lj1(electrons[e_v[0] ]+jets[jet1_ind]); double m_lj1 = v_lj1.M();
-    TLorentzVector v_lj2(electrons[e_v[0] ]+jets[jet2_ind]); double m_lj2 = v_lj2.M();
+    if(jet1){
+      TLorentzVector v_lj1(electrons[e_v[0] ]+jets[jet1_ind]); double m_lj1 = v_lj1.M();
+      mon.fillHisto(TString("m_ej1"),extra1+step, m_lj1,w_); mon.fillHisto(TString("m_ej1"),extra2+step, m_lj1,w_); 
+    }
+    if(jet2){
+      TLorentzVector v_lj2(electrons[e_v[0] ]+jets[jet2_ind]); double m_lj2 = v_lj2.M();
+      mon.fillHisto(TString("m_ej2"),extra1+step, m_lj2,w_); mon.fillHisto(TString("m_ej2"),extra2+step, m_lj2,w_); 
+    }
+    if(jet3){
     TLorentzVector v_lj3(electrons[e_v[0] ]+jets[jet3_ind]); double m_lj3 = v_lj3.M();
-    
-    mon.fillHisto(TString("m_ej1"),extra1+step, m_lj1,w_); mon.fillHisto(TString("m_ej1"),extra2+step, m_lj1,w_); 
-    mon.fillHisto(TString("m_ej2"),extra1+step, m_lj2,w_); mon.fillHisto(TString("m_ej2"),extra2+step, m_lj2,w_); 
     mon.fillHisto(TString("m_ej3"),extra1+step, m_lj3,w_); mon.fillHisto(TString("m_ej3"),extra2+step, m_lj3,w_); 
+    }
   }    
   if(m_v.size()>0){ 
-    TLorentzVector v_lj1(muons[m_v[0] ]+jets[jet1_ind]); double m_lj1 = v_lj1.M();
-    TLorentzVector v_lj2(muons[m_v[0] ]+jets[jet2_ind]); double m_lj2 = v_lj2.M();
-    TLorentzVector v_lj3(muons[m_v[0] ]+jets[jet3_ind]); double m_lj3 = v_lj3.M();
-    
+    if(jet1){
+      TLorentzVector v_lj1(muons[m_v[0] ]+jets[jet1_ind]); double m_lj1 = v_lj1.M();
     mon.fillHisto(TString("m_muj1"),extra1+step, m_lj1,w_); mon.fillHisto(TString("m_muj1"),extra2+step, m_lj1,w_); 
-    mon.fillHisto(TString("m_muj2"),extra1+step, m_lj2,w_); mon.fillHisto(TString("m_muj2"),extra2+step, m_lj2,w_); 
+    }
+    if(jet2){
+      TLorentzVector v_lj2(muons[m_v[0] ]+jets[jet2_ind]); double m_lj2 = v_lj2.M();
+      mon.fillHisto(TString("m_muj2"),extra1+step, m_lj2,w_); mon.fillHisto(TString("m_muj2"),extra2+step, m_lj2,w_); 
+    }
+    if(jet3){
+    TLorentzVector v_lj3(muons[m_v[0] ]+jets[jet3_ind]); double m_lj3 = v_lj3.M();
     mon.fillHisto(TString("m_muj3"),extra1+step, m_lj3,w_); mon.fillHisto(TString("m_muj3"),extra2+step, m_lj3,w_); 
+    }
   }    
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
