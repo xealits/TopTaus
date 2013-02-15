@@ -55,7 +55,7 @@
     //    iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/mc/minitrees-muon-Fall11/");
 
     // Temp 2012
-    oFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs");
+    oFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/");
     iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");
 
 
@@ -99,7 +99,7 @@
     //if( run2012_ ) iDFolder_ = TString("/lip-sw/cmssw/users/nalmeida/new/CMSSW_5_2_5/src/lipcms/Physics/TopTauDileptons2012/mt-2012-V1-data-MU-20GeV/");  
     //    oDFolder_  = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/");
     // Temp 2012
-    oDFolder_  = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs");
+    oDFolder_  = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/");
 
 
 
