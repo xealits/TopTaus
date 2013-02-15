@@ -300,13 +300,13 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
 
 
   // kinematic distributions ///////////////////////////////////////////////////////////////////////////////////////////////////
-  h = new TH1D("pt_e",                "e;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
-  h = new TH1D("pt_m",                "m;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h = new TH1D("pt_j",                "j;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h = new TH1D("pt_j1",               "j1;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h = new TH1D("pt_j2",               "j2;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
-  h = new TH1D("pt_j3",               "j3;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
-  h = new TH1D("pt_t",                "t;p_{T} [GeV/c]; Entries",100,0,250);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("pt_e",                "e;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("pt_m",                "m;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("pt_j",                "j;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("pt_j1",               "j1;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("pt_j2",               "j2;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("pt_j3",               "j3;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("pt_t",                "t;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
 
   //eta phi of taus
   h2 = new TH2D("eta_phi_t","t; eta; phi; ",60,-3.05,3.05, 60, -3.15, 3.15 );       addHistoToMonitors(h2,h2->GetName(), stepsMons, keys);
@@ -346,17 +346,17 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
   // Mass between lepton and jet
-  h = new TH1D("m_muj1","l; m_{ #mu j_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h = new TH1D("m_muj2","l; m_{ #mu j_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h = new TH1D("m_muj3","l; m_{ #mu j_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_muj1","l; m_{ #mu j_{2} };",400,0,1600);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_muj2","l; m_{ #mu j_{2} };",400,0,1600);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_muj3","l; m_{ #mu j_{2} };",400,0,1600);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
 
-  h = new TH1D("m_ej1","l; m_{ ej_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h = new TH1D("m_ej2","l; m_{ ej_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h = new TH1D("m_ej3","l; m_{ ej_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_ej1","l; m_{ ej_{2} };",400,0,1600);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_ej2","l; m_{ ej_{2} };",400,0,1600);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_ej3","l; m_{ ej_{2} };",400,0,1600);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
 
   //debug ////////////////////////////////////////////////////////////////////////////////////////////////////////////
   h = new TH1D("dphij1j2","l; #Delta#Phij_{1}j_{2};",60,0,3.15); addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h = new TH1D("mj1j2","l; m_{ j_{1}j_{2} };",200,0,800);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("mj1j2","l; m_{ j_{1}j_{2} };",400,0,1600);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   //mt between lepton and met ("w_mass"), mt between tau and met  is ("w_mass_tau)
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
