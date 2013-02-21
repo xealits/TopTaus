@@ -14,7 +14,6 @@
 #include <TFile.h>
 #include <TH2D.h>
 
-
 using namespace commondefinitions;  
 
 // FIXME: clean code
@@ -83,19 +82,19 @@ namespace tableutils{
     
     vector<TString> hhFiles; vector<TString> hwFiles;
     if(hh_contrib){
-      hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m80.root");   hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m100.root"); hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m120.root");   
-      hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m140.root");  hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m150.root"); hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m155.root");   
-    hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m160.root");
+      hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m80.root");   hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m100.root"); hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m120.root");   
+      hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m140.root");  hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m150.root"); hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m155.root");   
+    hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m160.root");
   }
   
   if(hw_contrib){
-    hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m80.root");  hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m100.root"); hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m120.root"); 
-    hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m140.root"); hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m150.root"); hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m155.root");   
-    hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m160.root");
+    hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m80.root");  hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m100.root"); hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m120.root"); 
+    hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m140.root"); hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m150.root"); hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m155.root");   
+    hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m160.root");
   }
 
-  TString pFile("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-mc.root");       TFile * processedFile     = TFile::Open(pFile); 
-  TString dFile("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/out-data.root");   TFile * processedDataFile = TFile::Open(dFile); 
+  TString pFile("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-mc.root");       TFile * processedFile     = TFile::Open(pFile); 
+  TString dFile("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-data-MU-20GeV/out-data.root");   TFile * processedDataFile = TFile::Open(dFile); 
 
   vector<TFile *> processedHWFiles; vector<TFile *> processedHHFiles;
   for(uint i = 0; i<hhFiles.size(); i++ ){  processedHHFiles.push_back( TFile::Open( hhFiles[i] ) ); }
@@ -1298,7 +1297,7 @@ namespace tableutils{
   if(incDocument) fprintf(f,"\\end{document} \n"); //COMMENT
   fclose (f);
   processedFile->Close();
-
+  
     
 }
 
@@ -1455,7 +1454,7 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
   if    (!addXsection){ fName=TString("summary-tab-")+keys[0]+ systName + vName +TString(".tex");}
   else if(addXsection){ fName=TString("summary-tab-xsec-")+keys[0]+ systName + vName +TString(".tex");}
   
-  TFile * processedMCFile = TFile::Open("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-mc.root"); TFile * processedDataFile = TFile::Open("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/out-data.root"); 
+  TFile * processedMCFile = TFile::Open("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-mc.root"); TFile * processedDataFile = TFile::Open("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-data-MU-20GeV/out-data.root"); 
 
   map<TString,TString> hNameData_m, hNameMC_m, 
                        hNameMC_plus_m, hNameMC_minus_m, 
@@ -1547,22 +1546,22 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
   //get Higgs histograms////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   vector<TString> hhFiles; vector<TString> hwFiles;
   if( processHH ){
-    hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m80.root");
-    hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m100.root");
-    hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m120.root");
-    hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m140.root");
-    hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m150.root");
-    hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m155.root");
-    hhFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m160.root");
+    hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m80.root");
+    hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m100.root");
+    hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m120.root");
+    hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m140.root");
+    hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m150.root");
+    hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m155.root");
+    hhFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m160.root");
   }
   if( processHW ){
-    hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m80.root");
-    hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m100.root");
-    hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m120.root");
-    hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m140.root");
-    hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m150.root");
-    hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m155.root");
-    hwFiles.push_back("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m160.root");
+    hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m80.root");
+    hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m100.root");
+    hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m120.root");
+    hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m140.root");
+    hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m150.root");
+    hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m155.root");
+    hwFiles.push_back("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m160.root");
   }
  
   vector<TFile *> processedHWFiles; vector<TFile *> processedHHFiles;

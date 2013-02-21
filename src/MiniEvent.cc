@@ -102,6 +102,8 @@ namespace event
 	  }
 	
 	if(type==TAU && fabs((*(TVectorD *)info->At(i))[0]) != type ) continue;      
+	if(fabs((*(TVectorD *)info->At(i))[0]) == 15 ) cout << fabs((*(TVectorD *)info->At(i))[0]) << ", " << type << endl;
+
 	if( (type==PHOTON || type==SUPERCLUSTER) && fabs((*(TVectorD *)info->At(i))[0]) != type ) continue;      
 	if( type==TRACK && fabs((*(TVectorD *)info->At(i))[0]) > 2 ) continue;
 	else if(type==JET && fabs((*(TVectorD *)info->At(i))[3]) != algo) continue;

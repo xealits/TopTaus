@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.6 2013/02/14 16:42:58 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.7 2013/02/15 13:49:50 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -106,8 +106,18 @@ int main(int argc, char* argv[])
   else if(runOn == "tbh_higgs")           analyzer->process_tbh_higgs()           ;
   else if(runOn == "wjets")               analyzer->process_wjets()              ;
   else if(runOn == "zjets")               analyzer->process_zjets()              ;
+  else if(runOn == "doTable"){
+    cout << "Doing table" << endl;
+    bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false); 
+    int detailed(2), notDetailed(1);      
+    analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, sm, "PFlow", "yields-mc-", false, false, false); 
+    //analyzer.mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false); 
+  }
   else
     cout << "Sample does not exist" << endl;
+  
+
+
   
   cout << "physicsAnalysis reached its natural end" << endl;
   

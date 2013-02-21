@@ -33,8 +33,8 @@ namespace commondefinitions{
   double BTAG_eff_F_ = 0.164637;
   
   
-  double XSEC_EXP_    = 165;//164.4;       //  was 158, 164.4  2.8 (stat.)  11.9 (syst.)  7.4
-  double XSEC_EXP_ERR_= 16./165;          // 14.29/164.4 => exp error, theoretical -> 165 +4/-9 +/-7
+  double XSEC_EXP_    = 234;//164.4;       //  was 158, 164.4  2.8 (stat.)  11.9 (syst.)  7.4
+  double XSEC_EXP_ERR_= 16./234;  // FIXME: update error        // 14.29/164.4 => exp error, theoretical -> 165 +4/-9 +/-7
   
   // SFb_error taken from https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFb-mujet_payload.txt (2011 prescription)
   
@@ -118,7 +118,11 @@ namespace commondefinitions{
   //  double LUM_ = 4064;
   // double LUM_ = 4625.21;
   //  double LUM_ = 4903.; // 2011 final
-  double LUM_ = 14801.27; // 2012 start
+  //  double LUM_ = 14801.27; // 2012 start
+  //  double LUM_ = 9564.27; // 2012 ABC start
+  //  double LUM_ = 3593.267; // 2012 AB start
+  double LUM_ = 17980.27; // 2012 ABCD
+
   int BTAGIND_; double BTAG_CUT_;
   /////////////////////////////////////////////////////////////////////
 

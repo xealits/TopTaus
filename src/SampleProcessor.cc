@@ -57,8 +57,8 @@
     // Temp 2012
     oFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/");
     iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");
-
-
+    //    iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/mc/minitrees-muon-Fall11/");
+    //    iFolder_ = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/first2011/");
 
     // Folders at CERN
     //oFolder_ = TString("/afs/cern.ch/work/n/nalmeida/private/CMSSW_5_2_5/src/lipcms/Physics/TopTauDileptons2012/test/");   
@@ -66,7 +66,7 @@
     //iFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/mc/mTrees-v3-B/");
     // if( run2012_ ) iFolder_ = TString("/lustre/lip.pt/data/cmslocal/fnguyen/");   
     // Temp 2012
-    if( run2012_ ) iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");   
+   //    if( run2012_ ) iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");   
 
     if( pu_ == PUPLUS  ) oFolder_ += TString("puplus-"); else if ( pu_ == PUMINUS ) oFolder_ += TString("puminus-");
 
@@ -129,10 +129,10 @@
       defaultXSections_[W_MUNU_URL]    = 12085.7;
       defaultXSections_[W_TAUNU_URL]   = 12085.7; 
 
-      defaultXSections_[WJMADGRAPH_URL]  = 36257.2;
+      defaultXSections_[WJMADGRAPH_URL]  = 36257.2;// 30400; //36257.2;
       
       defaultXSections_[DY_10TO50_URL]          = 11050.0; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-10To50filter_8TeV-madgraph&campid=Summer12
-      defaultXSections_[DY_FROM50_URL]          = 3503.71; //
+      defaultXSections_[DY_FROM50_URL]          = 2950.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball&campid=Summer12_DR53X
 
       defaultXSections_[S_URL]                  = 3.79;     
       defaultXSections_[T_URL]                  = 56.4;    
@@ -161,7 +161,7 @@
       
       //fn xsections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat8TeV
       defaultXSections_[WW_URL]                 = 54.838;
-      defaultXSections_[WZ_URL]                 = 32.3;
+      defaultXSections_[WZ_URL]                 = 33.72;
       defaultXSections_[ZZ_URL]                 = 17.627;
       
       defaultXSections_[CTRLWW_URL]             = 234; 
@@ -444,7 +444,7 @@ void SampleProcessor::init(){
     listOfEvents_[i] = (listOfHistos_[i])->GetBinContent(1);
     listOfScales_[i] = (lum_*listOfXSections_[i])/listOfEvents_[i];   
 
-    if( listOfXSections_[i] == 0){ listOfScales_[i]=1;}
+    if( listOfXSections_[i] == 0){ listOfScales_[i]=1;}  // Data
 
     listOfReaders_[i]     = new event::Reader(); 
     listOfReadersMC_[i]   = new event::Reader();

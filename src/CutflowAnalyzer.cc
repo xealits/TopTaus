@@ -17,34 +17,26 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   testMe_=0;
   testMe_Nev_=0;
 
-  float dataDist_2011A[50] = {0.00592951, 0.0255428, 0.0591468, 0.097016, 0.126287, 0.138848, 0.134117, 0.11691, 0.0937398, 0.0700927, 0.0493627, 0.0329741, 0.0209976, 0.0127917, 0.00747402, 0.00419649, 0.00226774, 0.00118102, 0.000593481, 0.000288109, 0.000135272, 6.14976e-05, 2.71017e-05, 1.15906e-05, 4.81577e-06}; 
-  
-  //this is just a copy from dataDist_2011A need to be computed from  2012 data!!!!!!!!!!!!!!!!!
-  float dataDist_2012[50] = {0.00592951, 0.0255428, 0.0591468, 0.097016, 0.126287, 0.138848, 0.134117, 0.11691, 0.0937398, 0.0700927, 0.0493627, 0.0329741, 0.0209976, 0.0127917, 0.00747402, 0.00419649, 0.00226774, 0.00118102, 0.000593481, 0.000288109, 0.000135272, 6.14976e-05, 2.71017e-05, 1.15906e-05, 4.81577e-06}; 
+  float dataDist[50] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.}; 
   
   
   TFile * dataWeightsFile;
   //Need to get the vertex distribution for 2012 data...
   //if(run2012_)dataWeightsFile = new TFile("");
   
-  if(!run2012_){
-    dataWeightsFile = new TFile("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/data/pileup/pu.root");//2012full_DataPileupHistogram.root");
-    if(!dataWeightsFile){ cout<<endl<<"File : /lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/data/pileup/2012full_DataPileupHistogram.root not found .. "<<endl; exit(0);}
+  if(run2012_) dataWeightsFile = new TFile("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/data/pileup/MyDataPileupHistogram_All_73500.root");
+  //  else dataWeightsFile = new TFile("");
+  
+  if(!dataWeightsFile){ cout<<endl<<"File : /lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/data/pileup/2012full_DataPileupHistogram.root not found .. "<<endl; exit(0);}
+  
+  TH1D * hist = (TH1D *) dataWeightsFile->Get("pileup");
+  
+  for(int i=0; i<50;i++)
+    dataDist[i]=hist->GetBinContent(i+1);
     
-    TH1D * hist = (TH1D *) dataWeightsFile->Get("pileup");
+  for(int i = 0; i < 50; i++ )
+    DataPUDist_.push_back(dataDist[i]);
     
-    for(int i=0; i<50;i++){ dataDist_2011A[i]=hist->GetBinContent(i+1);}    
-    
-  }
-  
-  
-  
-  
-  
-  
-  if( run2012_ ){ for(int i = 0; i < 50; i++ ){ DataPUDist_.push_back(dataDist_2012[i]);  } }
-  else{           for(int i = 0; i < 50; i++ ){ DataPUDist_.push_back(dataDist_2011A[i]); } }
-  
   // lepton efficiencies assumed to be ~100%
   electrontriggerefficiency_= 1;
   muontriggerefficiency_    = 1;   
@@ -350,7 +342,7 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   std::vector<PhysicsObject> electrons                = evR_->GetPhysicsObjectsFrom(ev,event::ELECTRON, leptonType); 
   std::vector<PhysicsObject> tausColl                 = evR_->GetPhysicsObjectsFrom(ev,event::TAU);
   std::vector<PhysicsObject> taus; 
-  for(size_t iorigtau=0; iorigtau<tausColl.size(); iorigtau++){  if(tausColl[iorigtau][17] == tauType ){ taus.push_back(tausColl[iorigtau]); } }
+  for(size_t iorigtau=0; iorigtau<tausColl.size(); iorigtau++){  cout << tausColl[iorigtau][17] << ", " << tauType << endl; if(tausColl[iorigtau][17] == tauType ){ taus.push_back(tausColl[iorigtau]); } }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   
