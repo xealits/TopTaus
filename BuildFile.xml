@@ -9,7 +9,10 @@
 <use name="roofit"/>
 <use name="roostats"/>
 <use name="boost"/>
+<use name="XMLIO"/>
+
 <export>
   <lib name="1"/>
 </export>
 <Flags CXXFLAGS="-g" />
+<flags LDFLAGS="-lXMLIO">

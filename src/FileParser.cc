@@ -1,9 +1,5 @@
 #include "LIP/TopTaus/interface/FileParser.hh"
 
-#include <iomanip>
-#include <iostream>
-#include <fstream>
-#include <map>
 
 using namespace std;
 
@@ -54,6 +50,7 @@ FileParser::FileParser(){
   
   
 } 
+
 void FileParser::clear(){
   processNumber_=-1;
   idNumber_  =-1;
@@ -99,42 +96,39 @@ void FileParser::clear(){
 
 
 void FileParser::parse( TString samples, TString defs ){
-
+  
   cout<<endl<<"\n parsing sample : "<<samples<<" with def : "<<defs<<endl;
-
-   clear();
-
-   // First create engine
-   TXMLEngine * xml = new TXMLEngine;
-   
-   // parse samples //////////////////////////////////////////
-   XMLDocPointer_t xmldoc = xml->ParseFile(samples);
-   if (xmldoc==0) { delete xml; return; }
-   XMLNodePointer_t mainnode = xml->DocGetRootElement(xmldoc);
-   XMLNodePointer_t processNode = xml->GetChild(mainnode);
-   while ( processNode != 0 ) {
-     TString nodeName( xml->GetNodeName(processNode) );
-     if( nodeName == process_ ){  process( xml, processNode ); }
-     processNode = xml->GetNext(processNode);
-   }
-   ////////////////////////////////////////////////////////////
-
-
-   // monitor to analyze ///////////////////////////////////////
-   XMLDocPointer_t xmldoc2 = xml->ParseFile(defs);
-   if ( xmldoc2 == 0 ) { delete xml; return; }
-   XMLNodePointer_t mainnode2 = xml->DocGetRootElement(xmldoc2);
-   XMLNodePointer_t idNode = xml->GetChild(mainnode2);
-   while ( idNode != 0 ) {
-     TString nodeName( xml->GetNodeName(idNode) );
-     if( nodeName == id_ ){  id( xml, idNode ); }
-     idNode = xml->GetNext(idNode);
-   }
-   ////////////////////////////////////////////////////////////
-
-
-
-
+  
+  clear();
+  
+  // First create engine
+  TXMLEngine * xml = new TXMLEngine;
+  
+  // parse samples //////////////////////////////////////////
+  XMLDocPointer_t xmldoc = xml->ParseFile(samples);
+  if (xmldoc==0) { delete xml; return; }
+  XMLNodePointer_t mainnode = xml->DocGetRootElement(xmldoc);
+  XMLNodePointer_t processNode = xml->GetChild(mainnode);
+  while ( processNode != 0 ) {
+    TString nodeName( xml->GetNodeName(processNode) );
+    if( nodeName == process_ ){  process( xml, processNode ); }
+    processNode = xml->GetNext(processNode);
+  }
+  ////////////////////////////////////////////////////////////
+  
+  
+  // monitor to analyze ///////////////////////////////////////
+  XMLDocPointer_t xmldoc2 = xml->ParseFile(defs);
+  if ( xmldoc2 == 0 ) { delete xml; return; }
+  XMLNodePointer_t mainnode2 = xml->DocGetRootElement(xmldoc2);
+  XMLNodePointer_t idNode = xml->GetChild(mainnode2);
+  while ( idNode != 0 ) {
+    TString nodeName( xml->GetNodeName(idNode) );
+    if( nodeName == id_ ){  id( xml, idNode ); }
+    idNode = xml->GetNext(idNode);
+  }
+  ////////////////////////////////////////////////////////////
+  
 }
 
 
@@ -142,7 +136,7 @@ void FileParser::parse( TString samples, TString defs ){
 void FileParser::process( TXMLEngine * xml, XMLNodePointer_t processNode ){
   processNumber_++;
   XMLNodePointer_t child = xml->GetChild(processNode);
- 
+  
   TString childName( xml->GetNodeName(child) );
   if(childName == file_  ){ processFile(xml,child);   }
   
@@ -157,12 +151,12 @@ void FileParser::process( TXMLEngine * xml, XMLNodePointer_t processNode ){
   mapLineColor_[processNumber_]       = 1;                   // line color
   mapMarker_[processNumber_]          = 1;                   // marker
   mapMarkerColor_[processNumber_]     = 1;                   // marker color
-   
-    
+  
+  
   XMLAttrPointer_t attr = xml->GetFirstAttr(processNode);
   while (attr){
     TString attName( xml->GetAttrName(attr));
-
+    
     
     /*out<<endl<<" attribute : "<<attName;*/
     
@@ -232,16 +226,15 @@ float FileParser::getAttrFloatValue(TXMLEngine * xml, XMLAttrPointer_t attr){
 
 void FileParser::id( TXMLEngine * xml, XMLNodePointer_t idNode ){
 
-
   idNumber_++;
   
   XMLAttrPointer_t attr = xml->GetFirstAttr(idNode);
 
   mapIdtitle_[idNumber_] = TString("");
-
+  
   while (attr){
     TString attName( xml->GetAttrName(attr));
-         if( attName == norm_       ){ mapIdnorm_[idNumber_]     = getAttrFloatValue(xml,attr);         }
+    if( attName == norm_       ){ mapIdnorm_[idNumber_]     = getAttrFloatValue(xml,attr);         }
     else if( attName == xtitle_     ){ mapIdXtitle_[idNumber_]   = TString( xml->GetAttrValue(attr));   }
     else if( attName == ytitle_     ){ mapIdYtitle_[idNumber_]   = TString( xml->GetAttrValue(attr));   }
     else if( attName == opt_        ){ mapIdopt_[idNumber_]      = TString( xml->GetAttrValue(attr));   }
@@ -257,8 +250,8 @@ void FileParser::id( TXMLEngine * xml, XMLNodePointer_t idNode ){
     else if( attName == oflow_      ){ mapIdoflow_[idNumber_]    = getAttrValue(xml,attr);              }
     attr = xml->GetNextAttr(attr);
   }
-
-
+  
+  
   XMLNodePointer_t item = xml->GetChild(idNode);
 
   if(item){
@@ -266,7 +259,7 @@ void FileParser::id( TXMLEngine * xml, XMLNodePointer_t idNode ){
     mapIdFolder_[idNumber_]    = TString( xml->GetAttrValue(folder));
     mapIdHistoName_[idNumber_] = TString( xml->GetNodeContent(item));    
   }
-
+  
 }
 
 
@@ -274,13 +267,13 @@ void FileParser::id( TXMLEngine * xml, XMLNodePointer_t idNode ){
 
 
 pair<float,float> FileParser::getAttrRange( TXMLEngine * xml, XMLAttrPointer_t attr ){
-
+  
   char * data = (char *) xml->GetAttrValue(attr);
   float d1,d2;
   sscanf(data,"%f,%f",&d1,&d2);
   pair<float,float> ret(d1,d2);
   return ret;
-
+  
 }
 
 

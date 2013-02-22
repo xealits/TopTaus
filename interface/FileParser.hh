@@ -6,35 +6,35 @@
 #include <fstream>
 #include <map>
 #include <TString.h>
-#include "TXMLEngine.h"
+#include "TXMLEngine.h" // needs '<flags LDFLAGS="-lXMLIO">' in the BuildFile
 #include <TFile.h>
 
 
 using namespace std;
 
 class FileParser {
-
+  
 public: 
   
   FileParser();
   
   void clear();
   
-  void parse( TString samples, TString defs);
+  void parse( TString, TString);
   
-  void process(       TXMLEngine* xml, XMLNodePointer_t p );
-  void id(            TXMLEngine* xml, XMLNodePointer_t p);
-  void processFile(   TXMLEngine* xml, XMLNodePointer_t p );
-  int    getAttrValue(       TXMLEngine * xml, XMLAttrPointer_t attr);
-  float  getAttrFloatValue(  TXMLEngine * xml, XMLAttrPointer_t attr);
+  void process(       TXMLEngine*, XMLNodePointer_t  );
+  void id(            TXMLEngine*, XMLNodePointer_t );
+  void processFile(   TXMLEngine*, XMLNodePointer_t  );
+  int    getAttrValue(       TXMLEngine*, XMLAttrPointer_t);
+  float  getAttrFloatValue(  TXMLEngine*, XMLAttrPointer_t);
   
-  bool getAttrBool(   TXMLEngine * xml, XMLAttrPointer_t attr);
-  pair<float,float> getAttrRange( TXMLEngine * xml, XMLAttrPointer_t attr );
+  bool getAttrBool(   TXMLEngine*, XMLAttrPointer_t);
+  pair<float,float> getAttrRange( TXMLEngine*, XMLAttrPointer_t );
   
   
   // process/sample attributes ////
-  map< int , TFile *>  mapFiles_;
-  map< int , float  >  mapWeights_;
+  map< int, TFile* >   mapFiles_;
+  map< int, float  >   mapWeights_;
   map< int, int>       mapIsData_;
   map< int, int>       mapIsStack_;
   map< int, TString>   mapName_;
@@ -83,8 +83,5 @@ public:
   int idNumber_;
   
 };
-
-
-
 
 #endif // _FileParser_hh
