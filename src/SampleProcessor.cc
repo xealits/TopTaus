@@ -610,8 +610,9 @@ void SampleProcessor::process_ttbar(){
 
 
   //NORMAL SAMPLE
-  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1.root"),keys_);
-  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2.root"),keys_);
+  //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1.root"),keys_);
+  //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2.root"),keys_);
+  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar.root"),keys_);
 
   //process(false, url_, iFolder_ + TString("AllTTJets_TuneZ2star_8TeV-madgraph-tauola.root"), oFolder_+TString("out-ttbar.root"),keys_);
   
@@ -684,24 +685,37 @@ void SampleProcessor::process_ttbar_unc(){
 
 
 
-void SampleProcessor::process_ttbar_bychannel(){
+void SampleProcessor::process_ttbar_mutau(){
 
   url_= TTBAR_URL;
 
 
   //  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_etau.root"),keys_,  ETAU_  );    
-  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mutau.root"),keys_, MUTAU_ ); 
-  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mutau.root"),keys_, MUTAU_ ); 
-  
+  //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mutau.root"),keys_, MUTAU_ ); 
+  //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mutau.root"),keys_, MUTAU_ ); 
+  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_mutau.root"),keys_, MUTAU_ ); 
+}
+
+void SampleProcessor::process_ttbar_ddbkg(){
+
+  url_= TTBAR_URL;
    
   // dd bkg
-  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_ddbkg.root"),keys_, TTBAR_DDBKG_);   
-  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_ddbkg.root"),keys_, TTBAR_DDBKG_);   
+  //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_ddbkg.root"),keys_, TTBAR_DDBKG_);   
+  //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_ddbkg.root"),keys_, TTBAR_DDBKG_);   
+  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_ddbkg.root"),keys_, TTBAR_DDBKG_);   
+
+
+}
+
+void SampleProcessor::process_ttbar_mcbkg(){
+
+  url_= TTBAR_URL;
 
   // mc bkg
-  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mcbkg.root"),keys_, TTBAR_MCBKG_ );
-  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mcbkg.root"),keys_, TTBAR_MCBKG_ );
-
+  //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mcbkg.root"),keys_, TTBAR_MCBKG_ );
+  //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mcbkg.root"),keys_, TTBAR_MCBKG_ );
+  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_mcbkg.root"),keys_, TTBAR_MCBKG_ );
 
 }
 
@@ -711,8 +725,9 @@ void SampleProcessor::process_singletop(){
   
   //SINGLE TOP
   url_= S_URL; process(false, url_, iFolder_ + TString("stop_s.root"),     oFolder_ + TString("out-stop_s.root"),keys_);   
-  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t_v1.root"),     oFolder_ + TString("out-stop_t_v1.root"),keys_);  
-  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t_v2.root"),     oFolder_ + TString("out-stop_t_v2.root"),keys_);  
+  //  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t_v1.root"),     oFolder_ + TString("out-stop_t_v1.root"),keys_);  
+  //  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t_v2.root"),     oFolder_ + TString("out-stop_t_v2.root"),keys_);  
+  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t.root"),     oFolder_ + TString("out-stop_t.root"),keys_);  
   url_= W_URL; process(false, url_, iFolder_ + TString("stop_tW-DR.root"), oFolder_ + TString("out-stop-DR_tW.root"),keys_); 
 
   //ANTI SINGLE TOP
@@ -730,8 +745,9 @@ void SampleProcessor::process_wjets(){
 
   // WARNING W+jets with new pgid info
   url_= WJMADGRAPH_URL;
-  process(false, url_, iFolder_ + TString("WJetsToLNu_v1.root"), oFolder_+TString("out-wjets_v1.root"),keys_);
-  process(false, url_, iFolder_ + TString("WJetsToLNu_v2.root"), oFolder_+TString("out-wjets_v2.root"),keys_);
+  //  process(false, url_, iFolder_ + TString("WJetsToLNu_v1.root"), oFolder_+TString("out-wjets_v1.root"),keys_);
+  //  process(false, url_, iFolder_ + TString("WJetsToLNu_v2.root"), oFolder_+TString("out-wjets_v2.root"),keys_);
+  process(false, url_, iFolder_ + TString("WJetsToLNu.root"), oFolder_+TString("out-wjets.root"),keys_);
 
 
   // Trigger efficiencies study //////////////////////////////////////////////////////////////////////////

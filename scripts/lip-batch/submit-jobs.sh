@@ -42,7 +42,9 @@ qsub ./job-qcd.sh
 qsub ./job-singletop.sh
 #qsub ./job-trigger-mht.sh
 #qsub ./job-trigger-mhtjets.sh
-qsub ./job-ttbar-bychannel.sh
+qsub ./job-ttbar-mutau.sh
+qsub ./job-ttbar-ddbkg.sh
+qsub ./job-ttbar-mcbkg.sh
 #qsub ./job-ttbar-unc.sh
 qsub ./job-ttbar.sh
 qsub ./job-wh-higgs-bychannel.sh

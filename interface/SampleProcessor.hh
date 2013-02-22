@@ -79,7 +79,10 @@ public :
 
   
   void process_ttbar();
-  void process_ttbar_bychannel();
+  //  void process_ttbar_bychannel();
+  void process_ttbar_mutau();
+  void process_ttbar_ddbkg();
+  void process_ttbar_mcbkg();
   void process_singletop();
   void process_qcd();
   void process_wjets();

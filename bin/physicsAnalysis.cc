@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.7 2013/02/15 13:49:50 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.8 2013/02/21 16:24:02 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -97,7 +97,9 @@ int main(int argc, char* argv[])
   else if(runOn == "singletop")           analyzer->process_singletop()          ;
   //  else if(runOn == "trigger_mht")         analyzer->process_trigger_mht()        ;
   //  else if(runOn == "trigger_mhtjets")     analyzer->process_trigger_mhtjets()    ;
-  else if(runOn == "ttbar_bychannel")     analyzer->process_ttbar_bychannel()    ;
+  else if(runOn == "ttbar_mutau")         analyzer->process_ttbar_mutau()    ;
+  else if(runOn == "ttbar_ddbkg")         analyzer->process_ttbar_ddbkg()    ;
+  else if(runOn == "ttbar_mcbkg")         analyzer->process_ttbar_mcbkg()    ;
   else if(runOn == "ttbar_unc")           analyzer->process_ttbar_unc()          ;
   else if(runOn == "ttbar")               analyzer->process_ttbar()              ;
   else if(runOn == "wh_higgs_bychannel")  analyzer->process_wh_higgs_bychannel() ;
