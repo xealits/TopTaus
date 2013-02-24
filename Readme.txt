@@ -127,8 +127,6 @@ TODO:
 
 - btagmulticorrected splitting by leadjet/nlj/nnlj
 
-- check sample-specific 2012 cross-sections
-
 - split JEC uncertainty sources into the 16 components.
 
 - scripts/getTriggers.hs: implement running through sh getTriggers.sh PARS, in order to allow to choose
@@ -143,6 +141,7 @@ TODO:
                      -> one inheriting class for shapes production, storing and plotting (LandSShapesProducer)
 		     -> one inheriting class for fitting, saving and plotting (PDFBuilderFitter)
 		     -> perhaps one single executable with switch via ParSet in config file
+
 - Pattuple producer 
   --> Acquire and improve version from 2013-01-23 - must upload from lipcms svn - in order to use
       multicrab in the future
