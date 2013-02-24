@@ -4,10 +4,11 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.8 2013/02/21 16:24:02 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.9 2013/02/22 13:24:33 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
+#include "LIP/TopTaus/interface/HistogramPlotter.hh"
 
 // System includes	
 #include <string>
@@ -18,7 +19,6 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 // ROOT includes
 #include "TSystem.h"
-
 
 
 
@@ -108,12 +108,52 @@ int main(int argc, char* argv[])
   else if(runOn == "tbh_higgs")           analyzer->process_tbh_higgs()           ;
   else if(runOn == "wjets")               analyzer->process_wjets()              ;
   else if(runOn == "zjets")               analyzer->process_zjets()              ;
+  // FIXME: manage with --blah for having parameters like "withHiggs" and so on
   else if(runOn == "doTable"){
     cout << "Doing table" << endl;
     bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false); 
     int detailed(2), notDetailed(1);      
     analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, sm, "PFlow", "yields-mc-", false, false, false); 
     //analyzer.mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false); 
+  }
+  else if(runOn == "doPlots"){
+//    PlotStyle sty();
+//    sty.setTDRStyle();
+      
+    TString samples("data/plotter/samples.xml");
+    TString outFolder("plots/"); // move to input line
+    TString limits("data/plotter/limits.xml");
+    TString leptons("data/plotter/leptons.xml");
+    TString met("data/plotter/met.xml");
+    TString mt("data/plotter/mt.xml");
+    TString wjets("data/plotter/wjets.xml");
+    TString wtmass("data/plotter/wtmass.xml");
+    TString jets("data/plotter/jets.xml");
+    TString yields("data/plotter/yields.xml");
+    TString taus("data/plotter/taus.xml");
+    TString vertex("data/plotter/vertex.xml");
+    TString afterR("data/plotter/afterR.xml");
+    TString test("data/plotter/test.xml");
+    TString debug("data/plotter/debug.xml");
+
+    HistogramPlotter a; // Move to input line or cfg file the choice of what to plot
+    a.parse(samples,vertex,outFolder);
+    a.parse(samples,met,outFolder);      
+    a.parse(samples,met,outFolder);      
+    a.parse(samples,leptons,outFolder);  
+    //a.parse(samples,limits,outFolder);      
+    a.parse(samples,mt,outFolder);      
+    a.parse(samples,yields,outFolder);
+    a.parse(samples,jets,outFolder); 
+    //a.parse(samples,debug,outFolder);  
+    //a.parse(samples,afterR,outFolder);
+    //
+    //  //a.parse(samples,wjets,outFolder);
+    //  //a.parse(samples,wtmass,outFolder);
+    //  //a.parse(higgssamples,taus,outFolder);
+    //  //a.parse(samples,taus,outFolder);
+    //  //a.parse(samples,test,outFolder);
+    
   }
   else
     cout << "Sample does not exist" << endl;
@@ -161,3 +201,7 @@ int main(int argc, char* argv[])
 //// analyzer.summaryTable( notDetailed, true, false, false, false);
 //
 //*/
+
+
+
+

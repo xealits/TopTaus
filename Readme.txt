@@ -79,8 +79,20 @@ Run physicsAnalysis - this corresponds to the PhysicsAnalyzer code
   Soon integrate that as an option of physicsAnalysis to run interactively.
 - have fun
 
+Produce plots
+-------------
+cd LIP/TopTaus  # this is necessary, because at the moment bin/physicsAnalysis.cc is configured
+                # in such a way as to fetch plots from "data/plotter/". Must change to configurable paths via cfg file
+mkdir plots
+physicsAnalysis test/physicsAnalysisParSets_cfg.py doPlots
+
+Produce tables
+--------------
+physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch for higgs/non-higgs
 
 CHANGELOG for major updates:
+2012-02-24: fixes: plotter perfectly working
+2013-02-22: plotter and table added and integrated into physicsAnalysis.
 2013-02-13: updated with 2012 cross sections - must check sample-specific ones
 	    jet pt, btag, mlj added for leadingjet/nlj/nnlj
 2013-02-11: updated JEC uncertainty sources
@@ -102,13 +114,16 @@ FIXED TAGS:
 
 
 TODO:
-- Write a sed script for doing that in a single command soon.
+- move path of plotter files and plots directory to cfg file and command line, respectively.
+
+- move full file path from sample.xml to the parser/plotter: idea is to manage it via config file centrally 
+  with each call of physicsAnalysis, and leave in the xml only the file name without path
+
+- Write a sed script for changing paths in scripts in a single command soon.
 
 - Change output file paths to be read from the cfg file soon. Soon.
 
-- Edit combineResults.sh to give as an input a user defined directory
-
-- Integrate plotter and table actual calculation as an option of physicsAnalysis to run interactively.
+- Edit combineResults.sh to give as an input a user defined directory and eventually copy stuff
 
 - btagmulticorrected splitting by leadjet/nlj/nnlj
 

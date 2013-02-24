@@ -461,24 +461,26 @@ void SampleProcessor::init(){
     //TTree * spyTree = listOfReaders_[i]->PrepareToSpyEvents(spyName);
     //cout<<endl<<"Spy Events ... on file ... "<<spyName<<endl;
     //////////////////////////////////////////////////////////////////
-
+    
     if(fullStats_){
-      cout<<endl<<"\n processing file : "<<(listOfurls_[i])
-          <<"\n Tau pt cut was      : "<<setw(12)<<setiosflags(ios::fixed) << setprecision(8)<<sampleTauPtCut_
-          <<"\n sample -> scale     : "<<setw(12)<<setiosflags(ios::fixed) << setprecision(8)<<(listOfScales_[i])
-          <<"\n evt processed       : "<<setw(8)<<setprecision(1)<<(listOfEvents_[i])
-          <<"\n evt in minitree     : "<<setw(8)<<setprecision(1)<<(listOfEventsToProcess_[i])
-          <<"\n MC evt in minitree  : "<<setw(8)<<setprecision(1)<<(listOfEventsToProcessMC_[i])
-          <<"\n computed X sections : "<<(listOfXSections_[i])<<endl;
-
-     infoFile_<<endl<<"\n processing file : "<<(listOfurls_[i])
-          <<"\n Tau pt cut was      : "<<setw(12)<<setiosflags(ios::fixed) << setprecision(8)<<sampleTauPtCut_
-          <<"\n sample -> scale     : "<<setw(12)<<setiosflags(ios::fixed) << setprecision(8)<<(listOfScales_[i])
-          <<"\n evt processed       : "<<setw(8)<<setprecision(1)<<(listOfEvents_[i])
-          <<"\n evt in minitree     : "<<setw(8)<<setprecision(1)<<(listOfEventsToProcess_[i])
-          <<"\n MC evt in minitree  : "<<setw(8)<<setprecision(1)<<(listOfEventsToProcessMC_[i])
-          <<"\n computed X sections : "<<(listOfXSections_[i])<<endl;
- 
+      cout<<endl<<"\n processing file  : "<<(listOfurls_[i])
+          <<"\n Tau pt cut was         : "<<setw(12)<<setiosflags(ios::fixed) << setprecision(8)<<sampleTauPtCut_
+          <<"\n sample -> scale        : "<<setw(12)<<setiosflags(ios::fixed) << setprecision(8)<<(listOfScales_[i])
+          <<"\n evt processed          : "<<setw(8)<<setprecision(1)<<(listOfEvents_[i])
+          <<"\n evt in minitree        : "<<setw(8)<<setprecision(1)<<(listOfEventsToProcess_[i])
+          <<"\n MC evt in minitree     : "<<setw(8)<<setprecision(1)<<(listOfEventsToProcessMC_[i])
+          <<"\n Xsection employed      : "<<(listOfXSections_[i])
+          <<"\n Normalized to lumi (pb): "<<LUM_<<endl;
+      
+      infoFile_<<endl<<"\n processing file : "<<(listOfurls_[i])
+	       <<"\n Tau pt cut was      : "<<setw(12)<<setiosflags(ios::fixed) << setprecision(8)<<sampleTauPtCut_
+	       <<"\n sample -> scale     : "<<setw(12)<<setiosflags(ios::fixed) << setprecision(8)<<(listOfScales_[i])
+	       <<"\n evt processed       : "<<setw(8)<<setprecision(1)<<(listOfEvents_[i])
+	       <<"\n evt in minitree     : "<<setw(8)<<setprecision(1)<<(listOfEventsToProcess_[i])
+	       <<"\n MC evt in minitree  : "<<setw(8)<<setprecision(1)<<(listOfEventsToProcessMC_[i])
+	       <<"\n Xsection employed : "<<(listOfXSections_[i])
+	       <<"\n Normalized to lumi (pb): "<<LUM_<<endl;
+      
       if(trigEffStudy_)   {  infoFile_<<" Trigger efficiency is ON  "; cout<<" Trigger efficiency is ON ";  }
       else                {  infoFile_<<" Trigger efficiency is OFF "; cout<<" Trigger efficiency is OFF "; }
       if(applybtagweight_){  infoFile_<<" BTAG weights are ON  ";      cout<<" BTAG weights are ON ";       }

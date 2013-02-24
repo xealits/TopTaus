@@ -6,7 +6,7 @@
  
   \author   Pietro Vischia, pietro.vischia@gmail.com
 
-  \version  $Id: HistogramPlotter.hh,v 0.1 2013/02/21 176:20:22 vischia Exp $                                                                                                       
+  \version  $Id: HistogramPlotter.hh,v 1.1 2013/02/22 13:24:43 vischia Exp $                                                                                                       
 */
 
 // System headers
@@ -33,19 +33,9 @@
 class HistogramPlotter : public FileParser, public PlotStyle {
   
 public :
+  HistogramPlotter();
+  ~HistogramPlotter();
   
-  // FIXME: move options to cfg file
-
-  //include errors is for syst
-  // HistogramPlotter(){ c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=false; LUM_ERR = 0.045;}  
-  
-  ///  HistogramPlotter(){ c_ = 0; plotHiggs_= true; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
-  HistogramPlotter(): PlotStyle() { c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
-  
-  //HistogramPlotter(){ c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=false; LUM_ERR = 0.022;}
-  
-  //HistogramPlotter(){ c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
-  //HistogramPlotter(){ c_ = 0; plotHiggs_= true; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
   
   void plot(){};
   void processCanvas();

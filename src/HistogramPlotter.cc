@@ -15,6 +15,22 @@
 #include "TClass.h"
 #include "TLegendEntry.h"
 
+// FIXME: move options to cfg file
+
+//include errors is for syst
+// HistogramPlotter(){ c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=false; LUM_ERR = 0.045;}  
+
+///  HistogramPlotter(){ c_ = 0; plotHiggs_= true; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
+HistogramPlotter::HistogramPlotter(): PlotStyle() { c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
+
+//HistogramPlotter(){ c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=false; LUM_ERR = 0.022;}
+
+//HistogramPlotter(){ c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
+//HistogramPlotter(){ c_ = 0; plotHiggs_= true; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
+
+HistogramPlotter::~HistogramPlotter()
+{
+}
 
 void HistogramPlotter::processCanvas(){
 

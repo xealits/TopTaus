@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monitor> 
+
+
+  <!-- jet distribition (After lepton + 3jets  -->
+  <id tag="muCh_pt_j" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{jets}_{T}
+  [GeV/c]" yrange="10,600000000" xrange="35,500" xbin="2" >
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j_4</item>
+  </id> 
+
+  <id tag="muCh_pt_j1" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{lead jet}_{T}
+  [GeV/c]" yrange="10,600000" xrange="35,500" xbin="2" >
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j1_4</item>
+  </id> 
+
+  <id tag="muCh_pt_j2" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{sublead jet}_{T}
+  [GeV/c]" yrange="10,600000" xrange="35,500" xbin="2" >
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j2_4</item>
+  </id> 
+
+  <id tag="muCh_pt_j3" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{sub-sub lead jet}_{T}
+  [GeV/c]" yrange="10,600000" xrange="35,500" xbin="2" >
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j3_4</item>
+  </id> 
+
+  <id tag="muCh_eta_j" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,3000000" xbin="2" >
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">eta_j_4</item>
+  </id> 
+
+
+  <id tag="muCh_multiplicity_j" doratio="1" logy="1" cmspublic="y" oflow="0" title="" ytitle="Events" xrange="2,6" xtitle="Jet multiplicity" yrange="10,1000000000">
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >multiplicity_j_4</item>
+  </id>
+
+  <id tag="muCh_btagmultiplicity_j" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  yrange="10,10000000" xtitle="N_{b-tags}">
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >btagmultiplicity_j_4</item>
+  </id>
+
+  <id tag="muCh_btagmultiplicity_j1" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  yrange="10,10000000" xtitle="N_{b-tags lead}">
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >btagmultiplicity_j1_4</item>
+  </id>
+
+  <id tag="muCh_btagmultiplicity_j2" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  yrange="10,10000000" xtitle="N_{b-tags sublead}">
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >btagmultiplicity_j2_4</item>
+  </id>
+
+  <id tag="muCh_btagmultiplicity_j3" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  yrange="10,10000000" xtitle="N_{b-tags subsublead}">
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >btagmultiplicity_j3_4</item>
+  </id>
+
+  <id tag="muCh_btag_j" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xrange="0,1.2" xtitle="Combined Secondary Vertex b-tag" yrange="100,1000000" >
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >btag_j_4</item>
+  </id>
+
+  <id tag="muCh_m_muj1" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(#mu, lead jet)" yrange="0.1,1000000000" >
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >m_muj1_4</item>
+  </id>
+
+
+
+
+
+</monitor>
