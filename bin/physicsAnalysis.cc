@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.9 2013/02/22 13:24:33 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.10 2013/02/24 12:13:48 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -53,9 +53,11 @@ int main(int argc, char* argv[])
   const edm::ParameterSet &pSet = edm::readPSetsFrom(parSet)->getParameter<edm::ParameterSet>("PhysicsAnalysisParSet");
   
   double tauPtCut = pSet.getParameter<double>("tauPtCut");
+  bool noUncertainties = pSet.getParameter<bool>("noUncertainties");
+  bool doWPlusJetsAnalysis = pSet.getParameter<bool>("doWPlusJetsAnalysis");
 
 
-  CutflowAnalyzer* analyzer = new CutflowAnalyzer( tauPtCut/*parSet*/ );
+  CutflowAnalyzer* analyzer = new CutflowAnalyzer( tauPtCut, noUncertainties, doWPlusJetsAnalysis /*parSet*/ );
   
   std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;
   

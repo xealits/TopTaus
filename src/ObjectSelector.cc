@@ -31,7 +31,8 @@ ObjectSelector::ObjectSelector( double tauPtCut ):
   //vector<JetCorrectorParameters> vParam; vParam.push_back(*resCorPar_);
   //resFactors_     = new FactorizedJetCorrector(vParam);  
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
+
+  //  cout << "[ObjectSelector::ObjectSelector] TAU PT MIN: " << TAU_PT_MIN_ << endl;
   SetLeptonPlusJetsSelection();
 
 }

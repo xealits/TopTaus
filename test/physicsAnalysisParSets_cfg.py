@@ -5,8 +5,9 @@ import FWCore.ParameterSet.Config as cms
 #########
 
 PhysicsAnalysisParSet = cms.PSet(
-    tauPtCut = cms.double(20.0)
-    
+    tauPtCut = cms.double(20.0),
+    noUncertainties = cms.bool(True),
+    doWPlusJetsAnalysis = cms.bool(False)
     )
 
 

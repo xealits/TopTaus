@@ -6,7 +6,7 @@
   
   \author   Pietro Vischia, pietro.vischia@gmail.com
 
-  \version  $Id: CutflowAnalyzer.hh,v 1.2 2013/02/08 15:20:46 vischia Exp $                                                                                                       
+  \version  $Id: CutflowAnalyzer.hh,v 1.3 2013/02/11 15:03:12 vischia Exp $                                                                                                       
 */
 
 // System headers
@@ -36,7 +36,7 @@ using namespace std;
 class CutflowAnalyzer : public UncertaintyCalculator, public AnalysisMonitoring, public ObjectSelector, public GenericUtils {
 public:
   
-  CutflowAnalyzer(double);
+  CutflowAnalyzer(double, bool, bool);
   
   void process(bool, urlCodes, TString, TString, vector<TString>&, uint);
   void setSelectionParameters();
@@ -128,7 +128,9 @@ public:
   JetResolution* jerUnc_ak5_pf_pt_ ;
   JetResolution* jerUnc_ak5_jpt_pt_;
   
-  
+
+  bool noUncertainties_;   // Do not compute trees with systematic uncertainties (faster for preliminary checks)
+  bool doWPlusJetsAnalysis_; // Do not perform WPlusJetsAnalysis (so no trees in it) (faster for preliminary and notau checks)
   bool    isData_;         // is this data ?
   int  ttbarLike_;         // see if we need to process (etau,mutau) (ee,emu,mumu)
   unsigned int i_;         // generic index

@@ -12,40 +12,40 @@
 
 using namespace std;
 
-CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  AnalysisMonitoring(tauPtCut), ObjectSelector(tauPtCut) {    
-
+CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis) : UncertaintyCalculator(),  
+									   AnalysisMonitoring(tauPtCut), 
+									   ObjectSelector(tauPtCut),
+									   noUncertainties_(noUncertainties),
+									   doWPlusJetsAnalysis_(doWPlusJetsAnalysis) 
+{    
+  
   testMe_=0;
   testMe_Nev_=0;
-
+  
+  // Acquire pileup weights
   float dataDist[50] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.}; 
-  
-  
-  TFile * dataWeightsFile;
-  //Need to get the vertex distribution for 2012 data...
-  //if(run2012_)dataWeightsFile = new TFile("");
-  
+  TFile* dataWeightsFile;
   if(run2012_) dataWeightsFile = new TFile("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/data/pileup/MyDataPileupHistogram_All_73500.root");
   //  else dataWeightsFile = new TFile("");
-  
-  if(!dataWeightsFile){ cout<<endl<<"File : /lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/data/pileup/2012full_DataPileupHistogram.root not found .. "<<endl; exit(0);}
-  
-  TH1D * hist = (TH1D *) dataWeightsFile->Get("pileup");
-  
+  if(!dataWeightsFile){ cout<<endl<<"File : /lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/data/pileup/2012full_DataPileupHistogram.root not found or run2012_ not set."<<endl; exit(0);}
+  TH1D* hist = (TH1D*) dataWeightsFile->Get("pileup");
   for(int i=0; i<50;i++)
     dataDist[i]=hist->GetBinContent(i+1);
-    
   for(int i = 0; i < 50; i++ )
     DataPUDist_.push_back(dataDist[i]);
-    
-  // lepton efficiencies assumed to be ~100%
+  /////////////////////////  
+
+
+  // lepton efficiencies assumed to be ~100%. FIXME: Must check this
   electrontriggerefficiency_= 1;
   muontriggerefficiency_    = 1;   
   leptontriggerefficiency_  = 1;
   ////////////////////////////////////////
   
-  w_=1.;  
-  is_os_=0.;
-  // Object spliting ////////////////////////////////////////////////////////////////////////////////
+  w_=1.; // Event weight defaults to 1
+  is_os_=0.; // Stored in tree for fitters
+
+  // Minimum distance b/ween objects ////////////////////////////////////////////////////////////////
   DRMIN_JET_E_ = 0.3; DRMIN_JET_M_ = 0.3; DRMIN_T_E_   = 0.3; DRMIN_T_M_   = 0.3; DRMIN_T_J_   = 0.3;
   ///////////////////////////////////////////////////////////////////////////////////////////////////    
   
@@ -54,7 +54,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   
   TAUPRONGS_ = 1;    
   
-  // Uncertainties ////////////////////////////////////////////////////
+  // Uncertainties //////////////////////////////////////////////////// FIXME: update this
   JES_ = 0.05; UNC_ = 0.10; JER_ = 1; BTAGUNC_= 0.10; UNBTAGUNC_=0.10;
   ////////////////////////////////////////////////////////////////////
   
@@ -66,19 +66,11 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   string lipcmsBaseFolder = cmsswFolder + string("/src/LIP/TopTaus/");// get_env_var("LIPCMS_BASE");
   string analysisFolder   = lipcmsBaseFolder+string("data/");
   
-  
-  
-  // files for jet correction uncertainties /////////////////////////////////////////////////////////////////////
-  
-  // Instantiate uncertainty sources ////////////////////////////////////////////////////////////////////////////
-  // https://twiki.cern.ch/twiki/bin/view/CMS/JECUncertaintySources#Example_implementation
-  
-  
-  // DEBUG
+  // Files for jet correction uncertainties /////////////////////////////////////////////////////////////////////
+  // How to instantiate uncertainty sources: https://twiki.cern.ch/twiki/bin/view/CMS/JECUncertaintySources#Example_implementation
   cout<<endl<<" FILE 1 : "<<(analysisFolder+string("/Fall12_V7_DATA_UncertaintySources_AK5PFchs.txt"))<<endl;
   cout<<endl<<" FILE 2 : "<<(jerFolder+string("/Spring10_PtResolution_AK5JPT.txt"))<<endl;
   
-  //  JetCorrectorParameters * jcp = new JetCorrectorParameters(analysisFolder+string("/JEC11_V12_AK5PF_UncertaintySources.txt"), "Total");
   JetCorrectorParameters * jcp = new JetCorrectorParameters(analysisFolder+string("/Fall12_V7_DATA_UncertaintySources_AK5PFchs.txt"), "Total"); // Must implement splitting by sources
   jecUnc_ak5_pf_ = new JetCorrectionUncertainty( *jcp );
   cout<<endl<<"JetCorrectorParameters acquired"<<endl;
@@ -91,13 +83,12 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   //////////////////////////////////////
   
   jerUnc_ak5_pf_pt_  = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5PF.txt"),true); // Temporarily disabled
-  //  jerUnc_ak5_jpt_pt_ = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5JPT.txt"),true);    
-  
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
+  // Poisson shifter for number of vertices /////////
   PShiftDown_ = reweight::PoissonMeanShifter(-0.6);
   PShiftUp_   = reweight::PoissonMeanShifter(0.6);
-  
+  ///////////////////////////////////////////////////
   
   // New BTAG uncertainty method /////////////////////////////////
   //taken from BTV-11-004 ////////////////////////////////////////
@@ -108,10 +99,6 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut) : UncertaintyCalculator(),  A
   
 }
 
-
-
-
-
 void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TString outhistograms, vector<TString> & keys, uint ttbarLike ){
   
   
@@ -119,27 +106,25 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
   ttbarLike_          = ttbarLike;
   outFileName_        = outhistograms;
   urlCode_            = urlCode;
-
-
+  
+  
   // prepare url and xsection file ///////////////////////////////
   vector<TString> urls; urls.push_back(path);
   vector<double>  xsec; xsec.push_back(defaultXSections_[urlCode_]);
-    
+  
   // tells AnalyzerMonitoring to initialize histogram plots and trees
   buildStructures();
-
+  
   // Initializes output info debug txt
   infoFile_.open (outFileName_ + TString("_debug.txt")); 
-
-
+  
   // Builds event readers and open files and fills debug info if full processing is enabled ////////////////////////////////////////
-  //if(     !eChONmuChOFF_                                       ) init(urls,xsec,false,2217.089,50000);
+  // third parameter is isFullStatistics. If it's set to true, the last parameter (number of events to be processed) is ignored.
   if(     !eChONmuChOFF_                                       ) init(urls,xsec,true,LUM_,10000);
-  //if(     !eChONmuChOFF_                                       ) init(urls,xsec,false,2217.089,50000); 
   else if( eChONmuChOFF_ && MODE_ == STARTING_AT_LJETS_        ) init(urls,xsec,true,LUM_,10000);   //single lepton trigger
   else if( eChONmuChOFF_ && MODE_ == STARTING_AT_LJETSPLUSMET_ ) init(urls,xsec,true,LUM_,100);     //electron+2jets+met trigger
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-
+  
   scale_=listOfScales_[0];
 
 
@@ -160,35 +145,30 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
     //BTAG_eff_R_ = 0.819873;
     //BTAG_eff_F_ = 0.177778;
 
-
-
-     //Muon with MT
-     BTAG_eff_R_ = 0.81376;         
-     BTAG_eff_F_ = 0.163441;
-
+    //Muon with MT. FIXME: check these values
+    BTAG_eff_R_ = 0.81376;         
+    BTAG_eff_F_ = 0.163441;
     
-
-     //Muons
-     //BTAG_eff_R_ = 0.810935;
-     //BTAG_eff_F_ = 0.167423;
+    //Muons
+    //BTAG_eff_R_ = 0.810935;
+    //BTAG_eff_F_ = 0.167423;
     
-  }else {
+  }else { // FIXME: check these values
     BTAG_eff_R_ = 0.811112;
     BTAG_eff_F_ = 0.172388;
   }
   /////////////////////////
-
-
+  
+  
   MCPUDist_.clear(); 
-
+  
+  // Acquire scale factor for event weight according to pileup distribution ///////////////////////////////////////////////////////////////////////////////////////////////////////////
   if(!isData_){
     TH1 * mcPileupHisto = (TH1*) listOfFiles_[0]->Get("myEventSelector/Selection/pileup");
-  
+    
     int histoEntries(51);
-
-    if(run2012_){ histoEntries = 51; }
-
-    if( mcPileupHisto ){  for( int s=1; s < mcPileupHisto->GetNbinsX() && s<histoEntries; s++ ){ MCPUDist_.push_back( mcPileupHisto->GetBinContent(s)); } }
+    
+    if( mcPileupHisto ){  for( int s=1 /* avoid underflow bin */; s < mcPileupHisto->GetNbinsX() && s<histoEntries; s++ ){ MCPUDist_.push_back( mcPileupHisto->GetBinContent(s)); } }
     LumiWeights_ = reweight::LumiReWeighting(MCPUDist_, DataPUDist_);
     originalPDFEvents_=0; 
     PDFSelectedEvents_=0;
@@ -200,18 +180,14 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
     for(int i=0;i<100;i++){myWeights_.push_back(0);} 
     //if( pdfweights_ && nevents_ != neventsMC_ ){ cout<<endl<<" ERROR :: nevents is : "<<nevents_<<" and in MC is "<<neventsMC_<<endl; return;}
   }
-
-
-
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////7///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  // Main event loop ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   for(i_=0; i_< nevents_; ++i_){
-   
-
+    
     event::MiniEvent_t *ev   = evR_->GetNewMiniEvent(i_,"data");  if( ev == 0 ) continue;
-
-    //cout<<" -> Processing ... : "<<(i_+1)<<endl;
-
+    
     if( ! (i_% 1000 ) ){cout<<" -> Processing ... : "<<(i_+1)<<endl;}
 
     // TAU DILEPTON ANALYZER ////////////////////////////////////////////////////////
@@ -220,16 +196,18 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
       // tau dilepton analysis (newphys,tau algo, miniEvent, jes, unc, jer )
       if(!isData_){
         tauDileptonAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0); 
-        tauDileptonAnalysis( false, (*it),ev,      JES_ ,        0,        0  ,             0,                0);        
-        tauDileptonAnalysis( false, (*it),ev, (-1)*JES_ ,        0,        0  ,             0,                0);
-        tauDileptonAnalysis( false, (*it),ev,        0  ,     UNC_,        0  ,             0,                0);
-        tauDileptonAnalysis( false, (*it),ev,        0  ,(-1)*UNC_,        0  ,             0,                0);
-        tauDileptonAnalysis( false, (*it),ev,        0  ,        0,      JER_ ,             0,                0);
-        tauDileptonAnalysis( false, (*it),ev,        0  ,        0, (-1)*JER_ ,             0,                0);
-        tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,      BTAGUNC_,                0);
-        tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  , (-1)*BTAGUNC_,                0);
-        tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,       UNBTAGUNC_);
-        tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_);
+        if(!noUncertainties_){
+	  tauDileptonAnalysis( false, (*it),ev,      JES_ ,        0,        0  ,             0,                0);        
+	  tauDileptonAnalysis( false, (*it),ev, (-1)*JES_ ,        0,        0  ,             0,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,     UNC_,        0  ,             0,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,(-1)*UNC_,        0  ,             0,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,      JER_ ,             0,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0, (-1)*JER_ ,             0,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,      BTAGUNC_,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  , (-1)*BTAGUNC_,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,       UNBTAGUNC_);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_);
+	}
       }
       else{  
         tauDileptonAnalysis( false, (*it),ev,        0 ,         0,        0 ,              0,                0); 
@@ -238,15 +216,15 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
 
      
       // WARNING : we only store WplusJets info for PFlow (HPS Pftopat based jets) 
-      if( (*it) == TString("PFlow") ){  wPlusJetAnalysis( (*it), ev, 0,0,0,0,0); }
-
+      if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev, 0,0,0,0,0); }
+      
     }
     //////////////////////////////////////////////////////////////////////////////////
 
 
   }
 
-  //SPY ///////////////
+  //SPY /////////////// FIXME: examine this
   //evR_->EndSpyEvents();
   /////////////////////
 
@@ -254,7 +232,7 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
  
   /*
   evaluatePDFUncertainty();
-  UNCOMMENT */
+  UNCOMMENT */ // FIXME: configure code for evaluation (and switch from conf file)
 
 
   if(outFile_){ 
@@ -272,17 +250,6 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::MiniEvent_t *ev, double jes , double unc, double jer, double btagunc, double unbtagunc){
@@ -314,26 +281,26 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
 
   JetCorrectionUncertainty * junc(0);   JetResolution  * jerc(0);
   unsigned int metAlgo; 
-
-  if( myKey=="PF"               ) { 
+  
+  if( myKey.Contains("PFlow")   ) { // Moved up for optimization
+    jetAlgo=event::AK5PFLOW, leptonType=event::PFLOWLEPTON; tauType = PFLOWTAU; if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PFLOWMET;  
+  } 
+  else if( myKey=="PF"               ) { 
     jetAlgo=event::AK5PF;  leptonType=event::STDLEPTON;    tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PF;   
   }
   else if( myKey.Contains("TaNC")    ) { 
     jetAlgo=event::AK5PF;   leptonType=event::STDLEPTON;   tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PF;  
   }
   else if( myKey.Contains("HPS")     ) { 
-   jetAlgo=event::AK5PF,    leptonType=event::STDLEPTON;   tauType = HPSTAU;   if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PF;  
+    jetAlgo=event::AK5PF,    leptonType=event::STDLEPTON;   tauType = HPSTAU;   if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PF;  
   } 
-  else if( myKey.Contains("PFlow")   ) { 
-   jetAlgo=event::AK5PFLOW, leptonType=event::PFLOWLEPTON; tauType = PFLOWTAU; if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PFLOWMET;  
-  } 
-
+  
 
   unsigned int jetCorr;
   if(isData_){ jetCorr = event::Reader::VTXCONSTRAINED | event::Reader::RESJECCORR; }
   else       { jetCorr = event::Reader::VTXCONSTRAINED;                             }
-
-
+  
+  
   // get physics objects ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   std::vector<PhysicsObject> vertices                 = evR_->GetVertexCollection(ev);
   std::vector<PhysicsObject> jets_without_arbitration = evR_->GetPhysicsObjectsFrom(ev,event::JET, jetAlgo  ); 
@@ -342,12 +309,15 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   std::vector<PhysicsObject> electrons                = evR_->GetPhysicsObjectsFrom(ev,event::ELECTRON, leptonType); 
   std::vector<PhysicsObject> tausColl                 = evR_->GetPhysicsObjectsFrom(ev,event::TAU);
   std::vector<PhysicsObject> taus; 
-  for(size_t iorigtau=0; iorigtau<tausColl.size(); iorigtau++){  cout << tausColl[iorigtau][17] << ", " << tauType << endl; if(tausColl[iorigtau][17] == tauType ){ taus.push_back(tausColl[iorigtau]); } }
+  for(size_t iorigtau=0; iorigtau<tausColl.size(); iorigtau++){ // Get taus from leptons collection
+    cout << tausColl[iorigtau][17] << ", " << tauType << endl; // Debug
+    if(tausColl[iorigtau][17] == tauType ){ taus.push_back(tausColl[iorigtau]); }
+  }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
   
-
-
+  
+  
+  
 
   if(vertices.size()==0){ cout<<endl<<" Vertex was zero ???????"<<endl; return; }
   PhysicsObject & primaryVertex = vertices[0];
@@ -362,51 +332,46 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
     int npv = (*classif)[2]; //intime pu vertices
     intimepuWeight_ = LumiWeights_.ITweight(npv);
 
-
-
     // why outtime pu? why this formula
     //int ave_nvtx = int((*classif)[2] + (*classif)[3])/3;
     int ave_nvtx = npv;
     if     ( pu_ == PUPLUS  ) intimepuWeight_ = intimepuWeight_*PShiftUp_.ShiftWeight( ave_nvtx );
     else if( pu_ == PUMINUS ) intimepuWeight_ = intimepuWeight_*PShiftDown_.ShiftWeight( ave_nvtx );
-
-   
   } 
   else  { intimepuWeight_ = 1;  outtimepuWeight_= 1; }
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-  // WARNING :: for testing  
-  //intimepuWeight_ = 1;
-
-
-
   //jet energy corrections ////////////////////////////////////////////////////////////////////////////////
   vector<double> jerFactors;
-  if(jerc && !fast_ ) {
-    for(unsigned int i=0;i<jets.size();i++){ 
-      double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
-      double scaleFactor(0.1);  //bias correction
-      double corr_jer(1);
-      if( jer < 0 ){ scaleFactor = 0.;  }
-      if( jer > 0 ){ scaleFactor = 0.2; }
-
-      if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
-
-      if( corr_jer < 0 ){ corr_jer = 1; }
-      jerFactors.push_back(corr_jer);
+  if(jerc){ // Split condition for optimizazion
+    if(!fast_ ) {
+      for(unsigned int i=0;i<jets.size();i++){ 
+	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
+	double scaleFactor(0.1);  //bias correction
+	double corr_jer(1);
+	if( jer < 0 ){ scaleFactor = 0.;  }
+	if( jer > 0 ){ scaleFactor = 0.2; }
+	
+	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
+	
+	if( corr_jer < 0 ){ corr_jer = 1; }
+	jerFactors.push_back(corr_jer);
+      }
     }  
-  }else if (jerc && fast_ ){ for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
+    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
+  }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-  //preselect low energy jets (this is used for MHT computation) /////////
-  DisableLtkCutOnJets(); Pt_Jet(15); 
-  jetsForTrigger_.clear();
-  PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&jetsForTrigger_,jets);
+  
+  
+  //preselect low energy jets (this is used for MHT computation in the electron channel) /////////
+  if(hasEGtrig){
+    DisableLtkCutOnJets(); Pt_Jet(15); 
+    jetsForTrigger_.clear();
+    PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&jetsForTrigger_,jets);
+  } else jetsForTrigger_.clear();
   ///////////////////////////////////////////////////////////////////////////
   
-
+  
   // preselect main objects ///////////////////////////////////////////////
   vector<int> e_init, m_init, j_init, t_init;
   PreSelectMuons(     evR_, &m_init, muons    , primaryVertex ); 
@@ -428,12 +393,18 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   // do the same cleaning for jets that will be used in MHT computation 
   vector<int> jetsForMHT_emptyColl, jetsForMHT_toRemove; 
   vector<int> jetsForMHT_afterLeptonRemoval;
-  ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &e_init, &jetsForMHT_emptyColl, jets, electrons, DRMIN_JET_E_ );
-  ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &m_init, &jetsForMHT_emptyColl, jets, muons,     DRMIN_JET_M_ );
-  ApplyCleaning(  &jetsForTrigger_, &jetsForMHT_toRemove, &jetsForMHT_afterLeptonRemoval);  
+  if(hasEGtrig){ // only for electron channel
+    ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &e_init, &jetsForMHT_emptyColl, jets, electrons, DRMIN_JET_E_ );
+    ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &m_init, &jetsForMHT_emptyColl, jets, muons,     DRMIN_JET_M_ );
+    ApplyCleaning(  &jetsForTrigger_, &jetsForMHT_toRemove, &jetsForMHT_afterLeptonRemoval);  
+  } else{
+    jetsForMHT_emptyColl.clear();
+    jetsForMHT_toRemove.clear(); 
+    jetsForMHT_afterLeptonRemoval.clear();
+  }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+  
+  
   // only accept taus if dr > drmin in respect to electrons and muons /////////////////////
   vector<int> t_toRemove;
   vector<int> t_afterLeptonRemoval; 
@@ -441,8 +412,8 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   ProcessCleaning(&t_init, &t_toRemove, &m_init, &emptyColl, taus, muons,     DRMIN_T_M_ );
   ApplyCleaning(&t_init, &t_toRemove, &t_afterLeptonRemoval);
   /////////////////////////////////////////////////////////////////////////////////////////
-
-
+  
+  
   // remove jets if dr < drmin in respect to taus ////////////////////////////////////////////////////////////
   j_toRemove.clear(); t_toRemove.clear();
   vector<int> j_final;
@@ -494,7 +465,7 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   int numb_e(0), numb_m(0);
   bool lepReq(true);
 
-  // To measure ttbar efficiencies we force EGTrig and hasMuTrig to true (it will be applied latter on)
+  // To measure ttbar efficiencies we force EGTrig and hasMuTrig to true (it will be applied later on) // FIXME: what the fuck?? Must check why, whenever doing that
   if(trigEffStudy_ ){ hasEGtrig = true; hasMutrig = true; }
   ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -507,49 +478,39 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   
   //if(hasMuTrig_) cout<<endl<<debug<<" has muon trigger... "<<endl;
 
-
+  
   TVectorD * classifMC(0);
   // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////
   // fill weighted events and reset selected events vector weights
   if( !isData_ && pdfweights_ && !jes && !unc && !jer && !btagunc){
     event::MiniEvent_t *evMC = evRMC_->GetNewMiniEvent(i_,"mc");  if( evMC == 0 ){ cout<<"\n empty event"<<endl; return;}
     classifMC = (TVectorD *)evMC->eventClassif->At(0);
-
     //originalPDFEvents_ += 1.*w_;
     originalPDFEvents_ += 1.;  
-
     if( weightedPDFEvents_.size() == 0 ){
       for(int i=14; i<classifMC->GetNoElements();i++ ){
-
-
-        //weightedPDFEvents_.push_back( ( (*classifMC)[i])*w_  );
+	//weightedPDFEvents_.push_back( ( (*classifMC)[i])*w_  );
         weightedPDFEvents_.push_back( ( (*classifMC)[i]) );
-
-        weightedPDFSelectedEvents_.push_back(0);
+	weightedPDFSelectedEvents_.push_back(0);
         weighted2PDFSelectedEvents_.push_back(0);
       }
     }
-
     //else{ for(int i=6; i<classifMC->GetNoElements();i++ ){ weightedPDFEvents_[i-6] += ((*classifMC)[i])*w_ ; } }
     else{ for(int i=14; i<classifMC->GetNoElements();i++ ){ weightedPDFEvents_[i-14] += (*classifMC)[i] ; } }
-
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
+  
   // see if we are processing electron channel or muon channel /////////////////////////////////
   if (  ( !eChONmuChOFF_ && evType_ == ETAU_) || (eChONmuChOFF_ && evType_ == MUTAU_  ) ) return;
   //////////////////////////////////////////////////////////////////////////////////////////////
-
-
+  
+  
   // are triggers exclusive ?///////////////////////////////////////////////////
   //if( hasEGtrig && hasMuTrig ){ if( num_e==1 && numb_m== 1 ){ evType_ = EMU_; }
   //////////////////////////////////////////////////////////////////////////////
-
-
+  
+  // is muon/electron veto satisfied? ///////////////////////////////////////////////////////////////////
   if( numb_e + numb_m != 1){  lepReq=false; }
-
   if(      lepReq && evType_ == MUTAU_){
     if( LooseMuonVeto( m_init[0], muons )           ){ lepReq=false; }   //see if we have loose muons
     if( LooseElectronVeto(evR_,-1,electrons)        ){ lepReq=false; }   //see if we have loose electrons
@@ -560,14 +521,14 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
     if( LooseElectronVeto(evR_,e_init[0],electrons) ){ lepReq=false; }   //see if we have loose electrons
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+  
+  
   // MHT computation ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   mht_=-2; mhtb_=-2; //initial value 
   if     (   lepReq && evType_ == MUTAU_ ){ computeMHT( jets, jetsForMHT_afterLeptonRemoval, muons[0]);      computeMHTb( jets, jetsForMHT_afterLeptonRemoval); }
   else if(   lepReq && evType_ == ETAU_  ){ computeMHT( jets, jetsForMHT_afterLeptonRemoval, electrons[0]);  computeMHTb( jets, jetsForMHT_afterLeptonRemoval); }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+  
 
   if(newPhys){ newPhysics(vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey,ev);}
   
@@ -586,7 +547,7 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
   std::vector<PhysicsObject> & electrons, vector<int>  & e_init,
   std::vector<PhysicsObject> & taus,      vector<int>  & t_afterLeptonRemoval, 
   std::vector<PhysicsObject> & jets,      vector<int>  & j_final, 
-  int totalJets, JetCorrectionUncertainty * junc, vector<double> & jerFactors, 
+  int totalJets, JetCorrectionUncertainty* junc, vector<double> & jerFactors, 
   TString myKey, event::MiniEvent_t *ev
 ) {
 
@@ -632,9 +593,9 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
   
   TString mcTag(""); 
   if( !isData_ ){ mcTag = myKey + TString(" yields mc");  myMCMon = tauDileptonMCYieldsMons_[myKey]; }
-  SelectionMonitor & mon    = *myMon;
-  SelectionMonitor & mcmon  = *myMCMon;
-  SelectionMonitor & debmon = *(tauDileptonDebugMons_[myKey]);
+  SelectionMonitor& mon    = *myMon;
+  SelectionMonitor& mcmon  = *myMCMon;
+  SelectionMonitor& debmon = *(tauDileptonDebugMons_[myKey]);
 
   
   // mini tree stats /////////////////////////////////////////////////////////////////
