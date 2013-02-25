@@ -68,7 +68,7 @@ cvs co -r V01-09-05 RecoLocalTracker/SubCollectionProducers
 
 
 # LIP/TopTaus code for analysis. 2012 is HEAD now
-#cvs co -d LIP/TopTaus UserCode/LIP/TopTaus
+cvs co -d LIP/TopTaus UserCode/LIP/TopTaus
 
 
 
