@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.10 2013/02/24 12:13:48 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.11 2013/02/25 11:19:40 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -100,6 +100,8 @@ int main(int argc, char* argv[])
   //  else if(runOn == "trigger_mht")         analyzer->process_trigger_mht()        ;
   //  else if(runOn == "trigger_mhtjets")     analyzer->process_trigger_mhtjets()    ;
   else if(runOn == "ttbar_mutau")         analyzer->process_ttbar_mutau()    ;
+  else if(runOn == "ttbar_mumu")          analyzer->process_ttbar_mumu()    ;
+  else if(runOn == "ttbar_emu")           analyzer->process_ttbar_emu()    ;
   else if(runOn == "ttbar_ddbkg")         analyzer->process_ttbar_ddbkg()    ;
   else if(runOn == "ttbar_mcbkg")         analyzer->process_ttbar_mcbkg()    ;
   else if(runOn == "ttbar_unc")           analyzer->process_ttbar_unc()          ;
@@ -144,7 +146,7 @@ int main(int argc, char* argv[])
     a.parse(samples,met,outFolder);      
     a.parse(samples,leptons,outFolder);  
     //a.parse(samples,limits,outFolder);      
-    a.parse(samples,mt,outFolder);      
+    //    a.parse(samples,mt,outFolder);      
     a.parse(samples,yields,outFolder);
     a.parse(samples,jets,outFolder); 
     //a.parse(samples,debug,outFolder);  

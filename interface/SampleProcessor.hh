@@ -81,6 +81,9 @@ public :
   void process_ttbar();
   //  void process_ttbar_bychannel();
   void process_ttbar_mutau();
+  void process_ttbar_mumu();
+  void process_ttbar_emu();
+  //  void process_ttbar_ee(); // ee and etau without electron trigger is not worth
   void process_ttbar_ddbkg();
   void process_ttbar_mcbkg();
   void process_singletop();

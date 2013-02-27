@@ -6,7 +6,7 @@
   
   \author   Pietro Vischia, pietro.vischia@gmail.com
 
-  \version  $Id: CutflowAnalyzer.hh,v 1.3 2013/02/11 15:03:12 vischia Exp $                                                                                                       
+  \version  $Id: CutflowAnalyzer.hh,v 1.4 2013/02/25 11:19:40 vischia Exp $                                                                                                       
 */
 
 // System headers
@@ -57,9 +57,21 @@ public:
   
   // TAU DILEPTON ANALYSIS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   void tauDileptonAnalysis( bool, TString, event::MiniEvent_t*, double, double, double, double, double);
+  void dileptonAnalysis( bool, TString, event::MiniEvent_t*, double, double, double, double, double);
   void    wPlusJetAnalysis( TString, event::MiniEvent_t*,double, double, double, double, double);
   
   void tauDileptonEventAnalysis(
+				bool,
+				vector<PhysicsObject>&,
+				std::vector<PhysicsObject>&, vector<int>&,  
+				std::vector<PhysicsObject>&, vector<int>&,
+				std::vector<PhysicsObject>&, vector<int>&, 
+				std::vector<PhysicsObject>&, vector<int>&, int, JetCorrectionUncertainty*, vector<double>&, 
+				TString,
+				event::MiniEvent_t*
+				);
+  
+void dileptonEventAnalysis(
 				bool,
 				vector<PhysicsObject>&,
 				std::vector<PhysicsObject>&, vector<int>&,  

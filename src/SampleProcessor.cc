@@ -698,6 +698,29 @@ void SampleProcessor::process_ttbar_mutau(){
   process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_mutau.root"),keys_, MUTAU_ ); 
 }
 
+void SampleProcessor::process_ttbar_mumu(){
+
+  url_= TTBAR_URL;
+
+
+  //  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_etau.root"),keys_,  ETAU_  );    
+  //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mutau.root"),keys_, MUTAU_ ); 
+  //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mutau.root"),keys_, MUTAU_ ); 
+  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_mumu.root"),keys_, MUMU_ ); 
+}
+
+void SampleProcessor::process_ttbar_emu(){
+
+  url_= TTBAR_URL;
+
+
+  //  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_etau.root"),keys_,  ETAU_  );    
+  //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mutau.root"),keys_, MUTAU_ ); 
+  //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mutau.root"),keys_, MUTAU_ ); 
+  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_emu.root"),keys_, EMU_ ); 
+}
+
+
 void SampleProcessor::process_ttbar_ddbkg(){
 
   url_= TTBAR_URL;

@@ -429,6 +429,30 @@ namespace event{
       
     };
 
+
+  
+//  class PhysicsEvent{
+//  public:
+//    PhysicsEvent(MiniEvent_t*);
+//    TVectorD* trig;
+//    TVectorD* classif; 
+//    std::vector<PhysicsObject> jets_without_arbitration;
+//    std::vector<PhysicsObject> vertices;
+//    std::vector<PhysicsObject> jets;
+//    std::vector<PhysicsObject> muons;
+//    std::vector<PhysicsObject> electrons;
+//    PhysicsObjectCollection mets;
+//    // tau collection are needed for extracting the taus from the list of jets for trigger efficiencies considerations
+//    std::vector<PhysicsObject> tausColl;
+//    std::vector<PhysicsObject> taus; 
+//
+//  private:
+//    
+//    
+//  };
+
+
+
 }
 
 #endif // _MiniEvent_hh

@@ -11,7 +11,7 @@
 
 
   <!-- tau pt and eta distribition (After OS ) -->
-
+<!--
   <id tag="muCh_pt_t_1t" doratio="0" logy="1" cmspublic="y" opt="e1" oflow="1" uflow="0" xbin="4" title="" ytitle="Events / 5 GeV"
   xtitle="p^{#tau}_{T} [GeV]" yrange="0.1,30" xrange="20,150">
     <item dir="PFlow/RecoSteps/lep_tau/1 Tau">pt_t_7</item>
@@ -21,7 +21,7 @@
     <item dir="PFlow/RecoSteps/lep_tau/1 Tau">eta_t_7</item>
   </id> 
 
-
+-->
 
 
 <!-- R after OS -->

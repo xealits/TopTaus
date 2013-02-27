@@ -43,6 +43,8 @@ qsub ./job-singletop.sh
 #qsub ./job-trigger-mht.sh
 #qsub ./job-trigger-mhtjets.sh
 qsub ./job-ttbar-mutau.sh
+qsub ./job-ttbar-mumu.sh
+qsub ./job-ttbar-emu.sh
 qsub ./job-ttbar-ddbkg.sh
 qsub ./job-ttbar-mcbkg.sh
 #qsub ./job-ttbar-unc.sh

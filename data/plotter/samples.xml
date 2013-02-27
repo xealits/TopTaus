@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <samples>
 
-<!-- FIXME: move full file path to .cc, in order to set it via config file. Leave here only the naked name of the rootfile -->
 
    <process isstack="1" isdata="0" name="t#bar{t} #rightarrow #mu#tau_{h}" color="614" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
      <file weight="1">/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-ttbar_mutau.root</file>
+   </process>
+
+   <process isstack="1" isdata="0" name="t#bar{t} #rightarrow #mu#mu" color="616" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
+     <file weight="1">/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-ttbar_mumu.root</file>
+   </process>
+
+   <process isstack="1" isdata="0" name="t#bar{t} #rightarrow e#mu" color="618" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
+     <file weight="1">/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-ttbar_emu.root</file>
    </process>
 
 

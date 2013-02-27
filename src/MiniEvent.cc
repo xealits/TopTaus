@@ -327,4 +327,32 @@ namespace event
     if(HasArbitration(jetArbitration,event::Reader::BTAGORDERED) ) sort(arbitratedJets.begin(),arbitratedJets.end(),PhysicsObject::BtagOrder);
     return arbitratedJets;
   }
+
+
+  // FIXME: mix of event::Reader and MiniEvent_t. Take 
+//  PhysicsEvent::PhysicsEvent(MiniEvent_t* ev,
+//			     unsigned int jetAlgo, unsigned int jetCorr,
+//			     unsigned int leptonAlgo, unsigned int metAlgo,
+//			     unsigned int tauType){
+//    trig = (TVectorD *)ev->triggerColl->At(0);
+//    classif = (TVectorD *)ev->eventClassif->At(0);
+//    jets_without_arbitration = evR_->GetPhysicsObjectsFrom(ev,event::JET, jetAlgo  ); 
+//    vertices                 = evR_->GetVertexCollection(ev);
+//    jets                     = evR_->GetJetsWithArbitration( jets_without_arbitration, jetCorr ); 
+//    muons                    = evR_->GetPhysicsObjectsFrom(ev,event::MUON, leptonAlgo);
+//    electrons                = evR_->GetPhysicsObjectsFrom(ev,event::ELECTRON, leptonAlgo);
+//    mets                        = evR_->GetPhysicsObjectsFrom(ev,event::MET,metAlgo);
+//    // tau collection are needed for extracting the taus from the list of jets for trigger efficiencies considerations
+//    tausColl                 = evR_->GetPhysicsObjectsFrom(ev,event::TAU);
+//    taus.clear(); 
+//    for(size_t iorigtau=0; iorigtau<tausColl.size(); iorigtau++){ 
+//      if(tausColl[iorigtau][17] == tauType ){ taus.push_back(tausColl[iorigtau]); }
+//    } 
+//    
+//  }
+
+
+
+
+
 }
