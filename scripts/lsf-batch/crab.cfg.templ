@@ -1,0 +1,21 @@
+# Pietro Vischia. Imported from 2011 light charged higgs
+[CRAB]
+jobtype = cmssw
+scheduler = lsf
+# lsf scheduler runs on lxplus batch (must be at lxplus)
+use_server = 0
+
+[LSF]
+queue = 8nh
+
+[CMSSW]
+datasetpath = None
+pset = None
+output_file = m_100.root
+total_number_of_events = 400
+number_of_jobs = 50
+
+[USER]
+script_exe = m_100.sh
+additional_input_files = combine,card_m100.root
+return_data = 1
