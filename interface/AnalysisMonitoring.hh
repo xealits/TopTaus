@@ -6,7 +6,7 @@
   
   \author   Pietro Vischia, pietro.vischia@gmail.com
 
-  \version  $Id: AnalysisMonitoring.hh,v 1.3 2013/02/08 15:20:45 vischia Exp $                                                                                                       
+  \version  $Id: AnalysisMonitoring.hh,v 1.4 2013/02/21 16:24:02 vischia Exp $                                                                                                       
 */
 
 // System headers
@@ -38,7 +38,7 @@ class AnalysisMonitoring : public TauDileptonTableBuilder, public HistogramBuild
   
 public:
   
-  AnalysisMonitoring(double tauPtCut) :  TauDileptonTableBuilder(), HistogramBuilder(), SampleProcessor(tauPtCut) { outFile_=0; }
+  AnalysisMonitoring(double tauPtCut, TString inputArea, TString outputArea) :  TauDileptonTableBuilder(), HistogramBuilder(), SampleProcessor(tauPtCut, inputArea, outputArea) { outFile_=0; }
   
   void buildStructures();
   void buildTrees(TFile*);

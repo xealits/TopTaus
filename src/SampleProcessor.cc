@@ -8,7 +8,12 @@
 
 
 
-  SampleProcessor::SampleProcessor(double tauPtCut) {
+SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString outputArea):
+  sampleTauPtCut_(tauPtCut)
+{
+  
+  commondefinitions::inputArea_ = inputArea;
+  commondefinitions::outputArea_ = outputArea;
     
     outFile_=0;
     
@@ -18,8 +23,6 @@
     //pdfweights_=true;
     pdfweights_=false; // this should allways be false, it will be overwritten by the process_ttbar
 
-    sampleTauPtCut_ = tauPtCut;
-    
     jetpgid_=JETPGID_OLD;
 
     fast_=true;
@@ -56,8 +59,8 @@
 
     // Temp 2012
     //    oFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/");
-    oFolder_ = TString("/soft/lip-sw/cmssw/users/vischia/tau_dilepton/code/devel/CMSSW_5_3_7_patch4/src/LIP/TopTaus/tempOutputs/");
-    iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");
+    oFolder_ = TString(commondefinitions::outputArea_);
+    iFolder_ = TString(commondefinitions::inputArea_);
     //    iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/mc/minitrees-muon-Fall11/");
     //    iFolder_ = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/first2011/");
 
@@ -83,25 +86,24 @@
     oFolder_ += mtStr+vers+TString("mc-")+lepStr+bwStr+TString(data)+TString("/");
     
 
-    if( eChONmuChOFF_ ) iDFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/data/mTrees-v3-B/");  
+    if( eChONmuChOFF_ ) iDFolder_ = TString(commondefinitions::inputArea_);  
     //else              iDFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/data/mTrees-v3/");  
     //   else                iDFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/data/minitrees-muon-2011/");  
     // Temp 2012
-    else                iDFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");  
+    else                iDFolder_ = TString(commondefinitions::inputArea_);  
 
 
     // LIP
     //if( run2012_ ) iDFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_8_patch4b/data/minitrees-muon-2011-newTau/");  
     //oDFolder_  = TString("/afs/cern.ch/work/n/nalmeida/private/CMSSW_5_2_5/src/lipcms/Physics/TopTauDileptons2012/test");
 
-    if( run2012_ ) iDFolder_ = TString("/lustre/lip.pt/data/cmslocal/fnguyen/");  
     // Temp 2012
-    if( run2012_ ) iDFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");  
+    if( run2012_ ) iDFolder_ = TString(commondefinitions::inputArea_);  
     //if( run2012_ ) iDFolder_ = TString("/lip-sw/cmssw/users/nalmeida/new/CMSSW_5_2_5/src/lipcms/Physics/TopTauDileptons2012/mt-2012-V1-data-MU-20GeV/");  
     //    oDFolder_  = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/");
     // Temp 2012
     //   oDFolder_  = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/");
-    oDFolder_  = TString("/soft/lip-sw/cmssw/users/vischia/tau_dilepton/code/devel/CMSSW_5_3_7_patch4/src/LIP/TopTaus/tempOutputs/");
+    oDFolder_  = TString(commondefinitions::outputArea_);
 
 
 // Fall 2010 samples   : https://twiki.cern.ch/twiki/bin/viewauth/CMS/ProductionFall2010

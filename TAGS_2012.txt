@@ -66,6 +66,9 @@ cvs co -r V01-09-05 RecoLocalTracker/SubCollectionProducers
 #addpkg DataFormats/VertexReco V02-00-04      
 ##addpkg DataFormats/StdDictionaries V00-02-14 
 
+# For JER
+cvs co CondFormats/JetMETObjects
+
 
 # LIP/TopTaus code for analysis. 2012 is HEAD now
 cvs co -d LIP/TopTaus UserCode/LIP/TopTaus

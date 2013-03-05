@@ -124,8 +124,13 @@ namespace commondefinitions{
   double LUM_ = 17980.27; // 2012 ABCD
 
   int BTAGIND_; double BTAG_CUT_;
+  TString puFileName_;
   /////////////////////////////////////////////////////////////////////
-
+  
+  // I/O
+  TString inputArea_;
+  TString outputArea_;
+  //////
  // namespace commondefinitions
   
 }

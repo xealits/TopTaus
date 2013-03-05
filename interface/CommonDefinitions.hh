@@ -4,6 +4,8 @@
 // Sample enums and such can (and should) remain here
 // xsecs and their errors should remain here. Or in SampleProcessor.
 
+#include <TString.h>
+
 namespace commondefinitions{
 
   enum tanc_fr_Disc     { TANCFR_ONE   = 24, TANCFR_HALF   = 25, TANCFR_QUARTER = 26, TANCFR_TENTH = 27 };
@@ -263,8 +265,14 @@ namespace commondefinitions{
   // extern double LUM_ = 4625.21;
   extern double LUM_;
   extern int BTAGIND_; extern double BTAG_CUT_;
+  extern TString puFileName_; // Pileup file
   /////////////////////////////////////////////////////////////////////
-
+  
+  // I/O areas
+  extern TString inputArea_;
+  extern TString outputArea_;
+  //
+  
  // namespace commondefinitions
 }  
 #endif // _CommonDefinitions_hh

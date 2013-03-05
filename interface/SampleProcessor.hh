@@ -34,7 +34,7 @@ public :
   /*
     Fills default X sections 
   */
-  SampleProcessor( double);
+  SampleProcessor( double, TString, TString);
 
 
   /*

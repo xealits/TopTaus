@@ -12,22 +12,26 @@
 
 using namespace std;
 
-CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis) : UncertaintyCalculator(),  
-									   AnalysisMonitoring(tauPtCut), 
-									   ObjectSelector(tauPtCut),
-									   noUncertainties_(noUncertainties),
-									   doWPlusJetsAnalysis_(doWPlusJetsAnalysis) 
+CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis, TString inputArea, TString outputArea, TString puFileName) : UncertaintyCalculator(),  
+																				AnalysisMonitoring(tauPtCut, inputArea, outputArea), 
+																				ObjectSelector(tauPtCut),
+																				noUncertainties_(noUncertainties),
+																				doWPlusJetsAnalysis_(doWPlusJetsAnalysis),
+																				testMe_(0),
+																				testMe_Nev_(0)
 {    
   
-  testMe_=0;
-  testMe_Nev_=0;
-  
+  //  inputArea_  = inputArea; // Moved to AnalysisMonitoring -> SampleProcessor // FIXME: check if it is possible to initialize them in the constructor init list
+  //  outputArea_ = outputArea;
+  puFileName_ = puFileName ;
+    
+ 
   // Acquire pileup weights
   float dataDist[50] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.}; 
   TFile* dataWeightsFile;
-  if(run2012_) dataWeightsFile = new TFile("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/data/pileup/MyDataPileupHistogram_All_73500.root"); //MyDataPileupHistogram_All_70500.root");//MyDataPileupHistogram_All_73500.root");
+  if(run2012_) dataWeightsFile = new TFile(puFileName_); //MyDataPileupHistogram_All_70500.root");//MyDataPileupHistogram_All_73500.root");
   //  else dataWeightsFile = new TFile("");
-  if(!dataWeightsFile){ cout<<endl<<"File : /lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/data/pileup/2012full_DataPileupHistogram.root not found or run2012_ not set."<<endl; exit(0);}
+  if(!dataWeightsFile){ cout<<endl<<"File : " << puFileName_ << " not found or run2012_ not set."<<endl; exit(0);}
   TH1D* hist = (TH1D*) dataWeightsFile->Get("pileup");
   for(int i=0; i<50;i++)
     dataDist[i]=hist->GetBinContent(i+1);
@@ -315,7 +319,7 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   std::vector<PhysicsObject> tausColl                 = evR_->GetPhysicsObjectsFrom(ev,event::TAU);
   std::vector<PhysicsObject> taus; 
   
-  cout << "tau size tausColl.size(): " << tausColl.size() << " PFLOWTAU: " << PFLOWTAU << ", PFTAU: " << PFTAU << " HPSTAU: " << HPSTAU << endl; // Debug
+  //  cout << "tau size tausColl.size(): " << tausColl.size() << " PFLOWTAU: " << PFLOWTAU << ", PFTAU: " << PFTAU << " HPSTAU: " << HPSTAU << endl; // Debug
   
   for(size_t iorigtau=0; iorigtau<tausColl.size(); iorigtau++){ // Get taus from leptons collection
     cout << tausColl[iorigtau][17] << ", " << tauType << endl; // Debug 

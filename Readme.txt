@@ -93,6 +93,9 @@ Produce tables
 physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch for higgs/non-higgs
 
 CHANGELOG for major updates:
+2012-03-05: ported to NCG
+	    improved lip-batch scripting system: now the user path is set once only in submit-jobs.sh
+	    I/O and PU filenames moved to cfg files
 2012-02-24: fixes: plotter perfectly working
 2013-02-22: plotter and table added and integrated into physicsAnalysis.
 2013-02-13: updated with 2012 cross sections - must check sample-specific ones
@@ -123,8 +126,6 @@ TODO:
 
 - Write a sed script for changing paths in scripts in a single command soon.
 
-- Change output file paths to be read from the cfg file soon. Soon.
-
 - Edit combineResults.sh to give as an input a user defined directory and eventually copy stuff
 
 - btagmulticorrected splitting by leadjet/nlj/nnlj
@@ -154,6 +155,7 @@ TODO:
                  --> move hardcoded parameters to configuration file via edm::ParameterSet (minimize the need for recompiling)
 		 --> import batch submission and modify process in order to run on a given subset of events.
 		     (add s.th like void processEvents(uint firstEv, uint lastEv, string dataset){ if(string...) CutflowAnalyzer::process_ttbar(.. process(firstEv, lastEv) ..)  }
+		     Doing that needs to redefine the total number of events in the event reweighting according to xsec and N_mc_evts
 
 - MVA code --> port to binary and commit
 
