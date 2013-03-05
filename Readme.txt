@@ -70,10 +70,8 @@ Run physicsAnalysis - this corresponds to the PhysicsAnalyzer code
   (where "sample" is ttbar, wjets, etc. Strings can be found in bin/physicsAnalysis.cc)
 - on the LIP batch:
   cd scripts/lip-batch/
-  EDIT all the job-*.sh in order to change the script path to your local installation.
-  Writing soon a sed script for doing that in a single command soon.
-  EDIT the *output* paths in src/SampleProcessor.cc. The input are fixed (53X production)
-  Changing soon that to read from the cfg file soon. Soon.
+  EDIT submit-jobs.sh in order to change the script path to your local installation.
+  EDIT the *output* paths in test/physicsAnalysisParSets_cfg.py . The input are fixed (53X production)
   sh submit-jobs.sh
   EDIT combineResults.sh to the output directory you do want
   RUN lipcms/Plotter2012/Plotter.C as you wish
