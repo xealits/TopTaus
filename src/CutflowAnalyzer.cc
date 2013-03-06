@@ -1658,13 +1658,13 @@ void CutflowAnalyzer::dileptonEventAnalysis(
   
   // mini tree stats /////////////////////////////////////////////////////////////////
   
-  if( myMCMon ){ mcmon.fill2DHisto( evYieldsMC , mcTag, MINITREE_STEP1, tauDilCh,w_); }  
+  if( myMCMon ){ mcmon.fill2DHisto( evYieldsMC , mcTag, DIL_MINITREE_STEP1, tauDilCh,w_); }  
   
   //cout<<" EvYields is "<<evYields<<" key is "<<(myKey+TString(" lep_tau yields"))<<" step is "<<MINITREE_STEP2<<" weight is "<<w_<<endl;
   
-  mon.fillHisto(evYields, myKey+TString(" lep_tau yields"),MINITREE_STEP2,w_);
-  mon.fillHisto(evYields, myKey+TString(" e_tau yields"),  MINITREE_STEP2,w_); 
-  mon.fillHisto(evYields, myKey+TString(" m_tau yields"),  MINITREE_STEP2,w_);
+  mon.fillHisto(evYields, myKey+TString(" lep_tau yields"),DIL_MINITREE_STEP2,w_);
+  mon.fillHisto(evYields, myKey+TString(" e_tau yields"),  DIL_MINITREE_STEP2,w_); 
+  mon.fillHisto(evYields, myKey+TString(" m_tau yields"),  DIL_MINITREE_STEP2,w_);
   ///////////////////////////////////////////////////////////////////////////////////
   
   
@@ -1793,12 +1793,12 @@ void CutflowAnalyzer::dileptonEventAnalysis(
 
 
   // events with 1 lepton /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  for( size_t itag=0; itag<evTags.size();  itag++ ) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),LEP_STEP2,w_); 
+  for( size_t itag=0; itag<evTags.size();  itag++ ) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),DIL_LEP_STEP2,w_); 
   if (terr){
-    for( size_t itag=0; itag<evTags.size(); itag++ ) mon.fillHisto(triggErr , evTags[itag]+TString(" yields"),LEP_STEP2,errorOnEff);
-    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,LEP_STEP2,tauDilCh,errorOnEff); }
+    for( size_t itag=0; itag<evTags.size(); itag++ ) mon.fillHisto(triggErr , evTags[itag]+TString(" yields"),DIL_LEP_STEP2,errorOnEff);
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_LEP_STEP2,tauDilCh,errorOnEff); }
   }
-  if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,LEP_STEP2,tauDilCh,w_); }
+  if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_LEP_STEP2,tauDilCh,w_); }
   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"init",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1807,13 +1807,13 @@ void CutflowAnalyzer::dileptonEventAnalysis(
   // events with at least 2 leptons (replace 1 jet) //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if((*p_i).size() <2 ) return;
   //  if(j_final.size()==0) return;
-  for(size_t itag=0; itag<evTags.size() ; itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),JET1_STEP2,w_); 
+  for(size_t itag=0; itag<evTags.size() ; itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),DIL_JET1_STEP2,w_); 
   
   if (terr){
-    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),JET1_STEP2,errorOnEff);
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET1_STEP2,tauDilCh,errorOnEff); }
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),DIL_JET1_STEP2,errorOnEff);
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_JET1_STEP2,tauDilCh,errorOnEff); }
   }
-  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,JET1_STEP2,tauDilCh,w_); }
+  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_JET1_STEP2,tauDilCh,w_); }
   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 2 leptons",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1828,25 +1828,25 @@ void CutflowAnalyzer::dileptonEventAnalysis(
   if( dileptonMass < 12 ){ return; } // Low dilepton mass resonances
   if( fabs( dileptonMass - 91) < 15  ){ return; } // Z mass window
   
-  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"), MT_STEP2,w_);  
+  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"), DIL_MT_STEP2,w_);  
   if (terr){
-    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),MT_STEP2,errorOnEff);
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,MT_STEP2,tauDilCh,errorOnEff); }
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),DIL_MT_STEP2,errorOnEff);
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_MT_STEP2,tauDilCh,errorOnEff); }
   }
-  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,MT_STEP2,tauDilCh,w_);}
-  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MT",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_MT_STEP2,tauDilCh,w_);}
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"Z and low mass veto",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
   
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
 
   // events with at least 2 jets///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if(j_final.size()<2 ) return;                                       
-  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),JET2_STEP2,w_);  
+  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),DIL_JET2_STEP2,w_);  
   if (terr){
-    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),JET2_STEP2,errorOnEff);
-    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET2_STEP2,tauDilCh,errorOnEff); }
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),DIL_JET2_STEP2,errorOnEff);
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_JET2_STEP2,tauDilCh,errorOnEff); }
   }
-  if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,JET2_STEP2,tauDilCh, w_);}
+  if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_JET2_STEP2,tauDilCh, w_);}
   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 2 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2094,24 +2094,24 @@ void CutflowAnalyzer::dileptonEventAnalysis(
   // events with at least 2 jets+1 jet>20GeV ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // number of jets above jet pt cut and extra jet between tau pt and jet pt cut 
   if( j_final.size() + totalJets <3) return;
-  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields ,evTags[itag]+TString(" yields"),    JET3_STEP2,w_);  
+  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields ,evTags[itag]+TString(" yields"),    DIL_JET3_STEP2,w_);  
   if (terr){ 
-    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),JET3_STEP2,errorOnEff);  
-    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET3_STEP2,tauDilCh,errorOnEff); }
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_JET3_STEP2,errorOnEff);  
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_JET3_STEP2,tauDilCh,errorOnEff); }
   }
-  if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,JET3_STEP2,tauDilCh,w_);}
+  if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_JET3_STEP2,tauDilCh,w_);}
   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 3 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
   // events passing MET cut //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if( metValue < MET_CUT_) return;
-  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),    MET_STEP2,w_);  
+  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),    DIL_MET_STEP2,w_);  
   if (terr){
-    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),MET_STEP2,errorOnEff);
-    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,MET_STEP2,tauDilCh,errorOnEff); }
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),DIL_MET_STEP2,errorOnEff);
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_MET_STEP2,tauDilCh,errorOnEff); }
   }
-  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,MET_STEP2,tauDilCh,w_);}
+  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_MET_STEP2,tauDilCh,w_);}
   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MET",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);  
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2220,12 +2220,12 @@ void CutflowAnalyzer::dileptonEventAnalysis(
 
   // 1 btag option ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if( nbtag1 ) {
-    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    BTAG1_STEP2, w_); 
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    DIL_BTAG1_STEP2, w_); 
     if (terr){
-      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),BTAG1_STEP2, errorOnEff);  
-      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,BTAG1_STEP2,tauDilCh,errorOnEff); }
+      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_BTAG1_STEP2, errorOnEff);  
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_BTAG1_STEP2,tauDilCh,errorOnEff); }
     }
-    if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,BTAG1_STEP2,tauDilCh,w_); } 
+    if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_BTAG1_STEP2,tauDilCh,w_); } 
     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"1 btag",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2235,13 +2235,13 @@ void CutflowAnalyzer::dileptonEventAnalysis(
 
   // TAU ID selection step //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if(nbtag1 && taucut){
-    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    TAU_STEP2,w_);  
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    DIL_TAU_STEP2,w_);  
     if (terr){
-      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),TAU_STEP2, errorOnEff); 
-      if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,TAU_STEP2,tauDilCh,errorOnEff); }
+      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_TAU_STEP2, errorOnEff); 
+      if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_TAU_STEP2,tauDilCh,errorOnEff); }
     }
 
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,TAU_STEP2,tauDilCh,w_); }
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_TAU_STEP2,tauDilCh,w_); }
     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"1 Tau",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
 
     
@@ -2272,13 +2272,13 @@ void CutflowAnalyzer::dileptonEventAnalysis(
 
   if(  nbtag1 && taucut && oscut ){
 
-    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),OS_STEP2,w_);
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),DIL_OS_STEP2,w_);
     if (terr){
-      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),OS_STEP2, errorOnEff);
-      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,OS_STEP2,tauDilCh,errorOnEff); }
+      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_OS_STEP2, errorOnEff);
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_OS_STEP2,tauDilCh,errorOnEff); }
     }
 
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,OS_STEP2,tauDilCh,w_); }
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_OS_STEP2,tauDilCh,w_); }
     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"OS",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
 
 
@@ -2313,12 +2313,12 @@ void CutflowAnalyzer::dileptonEventAnalysis(
 
     // Polarization //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if( numbProngs==1 && r > 0.7 ){
-      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),R_STEP2,w_);
+      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),DIL_R_STEP2,w_);
       if (terr){
-        for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),R_STEP2, errorOnEff);
-        if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,OS_STEP2,tauDilCh,errorOnEff); }
+        for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_R_STEP2, errorOnEff);
+        if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_OS_STEP2,tauDilCh,errorOnEff); }
       }
-      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,R_STEP2,tauDilCh,w_); }
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_R_STEP2,tauDilCh,w_); }
       fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"R",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2328,12 +2328,12 @@ void CutflowAnalyzer::dileptonEventAnalysis(
 
   
   if( taucut && oscut && nbtag2 ){
-    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),BTAG2_STEP2,w_); 
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),DIL_BTAG2_STEP2,w_); 
     if (terr){
-      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),BTAG2_STEP2, errorOnEff); 
-       if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,BTAG2_STEP2,tauDilCh,errorOnEff); }
+      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_BTAG2_STEP2, errorOnEff); 
+       if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_BTAG2_STEP2,tauDilCh,errorOnEff); }
     }
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,BTAG2_STEP2,tauDilCh,w_); } 
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_BTAG2_STEP2,tauDilCh,w_); } 
     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"2 btag",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
   }
 
