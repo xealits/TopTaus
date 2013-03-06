@@ -122,10 +122,6 @@ TODO:
 - move full file path from sample.xml to the parser/plotter: idea is to manage it via config file centrally 
   with each call of physicsAnalysis, and leave in the xml only the file name without path
 
-- Write a sed script for changing paths in scripts in a single command soon.
-
-- Edit combineResults.sh to give as an input a user defined directory and eventually copy stuff
-
 - btagmulticorrected splitting by leadjet/nlj/nnlj
 
 - split JEC uncertainty sources into the 16 components.

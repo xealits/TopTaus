@@ -1,7 +1,8 @@
 #!/bin/bash
 
-DATAPLACE="/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/"
-DATAPLACE="/soft/lip-sw/cmssw/users/vischia/tau_dilepton/code/devel/CMSSW_5_3_7_patch4/src/LIP/TopTaus/temp73500/nomt-2012-V1-mc-MU-20GeV/"
+# usage: sh combineResults.sh outputArea
+
+DATAPLACE="${1}/nomt-2012-V1-mc-MU-20GeV/"
 
 cd $DATAPLACE
 
@@ -63,9 +64,7 @@ hadd -f $DATAPLACE/out-allmcbkg.root $DATAPLACE/out-ttbar.root $DATAPLACE/out-mc
 #hadd -f $DATAPLACE/out-higgs-pythia-m160.root $DATAPLACE/out-hh-pythia-m160.root $DATAPLACE/out-wh-pythia-m160.root
 #hadd -f $DATAPLACE/out-higgs-pythia-m160_mutau.root $DATAPLACE/out-hh-pythia-m160_mutau.root $DATAPLACE/out-wh-pythia-m160_mutau.root
 
-DATAPLACE="/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-data-MU-20GeV/"
-DATAPLACE="/soft/lip-sw/cmssw/users/vischia/tau_dilepton/code/devel/CMSSW_5_3_7_patch4/src/LIP/TopTaus/temp73500/nomt-2012-V1-data-MU-20GeV/"
-
+DATAPLACE="${1}/nomt-2012-V1-data-MU-20GeV/"
 
 #DATAPLACE="/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"
 
