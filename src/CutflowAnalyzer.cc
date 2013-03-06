@@ -1814,10 +1814,30 @@ void CutflowAnalyzer::dileptonEventAnalysis(
     if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET1_STEP2,tauDilCh,errorOnEff); }
   }
   if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,JET1_STEP2,tauDilCh,w_); }
-  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 1 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 2 leptons",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+  int firstLepInd = (*p_i)[0];
+  int secondLepInd= (*p_i)[1];
+  PhysicsObject dilL1 = (*p_obj)[firstLepInd];
+  PhysicsObject dilL2 = (*p_obj)[secondLepInd];
+  TLorentzVector dilVec(dilL1+dilL2);
+  double dileptonMass = dilVec.M();
+  
+  // events with mass outside of Z range and higher that 12GeV/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if( dileptonMass < 12 ){ return; } // Low dilepton mass resonances
+  if( fabs( dileptonMass - 91) < 15  ){ return; } // Z mass window
+  
+  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"), MT_STEP2,w_);  
+  if (terr){
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),MT_STEP2,errorOnEff);
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,MT_STEP2,tauDilCh,errorOnEff); }
+  }
+  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,MT_STEP2,tauDilCh,w_);}
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MT",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
 
   // events with at least 2 jets///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if(j_final.size()<2 ) return;                                       
@@ -2104,20 +2124,6 @@ void CutflowAnalyzer::dileptonEventAnalysis(
 
 
 
-  // MT cut /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  double deltaPhi = (*p_obj)[lepton_ind].DeltaPhi( mets[0] );  
-  double mt = sqrt (  2*lepton_pt*metValue*(1 - cos(deltaPhi) ) ) ;
-  if( APPLY_MT_CUT_){ 
-    if( mt<MT_CUT_ ){ return; } 
-    for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"), MT_STEP2,w_);  
-    if (terr){
-      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),MT_STEP2,errorOnEff);
-      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,MT_STEP2,tauDilCh,errorOnEff); }
-    }
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,MT_STEP2,tauDilCh,w_);}
-    fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MT",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
-  }
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
   // New way to deal with btag uncertainies //////////////////
