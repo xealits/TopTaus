@@ -118,6 +118,9 @@ FIXED TAGS:
 
 
 TODO:
+- Substitute random smearing for JER with smearing by genPt
+  (it's the recommended method and should be faster, since it does not call the random() function)
+
 - move path of plotter files and plots directory to cfg file and command line, respectively.
 
 - move full file path from sample.xml to the parser/plotter: idea is to manage it via config file centrally 
