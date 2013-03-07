@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.13 2013/03/05 19:11:07 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.14 2013/03/07 09:05:53 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -113,7 +113,8 @@ int main(int argc, char* argv[])
   else if(runOn == "tbh_higgs_bychannel") analyzer->process_tbh_higgs_bychannel() ;
   else if(runOn == "tbh_higgs")           analyzer->process_tbh_higgs()           ;
   else if(runOn == "wjets")               analyzer->process_wjets()              ;
-  else if(runOn == "zjets")               analyzer->process_zjets()              ;
+  else if(runOn == "zjets_from50")        analyzer->process_zjets_from50()       ;
+  else if(runOn == "zjets_10to50")        analyzer->process_zjets_10to50()       ;
   // FIXME: manage with --blah for having parameters like "withHiggs" and so on
   else if(runOn == "doTable"){
     cout << "Doing table" << endl;

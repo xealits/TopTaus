@@ -89,7 +89,8 @@ public :
   void process_singletop();
   void process_qcd();
   void process_wjets();
-  void process_zjets();
+  void process_zjets_from50();
+  void process_zjets_10to50();
   void process_hh_higgs();
   void process_hh_higgs_bychannel();
   void process_wh_higgs();
