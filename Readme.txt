@@ -118,6 +118,8 @@ FIXED TAGS:
 
 
 TODO:
+- Data/MC scale factors for resolution, in eta bins -> check if I use the already updated one from https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution
+
 - Substitute random smearing for JER with smearing by genPt
   (it's the recommended method and should be faster, since it does not call the random() function)
 
