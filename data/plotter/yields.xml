@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <monitor> 
 
-  <id tag="yields1_mutau" doratio="1" logy="1" cmspublic="y" oflow="0" uflow="0"  yrange="100,100000000" xrange="6,11" ytitle="Events">
+  <id tag="yields1_mutau" doratio="1" logy="1" cmspublic="y" oflow="0" uflow="0"  yrange="100,100000000"  ytitle="Events">
     <item dir="PFlow/Yields/m_tau">cutflow_yields_3</item>
   </id>   
 

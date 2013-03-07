@@ -218,9 +218,9 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
 	}
       }
       else{  
-	//        tauDileptonAnalysis( false, (*it),ev,        0 ,         0,        0 ,              0,                0); 
+	tauDileptonAnalysis( false, (*it),ev,        0 ,         0,        0 ,              0,                0); 
 	//dileptonAnalysis( false, (*it),ev,        0 ,         0,        0 ,              0,                0); 
-        tauDileptonAnalysis( true, (*it),ev,         0 ,        0,        0  ,            0,                0); 
+        //tauDileptonAnalysis( true, (*it),ev,         0 ,        0,        0  ,            0,                0); 
       }
 
      

@@ -21,6 +21,7 @@
 // HistogramPlotter(){ c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=false; LUM_ERR = 0.045;}  
 
 ///  HistogramPlotter(){ c_ = 0; plotHiggs_= true; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
+
 HistogramPlotter::HistogramPlotter(): PlotStyle() { c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
 
 //HistogramPlotter(){ c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=false; LUM_ERR = 0.022;}
@@ -505,7 +506,7 @@ void HistogramPlotter::plotLegend( TH1 * higgs, TLegend *l, TString title, vecto
 //   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  1.9 fb^{-1}  CMS ");
 //   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  4.0 fb^{-1} CMS Preliminary");
 //   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  4.7 fb^{-1} CMS Preliminary");
-   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  4.9 fb^{-1} CMS Preliminary");
+   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  17.9 fb^{-1} CMS Preliminary");
    text->SetTextAlign(11);
    pt->Draw();
 
