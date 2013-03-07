@@ -3,76 +3,76 @@
 
 
    <process isstack="1" isdata="0" name="t#bar{t} #rightarrow #mu#tau_{h}" color="614" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
-     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-ttbar_mutau.root</file>
+     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-ttbar_mutau.root</file>
    </process>
 
    <process isstack="1" isdata="0" name="t#bar{t} #rightarrow #mu#mu" color="616" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
-     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-ttbar_mumu.root</file>
+     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-ttbar_mumu.root</file>
    </process>
 
    <process isstack="1" isdata="0" name="t#bar{t} #rightarrow e#mu" color="618" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
-     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-ttbar_emu.root</file>
+     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-ttbar_emu.root</file>
    </process>
 
 
    <process isstack="1" isdata="0" name="other t#bar{t}" color="8" width="1" fill="1001" fillcolor="8" markercolor="8" line="1"  linecolor="8" marker="1" >
-     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-ttbar_other.root</file>
+     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-ttbar_other.root</file>
    </process>
 
 <!--
    <process isstack="1" isdata="0" name="other t#bar{t}" color="8" width="1" fill="1001" fillcolor="8" markercolor="8" line="1"  linecolor="8" marker="1" >
-     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-ttbar_mcbkg.root</file>
+     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-ttbar_mcbkg.root</file>
    </process>
 -->
 
    <process isstack="1" isdata="0" name="Single t" color="824" width="1" fill="1001" fillcolor="824" markercolor="824" linecolor="824" line="1" marker="1" >
-     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-singletop.root</file>
+     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-singletop.root</file>
    </process>
 
    
    <process isstack="1" isdata="0" name="Diboson" color="596" width="1" fill="1001" fillcolor="596" markercolor="596" linecolor="596" line="1" marker="1" >
-     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-dibosons.root</file>
+     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-dibosons.root</file>
    </process>
 
 
    <process isstack="1" isdata="0" name="DY+jets" color="831" width="1" fill="1001" fillcolor="831" markercolor="831" line="1" linecolor="831" marker="1" >
-     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-zjets.root</file>
+     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-zjets.root</file>
    </process>
 
 
 
    <process isstack="1" isdata="0" name="W+jets" color="809" width="1" fill="1001" fillcolor="809" markercolor="809" line="1" linecolor="809" marker="1" >
-     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-wjets.root</file>
+     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-wjets.root</file>
    </process>
 
 <!--  
    <process isstack="1" isdata="0" name="misidentified #tau_{h}" color="799" width="1" fill="1001" fillcolor="799" markercolor="799" line="1" linecolor="799" marker="1" >
-     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-misidbkg.root</file>
+     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-misidbkg.root</file>
    </process>
 -->
    
    <process isstack="1" isdata="0" name="QCD" color="798" width="1" fill="1001" fillcolor="798" markercolor="798"  line="1" linecolor="798" marker="1" >
-     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-qcd.root</file>
+     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-qcd.root</file>
    </process>
 
 
 
    <process isstack="0" isdata="1" name="data" color="1" width="1" fill="0" fillcolor="0" markercolor="1" linecolor="1" line="1" marker="20" >
-     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-data-MU-20GeV/out-data.root</file>
+     <file weight="1">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-data-MU-20GeV/out-data.root</file>
    </process>
 
    <!-- process isstack="0" isdata="0" opt="same histo" name="H^{+}[m_{H^{#pm}} = 120 GeV/c^{2}]" color="891" width="3" fill="0" fillcolor="891" markercolor="891" line="1"  linecolor="891" linestyle="7" marker="1" >
-     <file weight="0.08">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-higgs-pythia-m120.root</file>
+     <file weight="0.08">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-higgs-pythia-m120.root</file>
    </process -->
 
    
    <!--  process isstack="0" isdata="0" opt="same histo" name="H^{+}[m_{H^{#pm}} = 120 GeV]" color="1" width="3" fill="0" fillcolor="1" markercolor="1" line="1"  linecolor="1" linestyle="7" marker="1" >
-     <file weight="0.05">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-higgs-pythia-m120.root</file>
+     <file weight="0.05">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-higgs-pythia-m120.root</file>
    </process  -->
 
 
    <process isstack="0" isdata="0"  opt="same histo" name="Heavy H^{+}[m_{H^{#pm}} = 250 GeV/c^{2}]" color="002" width="3" fill="0" fillcolor="002" markercolor="002" line="1"  linecolor="001" linestyle="7" marker="1" >
-     <file weight="0.08">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m250.root</file>
+     <file weight="0.08">/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs_taus/nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m250.root</file>
    </process>
 
 </samples>
