@@ -5,7 +5,7 @@ Repository for tauDilepton analysis
 
 * For help: pietro.vischia atPlzNoSpam gmail.com / pietro.vischia atPlzNoSpam cern.ch
 
-* Will work for ttbar cross section measurement as well as charged higgs search
+* Will work for ttbar cross section measurement as well as charged higgs search/tau polarization
 
 * This started as a porting to a compiled binary approach like LIP/Top, in order
 to remove levels of messiness in the original code to be compiled every time together with
@@ -34,7 +34,7 @@ cvs co -p UserCode/LIP/TopTaus/TAGS_2011.txt | sh
 Instructions for running analysis
 ---------------------------------
 
-# Local test run (local data file at LIP)
+# Local pattuple test run (local data file at LIP)
 # obsolete, must update: cmsRun LIP/TopTaus/test/createDataPattuple_cfg.py /lustre/data3/cmslocal/samples/CMSSW_5_2_5/test/Run2012B_SingleMu_AOD_PromptReco-v1_000_193_998_0C7DCC80-4E9D-E111-B22A-001D09F25267.root pattuple.root inclusive_mu
 
 
@@ -63,7 +63,7 @@ Relevant parameters: straightforward cfg file.
 	       -True: just produces rootfile with all the shapes, no plot.
 	       -False: just produces plots, no rootfile.
 
-Run physicsAnalysis - this corresponds to the PhysicsAnalyzer code
+Run physicsAnalysis - this corresponds to the obsolete PhysicsAnalyzer code
 ------------------------------------------------------------------
 - interactively:
   physicsAnalysis test/physicsAnalysisParSets_cfg.py sample
@@ -73,10 +73,9 @@ Run physicsAnalysis - this corresponds to the PhysicsAnalyzer code
   EDIT submit-jobs.sh in order to change the script path to your local installation.
   EDIT the *output* paths in test/physicsAnalysisParSets_cfg.py . The input are fixed (53X production)
   sh submit-jobs.sh
-  EDIT combineResults.sh to the output directory you do want
-  RUN lipcms/Plotter2012/Plotter.C as you wish
-  RUN lipcms/TopTauDileptons/PhysicsAnalyzer.C table production strings as you wish
-  Soon integrate that as an option of physicsAnalysis to run interactively.
+  EDIT combineResults.sh path/to/dir to the output directory you do want
+  RUN physicsAnalysis test/physicsAnalysisParSets_cfg.py doPlots   ---> this produces plots
+  RUN physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables  ---> this produces tables
 - have fun
 
 Produce plots
@@ -89,6 +88,7 @@ physicsAnalysis test/physicsAnalysisParSets_cfg.py doPlots
 Produce tables
 --------------
 physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch for higgs/non-higgs
+
 
 CHANGELOG for major updates:
 2012-03-05: ported to NCG
