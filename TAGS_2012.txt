@@ -71,7 +71,7 @@ cvs co CondFormats/JetMETObjects
 
 
 # LIP/TopTaus code for analysis. 2012 is HEAD now
-cvs co -d LIP/TopTaus UserCode/LIP/TopTaus
+cvs co -r V13-03-07 -d LIP/TopTaus UserCode/LIP/TopTaus
 
 
 
