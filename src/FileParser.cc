@@ -1,5 +1,6 @@
 #include "LIP/TopTaus/interface/FileParser.hh"
 
+#include "LIP/TopTaus/interface/CommonDefinitions.hh" // For output area
 
 using namespace std;
 
@@ -185,8 +186,9 @@ void FileParser::process( TXMLEngine * xml, XMLNodePointer_t processNode ){
 
 
 void FileParser::processFile( TXMLEngine * xml, XMLNodePointer_t fileNode){
-  TString fileName( xml->GetNodeContent(fileNode) );
+  TString fileName = commondefinitions::outputArea_ + TString( xml->GetNodeContent(fileNode) );
   
+  cout << " DEBUGME: file is " << fileName << endl;
   TFile * file = TFile::Open( TString("file:")+fileName);
   if(file==0){ cout<<endl<<" Unknown file : "<<fileName<<endl;}
 

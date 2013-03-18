@@ -96,6 +96,7 @@ CHANGELOG for major updates:
 2013-03-18: new data ntuples with improved splitting.
 	    Modified combineResults.sh in order to support directory cleaning
 	    New pileup files, and chosen value: 70300
+	    data/plotter/samples.xml now has just final name path. Full path is read from cfg file (outputArea parameter)
 2013-03-05: ported to NCG
 	    improved lip-batch scripting system: now the user path is set once only in submit-jobs.sh
 	    I/O and PU filenames moved to cfg files
@@ -128,10 +129,7 @@ TODO:
 - Substitute random smearing for JER with smearing by genPt
   (it's the recommended method and should be faster, since it does not call the random() function)
 
-- move path of plotter files and plots directory to cfg file and command line, respectively.
-
-- move full file path from sample.xml to the parser/plotter: idea is to manage it via config file centrally 
-  with each call of physicsAnalysis, and leave in the xml only the file name without path
+- move path of plots output directory to command line or cfg file.
 
 - btagmulticorrected splitting by leadjet/nlj/nnlj
 
