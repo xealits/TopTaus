@@ -121,8 +121,8 @@ namespace commondefinitions{
   //  double LUM_ = 14801.27; // 2012 start
   //  double LUM_ = 9564.27; // 2012 ABC start
   //  double LUM_ = 3593.267; // 2012 AB start
-  double LUM_ = 17980.27; // 2012 ABCD
-
+  //   double LUM_ = 17980.27; // 2012 ABCD notaus ntuples
+  double LUM_ = 18072.17; // 2012 ABCD final ntuples
   int BTAGIND_; double BTAG_CUT_;
   TString puFileName_;
   /////////////////////////////////////////////////////////////////////
