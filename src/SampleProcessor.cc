@@ -1034,8 +1034,20 @@ void SampleProcessor::process_data_RunB(int i){
     case 9:
       process(true,url_,iDFolder_+TString("Muon_RunB_9.root"),oDFolder_+TString("out-Muon_RunB_9.root"),keys_);
       break;
+    case 10:
+      process(true,url_,iDFolder_+TString("Muon_RunB_10.root"),oDFolder_+TString("out-Muon_RunB_10.root"),keys_);
+      break;
+    case 11:
+      process(true,url_,iDFolder_+TString("Muon_RunB_11.root"),oDFolder_+TString("out-Muon_RunB_11.root"),keys_);
+      break;
+    case 12:
+      process(true,url_,iDFolder_+TString("Muon_RunB_12.root"),oDFolder_+TString("out-Muon_RunB_12.root"),keys_);
+      break;
+    case 13:
+      process(true,url_,iDFolder_+TString("Muon_RunB_13.root"),oDFolder_+TString("out-Muon_RunB_13.root"),keys_);
+      break;
     default:
-      cout << "ERROR CODE - must be in the range [1,9]" << endl;
+      cout << "ERROR CODE - must be in the range [1,13]" << endl;
       break;
     }
     
@@ -1125,8 +1137,20 @@ void SampleProcessor::process_data_RunC2(int i){
     case 9:
       process(true,url_,iDFolder_+TString("Muon_RunC2_9.root"),oDFolder_+TString("out-Muon_RunC2_9.root"),keys_);
       break;
+    case 10:
+      process(true,url_,iDFolder_+TString("Muon_RunC2_10.root"),oDFolder_+TString("out-Muon_RunC2_10.root"),keys_);
+      break;
+    case 11:
+      process(true,url_,iDFolder_+TString("Muon_RunC2_11.root"),oDFolder_+TString("out-Muon_RunC2_11.root"),keys_);
+      break;
+    case 12:
+      process(true,url_,iDFolder_+TString("Muon_RunC2_12.root"),oDFolder_+TString("out-Muon_RunC2_12.root"),keys_);
+      break;
+    case 13:
+      process(true,url_,iDFolder_+TString("Muon_RunC2_13.root"),oDFolder_+TString("out-Muon_RunC2_13.root"),keys_);
+      break;
     default:
-      cout << "ERROR CODE - must be in the range [1,9]" << endl;
+      cout << "ERROR CODE - must be in the range [1,13]" << endl;
       break;
     }
 
@@ -1186,8 +1210,20 @@ void SampleProcessor::process_data_RunD(int i){
     case 9:
       process(true,url_,iDFolder_+TString("Muon_RunD_9.root"),oDFolder_+TString("out-Muon_RunD_9.root"),keys_);
       break;
+    case 10:
+      process(true,url_,iDFolder_+TString("Muon_RunD_10.root"),oDFolder_+TString("out-Muon_RunD_10.root"),keys_);
+      break;
+    case 11:
+      process(true,url_,iDFolder_+TString("Muon_RunD_11.root"),oDFolder_+TString("out-Muon_RunD_11.root"),keys_);
+      break;
+    case 12:
+      process(true,url_,iDFolder_+TString("Muon_RunD_12.root"),oDFolder_+TString("out-Muon_RunD_12.root"),keys_);
+      break;
+    case 13:
+      process(true,url_,iDFolder_+TString("Muon_RunD_13.root"),oDFolder_+TString("out-Muon_RunD_13.root"),keys_);
+      break;
     default:
-      cout << "ERROR CODE - must be in the range [1,9]" << endl;
+      cout << "ERROR CODE - must be in the range [1,13]" << endl;
       break;
     }
 
