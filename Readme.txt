@@ -70,10 +70,12 @@ Run physicsAnalysis - this corresponds to the obsolete PhysicsAnalyzer code
   (where "sample" is ttbar, wjets, etc. Strings can be found in bin/physicsAnalysis.cc)
 - on the LIP batch:
   cd scripts/lip-batch/
+  sh combineResults.sh path/to/dir clean --> this cleans the output directory in which you want to store the outputs	
   EDIT submit-jobs.sh in order to change the script path to your local installation.
   EDIT the *output* paths in test/physicsAnalysisParSets_cfg.py . The input are fixed (53X production)
   sh submit-jobs.sh
-  EDIT combineResults.sh path/to/dir to the output directory you do want
+  qstat -u username --> this checks whether your jobs are running and if they did already finish
+  sh combineResults.sh path/to/dir hadd --> this hadds the relevant output files
   RUN physicsAnalysis test/physicsAnalysisParSets_cfg.py doPlots   ---> this produces plots
   RUN physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables  ---> this produces tables
 - have fun
@@ -91,10 +93,13 @@ physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch fo
 
 
 CHANGELOG for major updates:
-2012-03-05: ported to NCG
+2013-03-18: new data ntuples with improved splitting.
+	    Modified combineResults.sh in order to support directory cleaning
+	    New pileup files, and chosen value: 70300
+2013-03-05: ported to NCG
 	    improved lip-batch scripting system: now the user path is set once only in submit-jobs.sh
 	    I/O and PU filenames moved to cfg files
-2012-02-24: fixes: plotter perfectly working
+2013-02-24: fixes: plotter perfectly working
 2013-02-22: plotter and table added and integrated into physicsAnalysis.
 2013-02-13: updated with 2012 cross sections - must check sample-specific ones
 	    jet pt, btag, mlj added for leadingjet/nlj/nnlj
@@ -118,7 +123,7 @@ FIXED TAGS:
 
 
 TODO:
-- Data/MC scale factors for resolution, in eta bins -> check if I use the already updated one from https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution
+- Data/MC scale factors for resolution, in eta bins (values are already updated in UncertaintyCalculator)
 
 - Substitute random smearing for JER with smearing by genPt
   (it's the recommended method and should be faster, since it does not call the random() function)
