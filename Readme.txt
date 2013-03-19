@@ -93,6 +93,8 @@ physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch fo
 
 
 CHANGELOG for major updates:
+2013-03-19: fixed tables for SM ttbar
+	    added table for heavy charged higgs samples
 2013-03-18: new data ntuples with improved splitting.
 	    Modified combineResults.sh in order to support directory cleaning
 	    New pileup files, and chosen value: 70300
@@ -124,10 +126,13 @@ FIXED TAGS:
 
 
 TODO:
+- tbh integration in TauDileptonTableBuilder
+- Fix multiplicity plots for lead/sublead/subsublead jets 
 - Data/MC scale factors for resolution, in eta bins (values are already updated in UncertaintyCalculator)
 
 - Substitute random smearing for JER with smearing by genPt
   (it's the recommended method and should be faster, since it does not call the random() function)
+  (almost done: it just needs to be applied to the CutflowAnalyzer)
 
 - move path of plots output directory to command line or cfg file.
 
@@ -167,4 +172,5 @@ TODO:
 - Split fake contribution into e and mu
   --> Evan/Monica 2013-01-23: "there are different scale factors for e and mu fakes to be applied,
       so you better split the two components in the cutflow yields table"
-      
+
+- Fix crash after natural end when running interactively (low priority)      
