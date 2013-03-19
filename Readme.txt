@@ -126,7 +126,6 @@ FIXED TAGS:
 
 
 TODO:
-- tbh integration in TauDileptonTableBuilder
 - Fix multiplicity plots for lead/sublead/subsublead jets 
 - Data/MC scale factors for resolution, in eta bins (values are already updated in UncertaintyCalculator)
 
