@@ -45,7 +45,7 @@ namespace tableutils{
     // hh contribution : x2 , hw contribution :2.(1-x)x , whh and fhw can be set as funcion of x (ex 5%)
     // 5% contribution //
     //  double fhh(0.05*0.05) , fhw( 2*(1-0.05)*0.05) ;
-    double fhh(1),fhw(1); // this is for the datacards (so that they are normalized to 165 (xsecttbar)
+    double fhh(1),fhw(1); // this is for the datacards (so that they are normalized to 234 (xsecttbar)
     
     
     bool XSECMEASUREMENT( true );  if( XSECMEASUREMENT ){ TTBAR_CS_ERR = XSEC_EXP_ERR_; } else { SIGNAL_EFF_ERR = 0; }
@@ -519,7 +519,7 @@ namespace tableutils{
       cout << "Name: " << hName << ", value: " << d[x][y] << ", stat error: " << e[x][y] <<endl;
 
       if( XSECMEASUREMENT && ( y==ETAU_TDCH || y==MUTAU_TDCH || y==LEPJETS_TDCH || y==LEPLEP_TDCH || y==TAUJETS_TDCH || y==TAUTAU_TDCH || y==ALLJETS_TDCH)  ){  
-        double scalefactor( XSEC_EXP_ / 165. );  //note it should be 165
+        double scalefactor( XSEC_EXP_ / 234. );  //note it should be 234
         d[x][y]          *= scalefactor ; 
         d_plus[x][y]     *= scalefactor ;
         d_minus[x][y]    *= scalefactor ;     
@@ -1343,8 +1343,9 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
 
 
   //  double ttbar_init(20416081); //SIMPLE evt processed
-  double ttbar_init(37032665); // evt processed from debug.txt
-  // double ttbar_init(4939452); // evt in minitrees
+  double ttbar_init(8228517); // evt processed from debug.txt
+   
+    
   
   //MUON-TAU channel ( Bkg after OS :  89.3 +/- 9.1 +/- 10.9 )
   //double scale(0.09585155); double lum(2136);    double lumFactor(1);                                               // NO SCALE REWEIGHTING
@@ -1378,7 +1379,9 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
   //double lum(1961.33); double lumFactor(1); double scalefactor(1961.33/1908.1); double scale(0.08562379*scalefactor); //WITH SCALE REWEIGHTING
 
   // FIXME: hardcoded
-  double lum(4904); double lumFactor(1); double scalefactor(1.); double scale(0.02184544); //    double scale(0.03284470); // double scale(0.08562379); // NEW VALUES
+  //  double lum(4904); double lumFactor(1); double scalefactor(1.); double scale(0.02184544); //    double scale(0.03284470); // double scale(0.08562379); // NEW VALUES
+  double lum(commondefinitions::LUM_); double lumFactor(1); double scalefactor(1.); double scale(0.51393073); //    double scale(0.03284470); // double scale(0.08562379); // NEW VALUES
+
 
   // HIGGS ===>
   //double tau_fakes(54.9);   double tau_fakes_stat2(6.7*6.7); double tau_fakes_syst2(8.3*8.3); 
@@ -1816,7 +1819,7 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
 
         if( XSECMEASUREMENT && y==LEPLEP_TDCH ){   
           // Note : we re-scale ttbar lepton+lepton ( we get it from MC)
-          double scalefactor( XSEC_EXP_/165.); //note it should be 165
+          double scalefactor( XSEC_EXP_/234.); //note it should be 234
           dMC[k]          *= scalefactor;
           dMC_plus[k]     *= scalefactor; 
           dMC_minus[k]    *= scalefactor;
