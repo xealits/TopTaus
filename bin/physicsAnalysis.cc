@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.15 2013/03/07 15:08:49 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.16 2013/03/18 13:06:29 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -133,7 +133,8 @@ int main(int argc, char* argv[])
     bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false); 
     int detailed(2), notDetailed(1);      
     analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, sm, "PFlow", "yields-mc-", false, false, false); 
-    //analyzer.mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false); 
+    analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false); 
+    analyzer->summaryTable( notDetailed, false, false, false, false);
   }
   else if(runOn == "doPlots"){
 //    PlotStyle sty();
