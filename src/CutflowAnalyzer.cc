@@ -28,7 +28,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
  
   // Acquire pileup weights
   float dataDist[50] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.}; 
-  TFile* dataWeightsFile;
+  TFile* dataWeightsFile =0;
   if(run2012_) dataWeightsFile = new TFile(puFileName_); //MyDataPileupHistogram_All_70500.root");//MyDataPileupHistogram_All_73500.root");
   //  else dataWeightsFile = new TFile("");
   if(!dataWeightsFile){ cout<<endl<<"File : " << puFileName_ << " not found or run2012_ not set."<<endl; exit(0);}
@@ -42,6 +42,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
 
   // lepton efficiencies assumed to be ~100%. FIXME: Must check this
   electrontriggerefficiency_= 1;
+
   muontriggerefficiency_    = 1;   
   leptontriggerefficiency_  = 1;
   ////////////////////////////////////////
@@ -289,19 +290,19 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   TString mcTag("");
 
   JetCorrectionUncertainty * junc(0);   JetResolution  * jerc(0);
-  unsigned int metAlgo; 
+  //  unsigned int metAlgo; // unused
   
   if( myKey.Contains("PFlow")   ) { // Moved up for optimization
-    jetAlgo=event::AK5PFLOW, leptonType=event::PFLOWLEPTON; tauType = PFLOWTAU; if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PFLOWMET;  
+    jetAlgo=event::AK5PFLOW, leptonType=event::PFLOWLEPTON; tauType = PFLOWTAU; if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PFLOWMET;  
   } 
   else if( myKey=="PF"               ) { 
-    jetAlgo=event::AK5PF;  leptonType=event::STDLEPTON;    tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PF;   
+    jetAlgo=event::AK5PF;  leptonType=event::STDLEPTON;    tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;   
   }
   else if( myKey.Contains("TaNC")    ) { 
-    jetAlgo=event::AK5PF;   leptonType=event::STDLEPTON;   tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PF;  
+    jetAlgo=event::AK5PF;   leptonType=event::STDLEPTON;   tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;  
   }
   else if( myKey.Contains("HPS")     ) { 
-    jetAlgo=event::AK5PF,    leptonType=event::STDLEPTON;   tauType = HPSTAU;   if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PF;  
+    jetAlgo=event::AK5PF,    leptonType=event::STDLEPTON;   tauType = HPSTAU;   if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;  
   } 
   
 
@@ -322,7 +323,7 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   //  cout << "tau size tausColl.size(): " << tausColl.size() << " PFLOWTAU: " << PFLOWTAU << ", PFTAU: " << PFTAU << " HPSTAU: " << HPSTAU << endl; // Debug
   
   for(size_t iorigtau=0; iorigtau<tausColl.size(); iorigtau++){ // Get taus from leptons collection
-    cout << tausColl[iorigtau][17] << ", " << tauType << endl; // Debug 
+    //    cout << tausColl[iorigtau][17] << ", " << tauType << endl; // Debug 
     if(tausColl[iorigtau][17] == tauType ){ taus.push_back(tausColl[iorigtau]); }
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -580,19 +581,19 @@ void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniE
   TString mcTag("");
   
   JetCorrectionUncertainty * junc(0);   JetResolution  * jerc(0);
-  unsigned int metAlgo; 
+  //  unsigned int metAlgo;  // unused
   
   if( myKey.Contains("PFlow")   ) { // Moved up for optimization
-    jetAlgo=event::AK5PFLOW, leptonType=event::PFLOWLEPTON; tauType = PFLOWTAU; if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PFLOWMET;  
+    jetAlgo=event::AK5PFLOW, leptonType=event::PFLOWLEPTON; tauType = PFLOWTAU; if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PFLOWMET;  
   } 
   else if( myKey=="PF"               ) { 
-    jetAlgo=event::AK5PF;  leptonType=event::STDLEPTON;    tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PF;   
+    jetAlgo=event::AK5PF;  leptonType=event::STDLEPTON;    tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;   
   }
   else if( myKey.Contains("TaNC")    ) { 
-    jetAlgo=event::AK5PF;   leptonType=event::STDLEPTON;   tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PF;  
+    jetAlgo=event::AK5PF;   leptonType=event::STDLEPTON;   tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;  
   }
   else if( myKey.Contains("HPS")     ) { 
-    jetAlgo=event::AK5PF,    leptonType=event::STDLEPTON;   tauType = HPSTAU;   if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;} metAlgo=event::PF;  
+    jetAlgo=event::AK5PF,    leptonType=event::STDLEPTON;   tauType = HPSTAU;   if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;  
   } 
   
   
@@ -1000,9 +1001,12 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
   if( jer_ ){ metValue = jetMETResolution( jerFactors, jets, met.Px(), met.Py());}
   ////////////////////////////////////////////////////////////////////////////////////////////////
 
-  double tau_charge(0), tau_pt(0); int tau_i;
+  double tau_charge(0); // , tau_pt(0); // unused 
+  int tau_i;
   PhysicsObject * tau_obj;
-  if(t_afterLeptonRemoval.size() == 1){ tau_i = t_afterLeptonRemoval[0]; tau_charge = taus[tau_i][0]; tau_pt = taus[tau_i].Pt(); tau_obj = &(taus[tau_i]); }
+  if(t_afterLeptonRemoval.size() == 1){ tau_i = t_afterLeptonRemoval[0]; tau_charge = taus[tau_i][0]; 
+    // tau_pt = taus[tau_i].Pt(); // unused
+    tau_obj = &(taus[tau_i]); }
 
 
   // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
@@ -1145,8 +1149,8 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
   if(isData_ && trigEffStudy_ && metValue > 45 ){
     
     //trigger /////////////////////////////////////////
-    TVectorD *trig = (TVectorD *)ev->triggerColl->At(0);
-    bool hasTesttrig = ((*trig)[3]>0); 
+    // TVectorD *trig = (TVectorD *)ev->triggerColl->At(0); // unused
+    // bool hasTesttrig = ((*trig)[3]>0);  // unused
     ///////////////////////////////////////////////////
 
 
@@ -1176,7 +1180,7 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
     */
 
     // absolute efficiencies get the 2 most energetic jet ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    double jetPt1(0),jetPt2(0); int ind2, ind1;
+    double jetPt1(0),jetPt2(0); int ind2(-1), ind1(-1);
     for(uint i=0; i<j_final.size(); i++){
       int ind=j_final[i];
       double jetPt =  getJetPt( jets[ind], junc,0, jes_);
@@ -1764,9 +1768,12 @@ void CutflowAnalyzer::dileptonEventAnalysis(
   if( jer_ ){ metValue = jetMETResolution( jerFactors, jets, met.Px(), met.Py());}
   ////////////////////////////////////////////////////////////////////////////////////////////////
   
-  double tau_charge(0), tau_pt(0); int tau_i;
+  double tau_charge(0);// , tau_pt(0); // unused
+  int tau_i;
   PhysicsObject * tau_obj;
-  if(t_afterLeptonRemoval.size() == 1){ tau_i = t_afterLeptonRemoval[0]; tau_charge = taus[tau_i][0]; tau_pt = taus[tau_i].Pt(); tau_obj = &(taus[tau_i]); }
+  if(t_afterLeptonRemoval.size() == 1){ tau_i = t_afterLeptonRemoval[0]; tau_charge = taus[tau_i][0];
+    // tau_pt = taus[tau_i].Pt(); // unused
+    tau_obj = &(taus[tau_i]); }
   
   
   // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
@@ -1930,8 +1937,8 @@ void CutflowAnalyzer::dileptonEventAnalysis(
   if(isData_ && trigEffStudy_ && metValue > 45 ){
     
     //trigger /////////////////////////////////////////
-    TVectorD *trig = (TVectorD *)ev->triggerColl->At(0);
-    bool hasTesttrig = ((*trig)[3]>0); 
+    //    TVectorD *trig = (TVectorD *)ev->triggerColl->At(0); // unused
+    //    bool hasTesttrig = ((*trig)[3]>0);  // unused
     ///////////////////////////////////////////////////
 
 
@@ -1961,7 +1968,7 @@ void CutflowAnalyzer::dileptonEventAnalysis(
     */
 
     // absolute efficiencies get the 2 most energetic jet ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    double jetPt1(0),jetPt2(0); int ind2, ind1;
+    double jetPt1(0),jetPt2(0); int ind2(-1), ind1(-1);
     for(uint i=0; i<j_final.size(); i++){
       int ind=j_final[i];
       double jetPt =  getJetPt( jets[ind], junc,0, jes_);
@@ -3220,13 +3227,13 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
   // on MC   : we apply a trigger efficiency
   // on data : we require that the two highest pt jet should fire the trigger (returned eff from the method is either 0/1)
-  double errorOnEff(0);
+  // double errorOnEff(0); // unused
   if( eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETSPLUSMET_ ){
     pair<double,double> eff( getEfficiencyAndError( jets,j_final,junc,jerFactors));
     if ( eff.first == 0 ) return;
     else{ 
       electrontriggerefficiency_ = eff.first;  
-      if( !isData_ ){ errorOnEff =  w_*eff.second; leptontriggerefficiency_ = electrontriggerefficiency_; w_= w_*leptontriggerefficiency_; } // get trigger efficiency for electrons 
+      if( !isData_ ){ /* errorOnEff =  w_*eff.second; */ /* unused */ leptontriggerefficiency_ = electrontriggerefficiency_; w_= w_*leptontriggerefficiency_; } // get trigger efficiency for electrons 
     }
   }
   else if (eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETS_ ) { if( !isData_ )leptontriggerefficiency_ = electrontriggerefficiency_;}
@@ -3561,8 +3568,8 @@ void CutflowAnalyzer::newPhysics(
 
 /*
 The reconstructed mass (mcol) is calculated using the collinear approximation as
-mcol = mvis Ï„Ï„ / âˆš xÏ„1 Â· xÏ„2 where mvis Ï„Ï„ is the invariant mass of the two identified tau visible decay
-products and xÏ„1 and xÏ„2 are the fractions of the tau momenta carried by the visible decay daughters./*
+mcol = mvis „„ / ˆš x„1 Â· „2 where mvis „„ is the invariant mass of the two identified tau visible decay
+products and x„1 and x„2 are the fractions of the tau momenta carried by the visible decay daughters.
 */
 
 
@@ -3882,7 +3889,7 @@ pair<double,double> CutflowAnalyzer::getEfficiencyAndError( std::vector<PhysicsO
   pair<double,double> result(0,0);
 
   // ind1-> leading jet pt, ind2-> next to leading jet pt
-  double jetPt1(0),jetPt2(0); int ind2, ind1;
+  double jetPt1(0),jetPt2(0); int ind2(-1), ind1(-1);
   for(uint i=0; i<j_final.size(); i++){
     int ind=j_final[i]; double jetPt =  getJetPt( jets[ind], junc,0, jes_);
     if( jetPt > jetPt1       ){ jetPt2=jetPt1; ind2=ind1; jetPt1=jetPt; ind1=ind; }
@@ -4059,7 +4066,7 @@ void CutflowAnalyzer::evaluatePDFUncertainty(){
  }
 
 
- cout << "\n PDF unc. +" << 100.*sqrt(deltaPlus)/myWeights_[0] << "\% -" <<  100.*sqrt(deltaMinus)/myWeights_[0] << " \%" << endl;
+ cout << "\n PDF unc. +" << 100.*sqrt(deltaPlus)/myWeights_[0] << "% -" <<  100.*sqrt(deltaMinus)/myWeights_[0] << " %" << endl;
 
 
 }
