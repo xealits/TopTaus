@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.16 2013/03/18 13:06:29 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.17 2013/03/19 17:08:18 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -26,11 +26,11 @@
   
 @run me like this
 
-tauDileptonPDFBuilderFitter mutau HIGGS2BKG
-tauDileptonPDFBuilderFitter mutau HIGGS2BKG
+physicsAnalysis test/physicsAnalysisParSets_cfg.py sample --> analyze sample
 
-tauDileptonPDFBuilderFitter mutau HIGGS2BKG
-tauDileptonPDFBuilderFitter mutau HIGGS3BKG
+physicsAnalysis test/physicsAnalysisParSets_cfg.py doPlots --> draw plots
+
+physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables --> draw tables
 
 */
 
@@ -128,8 +128,8 @@ int main(int argc, char* argv[])
   else if(runOn == "zjets_from50")        analyzer->process_zjets_from50()       ;
   else if(runOn == "zjets_10to50")        analyzer->process_zjets_10to50()       ;
   // FIXME: manage with --blah for having parameters like "withHiggs" and so on
-  else if(runOn == "doTable"){
-    cout << "Doing table" << endl;
+  else if(runOn == "doTables"){
+    cout << "Doing tables" << endl;
     bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false); 
     int detailed(2), notDetailed(1);      
     analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, sm, "PFlow", "yields-mc-", false, false, false); 
