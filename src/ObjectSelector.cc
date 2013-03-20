@@ -373,10 +373,28 @@ void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject
     
     
     // Require discriminators on leptons and tau pt and eta ///////////////////////////////////////////////////////////////////////
+    /*
+      Reference. Values for the discriminators to cut on:
+    againstMuonLoose   : tau_dis_muon = 1;
+    againstMuonMedium  : tau_dis_muon = 2;
+    againstMuonTight   : tau_dis_muon = 3;
+    againstMuonLoose2  : tau_dis_muon = 4;
+    againstMuonMedium2 : tau_dis_muon = 5;
+    againstMuonTight2  : tau_dis_muon = 6;
+
+    againstElectronLoose      : tau_dis_electron= 1;
+    againstElectronMedium     : tau_dis_electron= 2;
+    againstElectronTight      : tau_dis_electron= 3;
+    againstElectronLooseMVA3  : tau_dis_electron= 4;
+    againstElectronMediumMVA3 : tau_dis_electron= 5;
+    againstElectronTightMVA3  : tau_dis_electron= 6;
+    */ 
+    
+
     //if( tau_dis_muon == 0 || tau_dis_electron == 0 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;    // LooseLoose
-    if( tau_dis_muon == 0 || tau_dis_electron < 2 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;        //LooseMedium
+    //    if( tau_dis_muon == 0 || tau_dis_electron < 2 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;        //LooseMedium
     //if( tau_dis_muon < 2 || tau_dis_electron < 3 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;       //TightTight
-    if( tau_dis_muon < 3 || tau_dis_electron < 2 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;        //TightMedium
+    if( tau_dis_muon < 6 || tau_dis_electron < 5 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;        //MuonTight2 ElectronMedium
     // If putting electron descrimination against electron to tight no muons pass...  
     // if( tau_dis_muon == 0 || tau_dis_electron < 2.5 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
