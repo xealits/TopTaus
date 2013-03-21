@@ -131,6 +131,7 @@ FIXED TAGS:
 
 TODO:
 - Fix multiplicity plots for lead/sublead/subsublead jets 
+- Fix HistogramPlotter to read LUM from commondefinitions
 - Data/MC scale factors for resolution, in eta bins (values are already updated in UncertaintyCalculator)
 
 - Substitute random smearing for JER with smearing by genPt
