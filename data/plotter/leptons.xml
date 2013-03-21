@@ -35,7 +35,7 @@
 
 
 
-  <id tag="muCh_rc_t_OS" doratio="0" logy="0" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="a.u." xtitle="p^{lead.track}/E^{#tau}" norm="1" xbin="2" yrange="0,0.4">
+  <id tag="muCh_rc_t_OS" doratio="1" logy="0" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="a.u." xtitle="p^{lead.track}/E^{#tau}" norm="1" xbin="2" yrange="0,0.4">
     <item dir="PFlow/RecoSteps/lep_tau/OS">rc_t_8</item>
   </id> 
   

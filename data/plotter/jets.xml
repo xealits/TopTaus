@@ -23,9 +23,23 @@
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j3_4</item>
   </id> 
 
-  <id tag="muCh_eta_j" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,3000000" xbin="2" >
+  <id tag="muCh_eta_j" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,2000000" xbin="2" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">eta_j_4</item>
   </id> 
+
+  <id tag="muCh_eta_j1" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,1000000" xbin="2" >
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">eta_j1_4</item>
+  </id> 
+
+  <id tag="muCh_eta_j2" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,1000000" xbin="2" >
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">eta_j2_4</item>
+  </id> 
+
+  <id tag="muCh_eta_j3" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,1000000" xbin="2" >
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">eta_j3_4</item>
+  </id> 
+
+
 
 
   <id tag="muCh_multiplicity_j" doratio="1" logy="1" cmspublic="y" oflow="0" title="" ytitle="Events" xrange="2,6" xtitle="Jet multiplicity" yrange="10,1000000000">

@@ -6,6 +6,7 @@
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar_mutau.root</file>
    </process>
 
+<!--
    <process isstack="1" isdata="0" name="t#bar{t} #rightarrow #mu#mu" color="616" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar_mumu.root</file>
    </process>
@@ -13,7 +14,7 @@
    <process isstack="1" isdata="0" name="t#bar{t} #rightarrow e#mu" color="618" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar_emu.root</file>
    </process>
-
+-->
 
    <process isstack="1" isdata="0" name="other t#bar{t}" color="8" width="1" fill="1001" fillcolor="8" markercolor="8" line="1"  linecolor="8" marker="1" >
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar_other.root</file>
@@ -70,9 +71,9 @@
      <file weight="0.05">nomt-2012-V1-mc-MU-20GeV/out-higgs-pythia-m120.root</file>
    </process  -->
 
-
-   <process isstack="0" isdata="0"  opt="same histo" name="Heavy H^{+}[m_{H^{#pm}} = 250 GeV/c^{2}]" color="002" width="3" fill="0" fillcolor="002" markercolor="002" line="1"  linecolor="001" linestyle="7" marker="1" >
-     <file weight="0.08">nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m250.root</file>
+<!-- 0.08 -->
+   <process isstack="0" isdata="0"  opt="same histo" name="2 #times Heavy H^{+}[m_{H^{#pm}} = 250 GeV/c^{2}]" color="002" width="3" fill="0" fillcolor="002" markercolor="002" line="1"  linecolor="001" linestyle="7" marker="1" >
+     <file weight="2">nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m250.root</file>
    </process>
 
 </samples>
