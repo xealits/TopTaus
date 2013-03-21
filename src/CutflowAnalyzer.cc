@@ -2534,6 +2534,7 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   // btag value
   // btag
   double jet1(0), jet2(0), jet3(0); 
+  double jeta1(0), jeta2(0), jeta3(0);
   int jet1_ind(-1), jet2_ind(-1), jet3_ind(-1);
   double btag1(0), btag2(0), btag3(0); 
   int btagmul(0);
@@ -2541,21 +2542,21 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
  
   for( size_t j=0; j != j_v.size() ; j++ ){ 
 
-    int ind = j_v[j]; double j_pt = jets[ind].Pt(); double btag =jets[ind][BTAGIND_]; 
+    int ind = j_v[j]; double j_pt = jets[ind].Pt(); double j_eta = jets[ind].Eta(); double btag =jets[ind][BTAGIND_]; 
 
     if( ! isData_) j_pt = getJetPt( jets[ind], junc, jerFactors[ind], jes_);
     else           j_pt = GetJetResidualPt(jets[ind]);
 
     if     ( j_pt > jet1 ){
-      jet3=jet2; jet3_ind = jet2_ind; jet2 = jet1; jet2_ind= jet1_ind; jet1 = j_pt; jet1_ind = ind; 
+      jet3=jet2; jeta3=jeta2; jet3_ind = jet2_ind; jet2 = jet1; jeta2=jeta1; jet2_ind= jet1_ind; jet1 = j_pt; jeta1=j_eta; jet1_ind = ind; 
       btag3=btag2; btag2 = btag1; btag = btag; 
     } // leading jet
     else if( j_pt > jet2 ){
-      jet3=jet2;  jet3_ind = jet2_ind; jet2 = j_pt; jet2_ind=ind;
+      jet3=jet2; jeta3=jeta2; jet3_ind = jet2_ind; jet2 = j_pt; jeta2=j_eta; jet2_ind=ind;
       btag3=btag2; btag2 = btag; 
     } // next leading jet
     else if( j_pt > jet3 ){ 
-      jet3=j_pt;  jet3_ind = ind;   
+      jet3=j_pt; jeta3=j_eta; jet3_ind = ind;   
       btag3=btag;
     } // next to next to leading jet
     mon.fillHisto(TString("pt_j"),extra1+step, j_pt,w_);  mon.fillHisto(TString("pt_j"), extra2+step, j_pt,w_);
@@ -2609,9 +2610,9 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
 
 
   // Fill first leading jet, second leading jet, third leading jet //////////////////////////////////////////////////////
-  if(jet1){ mon.fillHisto(TString("pt_j1"),extra1+step, jet1,w_);  mon.fillHisto(TString("pt_j1"),extra2+step, jet1,w_); }
-  if(jet2){ mon.fillHisto(TString("pt_j2"),extra1+step, jet2,w_);  mon.fillHisto(TString("pt_j2"),extra2+step, jet2,w_); }
-  if(jet3){ mon.fillHisto(TString("pt_j3"),extra1+step, jet3,w_);  mon.fillHisto(TString("pt_j3"),extra2+step, jet3,w_); }
+  if(jet1){ mon.fillHisto(TString("pt_j1"),extra1+step, jet1,w_);  mon.fillHisto(TString("pt_j1"),extra2+step, jet1,w_); mon.fillHisto(TString("eta_j1"),extra1+step, jeta1,w_);  mon.fillHisto(TString("eta_j1"),extra2+step, jeta1,w_);}
+  if(jet2){ mon.fillHisto(TString("pt_j2"),extra1+step, jet2,w_);  mon.fillHisto(TString("pt_j2"),extra2+step, jet2,w_); mon.fillHisto(TString("eta_j2"),extra1+step, jeta2,w_);  mon.fillHisto(TString("eta_j2"),extra2+step, jeta2,w_);}
+  if(jet3){ mon.fillHisto(TString("pt_j3"),extra1+step, jet3,w_);  mon.fillHisto(TString("pt_j3"),extra2+step, jet3,w_); mon.fillHisto(TString("eta_j3"),extra1+step, jeta3,w_);  mon.fillHisto(TString("eta_j3"),extra2+step, jeta3,w_);}
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
