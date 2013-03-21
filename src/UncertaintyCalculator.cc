@@ -40,6 +40,7 @@ double UncertaintyCalculator::jetMETUnclustered( vector<double> & jerFactors, Ph
 
 
 
+
   for (unsigned int i=0; i<vJ.size(); i++){
     if( jerFactors.size() != 0 ){    missetX += ( vJ[i][5] )*(vJ[i].Px())*jerFactors[i];  missetY += ( vJ[i][5] )*(vJ[i].Py())*jerFactors[i]; }
     else{                            missetX += ( vJ[i][5] )*(vJ[i].Px());                missetY += ( vJ[i][5] )*(vJ[i].Py());               }
@@ -116,58 +117,74 @@ double UncertaintyCalculator::getJetPt( PhysicsObject &j ,JetCorrectionUncertain
 }
 
 
-/////MC smearing
-///PhysicsObject UncertaintyCalculator::smearedJet(const PhysicsObject &origJet, double genJetPt, int mode) // Perhaps it would be better to create a class or a namespace METUtils
-///{
-///  if(genJetPt<=0) return origJet;
-///  
-///  //smearing factors are described in https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution
-///  //Moriond2012 values
-///  double eta=fabs(origJet.Eta());
-///  
-///  double ptSF(1.0), ptSF_err(0.06);
-///  if(eta<0.5) { ptSF=1.066;
-///    ptSF_err=sqrt(pow(0.007,2)+pow(0.5*(0.07+0.072),2)); }
-///  else if(eta>=0.5 && eta<1.7) { ptSF=1.191;
-///    ptSF_err=sqrt(pow(0.019,2)+pow(0.5*(0.06+0.062),2)); }
-///  else if(eta>=1.7 && eta<2.3) { ptSF=1.096;
-///    ptSF_err=sqrt(pow(0.030,2)+pow(0.5*(0.08+0.085),2)); }
-///  else if(eta>=2.3 && eta<5.0) { ptSF=1.166;
-///    ptSF_err=sqrt(pow(0.050,2)+pow(0.5*(0.19+0.199),2)); }
+//MC smearing
+PhysicsObject UncertaintyCalculator::smearedJet(const PhysicsObject &origJet, double genJetPt, int mode) // Perhaps it would be better to create a class or a namespace METUtils
+{
+  genJetPt = origJet[34];
+  // genJet info:
+  // info[34] = j->genJet()->pt();
+  // info[35] = j->genJet()->eta();
+  // info[36] = j->genJet()->phi();
+   
+
+  if(genJetPt<=0) return origJet;
+  
+  //smearing factors are described in https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution
+  //Moriond2013 values
+  double eta=fabs(origJet.Eta());
+  
+  double ptSF(1.0), ptSF_err(0.06);
+  if(eta<0.5) {
+    ptSF=1.066;
+    ptSF_err=sqrt(pow(0.007,2)+pow(0.5*(0.07+0.072),2)); 
+  } 
+  else if(eta>=0.5 && eta<1.7) {
+    ptSF=1.191;
+    ptSF_err=sqrt(pow(0.019,2)+pow(0.5*(0.06+0.062),2)); 
+  }
+  else if(eta>=1.7 && eta<2.3) { 
+    ptSF=1.096;
+    ptSF_err=sqrt(pow(0.030,2)+pow(0.5*(0.08+0.085),2)); 
+  }
+  else if(eta>=2.3 && eta<5.0) {
+    ptSF=1.166;
+    ptSF_err=sqrt(pow(0.050,2)+pow(0.5*(0.19+0.199),2)); 
+  }
+  
+  
+  if(mode==1) ptSF += ptSF_err; // JerUp
+  if(mode==2) ptSF -= ptSF_err; // JerDown
+  ptSF=max(0.,(genJetPt+ptSF*(origJet.Pt()-genJetPt)))/origJet.Pt();
+  // Deterministic version (now the Recommended version)
+  
+  /// Random smearing is now NOT recommended
+  ///double sin_phi = sin(origJet.Phi()*1000000);
+  ///double seed = abs(static_cast<int>(sin_phi*100000));
+  ///TRandom3 myRandom(seed);
+  ///
+  ///// A seed value of "0" means that the seed is authomatically calculated from memory data, garanteeing that it's unique in space and time, according to documentation of TRandom3
+  ///// Still, the sinphi method is valid even if the TRandom3 convention changes eventually
+  /////  TRandom3 myRandom(0); 
+  ///
+  ///ptSF=max(0.,(genJetPt+myRandom.Gaus(ptSF,ptSF_err)*(origJet.Pt()-genJetPt)))/origJet.Pt();
+  /////deterministic version
+  ///if(ptSF<=0) return origJet;
+
+  double px(origJet.Px()*ptSF), py(origJet.Py()*ptSF),
+    pz(origJet.Pz()), mass(origJet.M());
+  double en = sqrt(mass*mass+px*px+py*py+pz*pz);
+  
+  PhysicsObject toReturn = origJet;
+  //  toReturn.SetCoordinates(px, py, pz, en);
+  toReturn.SetPtEtaPhiE(px, py, pz, en);
+  
+  return toReturn;
+  
+  //return new kinematics
+  //    return LorentzVector(px,py,pz,en);
+}
 ///
-/// 
-///  if(mode==1) ptSF += ptSF_err;
-///  if(mode==2) ptSF -= ptSF_err;
-///  //ptSF=max(0.,(genJetPt+ptSF*(origJet.pt()-genJetPt)))/origJet.pt();
-///  //deterministic version
-///  
-///  double sin_phi = sin(origJet.Phi()*1000000);
-///  double seed = abs(static_cast<int>(sin_phi*100000));
-///  TRandom3 myRandom(seed);
-///
-///  // A seed value of "0" means that the seed is authomatically calculated from memory data, garanteeing that it's unique in space and time, according to documentation of TRandom3
-///  // Still, the sinphi method is valid even if the TRandom3 convention changes eventually
-///  //  TRandom3 myRandom(0); 
-///  
-///  ptSF=max(0.,(genJetPt+myRandom.Gaus(ptSF,ptSF_err)*(origJet.Pt()-genJetPt)))/origJet.Pt();
-///  //deterministic version
-///  if(ptSF<=0) return origJet;
-///
-///  double px(origJet.Px()*ptSF), py(origJet.Py()*ptSF),
-///    pz(origJet.Pz()), mass(origJet.M());
-///  double en = sqrt(mass*mass+px*px+py*py+pz*pz);
-///  
-///  PhysicsObject toReturn = origJet;
-///  //  toReturn.SetCoordinates(px, py, pz, en);
-///  toReturn.SetPtEtaPhiE(px, py, pz, en);
-///  
-///  return toReturn;
-///  
-///  //return new kinematics
-///  //    return LorentzVector(px,py,pz,en);
-///}
-///
-///
+ //
 ///// Propagate met variation
 ///void computeVariation(vector<PhysicsObject>& jets, 
 ///		      vector<PhysicsObject> &leptons, // not really needed for now
