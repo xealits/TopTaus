@@ -2539,7 +2539,10 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   double btag1(0), btag2(0), btag3(0); 
   int btagmul(0);
   double btagmul1(0), btagmul2(0), btagmul3(0);
- 
+  
+  PhysicsObject hptbjet; double ptbjet(0);// highest-pt bjet and its pt
+  
+
   for( size_t j=0; j != j_v.size() ; j++ ){ 
 
     int ind = j_v[j]; double j_pt = jets[ind].Pt(); double j_eta = jets[ind].Eta(); double btag =jets[ind][BTAGIND_]; 
@@ -2575,7 +2578,14 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
 
 
     int pgid(PGID_UNKNOWN); if(!isData_) pgid = TMath::Abs(jets[ind][jetpgid_]);
-    if( btag > BTAG_CUT_) btagmul++;
+    if( btag > BTAG_CUT_){
+      btagmul++;
+      if(j_pt>ptbjet){ // Fill ptbjet with the pt
+	hptbjet = jets[ind];
+	ptbjet=j_pt;
+      }
+    }
+    
     if( btag1 > BTAG_CUT_) btagmul1++;
     if( btag2 > BTAG_CUT_) btagmul2++;
     if( btag3 > BTAG_CUT_) btagmul3++;
@@ -2597,6 +2607,14 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
+  // Fill highest pt bjet kinematics ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if(btagmul){
+    double etabjet = hptbjet.Eta();
+    if(hptbjet.Pt() != ptbjet) std::cout << "DEBUG: ERROR ERROR" << std::endl;
+    
+    mon.fillHisto(TString("pt_bj"),extra1+step, ptbjet ,w_);  mon.fillHisto(TString("pt_bj"),extra2+step,ptbjet ,w_); mon.fillHisto(TString("eta_bj"),extra1+step, etabjet,w_);  mon.fillHisto(TString("eta_bj"),extra2+step, etabjet,w_);
+  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
   // Fill btag multiplicity  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2623,7 +2641,7 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
     double eEta = electrons[e_i].Eta(); double ePhi = electrons[e_i].Phi();
     // Eta - Phi map of reconstructed electrons 
     mon.fill2DHisto(TString("eta_phi_lepton"),extra1+step, eEta ,ePhi, w_);  mon.fill2DHisto(TString("eta_phi_lepton"),extra2+step, eEta ,ePhi, w_);
-  
+    
   }
   for(uint m=0;m!=m_v.size();m++){
     int m_i = m_v[m]; double m_pt = TMath::Abs(muons[m_i].Pt()); mon.fillHisto(TString("pt_m"),extra1+step, m_pt,w_); mon.fillHisto(TString("pt_m"),extra2+step, m_pt,w_);
@@ -2633,8 +2651,15 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
+  
+  // Lepton-bjet invariant mass ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if(btagmul && m_v.size()>0){
+    TLorentzVector v_lbj(muons[m_v[0] ]+hptbjet); double m_lbj = v_lbj.M();
+    mon.fillHisto(TString("m_mubj"),extra1+step, m_lbj,w_); mon.fillHisto(TString("m_mubj"),extra2+step, m_lbj,w_); 
+  }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
 
   // lepton-jet mass (lead, sublead, subsublead jet) //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if(e_v.size()>0){ 
@@ -2652,19 +2677,41 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
     }
   }    
   if(m_v.size()>0){ 
+    double hm_lj(0.); // highest mass
+    double lm_lj(100000000.); // lowest mass 
     if(jet1){
       TLorentzVector v_lj1(muons[m_v[0] ]+jets[jet1_ind]); double m_lj1 = v_lj1.M();
-    mon.fillHisto(TString("m_muj1"),extra1+step, m_lj1,w_); mon.fillHisto(TString("m_muj1"),extra2+step, m_lj1,w_); 
+      mon.fillHisto(TString("m_muj1"),extra1+step, m_lj1,w_); mon.fillHisto(TString("m_muj1"),extra2+step, m_lj1,w_); 
+      if(m_lj1>hm_lj)
+	hm_lj=m_lj1;
+      if(m_lj1<lm_lj)
+	lm_lj=m_lj1;
+      
     }
     if(jet2){
       TLorentzVector v_lj2(muons[m_v[0] ]+jets[jet2_ind]); double m_lj2 = v_lj2.M();
       mon.fillHisto(TString("m_muj2"),extra1+step, m_lj2,w_); mon.fillHisto(TString("m_muj2"),extra2+step, m_lj2,w_); 
+      if(m_lj2>hm_lj)
+	hm_lj=m_lj2;
+      if(m_lj2<lm_lj)
+	lm_lj=m_lj2;
+
     }
     if(jet3){
-    TLorentzVector v_lj3(muons[m_v[0] ]+jets[jet3_ind]); double m_lj3 = v_lj3.M();
-    mon.fillHisto(TString("m_muj3"),extra1+step, m_lj3,w_); mon.fillHisto(TString("m_muj3"),extra2+step, m_lj3,w_); 
+      TLorentzVector v_lj3(muons[m_v[0] ]+jets[jet3_ind]); double m_lj3 = v_lj3.M();
+      mon.fillHisto(TString("m_muj3"),extra1+step, m_lj3,w_); mon.fillHisto(TString("m_muj3"),extra2+step, m_lj3,w_); 
+      if(m_lj3>hm_lj)
+	hm_lj=m_lj3;
+      if(m_lj3<lm_lj)
+	lm_lj=m_lj3;
+      
     }
-  }    
+ 
+    if(jet1 || jet2 || jet3)
+      mon.fillHisto(TString("max_m_muj"),extra1+step, hm_lj,w_); mon.fillHisto(TString("max_m_muj"),extra2+step, hm_lj,w_); 
+
+
+ }    
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -3221,6 +3268,10 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   if( hasEGtrig ){ numb_e = e_init.size(); if(numb_e){ evType_ = ETAU_ ; w_ = intimepuWeight_*scale_; }}
   if( hasMutrig ){ numb_m = m_init.size(); if(numb_m){ evType_ = MUTAU_; w_ = intimepuWeight_*scale_; }}
   if( numb_e + numb_m != 1){ return; }
+
+  //  double muAbsEta = fabs( muons[ m_init[0] ].Eta() );
+  //  if( muAbsEta >0. && muAbsEta < 0.9)
+
 
   if(isData_){w_=1; leptontriggerefficiency_=1;}
 

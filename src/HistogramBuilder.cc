@@ -303,6 +303,7 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   h = new TH1D("pt_e",                "e;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
   h = new TH1D("pt_m",                "m;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("pt_j",                "j;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("pt_bj",               "bj;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("pt_j1",               "j1;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("pt_j2",               "j2;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
   h = new TH1D("pt_j3",               "j3;p_{T} [GeV/c]; Entries",300,0,750);    addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
@@ -353,6 +354,12 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   h = new TH1D("m_ej1","l; m_{ ej_{2} };",400,0,1600);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("m_ej2","l; m_{ ej_{2} };",400,0,1600);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("m_ej3","l; m_{ ej_{2} };",400,0,1600);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+
+  // Mass between lepton and b-jet
+  h = new TH1D("m_mubj","l; m_{ #mu bjet };",400,0,1600);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("max_m_muj","l; max m_{ #mu j };",400,0,1600);        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+
+
 
   //debug ////////////////////////////////////////////////////////////////////////////////////////////////////////////
   h = new TH1D("dphij1j2","l; #Delta#Phij_{1}j_{2};",60,0,3.15); addHistoToMonitors(h,h->GetName(), stepsMons, keys);
@@ -422,6 +429,7 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   h = new TH1D("eta_e",          "e; #eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
   h = new TH1D("eta_m",          "m; #eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
   h = new TH1D("eta_j",          "j; #eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("eta_bj",         "bj; #eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
   h = new TH1D("eta_j1",         "j1;#eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("eta_j2",         "j2;#eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
   h = new TH1D("eta_j3",         "j3;#eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 

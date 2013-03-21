@@ -8,6 +8,11 @@
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j_4</item>
   </id> 
 
+  <id tag="muCh_pt_bj" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{bjets}_{T}
+  [GeV/c]" yrange="10,600000000" xrange="35,500" xbin="2" >
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_bj_4</item>
+  </id> 
+
   <id tag="muCh_pt_j1" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{lead jet}_{T}
   [GeV/c]" yrange="10,600000" xrange="35,500" xbin="2" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j1_4</item>
@@ -70,6 +75,14 @@
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >m_muj1_4</item>
   </id>
 
+
+  <id tag="muCh_m_mbj" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="M^{lep-bjet} [GeV/c^{2}]" yrange="10,10000000"  xbin="16" >
+    <item dir="PFlow/RecoSteps/lep_tau/1 btag">m_mubj_6</item>
+  </id> 
+
+  <id tag="muCh_max_m_muj" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="max M^{lep-jet} [GeV/c^{2}]" yrange="10,10000000"  xbin="16" >
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">max_m_muj_4</item>
+  </id> 
 
 
 
