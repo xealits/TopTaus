@@ -506,7 +506,7 @@ void HistogramPlotter::plotLegend( TH1 * higgs, TLegend *l, TString title, vecto
 //   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  1.9 fb^{-1}  CMS ");
 //   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  4.0 fb^{-1} CMS Preliminary");
 //   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  4.7 fb^{-1} CMS Preliminary");
-   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  17.9 fb^{-1} CMS Preliminary");
+   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  18.1 fb^{-1} CMS Preliminary");
    text->SetTextAlign(11);
    pt->Draw();
 
