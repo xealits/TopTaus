@@ -2,7 +2,7 @@
 <monitor> 
 
   <!-- Muon pt and eta distribition (After lepton + 3jets )-->
-   <id tag="muCh_pt_m" doratio="1" logy="1" cmspublic="y" opt="e1" oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{#mu}_{T} [GeV/c]" yrange="10,100000000"  xbin="2">
+   <id tag="muCh_pt_m" doratio="1" logy="1" cmspublic="y" opt="e1" oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{#mu}_{T} [GeV/c]" yrange="10,100000000"  xbin="4">
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_m_4</item>
   </id>
   <id tag="muCh_eta_m" doratio="1" logy="0" cmspublic="y" opt="e1" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{#mu}" yrange="0,1000000" xrange="-2.6,2.6" xbin="2">

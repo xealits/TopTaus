@@ -373,6 +373,16 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
     }  
     else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
   }
+  // Base scale factors must be applied in any case (modify code above then)
+  
+    jerFactors.clear();
+    for(unsigned int i=0;i<jets.size();i++){ 
+      double corr_jer(1);
+      smearedJet(jets[i], jets[i][34], 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
+      jerFactors.push_back(corr_jer);
+    }
+    if(isData_) for(size_t i=0; i<jerFactors.size(); i++)
+      std::cout << "factor " << jerFactors[i] << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   
@@ -2621,7 +2631,7 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   // Fill highest pt bjet kinematics ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if(btagmul){
     double etabjet = hptbjet.Eta();
-    if(hptbjet.Pt() != ptbjet) std::cout << "DEBUG: ERROR ERROR" << std::endl;
+    //FIXME: this fires almost always: calculator precision issue?    if(hptbjet.Pt() != ptbjet) std::cout << "DEBUG: ERROR ERROR" << std::endl;
     
     mon.fillHisto(TString("pt_bj"),extra1+step, ptbjet ,w_);  mon.fillHisto(TString("pt_bj"),extra2+step,ptbjet ,w_); mon.fillHisto(TString("eta_bj"),extra1+step, etabjet,w_);  mon.fillHisto(TString("eta_bj"),extra2+step, etabjet,w_);
   }

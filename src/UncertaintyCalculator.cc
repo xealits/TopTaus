@@ -118,7 +118,7 @@ double UncertaintyCalculator::getJetPt( PhysicsObject &j ,JetCorrectionUncertain
 
 
 //MC smearing
-PhysicsObject UncertaintyCalculator::smearedJet(const PhysicsObject &origJet, double genJetPt, int mode) // Perhaps it would be better to create a class or a namespace METUtils
+PhysicsObject UncertaintyCalculator::smearedJet(const PhysicsObject &origJet, double genJetPt, int mode, double& scaleFactor) // Perhaps it would be better to create a class or a namespace METUtils
 {
   genJetPt = origJet[34];
   // genJet info:
@@ -170,6 +170,8 @@ PhysicsObject UncertaintyCalculator::smearedJet(const PhysicsObject &origJet, do
   /////deterministic version
   ///if(ptSF<=0) return origJet;
 
+
+  scaleFactor = ptSF; // output scale factor
   double px(origJet.Px()*ptSF), py(origJet.Py()*ptSF),
     pz(origJet.Pz()), mass(origJet.M());
   double en = sqrt(mass*mass+px*px+py*py+pz*pz);
