@@ -93,6 +93,10 @@ physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch fo
 
 
 CHANGELOG for major updates:
+2013-03-20: fixed pileup reweighting
+	    added table with the codes for antiLepton discriminators for taus
+	    chosen for chiggs: antiMuonTight for highPt, againstElectronMVA3Medium
+	    added class and executable for training distributions for fakes
 2013-03-19: fixed tables for SM ttbar
 	    added table for heavy charged higgs samples
 2013-03-18: new data ntuples with improved splitting.

@@ -422,6 +422,9 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   h = new TH1D("eta_e",          "e; #eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
   h = new TH1D("eta_m",          "m; #eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
   h = new TH1D("eta_j",          "j; #eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("eta_j1",         "j1;#eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("eta_j2",         "j2;#eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("eta_j3",         "j3;#eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
   h = new TH1D("eta_t",          "t; #eta ; Entries", 60,-3.05,3.05);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
 
 
@@ -495,17 +498,23 @@ void HistogramBuilder::buildYieldsHistograms( TFile * outFile, map< TString, Sel
   if( commondefinitions::MODE_ == commondefinitions::STARTING_AT_LJETS_){
       steps[6]  = TString("1 lep + #geq 3 jets");  
       steps[7]  = TString("MET"); 
-      steps[8]  = TString("#geq 1btag");
-      steps[9] = TString("1 #tau");
-      steps[10] = TString("OS");
-      steps[11] = TString("#geq 2 btags");
-      steps[12] = TString("R");
-/// nomt ///      steps[8]  = TString("MT");
-/// nomt ///      steps[9]  = TString("#geq 1btag");
-/// nomt ///      steps[10] = TString("1 #tau");
-/// nomt ///      steps[11] = TString("OS");
-/// nomt ///      steps[12] = TString("#geq 2 btags");
-/// nomt ///      steps[13] = TString("R");
+     
+
+//      if(!APPLY_MT_CUT_){
+//	steps[8]  = TString("#geq 1btag");
+//	steps[9] = TString("1 #tau");
+//	steps[10] = TString("OS");
+//	steps[11] = TString("#geq 2 btags");
+//	steps[12] = TString("R");
+//      }
+//      else{
+	steps[8]  = TString("MT");
+	steps[9]  = TString("#geq 1btag");
+	steps[10] = TString("1 #tau");
+	steps[11] = TString("OS");
+	steps[12] = TString("#geq 2 btags");
+	steps[13] = TString("R");
+	//      }
 
   }
 
