@@ -131,6 +131,8 @@ FIXED TAGS:
 
 
 TODO:
+- apply method to jerunc
+- vstrings in physicsAnalysisParSets_cfg.py for pileup syst
 - Fix multiplicity plots for lead/sublead/subsublead jets 
 - Fix HistogramPlotter to read LUM from commondefinitions
 - Data/MC scale factors for resolution, in eta bins (values are already updated in UncertaintyCalculator)
