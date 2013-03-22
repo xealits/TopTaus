@@ -152,7 +152,7 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
     //BTAG_eff_R_ = 0.819873;
     //BTAG_eff_F_ = 0.177778;
 
-    //Muon with MT. FIXME: check these values
+    //Muon with MT. FIXME: check these values 
     BTAG_eff_R_ = 0.81376;         
     BTAG_eff_F_ = 0.163441;
     
@@ -350,34 +350,34 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
 
   //jet energy corrections ////////////////////////////////////////////////////////////////////////////////
   vector<double> jerFactors;
-  if(jerc){ // Split condition for optimizazion
-    if(!fast_ ) {
-      for(unsigned int i=0;i<jets.size();i++){ 
-	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
-	double scaleFactor(0.1);  //bias correction
-	double corr_jer(1);
-	if( jer < 0 ){ scaleFactor = 0.;  }
-	if( jer > 0 ){ scaleFactor = 0.2; }
-	
-	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
-	
-	if( corr_jer < 0 ){ corr_jer = 1; }
-	jerFactors.push_back(corr_jer);
-      }
-    }  
-    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
-  }
+  // Old jet energy resolution factors
+  //  if(jerc){ // Split condition for optimizazion
+  //    if(!fast_ ) {
+  //      for(unsigned int i=0;i<jets.size();i++){ 
+  //	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
+  //	double scaleFactor(0.1);  //bias correction
+  //	double corr_jer(1);
+  //	if( jer < 0 ){ scaleFactor = 0.;  }
+  //	if( jer > 0 ){ scaleFactor = 0.2; }
+  //	
+  //	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
+  //	
+  //	if( corr_jer < 0 ){ corr_jer = 1; }
+  //	jerFactors.push_back(corr_jer);
+  //      }
+  //    }  
+  //    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
+  //  }
   // Base scale factors must be applied in any case (modify code above then)
-  
-    jerFactors.clear();
-    for(unsigned int i=0;i<jets.size();i++){ 
-      double corr_jer(1);
-      smearedJet(jets[i], jets[i][34], 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
-      jerFactors.push_back(corr_jer);
-    }
-    // DEBUG (successful)
-    //    if(isData_) for(size_t i=0; i<jerFactors.size(); i++)
-    //      std::cout << "factor " << jerFactors[i] << std::endl;
+  jerFactors.clear();
+  for(unsigned int i=0;i<jets.size();i++){ 
+    double corr_jer(1);
+    smearedJet(jets[i], jets[i][34], 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
+    jerFactors.push_back(corr_jer);
+  }
+  // DEBUG (successful)
+  //    if(isData_) for(size_t i=0; i<jerFactors.size(); i++)
+  //      std::cout << "factor " << jerFactors[i] << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   
@@ -1013,12 +1013,8 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
     // tau_pt = taus[tau_i].Pt(); // unused
     tau_obj = &(taus[tau_i]); }
 
-  //Muon trigger efficiency (as well as ID and Iso) scale factors: https://indico.cern.ch/getFile.py/access?contribId=3&resId=0&materialId=slides&confId=214870
-  //default: a dummy average for the moment - commented waiting for feedback from Muon POG
-    double muAbsEta = fabs( muons[ m_init[0] ].Eta() );
-    if( muAbsEta >0. && muAbsEta < 0.9 ) { muontriggerefficiency_ = 0.984;} //(0.9841/0.0003^2+0.9798/0.0004^2+0.956/0.0008^2)/(1/0.0003^2+1/0.0004^2+1/0.0008^2)
-    if( muAbsEta >0.9 && muAbsEta < 1.2 ) { muontriggerefficiency_ = 0.964;} //(0.9528/0.0021^2+0.9618/0.001^2+0.9688/0.0009^2)/(1/0.0021^2+1/0.001^2+1/0.0009^2)
-    if( muAbsEta >1.2 && muAbsEta < 2.1 ) { muontriggerefficiency_ = 0.992;} //(0.9809/0.0016^2+0.9814/0.0008^2+1.0021/0.0007^2)/(1/0.0016^2+1/0.0008^2+1/0.0007^2)
+  // Muon trigger/ID/Iso scale factors for efficiency from https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceEffs 
+  LeadMuonTriggerEfficiency(muons,  m_init[0], muontriggerefficiency_);
 
   // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
   // on MC   : we apply a trigger efficiency

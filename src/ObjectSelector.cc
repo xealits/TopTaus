@@ -600,6 +600,191 @@ void ObjectSelector::ApplyCleaning( vector<int>* i_old , vector<int>* i_remove, 
   }
 }
 
+void ObjectSelector::LeadMuonTriggerEfficiency(const vector<PhysicsObject>& muons, const int& ind, double& muontriggerefficiency){
+  // Muon trigger/ID/Iso scale factors for efficiency are taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceEffs
+  // FIXME: implement non-pt dependent and implement non-fabs dependent
+  PhysicsObject muon = muons[ind];
+
+  double abseta = fabs( muon.Eta() );
+  double pt = muon.Pt();
+
+  // TOTAL // pt>500 assumed flat and uses 140.<pt<500. SF.
+  if(abseta>=0. && abseta <0.9){ // ABCD
+    if(pt>=140. /* && pt<500. */)      muontriggerefficiency=0.983259;
+    if(pt>=25. && pt<30.)              muontriggerefficiency=0.979543;
+    if(pt>=30. && pt<35.)              muontriggerefficiency=0.980155;
+    if(pt>=35. && pt<40.)              muontriggerefficiency=0.980745;
+    if(pt>=40. && pt<50.)              muontriggerefficiency=0.980943;
+    if(pt>=50. && pt<60.)	       muontriggerefficiency=0.981394;
+    if(pt>=60. && pt<90.)	       muontriggerefficiency=0.983171;
+    if(pt>=90. && pt<140.)	       muontriggerefficiency=0.98099 ;
+  }
+  if(abseta>=0.9 && abseta <1.2){ // ABCD
+    if(pt>=140. /*&& pt<500. */)       muontriggerefficiency=0.986067;
+    if(pt>=25. && pt<30.)              muontriggerefficiency=0.968072;
+    if(pt>=30. && pt<35.)              muontriggerefficiency=0.962795;
+    if(pt>=35. && pt<40.)              muontriggerefficiency=0.964999;
+    if(pt>=40. && pt<50.)              muontriggerefficiency=0.964565;
+    if(pt>=50. && pt<60.)              muontriggerefficiency=0.961581;
+    if(pt>=60. && pt<90.)              muontriggerefficiency=0.956228;
+    if(pt>=90. && pt<140.)             muontriggerefficiency=0.959373;
+  }
+  if(abseta>=1.2 && abseta <2.1){ // ABCD
+    if(pt>=140. /*&& pt<500. */)       muontriggerefficiency=0.976435;
+    if(pt>=25. && pt<30.)              muontriggerefficiency=1.00288 ;
+    if(pt>=30. && pt<35.)              muontriggerefficiency=0.998932;
+    if(pt>=35. && pt<40.)              muontriggerefficiency=0.995211;
+    if(pt>=40. && pt<50.)              muontriggerefficiency=0.993481;
+    if(pt>=50. && pt<60.)              muontriggerefficiency=0.990445;
+    if(pt>=60. && pt<90.)              muontriggerefficiency=0.984746;
+    if(pt>=90. && pt<140.)             muontriggerefficiency=0.98326 ;
+  }
+
+  
+  
+  /* Naked values
+
+  // RUN A
+  if(abseta>=0. && abseta <0.9){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta<0.9_2012A']
+  {'140_500':'data/mc': {'efficiency_ratio': 1.0039855865250082,                         'err_hi': 0.022499183084688845,                         'err_low': 0.029995941945261614,
+  '25_30'  'data/mc': {'efficiency_ratio': 0.93813730368945492,                       'err_hi': 0.0044022371718614199,                       'err_low': 0.0044354815653162025,   
+  '30_35':  'data/mc': {'efficiency_ratio': 0.94234693090055577,                       'err_hi': 0.0028007879009532481,                       'err_low': 0.0028208720486102776,
+  '35_40':  'data/mc': {'efficiency_ratio': 0.9511673822775496,                       'err_hi': 0.0019217206048403684,                       'err_low': 0.0019351915905614554,
+  '40_50':  'data/mc': {'efficiency_ratio': 0.96009375278418141,                       'err_hi': 0.0011143882954913547,                       'err_low': 0.0011179007238696897,
+  '50_60':  'data/mc': {'efficiency_ratio': 0.97343957235480161,                       'err_hi': 0.0024411350920320106,                       'err_low': 0.0024754942326703422,
+  '60_90':  'data/mc': {'efficiency_ratio': 0.97573663054250859,                       'err_hi': 0.0035828589659443228,                       'err_low': 0.0036549437474093912,
+  '90_140':  'data/mc': {'efficiency_ratio': 0.98029069760538523,                        'err_hi': 0.012366158027736435,                        'err_low': 0.013260673665312696,
+  
+  
+  }
+  if(abseta>=0.9 && abseta <1.2){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta0.9-1.2_2012A']
+  {'140_500':  'data/mc': {'efficiency_ratio': 0.87925933693202241,                         'err_hi': 0.09659576917260633,                         'err_low': 0.11584311792663776,
+  '25_30':  'data/mc': {'efficiency_ratio': 0.94044745125239582,                       'err_hi': 0.0091767215066666675,                       'err_low': 0.0092635075891679113,
+  '30_35':  'data/mc': {'efficiency_ratio': 0.94175636773857052,                       'err_hi': 0.0068800427455579663,                       'err_low': 0.0069361952719798189,
+  '35_40':  'data/mc': {'efficiency_ratio': 0.96184390382781271,                       'err_hi': 0.0050058891385179978,                       'err_low': 0.0050470262459905374,
+  '40_50':  'data/mc': {'efficiency_ratio': 0.95880861862761002,                       'err_hi': 0.0028604289424100783,                       'err_low': 0.0028768404443189955,
+  '50_60':  'data/mc': {'efficiency_ratio': 0.94396680918599263,                       'err_hi': 0.0069651492894596927,                       'err_low': 0.0070602979471116618,
+  '60_90':  'data/mc': {'efficiency_ratio': 0.94402326294141492,                       'err_hi': 0.01060753235806736,                       'err_low': 0.010818706427484965,
+  '90_140':  'data/mc': {'efficiency_ratio': 0.98555155845578823,                        'err_hi': 0.029074568385132889,                        'err_low': 0.031287356179248285,
+  
+  }
+  if(abseta>=1.2 && abseta <2.1){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta1.2-2.1_2012A']
+  {'140_500':  'data/mc': {'efficiency_ratio': 1.0276661017688036,                         'err_hi': 0.058613958853563478,                         'err_low': 0.071021543276337876,
+  '25_30':  'data/mc': {'efficiency_ratio': 0.98008815033950636,                       'err_hi': 0.0058749122809747352,                       'err_low': 0.0059037530583840132,
+  '30_35':  'data/mc': {'efficiency_ratio': 0.98934704759544734,                       'err_hi': 0.0045785677725535805,                       'err_low': 0.0046011603775876582,
+  '35_40':  'data/mc': {'efficiency_ratio': 0.98463970628770603,                       'err_hi': 0.0036470820310153121,                       'err_low': 0.003663238973677829,
+  '40_50':   'data/mc': {'efficiency_ratio': 0.97977118571541111,                       'err_hi': 0.002256573606508046,                       'err_low': 0.0022619617032217866,
+  '50_60':  'data/mc': {'efficiency_ratio': 0.98223280251110145,                       'err_hi': 0.0053736555765784471,                       'err_low': 0.0054196536658200579,
+  '60_90':  'data/mc': {'efficiency_ratio': 0.96524157990770376,                       'err_hi': 0.0083434128724738637,                       'err_low': 0.0084409501663191694,
+  '90_140':  'data/mc': {'efficiency_ratio': 0.97760874126163566,                        'err_hi': 0.029743004651914488,                        'err_low': 0.03121370649559679,
+  }
+  
+  
+  
+  
+  // RUN B
+  if(abseta>=0. && abseta <0.9){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta<0.9_2012B']
+  {'140_500':  'data/mc': {'efficiency_ratio': 0.97440457563913907,                         'err_hi': 0.014256560782020932,                         'err_low': 0.015275754946814704,
+  '25_30':  'data/mc': {'efficiency_ratio': 0.97885805202380882,                       'err_hi': 0.0019851847371091013,                       'err_low': 0.0019931662231116409,
+  '30_35':  'data/mc': {'efficiency_ratio': 0.97980323349334553,                       'err_hi': 0.0012453102988839982,                       'err_low': 0.0012497557832992071,
+  '35_40':  'data/mc': {'efficiency_ratio': 0.97975530836897795,                       'err_hi': 0.00085702693603589158,                       'err_low': 0.00086003584517788925,
+  '40_50':   'data/mc': {'efficiency_ratio': 0.97968142272864767,                       'err_hi': 0.0004943362934782293,                       'err_low': 0.00024819327312176692,
+  '50_60':  'data/mc': {'efficiency_ratio': 0.97870686775661053,                       'err_hi': 0.0011392030775206204,                       'err_low': 0.001146432417345856,
+  '60_90':  'data/mc': {'efficiency_ratio': 0.98110330744549257,                       'err_hi': 0.0016872169812545313,                       'err_low': 0.0017032973425868255,
+  '90_140':  'data/mc': {'efficiency_ratio': 0.98042031652949257,                        'err_hi': 0.0056548504354232837,                        'err_low': 0.0058207886942260225,
+  }
+  if(abseta>=0.9 && abseta <1.2){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta0.9-1.2_2012B']
+  {'140_500':  'data/mc': {'efficiency_ratio': 0.95360674495560072,                         'err_hi': 0.045847507937714443,                         'err_low': 0.050015414181808653,
+  '25_30':  'data/mc': {'efficiency_ratio': 0.97007008718709498,                       'err_hi': 0.0043723050165507121,                       'err_low': 0.0043928231586872497,
+  '30_35':  'data/mc': {'efficiency_ratio': 0.96269379501996166,                       'err_hi': 0.0031856425422058347,                       'err_low': 0.003198565152114299,
+  '35_40':  'data/mc': {'efficiency_ratio': 0.96023531079758973,                       'err_hi': 0.00244009260220135,                       'err_low': 0.0024487492905615532,
+  '40_50':  'data/mc': {'efficiency_ratio': 0.96214880574476191,                       'err_hi': 0.0013954557209484328,                       'err_low': 0.001401656713597709,
+  '50_60':  'data/mc': {'efficiency_ratio': 0.95908612627283873,                       'err_hi': 0.0033425420704125655,                       'err_low': 0.0033631128064578282,
+  '60_90':  'data/mc': {'efficiency_ratio': 0.95217276446962162,                       'err_hi': 0.0050683327810917035,                       'err_low': 0.0051125913184399303,
+  '90_140':  'data/mc': {'efficiency_ratio': 0.94918636153681046,                        'err_hi': 0.016794425935082069,                        'err_low': 0.01726967001934817,
+  }
+  if(abseta>=1.2 && abseta <2.1){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta1.2-2.1_2012B']
+  {'140_500':  'data/mc': {'efficiency_ratio': 0.98286615824757273,                         'err_hi': 0.043720961605029501,                         'err_low': 0.046117181616762426,
+  '25_30':  'data/mc': {'efficiency_ratio': 0.99501274847385413,                       'err_hi': 0.0028283579570503891,                       'err_low': 0.0028340040981053908,
+  '30_35':  'data/mc': {'efficiency_ratio': 0.98649349917357299,                       'err_hi': 0.002233236508377224,                       'err_low': 0.0022372876535592299,
+  '35_40':  'data/mc': {'efficiency_ratio': 0.98149970931934127,                       'err_hi': 0.0018194402833553954,                       'err_low': 0.0018227440996326791,
+  '40_50':  'data/mc': {'efficiency_ratio': 0.97870186746514398,                       'err_hi': 0.0011350367205615391,                       'err_low': 0.0011358914921148053,
+  '50_60':  'data/mc': {'efficiency_ratio': 0.97745007778784843,                       'err_hi': 0.0027039814950265023,                       'err_low': 0.0027130658944350679,
+  '60_90':  'data/mc': {'efficiency_ratio': 0.97572759209438797,                       'err_hi': 0.0040970458403296215,                       'err_low': 0.0041195117858496581,
+  '90_140':  'data/mc': {'efficiency_ratio': 0.95520425403413389,                        'err_hi': 0.013386396743115671,                        'err_low': 0.01362169423675119,
+  }
+  
+  
+  //RUN C
+  if(abseta>=0. && abseta <0.9){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta<0.9']
+  {'140_500':  'data/mc': {'efficiency_ratio': 0.98331488030612646,                         'err_hi': 0.0121594366990965,                         'err_low': 0.013165510795077145,
+  '25_30':  'data/mc': {'efficiency_ratio': 0.98605163783412098,                       'err_hi': 0.0013942452628413233,                       'err_low': 0.0014020800585459675,
+  '30_35':  'data/mc': {'efficiency_ratio': 0.98551473615861951,                       'err_hi': 0.00090516284233322665,                       'err_low': 0.00090956689404318822,
+  '35_40':  'data/mc': {'efficiency_ratio': 0.98494669206714758,                       'err_hi': 0.00064516806298976249,                       'err_low': 0.00064877503730224092,
+  '40_50':  'data/mc': {'efficiency_ratio': 0.98321323751374934,                       'err_hi': 0.00053949010189997511,                       'err_low': 0.00053949010189997511,
+  '50_60':  'data/mc': {'efficiency_ratio': 0.98380139407493405,                       'err_hi': 0.00091790757839555306,                       'err_low': 0.00092294379257880062,
+  '60_90':  'data/mc': {'efficiency_ratio': 0.98339711419280051,                       'err_hi': 0.0013854763027156304,                       'err_low': 0.0013967579304166784,
+  '90_140':  'data/mc': {'efficiency_ratio': 0.97708648648494312,                        'err_hi': 0.0048207587940254258,                        'err_low': 0.0049507189011278388,
+  }
+  if(abseta>=0.9 && abseta <1.2){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta0.9-1.2']
+  {'140_500':  'data/mc': {'efficiency_ratio': 1.014598415522407,                         'err_hi': 0.038009914795107277,                         'err_low': 0.041868767454545423,
+  '25_30':  'data/mc': {'efficiency_ratio': 0.97610027144634715,                       'err_hi': 0.0035318036056163978,                       'err_low': 0.0035499948993381342,
+  '30_35':  'data/mc': {'efficiency_ratio': 0.96957505872620087,                       'err_hi': 0.0026421144608112968,                       'err_low': 0.0026538760490568795,
+  '35_40':  'data/mc': {'efficiency_ratio': 0.97172722186989646,                       'err_hi': 0.0020470584115986497,                       'err_low': 0.0020547205420876338,
+  '40_50':  'data/mc': {'efficiency_ratio': 0.96855088549646673,                       'err_hi': 0.0009274726479718379,                       'err_low': 0.00093428028163270881,
+  '50_60':  'data/mc': {'efficiency_ratio': 0.96689267029367632,                       'err_hi': 0.0028357838374024179,                       'err_low': 0.0028515267995841602,
+  '60_90':  'data/mc': {'efficiency_ratio': 0.95999872287817567,                       'err_hi': 0.0042727494870127766,                       'err_low': 0.0043027753489072789,
+  '90_140':  'data/mc': {'efficiency_ratio': 0.95932231979340665,                        'err_hi': 0.014274024008399628,                        'err_low': 0.014685692866276922,
+  }
+  if(abseta>=1.2 && abseta <2.1){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta1.2-2.1']
+  '140_500':  'data/mc': {'efficiency_ratio': 0.99805498588548336,                         'err_hi': 0.036102881278942782,                         'err_low': 0.040416111226777102,
+  '25_30':  'data/mc': {'efficiency_ratio': 1.0091911468596282,                       'err_hi': 0.0024097844241964205,                       'err_low': 0.0024154834432019187,
+  '30_35':  'data/mc': {'efficiency_ratio': 1.0051776462431439,                       'err_hi': 0.0018841769147249416,                       'err_low': 0.0018875065748520203,
+  '35_40':  'data/mc': {'efficiency_ratio': 1.0024159561631731,                       'err_hi': 0.0015550332829383185,                       'err_low': 0.0015576645386781234,
+  '40_50':   'data/mc': {'efficiency_ratio': 1.0016974912730539,                       'err_hi': 0.00097388377843326982,                       'err_low': 0.00092317537162422069,
+  '50_60':  'data/mc': {'efficiency_ratio': 0.99924439802206022,                       'err_hi': 0.0022931577193718157,                       'err_low': 0.0023007860598461011,
+  '60_90':  'data/mc': {'efficiency_ratio': 0.99415925403956484,                       'err_hi': 0.0034877157906004035,                       'err_low': 0.0035051608536696482,
+  '90_140':  'data/mc': {'efficiency_ratio': 1.0018625421366663,                        'err_hi': 0.011647383620774592,                        'err_low': 0.011843439025869167,
+  }
+  // RUN D
+  if(abseta>=0. && abseta <0.9){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta<0.9_2012D']
+  if(pt>=140.  && pt<500. )      muontriggerefficiency=0.98601151721013425; // 'data/mc': {'efficiency_ratio': 0.98601151721013425, 'err_hi': 0.013062714238057683, 'err_low': 0.014073601453910352, 
+  if(pt>=25. && pt<30.)              muontriggerefficiency=0.97914496622610225; // 'data/mc': {'efficiency_ratio': 0.97914496622610225, 'err_hi': 0.0018008858554421543, 'err_low': 0.001806929370962707,
+  if(pt>=30. && pt<35.)              muontriggerefficiency=0.98019485553878438; // 'data/mc': {'efficiency_ratio': 0.98019485553878438, 'err_hi': 0.0011196120617616768, 'err_low': 0.0011229899299581472,
+  if(pt>=35. && pt<40.)              muontriggerefficiency=0.98121815376364718; // 'data/mc': {'efficiency_ratio': 0.98121815376364718, 'err_hi': 0.0007626607730832082, 'err_low': 0.00076461153531109168,
+  if(pt>=40. && pt<50.)              muontriggerefficiency=0.98231741596833355; // 'data/mc': {'efficiency_ratio': 0.98231741596833355, 'err_hi': 0.078803443945036702, 'err_low': 0.00036329303125574918,
+  if(pt>=50. && pt<60.)	       muontriggerefficiency=0.98179265165696761; // 'data/mc': {'efficiency_ratio': 0.98179265165696761, 'err_hi': 0.00099006266924005432, 'err_low': 0.00099558740718984763,
+  if(pt>=60. && pt<90.)	       muontriggerefficiency=0.98526154045830983; // 'data/mc': {'efficiency_ratio': 0.98526154045830983, 'err_hi': 0.0014681423182645698, 'err_low': 0.0014806677503566158,
+  if(pt>=90. && pt<140.)	       muontriggerefficiency=0.98529848220688254; // 'data/mc': {'efficiency_ratio': 0.98529848220688254, 'err_hi': 0.0048957147462200925, 'err_low': 0.0050279411182655599,
+  }
+  if(abseta>=0.9 && abseta <1.2){// dict['IsoMu24_eta2p1_TightIso']['ptabseta0.9-1.2_2012D']
+  if(pt>=140. && pt<500. )       muontriggerefficiency=0.99289045846971669; // 'data/mc': {'efficiency_ratio': 0.99289045846971669, 'err_hi': 0.034047432416510044,   'err_low': 0.037621730879919629,
+  if(pt>=25. && pt<30.)              muontriggerefficiency=0.96261309489587965; // 'data/mc': {'efficiency_ratio': 0.96261309489587965, 'err_hi': 0.0039150467122432073, 'err_low': 0.0039295292214824992,
+  if(pt>=30. && pt<35.)              muontriggerefficiency=0.95900676188305922; // 'data/mc': {'efficiency_ratio': 0.95900676188305922, 'err_hi': 0.0028826197641733985, 'err_low': 0.0028917465174494511,
+  if(pt>=35. && pt<40.)              muontriggerefficiency=0.96179985528446077; // 'data/mc': {'efficiency_ratio': 0.96179985528446077, 'err_hi': 0.0021886297596684532, 'err_low': 0.002195247383850036,
+  if(pt>=40. && pt<50.)              muontriggerefficiency=0.96293779887804887; // 'data/mc': {'efficiency_ratio': 0.96293779887804887, 'err_hi': 0.0012496849632170402, 'err_low': 0.0012519048627461281,
+  if(pt>=50. && pt<60.)              muontriggerefficiency=0.96029757743629218; // 'data/mc': {'efficiency_ratio': 0.96029757743629218, 'err_hi': 0.0029620477233797118, 'err_low': 0.0029778291697058414,
+  if(pt>=60. && pt<90.)              muontriggerefficiency=0.95672179799515245; // 'data/mc': {'efficiency_ratio': 0.95672179799515245, 'err_hi': 0.0045008915161213444, 'err_low': 0.0045338834116438118,
+  if(pt>=90. && pt<140.)             muontriggerefficiency=0.9623387481411757 ; // 'data/mc': {'efficiency_ratio': 0.9623387481411757,  'err_hi': 0.014502317240007626,  'err_low': 0.014870736802545031,
+  }
+  if(abseta>=1.2 && abseta <2.1){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta1.2-2.1_2012D']
+  if(pt>=140. && pt<500.)            muontriggerefficiency=0.94409610419248469; // 'data/mc': {'efficiency_ratio': 0.94409610419248469, 'err_hi': 0.03915721520872615,   'err_low': 0.040781109792725333,
+  if(pt>=25. && pt<30.)              muontriggerefficiency=1.0047243862175275;  // 'data/mc': {'efficiency_ratio': 1.0047243862175275,  'err_hi': 0.0025421804311439788, 'err_low': 0.0025460048398088719,
+  if(pt>=30. && pt<35.)              muontriggerefficiency=1.0019383989167374;  // 'data/mc': {'efficiency_ratio': 1.0019383989167374,  'err_hi': 0.0019821971393773671, 'err_low': 0.0019852404459558166,
+  if(pt>=35. && pt<40.)              muontriggerefficiency=0.99821177731560617; // 'data/mc': {'efficiency_ratio': 0.99821177731560617, 'err_hi': 0.0016227869401149063, 'err_low': 0.0016253110660227157,
+  if(pt>=40. && pt<50.)              muontriggerefficiency=0.99658256171319515; // 'data/mc': {'efficiency_ratio': 0.99658256171319515, 'err_hi': 0.001005524945783521,  'err_low': 0.0010073667951948028,
+  if(pt>=50. && pt<60.)              muontriggerefficiency=0.99109764417153334; // 'data/mc': {'efficiency_ratio': 0.99109764417153334, 'err_hi': 0.002383366530969413,  'err_low': 0.0023910677931727117,
+  if(pt>=60. && pt<90.)              muontriggerefficiency=0.98379899771732682; // 'data/mc': {'efficiency_ratio': 0.98379899771732682, 'err_hi': 0.0035900842092497962, 'err_low': 0.0036072104737469349,
+    if(pt>=90. && pt<140.)             muontriggerefficiency=0.98342842226423999; // 'data/mc': {'efficiency_ratio': 0.98342842226423999, 'err_hi': 0.011993403076338283,  'err_low': 0.012173910417085737,
+    }
+
+
+    
+  */ 
+
+
+}
+
 
 
 

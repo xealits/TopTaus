@@ -6,7 +6,7 @@
   
   \author   Pietro Vischia, pietro.vischia@gmail.com
 
-  \version  $Id: ObjectSelector.hh,v 0.1 2013/02/01 17:53:22 vischia Exp $                                                                                                       
+  \version  $Id: ObjectSelector.hh,v 1.1 2013/02/01 19:34:47 vischia Exp $                                                                                                       
 */
 
 // System headers
@@ -99,7 +99,9 @@ class ObjectSelector{
 		       const vector<PhysicsObject>&, const vector<PhysicsObject>& , double 
 		       );
   void ApplyCleaning( vector<int>*, vector<int>*, vector<int>*);
-  
+
+  // trigger efficiencies for muons
+  void LeadMuonTriggerEfficiency(const vector<PhysicsObject>&, const int&, double&);
   
   // Data members
 public:
