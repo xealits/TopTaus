@@ -94,6 +94,8 @@ physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch fo
 
 CHANGELOG for major updates:
 2013-03-22: muon trigger efficiencies scale factors added
+	    pileup files splitted per run (data/pileup)
+	    lumi per run added to CommonDefinitions.cc
 2013-03-21: lepton-jet masses plots added
 2013-03-20: fixed pileup reweighting
 	    added table with the codes for antiLepton discriminators for taus

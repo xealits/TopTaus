@@ -113,16 +113,15 @@ namespace commondefinitions{
   bool MODE_ = STARTING_AT_LJETS_; //MODE_ = STARTING_AT_LJETSPLUSMET_;
   /*bool  eChONmuChOFF_ = true; */ 
   bool eChONmuChOFF_ = false;
-  //double LUM_ = 2217.089; //RUN2011A
-  // double LUM_ =  3929; // /pb  //RUN2011A+RUN2011B
-  //  double LUM_ = 4064;
-  // double LUM_ = 4625.21;
-  //  double LUM_ = 4903.; // 2011 final
-  //  double LUM_ = 14801.27; // 2012 start
-  //  double LUM_ = 9564.27; // 2012 ABC start
-  //  double LUM_ = 3593.267; // 2012 AB start
-  //   double LUM_ = 17980.27; // 2012 ABCD notaus ntuples
   double LUM_ = 18072.17; // 2012 ABCD final ntuples
+  //  double LUM_ = 11514.17; // 2012 ABC final ntuples
+  //  double LUM_ = 803.38; // 2012 A final ntuples
+  //  double LUM_ = 82.52; // 2012 Ar final ntuples
+  //  double LUM_ = 4154.; // 2012 B final ntuples
+  //  double LUM_ = 482.26; // 2012 C1 final ntuples
+  //  double LUM_ = 5992.; // 2012 C2 final ntuples
+  //  double LUM_ = 6558.; // 2012 D final ntuples
+  
   int BTAGIND_; double BTAG_CUT_;
   TString puFileName_;
   /////////////////////////////////////////////////////////////////////
