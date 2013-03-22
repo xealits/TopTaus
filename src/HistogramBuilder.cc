@@ -400,7 +400,7 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
 
   h = new TH1D("dr_t",                "dr;dr tau-lepton; Entries",100,0,2);  addHistoToMonitors(h,h->GetName(), stepsMons, keys);
  
-  h = new TH1D("pt_met" ,             "met;E_{T}^{miss} [GeV]; Entries",300,0,300);  addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("pt_met" ,             "met;E_{T}^{miss} [GeV]; Entries",1000,0,1000);  addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
  
 
 
