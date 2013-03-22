@@ -381,8 +381,9 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
       smearedJet(jets[i], jets[i][34], 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
       jerFactors.push_back(corr_jer);
     }
-    if(isData_) for(size_t i=0; i<jerFactors.size(); i++)
-      std::cout << "factor " << jerFactors[i] << std::endl;
+    // DEBUG (successful)
+    //    if(isData_) for(size_t i=0; i<jerFactors.size(); i++)
+    //      std::cout << "factor " << jerFactors[i] << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   
@@ -1020,10 +1021,10 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
 
   //Muon trigger efficiency (as well as ID and Iso) scale factors: https://indico.cern.ch/getFile.py/access?contribId=3&resId=0&materialId=slides&confId=214870
   //default: a dummy average for the moment - commented waiting for feedback from Muon POG
-  //  double muAbsEta = fabs( muons[ m_init[0] ].Eta() );
-  //  if( muAbsEta >0. && muAbsEta < 0.9 ) { muontriggerefficiency_ = 0.984;} //(0.9841/0.0003^2+0.9798/0.0004^2+0.956/0.0008^2)/(1/0.0003^2+1/0.0004^2+1/0.0008^2)
-  //  if( muAbsEta >0.9 && muAbsEta < 1.2 ) { muontriggerefficiency_ = 0.964;} //(0.9528/0.0021^2+0.9618/0.001^2+0.9688/0.0009^2)/(1/0.0021^2+1/0.001^2+1/0.0009^2)
-  //  if( muAbsEta >1.2 && muAbsEta < 2.1 ) { muontriggerefficiency_ = 0.992;} //(0.9809/0.0016^2+0.9814/0.0008^2+1.0021/0.0007^2)/(1/0.0016^2+1/0.0008^2+1/0.0007^2)
+    double muAbsEta = fabs( muons[ m_init[0] ].Eta() );
+    if( muAbsEta >0. && muAbsEta < 0.9 ) { muontriggerefficiency_ = 0.984;} //(0.9841/0.0003^2+0.9798/0.0004^2+0.956/0.0008^2)/(1/0.0003^2+1/0.0004^2+1/0.0008^2)
+    if( muAbsEta >0.9 && muAbsEta < 1.2 ) { muontriggerefficiency_ = 0.964;} //(0.9528/0.0021^2+0.9618/0.001^2+0.9688/0.0009^2)/(1/0.0021^2+1/0.001^2+1/0.0009^2)
+    if( muAbsEta >1.2 && muAbsEta < 2.1 ) { muontriggerefficiency_ = 0.992;} //(0.9809/0.0016^2+0.9814/0.0008^2+1.0021/0.0007^2)/(1/0.0016^2+1/0.0008^2+1/0.0007^2)
 
   // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
   // on MC   : we apply a trigger efficiency
