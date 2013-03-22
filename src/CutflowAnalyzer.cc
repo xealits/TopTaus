@@ -201,11 +201,11 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
     vector<TString>::iterator it;
     for(it=keys.begin();it!=keys.end();it++){   
       // tau dilepton analysis (newphys,tau algo, miniEvent, jes, unc, jer )
-      if(!isData_){
-	tauDileptonAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0); 
-	//dileptonAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0); 
-
-        if(!noUncertainties_){
+      tauDileptonAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0); 
+      //dileptonAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0); 
+      //tauDileptonAnalysis( true, (*it),ev,         0 ,        0,        0  ,            0,                0); // newphysics 
+      if(!isData_)
+	if(!noUncertainties_){
 	  tauDileptonAnalysis( false, (*it),ev,      JES_ ,        0,        0  ,             0,                0);        
 	  tauDileptonAnalysis( false, (*it),ev, (-1)*JES_ ,        0,        0  ,             0,                0);
 	  tauDileptonAnalysis( false, (*it),ev,        0  ,     UNC_,        0  ,             0,                0);
@@ -217,14 +217,8 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
 	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,       UNBTAGUNC_);
 	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_);
 	}
-      }
-      else{  
-	tauDileptonAnalysis( false, (*it),ev,        0 ,         0,        0 ,              0,                0); 
-	//dileptonAnalysis( false, (*it),ev,        0 ,         0,        0 ,              0,                0); 
-        //tauDileptonAnalysis( true, (*it),ev,         0 ,        0,        0  ,            0,                0); 
-      }
-
-     
+      
+      
       // WARNING : we only store WplusJets info for PFlow (HPS Pftopat based jets) 
       if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev, 0,0,0,0,0); }
       
