@@ -27,7 +27,16 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
     
  
   // Acquire pileup weights
-  float dataDist[50] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.}; 
+  float dataDist[100] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
+			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.}; 
   TFile* dataWeightsFile =0;
   if(run2012_) dataWeightsFile = new TFile(puFileName_); //MyDataPileupHistogram_All_70500.root");//MyDataPileupHistogram_All_73500.root");
   //  else dataWeightsFile = new TFile("");
@@ -74,9 +83,9 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   // Files for jet correction uncertainties /////////////////////////////////////////////////////////////////////
   // How to instantiate uncertainty sources: https://twiki.cern.ch/twiki/bin/view/CMS/JECUncertaintySources#Example_implementation
   cout<<endl<<" FILE 1 : "<<(analysisFolder+string("/Fall12_V7_DATA_UncertaintySources_AK5PFchs.txt"))<<endl;
-  cout<<endl<<" FILE 2 : "<<(jerFolder+string("/Spring10_PtResolution_AK5JPT.txt"))<<endl;
+  cout<<endl<<" FILE 2 : "<<(jerFolder+string("/Spring10_PtResolution_AK5PF.txt"))<<endl;
   
-  JetCorrectorParameters * jcp = new JetCorrectorParameters(analysisFolder+string("/Fall12_V7_DATA_UncertaintySources_AK5PFchs.txt"), "Total"); // Must implement splitting by sources
+  JetCorrectorParameters* jcp = new JetCorrectorParameters(analysisFolder+string("/Fall12_V7_DATA_UncertaintySources_AK5PFchs.txt"), "Total"); // Must implement splitting by sources
   jecUnc_ak5_pf_ = new JetCorrectionUncertainty( *jcp );
   cout<<endl<<"JetCorrectorParameters acquired"<<endl;
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -351,29 +360,31 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   //jet energy corrections ////////////////////////////////////////////////////////////////////////////////
   vector<double> jerFactors;
   // Old jet energy resolution factors
-  //  if(jerc){ // Split condition for optimizazion
-  //    if(!fast_ ) {
-  //      for(unsigned int i=0;i<jets.size();i++){ 
-  //	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
-  //	double scaleFactor(0.1);  //bias correction
-  //	double corr_jer(1);
-  //	if( jer < 0 ){ scaleFactor = 0.;  }
-  //	if( jer > 0 ){ scaleFactor = 0.2; }
-  //	
-  //	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
-  //	
-  //	if( corr_jer < 0 ){ corr_jer = 1; }
-  //	jerFactors.push_back(corr_jer);
-  //      }
-  //    }  
-  //    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
-  //  }
+///  if(jerc){ // Split condition for optimizazion
+///    fast_=false;
+///    if(!fast_ ) {
+///      for(unsigned int i=0;i<jets.size();i++){ 
+///  	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
+///  	double scaleFactor(0.1);  //bias correction
+///  	double corr_jer(1);
+///  	if( jer < 0 ){ scaleFactor = 0.;  }
+///  	if( jer > 0 ){ scaleFactor = 0.2; }
+///  	
+///  	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
+///  	
+///  	if( corr_jer < 0 ){ corr_jer = 1; }
+///  	jerFactors.push_back(corr_jer);
+///      }
+///    }  
+///    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
+///  }
   // Base scale factors must be applied in any case (modify code above then)
   jerFactors.clear();
   for(unsigned int i=0;i<jets.size();i++){ 
-    double corr_jer(1);
-    smearedJet(jets[i], jets[i][34], 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
+    double corr_jer(1.);
+    if(!isData_) smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
     jerFactors.push_back(corr_jer);
+    //    std::cout << " jerfac: " << corr_jer << std::endl;
   }
   // DEBUG (successful)
   //    if(isData_) for(size_t i=0; i<jerFactors.size(); i++)
@@ -1012,9 +1023,9 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
   if(t_afterLeptonRemoval.size() == 1){ tau_i = t_afterLeptonRemoval[0]; tau_charge = taus[tau_i][0]; 
     // tau_pt = taus[tau_i].Pt(); // unused
     tau_obj = &(taus[tau_i]); }
-
+  
   // Muon trigger/ID/Iso scale factors for efficiency from https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceEffs 
-  LeadMuonTriggerEfficiency(muons,  m_init[0], muontriggerefficiency_);
+  LeadMuonTriggerEfficiency(muons, lepton_ind, muontriggerefficiency_);
 
   // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
   // on MC   : we apply a trigger efficiency
@@ -1040,9 +1051,12 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
     }
   }
   else if (eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETS_ ) { if( !isData_ )leptontriggerefficiency_ = electrontriggerefficiency_;}
-  else{                                                      if( !isData_ )leptontriggerefficiency_ = muontriggerefficiency_;    }
+  else{                                                      if( !isData_ ){
+      leptontriggerefficiency_ = muontriggerefficiency_;  
+      w_=w_*leptontriggerefficiency_;}
+  }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+  
 
   // events with 1 lepton /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   for( size_t itag=0; itag<evTags.size();  itag++ ) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),LEP_STEP2,w_); 
@@ -1705,7 +1719,8 @@ void CutflowAnalyzer::dileptonEventAnalysis(
     else if(  ttbarLike_ == MUTAU_ && channel != MUTAU_CH )                                                                             { return; }
     else if(  ttbarLike_ == MUMU_ && channel != MUMU_CH )                                                                             { return; }
     else if(  ttbarLike_ == EMU_ && channel != EMU_CH )                                                                             { return; }
-    else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel == MUMU_CH || channel == EMU_CH || channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
+    //else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel == MUMU_CH || channel == EMU_CH || channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
+else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
     else if(  ttbarLike_ == TTBAR_DDBKG_ && (channel != EJETS_CH && channel!= MUJETS_CH ) )                                             { return; }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     

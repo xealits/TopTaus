@@ -93,6 +93,9 @@ physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch fo
 
 
 CHANGELOG for major updates:
+2013-03-27: fixed jet smearing factors
+	    fixed index of muon trigger eff muon, just for completeness
+	    (it was already correct since the collection is already pt-ordered)
 2013-03-22: muon trigger efficiencies scale factors added
 	    pileup files splitted per run (data/pileup)
 	    lumi per run added to CommonDefinitions.cc

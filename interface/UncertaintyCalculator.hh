@@ -6,7 +6,7 @@
   
   \author   Pietro Vischia, pietro.vischia@gmail.com
 
-  \version  $Id: UncertaintyCalculator.hh,v 1.2 2013/03/21 11:00:47 vischia Exp $                                                                                                       
+  \version  $Id: UncertaintyCalculator.hh,v 1.3 2013/03/21 17:55:33 vischia Exp $                                                                                                       
 */
 
 // System headers
@@ -45,7 +45,7 @@ public:
   double jetMETUnclustered( vector<double> & jerFactors, PhysicsObject * obj, double unc, vector<PhysicsObject> & vJ, double missetX, double missetY);
   double jetMETResolution( vector<double> & jerFactors , vector<PhysicsObject> & vJ, double missetX, double missetY);
   double getJetPt( PhysicsObject &j ,JetCorrectionUncertainty * junc, double jerFactor,double jes);
-  PhysicsObject smearedJet(const PhysicsObject &origJet, double genJetPt, int mode, double& scaleFactor); // Perhaps it would be better to create a class or a namespace METUtils
+  PhysicsObject smearedJet(const PhysicsObject &origJet, double genJetPt, int method, int mode, double& scaleFactor); // Perhaps it would be better to create a class or a namespace METUtils
   enum UncertaintyVariations { JER, JER_UP, JER_DOWN, JES_UP, JES_DOWN,UMET_UP,UMET_DOWN,LES_UP,LES_DOWN};
   //void computeVariation(vector<PhysicsObject>& jets, 
   //			vector<PhysicsObject> &leptons, // not really needed for now
