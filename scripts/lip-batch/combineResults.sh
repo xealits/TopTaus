@@ -7,9 +7,10 @@ if [ "${2}" = "hadd" ]; then
     DATAPLACE="${1}/nomt-2012-V1-mc-MU-20GeV/"
     
     cd $DATAPLACE
+
     
     # QCD
-    hadd -f $DATAPLACE/out-qcd.root $DATAPLACE/out-qcd*root $DATAPLACE/out-PhotonJets*root
+    hadd -f $DATAPLACE/out-qcd.root $DATAPLACE/out-qcd_*root $DATAPLACE/out-qcdmu*.root $DATAPLACE/out-PhotonJets*root
     
     # zjets
     hadd -f $DATAPLACE/out-zjets.root $DATAPLACE/out-dy*root
@@ -20,21 +21,14 @@ if [ "${2}" = "hadd" ]; then
     # diboson
     hadd -f $DATAPLACE/out-dibosons.root $DATAPLACE/out-ww.root $DATAPLACE/out-wz.root $DATAPLACE/out-zz.root
 
-    ## mutau
-    #hadd -f $DATAPLACE/out-ttbar_mutau.root $DATAPLACE/out-ttbar_mutau_*.root 
-    ## normal
-    #hadd -f $DATAPLACE/out-ttbar.root $DATAPLACE/ttbar/out-ttbar_*.root
-
     # mc total
     hadd -f $DATAPLACE/out-mc.root $DATAPLACE/out-qcd.root $DATAPLACE/out-wjets.root $DATAPLACE/out-zjets.root $DATAPLACE/out-dibosons.root $DATAPLACE/out-ttbar.root $DATAPLACE/out-singletop.root &
 
     # data driven bkg, using mc
     hadd -f $DATAPLACE/out-ddbkg.root $DATAPLACE/out-qcd.root $DATAPLACE/out-wjets.root $DATAPLACE/out-ttbar_ddbkg.root
-    #hadd -f $DATAPLACE/out-ddbkg.root $DATAPLACE/out-qcd.root $DATAPLACE/out-wjets.root $DATAPLACE/out-ttbar_ddbkg_*.root
 
     # mc bkg (w.r.t. top xsec measurement: ttbar is signal for this)
     hadd -f $DATAPLACE/out-mcbkg.root $DATAPLACE/out-zjets.root $DATAPLACE/out-singletop.root $DATAPLACE/out-dibosons.root $DATAPLACE/out-ttbar_mcbkg.root
-    #hadd -f $DATAPLACE/out-mcbkg.root $DATAPLACE/out-zjets.root $DATAPLACE/out-singletop.root $DATAPLACE/out-dibosons.root $DATAPLACE/out-ttbar_mcbkg_*.root
 
     # other cont
     hadd -f $DATAPLACE/out-ttbar_other.root  $DATAPLACE/out-ttbar_ddbkg.root $DATAPLACE/out-ttbar_mcbkg.root &
