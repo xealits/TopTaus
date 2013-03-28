@@ -128,11 +128,11 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[DATA_URL]      = 0.;         
       defaultXSections_[TTBAR_URL]     = 234.;  //Kidonakis - approx. NNLO - Inclusive - 234+10-)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) - Top mass: m(top)=173GeV, Default scales: muF=muR=mt, PDF: MSTW2008 NNLO 
       
-      defaultXSections_[W_ENU_URL]     = 12085.7; //NNLO 36257.2/3 = 12085.7 - NNLO - W->lv, l=e,m,t - Inclusive W production, BR(W->lv) included, l=e,m,t, PDF error also includes alphas 
-      defaultXSections_[W_MUNU_URL]    = 12085.7;
-      defaultXSections_[W_TAUNU_URL]   = 12085.7; 
+      defaultXSections_[W_ENU_URL]     = 12503.0; //NNLO 37509.0  36257.2/3 = 12085.7 - NNLO - W->lv, l=e,m,t - Inclusive W production, BR(W->lv) included, l=e,m,t, PDF error also includes alphas 
+      defaultXSections_[W_MUNU_URL]    = 12503.0;
+      defaultXSections_[W_TAUNU_URL]   = 12503.0; 
 
-      defaultXSections_[WJMADGRAPH_URL]  = 36257.2;// 30400; //36257.2;
+      defaultXSections_[WJMADGRAPH_URL]  = 37509.0; // 36257.2;// 30400; //36257.2;
       
       // for the _filter sample:     xsec: 11050.0 eff: 0.069 
       defaultXSections_[DY_10TO50_URL]          = 11050.0; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-10To50filter_8TeV-madgraph&campid=Summer12_DR53X
@@ -184,12 +184,12 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[WH160_URL]              = 234;                                           
       defaultXSections_[HH160_URL]              = 234;                                                                                 
       
-      defaultXSections_[TBH180_URL]             = 234;  
-      defaultXSections_[TBH190_URL]             = 234;  
-      defaultXSections_[TBH200_URL]             = 234;  
-      defaultXSections_[TBH220_URL]             = 234; 
-      defaultXSections_[TBH250_URL]             = 234;
-      defaultXSections_[TBH300_URL]             = 234;
+      defaultXSections_[TBH180_URL]             = 1.1; //234;  
+      defaultXSections_[TBH190_URL]             = 1.1; //234;  
+      defaultXSections_[TBH200_URL]             = 1.1; //234;  
+      defaultXSections_[TBH220_URL]             = 1.1; //234; 
+      defaultXSections_[TBH250_URL]             = 1.1; //234;
+      defaultXSections_[TBH300_URL]             = 1.1; //234;
 
       
     } else {
