@@ -75,7 +75,7 @@ Run physicsAnalysis - this corresponds to the obsolete PhysicsAnalyzer code
   EDIT the *output* paths in test/physicsAnalysisParSets_cfg.py . The input are fixed (53X production)
   sh submit-jobs.sh
   qstat -u username --> this checks whether your jobs are running and if they did already finish
-  sh combineResults.sh path/to/dir hadd --> this hadds the relevant output files
+  sh combineResults.sh path/to/dir hadd [AB|ABC|ABCD] --> this hadds the relevant output files
   RUN physicsAnalysis test/physicsAnalysisParSets_cfg.py doPlots   ---> this produces plots
   RUN physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables  ---> this produces tables
 - have fun
@@ -93,6 +93,7 @@ physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch fo
 
 
 CHANGELOG for major updates:
+2013-04-08: configured combineResults.sh script for different data hadding schemes 
 2013-03-27: fixed jet smearing factors
 	    fixed index of muon trigger eff muon, just for completeness
 	    (it was already correct since the collection is already pt-ordered)
