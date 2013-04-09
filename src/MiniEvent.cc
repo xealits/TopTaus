@@ -102,7 +102,7 @@ namespace event
 	  }
 	
 	if(type==TAU && fabs((*(TVectorD *)info->At(i))[0]) != type ) continue;      
-	if(fabs((*(TVectorD *)info->At(i))[0]) == 15 ) cout << fabs((*(TVectorD *)info->At(i))[0]) << ", " << type << endl;
+	// debug if(fabs((*(TVectorD *)info->At(i))[0]) == 15 ) cout << fabs((*(TVectorD *)info->At(i))[0]) << ", " << type << endl;
 
 	if( (type==PHOTON || type==SUPERCLUSTER) && fabs((*(TVectorD *)info->At(i))[0]) != type ) continue;      
 	if( type==TRACK && fabs((*(TVectorD *)info->At(i))[0]) > 2 ) continue;
@@ -111,9 +111,38 @@ namespace event
 	objColl.push_back( PhysicsObject( coll->At(i), (info !=0 ? info->At(i) : 0) ) );
       }  
     
-    if(sortObjects) sort(objColl.begin(),objColl.end(),PhysicsObject::PtOrder);
-  
-    return objColl;
+    // Temporary patch for mixed jet collections 
+    PhysicsObjectCollection fixedColl;
+    if(type==JET){
+      for(size_t i=0; i<objColl.size(); i++){
+	PhysicsObject ijet= objColl[i];
+	PhysicsObject temp;
+	bool lock = false;
+	for(size_t j=0; j<objColl.size(); j++){
+	  PhysicsObject jjet = objColl[j];
+	  if(ijet.DeltaR(jjet) < 0.1){
+	    temp = jjet;
+	    lock = true;
+	    break;
+	  }
+	}
+	if(!lock)
+	  fixedColl.push_back(ijet);
+	else
+	  fixedColl.push_back(temp);
+	
+	//	muons[ m_v[0] ].DeltaR(jets[ind])
+	
+      }
+    }
+
+    if(sortObjects) sort(fixedColl.begin(),fixedColl.end(),PhysicsObject::PtOrder);
+    return fixedColl;
+    //    if(sortObjects) sort(objColl.begin(),objColl.end(),PhysicsObject::PtOrder);
+    //    return objColl;
+
+    // end of temporary patch
+
   }
 
   
