@@ -120,12 +120,14 @@ namespace event
 	bool lock = false;
 	for(size_t j=0; j<objColl.size(); j++){
 	  PhysicsObject jjet = objColl[j];
-	  if(ijet.DeltaR(jjet) < 0.1){
-	    temp = jjet;
-	    lock = true;
-	    break;
+	  if(lock == false){
+	    if(ijet.DeltaR(jjet) < 0.1){
+	      temp = jjet;
+	      lock = true;
+	    }
 	  }
 	}
+	
 	if(!lock)
 	  fixedColl.push_back(ijet);
 	else
@@ -134,14 +136,17 @@ namespace event
 	//	muons[ m_v[0] ].DeltaR(jets[ind])
 	
       }
-    }
-
     if(sortObjects) sort(fixedColl.begin(),fixedColl.end(),PhysicsObject::PtOrder);
     return fixedColl;
-    //    if(sortObjects) sort(objColl.begin(),objColl.end(),PhysicsObject::PtOrder);
-    //    return objColl;
+
+    }
 
     // end of temporary patch
+
+
+
+    if(sortObjects) sort(objColl.begin(),objColl.end(),PhysicsObject::PtOrder);
+    return objColl;
 
   }
 
