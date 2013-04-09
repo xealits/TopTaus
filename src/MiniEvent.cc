@@ -111,40 +111,52 @@ namespace event
 	objColl.push_back( PhysicsObject( coll->At(i), (info !=0 ? info->At(i) : 0) ) );
       }  
     
-    // Temporary patch for mixed jet collections 
-    PhysicsObjectCollection fixedColl;
+    // Temporary patch for mixed jet collections!! https://www.youtube.com/watch?feature=player_embedded&v=8tAx5zcMH44 at 1:15
     if(type==JET){
+      PhysicsObjectCollection fixedColl;
+      vector<size_t> excluded;
       for(size_t i=0; i<objColl.size(); i++){
-	PhysicsObject ijet= objColl[i];
-	PhysicsObject temp;
-	bool lock = false;
-	for(size_t j=0; j<objColl.size(); j++){
-	  PhysicsObject jjet = objColl[j];
-	  if(lock == false){
+	bool doStuff = true;
+	for(size_t b=0; b<excluded.size(); b++)
+	  if(i== excluded[b]) doStuff = false;
+
+	if(doStuff){
+	  PhysicsObject ijet= objColl[i];
+	  bool lock = false;
+	  for(size_t j=0; j<objColl.size(); j++){
+	    if(j==i) continue;
+	    PhysicsObject jjet = objColl[j];
+	    //if(lock == false){
 	    if(ijet.DeltaR(jjet) < 0.1){
-	      temp = jjet;
+	      fixedColl.push_back(jjet);
+	      //	      cout << "push back jjet " << j << ", " << jjet.Pt() << ", " << jjet.Eta() << endl;
 	      lock = true;
+	      excluded.push_back(j);
+	      break;
 	    }
+	    //}
 	  }
-	}
-	
-	if(!lock)
-	  fixedColl.push_back(ijet);
-	else
-	  fixedColl.push_back(temp);
+	  
+	  if(!lock){
+	    fixedColl.push_back(ijet);
+	    //	    cout << "push back ijet " << i << ", " << ijet.Pt() << ", " << ijet.Eta() << endl;
+	  }
+	//else
+	//  fixedColl.push_back(temp);
 	
 	//	muons[ m_v[0] ].DeltaR(jets[ind])
-	
+	}
       }
-    if(sortObjects) sort(fixedColl.begin(),fixedColl.end(),PhysicsObject::PtOrder);
-    return fixedColl;
-
+    
+      if(sortObjects) sort(fixedColl.begin(),fixedColl.end(),PhysicsObject::PtOrder);
+      return fixedColl;
+      
     }
-
+    
     // end of temporary patch
 
 
-
+    
     if(sortObjects) sort(objColl.begin(),objColl.end(),PhysicsObject::PtOrder);
     return objColl;
 
