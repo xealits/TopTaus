@@ -89,7 +89,7 @@ namespace event
     if(type==SUPERCLUSTER || type==PHOTON) { coll = ev->photonsColl; info = ev->photonsClassifColl; }
     if(type == MET) { coll = ev->metColl;  info = ev->metClassifColl; }
     if(coll==0) return objColl;
-
+    bool acquireJets(false);
     //build the collection of physics objects
     for(int i=0; i< coll->GetEntriesFast(); i++)
       {
@@ -108,6 +108,25 @@ namespace event
 	if( type==TRACK && fabs((*(TVectorD *)info->At(i))[0]) > 2 ) continue;
 	else if(type==JET && fabs((*(TVectorD *)info->At(i))[3]) != algo) continue;
 	else if(type==MET && fabs((*(TVectorD *)info->At(i))[0]) != algo) continue;
+
+
+//	if(type==JET) {
+//	  float pt_i=((TLorentzVector *)coll->At(i))->Pt();
+//	  cout << "algo: " << fabs((*(TVectorD *)info->At(i))[3]) << ", pt: " << pt_i << endl;
+//	  if(i!=0 && !acquireJets) {
+//	    float pt_im1=((TLorentzVector *)coll->At(i-1))->Pt();
+//	    if(pt_im1<pt_i) acquireJets=true;
+//	  }
+//	  //  cout << pt_i;
+//	  if(!acquireJets) 
+//	    {
+//	      //      cout << " n ";
+//	      continue;
+//	    }
+//	  //  cout << " y "; 
+//	}
+//
+//
 	objColl.push_back( PhysicsObject( coll->At(i), (info !=0 ? info->At(i) : 0) ) );
       }  
     
@@ -119,36 +138,31 @@ namespace event
 	bool doStuff = true;
 	for(size_t b=0; b<excluded.size(); b++)
 	  if(i== excluded[b]) doStuff = false;
-
-	if(doStuff){
-	  PhysicsObject ijet= objColl[i];
-	  bool lock = false;
-	  for(size_t j=0; j<objColl.size(); j++){
-	    if(j==i) continue;
-	    PhysicsObject jjet = objColl[j];
-	    //if(lock == false){
-	    if(ijet.DeltaR(jjet) < 0.1){
-	      fixedColl.push_back(jjet);
-	      //	      cout << "push back jjet " << j << ", " << jjet.Pt() << ", " << jjet.Eta() << endl;
-	      lock = true;
-	      excluded.push_back(j);
-	      break;
-	    }
-	    //}
-	  }
-	  
-	  if(!lock){
-	    fixedColl.push_back(ijet);
-	    //	    cout << "push back ijet " << i << ", " << ijet.Pt() << ", " << ijet.Eta() << endl;
-	  }
-	//else
-	//  fixedColl.push_back(temp);
+	if(!doStuff) continue;
 	
-	//	muons[ m_v[0] ].DeltaR(jets[ind])
+	PhysicsObject ijet= objColl[i];
+	bool lock = false;
+	for(size_t j=0; j<objColl.size(); j++){
+	  if(j==i) continue;
+	  PhysicsObject jjet = objColl[j];
+	  //if(lock == false){
+	  if(ijet.DeltaR(jjet) < 0.1){
+	    fixedColl.push_back(jjet);
+	    //	      cout << "push back jjet " << j << ", " << jjet.Pt() << ", " << jjet.Eta() << endl;
+	    lock = true;
+	    excluded.push_back(j);
+	    break;
+	  }
+	  //}
 	}
+	if(!lock) fixedColl.push_back(ijet);
       }
-    
+      
       if(sortObjects) sort(fixedColl.begin(),fixedColl.end(),PhysicsObject::PtOrder);
+
+//      for(size_t i=0; i<fixedColl.size(); i++)
+//	cout << "MyJet " << i << ", " << fixedColl[i].Pt() << ", " << fixedColl[i].Eta() << ", " << fixedColl[i].Phi() << endl;
+      
       return fixedColl;
       
     }

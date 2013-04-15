@@ -100,7 +100,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   // Poisson shifter for number of vertices /////////
-  PShiftDown_ = reweight::PoissonMeanShifter(-0.6);
+  PShiftDown_ = reweight::PoissonMeanShifter(-0.6); // FIXME: remember to recalculate (10% of the mean number of vertices))
   PShiftUp_   = reweight::PoissonMeanShifter(0.6);
   ///////////////////////////////////////////////////
   
@@ -329,6 +329,16 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
     //    cout << tausColl[iorigtau][17] << ", " << tauType << endl; // Debug 
     if(tausColl[iorigtau][17] == tauType ){ taus.push_back(tausColl[iorigtau]); }
   }
+
+
+  if(i_ == 45){
+    cout<<endl<< "JETS IN EVENT " << i_ << endl;
+    for(size_t ijet=0; ijet<jets.size(); ijet++){
+      cout << setprecision(6) << "\t\t jet " << ijet << ", pt " << jets[ijet].Pt() <<", eta " << jets[ijet].Eta() << ", phi " << jets[ijet].Phi() << endl;
+      
+    }
+  }
+  
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   
@@ -359,7 +369,7 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
 
   //jet energy corrections ////////////////////////////////////////////////////////////////////////////////
   vector<double> jerFactors;
-  // Old jet energy resolution factors
+///  // Old jet energy resolution factors
 ///  if(jerc){ // Split condition for optimizazion
 ///    fast_=false;
 ///    if(!fast_ ) {
@@ -379,6 +389,8 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
 ///    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
 ///  }
   // Base scale factors must be applied in any case (modify code above then)
+
+
   jerFactors.clear();
   for(unsigned int i=0;i<jets.size();i++){ 
     double corr_jer(1.);
@@ -386,6 +398,8 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
     jerFactors.push_back(corr_jer);
     //    std::cout << " jerfac: " << corr_jer << std::endl;
   }
+
+
   // DEBUG (successful)
   //    if(isData_) for(size_t i=0; i<jerFactors.size(); i++)
   //      std::cout << "factor " << jerFactors[i] << std::endl;
@@ -403,6 +417,11 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   
   // preselect main objects ///////////////////////////////////////////////
   vector<int> e_init, m_init, j_init, t_init;
+  e_init.clear();
+  m_init.clear();
+  j_init.clear();
+  t_init.clear();
+
   PreSelectMuons(     evR_, &m_init, muons    , primaryVertex ); 
   PreSelectElectrons( evR_, &e_init, electrons, primaryVertex );
   DisableLtkCutOnJets(); 
@@ -416,12 +435,20 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   // only accept jets if dr > drmin in respect to electrons and muons //////////////////////////////////////////////////
   vector<int> emptyColl, j_toRemove; 
   vector<int> j_afterLeptonRemoval;
+  emptyColl.clear();
+  j_toRemove.clear();
+  j_afterLeptonRemoval.clear();
+
   ProcessCleaning(&j_init, &j_toRemove, &e_init, &emptyColl, jets, electrons, DRMIN_JET_E_ );
   ProcessCleaning(&j_init, &j_toRemove, &m_init, &emptyColl, jets, muons,     DRMIN_JET_M_ );
   ApplyCleaning(  &j_init, &j_toRemove, &j_afterLeptonRemoval);
   // do the same cleaning for jets that will be used in MHT computation 
   vector<int> jetsForMHT_emptyColl, jetsForMHT_toRemove; 
   vector<int> jetsForMHT_afterLeptonRemoval;
+  jetsForMHT_emptyColl.clear();
+  jetsForMHT_toRemove.clear();
+  jetsForMHT_afterLeptonRemoval.clear();
+
   if(hasEGtrig){ // only for electron channel
     ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &e_init, &jetsForMHT_emptyColl, jets, electrons, DRMIN_JET_E_ );
     ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &m_init, &jetsForMHT_emptyColl, jets, muons,     DRMIN_JET_M_ );
@@ -437,6 +464,8 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   // only accept taus if dr > drmin in respect to electrons and muons /////////////////////
   vector<int> t_toRemove;
   vector<int> t_afterLeptonRemoval; 
+  t_toRemove.clear();
+  t_afterLeptonRemoval.clear();
   ProcessCleaning(&t_init, &t_toRemove, &e_init, &emptyColl, taus, electrons, DRMIN_T_E_ );
   ProcessCleaning(&t_init, &t_toRemove, &m_init, &emptyColl, taus, muons,     DRMIN_T_M_ );
   ApplyCleaning(&t_init, &t_toRemove, &t_afterLeptonRemoval);
@@ -446,6 +475,7 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   // remove jets if dr < drmin in respect to taus ////////////////////////////////////////////////////////////
   j_toRemove.clear(); t_toRemove.clear();
   vector<int> j_final;
+  j_final.clear();
   ProcessCleaning(&j_afterLeptonRemoval, &j_toRemove, &t_afterLeptonRemoval, &t_toRemove, jets, taus, DRMIN_T_J_ );
   ApplyCleaning(&j_afterLeptonRemoval, &j_toRemove, &j_final);
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -455,10 +485,14 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   // extra jet collection //////////////////////////////////////////////////////////////////////////////////////
   Pt_Jet(TAU_PT_MIN_); 
   vector<int> j_init2;
+  j_init2.clear();
   PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&j_init2,jets);
   // only accept jets if dr > drmin in respect to electrons and muons 
   vector<int> emptyColl2, j_toRemove2; 
   vector<int> j_afterLeptonRemoval2;
+  emptyColl2.clear();
+  j_toRemove2.clear();
+  j_afterLeptonRemoval2.clear();
   ProcessCleaning(&j_init2, &j_toRemove2, &e_init, &emptyColl2, jets, electrons, DRMIN_JET_E_ );
   ProcessCleaning(&j_init2, &j_toRemove2, &m_init, &emptyColl2, jets, muons,     DRMIN_JET_M_ );
   ApplyCleaning(&j_init2, &j_toRemove2, &j_afterLeptonRemoval2);
@@ -2523,7 +2557,7 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   int btagscorrected// = 0
 
 ){
- 
+  //  std::cout<<"DEBUG: start event " << i_ << std::endl;
   if(sys_ ) return;  
 
   TString extra1(key); extra1 += TString(" lep_tau ");
@@ -2562,6 +2596,8 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   // btag
   double jet1(0), jet2(0), jet3(0); 
   double jeta1(0), jeta2(0), jeta3(0);
+  double jphi1(0), jphi2(0), jphi3(0);
+
   int jet1_ind(-1), jet2_ind(-1), jet3_ind(-1);
   double btag1(0), btag2(0), btag3(0); 
   int btagmul(0);
@@ -2572,26 +2608,37 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
 
   for( size_t j=0; j != j_v.size() ; j++ ){ 
 
-    int ind = j_v[j]; double j_pt = jets[ind].Pt(); double j_eta = jets[ind].Eta(); double btag =jets[ind][BTAGIND_]; 
+    int ind = j_v[j]; double j_pt = jets[ind].Pt(); double j_eta = jets[ind].Eta(); double j_phi = jets[ind].Phi(); double btag =jets[ind][BTAGIND_]; 
 
     if( ! isData_) j_pt = getJetPt( jets[ind], junc, jerFactors[ind], jes_);
     else           j_pt = GetJetResidualPt(jets[ind]);
 
     if     ( j_pt > jet1 ){
-      jet3=jet2; jeta3=jeta2; jet3_ind = jet2_ind; jet2 = jet1; jeta2=jeta1; jet2_ind= jet1_ind; jet1 = j_pt; jeta1=j_eta; jet1_ind = ind; 
-      btag3=btag2; btag2 = btag1; btag = btag; 
+      jet3=jet2; jeta3=jeta2; jphi3=jphi2; jet3_ind=jet2_ind; 
+      jet2=jet1; jeta2=jeta1; jphi2=jphi1; jet2_ind=jet1_ind; 
+      jet1=j_pt; jeta1=j_eta; jphi1=j_phi; jet1_ind = ind; 
+      btag3=btag2; btag2 = btag1; btag1 = btag; 
     } // leading jet
     else if( j_pt > jet2 ){
-      jet3=jet2; jeta3=jeta2; jet3_ind = jet2_ind; jet2 = j_pt; jeta2=j_eta; jet2_ind=ind;
-      btag3=btag2; btag2 = btag; 
+      jet3=jet2; jeta3=jeta2; jphi3=jphi2; jet3_ind=jet2_ind;
+      jet2=j_pt; jeta2=j_eta; jphi2=j_phi; jet2_ind=ind;
+      btag3=btag2; btag2=btag; 
     } // next leading jet
     else if( j_pt > jet3 ){ 
-      jet3=j_pt; jeta3=j_eta; jet3_ind = ind;   
+      jet3=j_pt; jeta3=j_eta; jphi3=j_phi; jet3_ind=ind;   
       btag3=btag;
     } // next to next to leading jet
     mon.fillHisto(TString("pt_j"),extra1+step, j_pt,w_);  mon.fillHisto(TString("pt_j"), extra2+step, j_pt,w_);
 
- 
+//    std::cout << "DEBUG: ";
+//    if(jet1_ind != -1)
+//      std::cout << setprecision(6) << " jet1: (" << jet1_ind << ", " << jet1 << ", " << jeta1 << ", " << jphi1 << ") | ";
+//    if(jet2_ind != -1)
+//      std::cout << setprecision(6) <<" jet2: (" << jet2_ind << ", " << jet2 << ", " << jeta2 << ", " << jphi2 <<") | ";
+//    if(jet3_ind != -1)
+//      std::cout << setprecision(6) <<" jet3: (" << jet3_ind << ", " << jet3 << ", " << jeta3 << ", " << jphi3 << ") | ";
+//    std::cout << endl;
+
     double dphij1j2(0);
     if ( jet1 && jet2 ){ 
       dphij1j2 = fabs( jets[jet1_ind].DeltaPhi( jets[jet2_ind] )) ;  mon.fillHisto("dphij1j2",extra1+step, dphij1j2,w_);  mon.fillHisto("dphij1j2", extra2+step, dphij1j2,w_);  
@@ -2940,7 +2987,7 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   //Weights
   mon.fillHisto( "weights",extra1+step,w_); mon.fillHisto( "weights",extra2+step,w_);
 
-
+  //  std::cout<<"DEBUG: end event "<< i_ << std::endl;
 }
 
 

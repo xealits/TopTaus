@@ -46,8 +46,9 @@ namespace tableutils{
     // 5% contribution //
     //  double fhh(0.05*0.05) , fhw( 2*(1-0.05)*0.05) ;
     double fhh(1),fhw(1); // this is for the datacards (so that they are normalized to 234 (xsecttbar)
-    double ftbh(1); // This is for the datacards, so that they are normalized to 234
-    
+    // for ftbh see below (search for "vector<double> ftbh")
+    //    double ftbh(1); // This is for the datacards, so that they are normalized to 234
+     
     bool XSECMEASUREMENT( true );  if( XSECMEASUREMENT ){ TTBAR_CS_ERR = XSEC_EXP_ERR_; } else { SIGNAL_EFF_ERR = 0; }
     
     // select wich runing mode we are in ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +73,8 @@ namespace tableutils{
       hw_contrib = false; // now doing heavy 
       tbh_contrib = true;
       includeSM = false; }
-  else     { hh_contrib = false; hw_contrib = false; includeSM = true; }
+    else     { hh_contrib = false; hw_contrib = false; tbh_contrib = false;
+      includeSM = true; }
     
     
     vector<TString> hwEffHitoNames;
@@ -92,6 +94,14 @@ namespace tableutils{
     hwEffHitoNames.push_back("TBH250");
     hwEffHitoNames.push_back("TBH300");
 
+    vector<double> ftbh; // Selection  mu==200&&Xt==2000&&m2==200&&tanb==5
+    ftbh.push_back(0.831852  );
+    ftbh.push_back(0.407966	 );
+    ftbh.push_back(0.228564	 );
+    ftbh.push_back(0.106446	 );
+    ftbh.push_back(0.04129783);
+    ftbh.push_back(0.02514242);
+    
 
     vector<TString> hhFiles; vector<TString> hwFiles;
     vector<TString> tbhFiles; 
@@ -1284,14 +1294,14 @@ namespace tableutils{
           if(        detailed == D2 )  {dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f \\\\ \n");}
           else  if(  detailed == D3 )  {dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f \\\\ \n");}
           line.Append(dtemp); const char * data = line.Data();
-          fprintf(f,data,ftbh*(tbh_e[k])[COL2],ftbh*(tbh_e[k])[COL3],ftbh*(tbh_e[k])[COL4],ftbh*(tbh_e[k])[COL5],ftbh*(tbh_e[k])[COL6],ftbh*(tbh_e[k])[COL7],ftbh*(tbh_e[k])[COL8],ftbh*(tbh_e[k])[COL9]);
+          fprintf(f,data,ftbh[k]*(tbh_e[k])[COL2],ftbh[k]*(tbh_e[k])[COL3],ftbh[k]*(tbh_e[k])[COL4],ftbh[k]*(tbh_e[k])[COL5],ftbh[k]*(tbh_e[k])[COL6],ftbh[k]*(tbh_e[k])[COL7],ftbh[k]*(tbh_e[k])[COL8],ftbh[k]*(tbh_e[k])[COL9]);
         }
         else if ( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){
           dtemp = TString(" & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n"); 
           if     ( detailed == D2 )  {dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f  \\\\ \n");  }
           else if( detailed == D3 )  {dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f  \\\\ \n");  }
           line.Append(dtemp); const char * data = line.Data();
-          fprintf(f, data, ftbh*(tbh_e[k])[COL2] , ftbh*(tbh_e[k])[COL3] ,ftbh*(tbh_e[k])[COL4], ftbh*(tbh_e[k])[COL5], ftbh*(tbh_e[k])[COL6], ftbh*(tbh_e[k])[COL7], ftbh*(tbh_e[k])[COL8]);
+          fprintf(f, data, ftbh[k]*(tbh_e[k])[COL2] , ftbh[k]*(tbh_e[k])[COL3] ,ftbh[k]*(tbh_e[k])[COL4], ftbh[k]*(tbh_e[k])[COL5], ftbh[k]*(tbh_e[k])[COL6], ftbh[k]*(tbh_e[k])[COL7], ftbh[k]*(tbh_e[k])[COL8]);
         }
 
         if(printAllErrors){
@@ -1306,14 +1316,14 @@ namespace tableutils{
             lx.Append(dx); datax= lx.Data();
           
             fprintf(f, datax, 
-              ftbh*tbh_e_err[k][COL2], ftbh*tbh_e_syst_plus[k][COL2], ftbh*tbh_e_syst_minus[k][COL2],
-              ftbh*tbh_e_err[k][COL3], ftbh*tbh_e_syst_plus[k][COL3], ftbh*tbh_e_syst_minus[k][COL3],    
-              ftbh*tbh_e_err[k][COL4], ftbh*tbh_e_syst_plus[k][COL4], ftbh*tbh_e_syst_minus[k][COL4],
-              ftbh*tbh_e_err[k][COL5], ftbh*tbh_e_syst_plus[k][COL5], ftbh*tbh_e_syst_minus[k][COL5],
-              ftbh*tbh_e_err[k][COL6], ftbh*tbh_e_syst_plus[k][COL6], ftbh*tbh_e_syst_minus[k][COL6],
-              ftbh*tbh_e_err[k][COL7], ftbh*tbh_e_syst_plus[k][COL7], ftbh*tbh_e_syst_minus[k][COL7],              
-              ftbh*tbh_e_err[k][COL8], ftbh*tbh_e_syst_plus[k][COL8], ftbh*tbh_e_syst_minus[k][COL8],
-              ftbh*tbh_e_err[k][COL9], ftbh*tbh_e_syst_plus[k][COL9], ftbh*tbh_e_syst_minus[k][COL9]); 
+              ftbh[k]*tbh_e_err[k][COL2], ftbh[k]*tbh_e_syst_plus[k][COL2], ftbh[k]*tbh_e_syst_minus[k][COL2],
+              ftbh[k]*tbh_e_err[k][COL3], ftbh[k]*tbh_e_syst_plus[k][COL3], ftbh[k]*tbh_e_syst_minus[k][COL3],    
+              ftbh[k]*tbh_e_err[k][COL4], ftbh[k]*tbh_e_syst_plus[k][COL4], ftbh[k]*tbh_e_syst_minus[k][COL4],
+              ftbh[k]*tbh_e_err[k][COL5], ftbh[k]*tbh_e_syst_plus[k][COL5], ftbh[k]*tbh_e_syst_minus[k][COL5],
+              ftbh[k]*tbh_e_err[k][COL6], ftbh[k]*tbh_e_syst_plus[k][COL6], ftbh[k]*tbh_e_syst_minus[k][COL6],
+              ftbh[k]*tbh_e_err[k][COL7], ftbh[k]*tbh_e_syst_plus[k][COL7], ftbh[k]*tbh_e_syst_minus[k][COL7],              
+              ftbh[k]*tbh_e_err[k][COL8], ftbh[k]*tbh_e_syst_plus[k][COL8], ftbh[k]*tbh_e_syst_minus[k][COL8],
+              ftbh[k]*tbh_e_err[k][COL9], ftbh[k]*tbh_e_syst_plus[k][COL9], ftbh[k]*tbh_e_syst_minus[k][COL9]); 
           } 
           else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){
             if      ( detailed == D2 ){ dx = TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
@@ -1323,13 +1333,13 @@ namespace tableutils{
             lx.Append(dx); datax= lx.Data();
           
             fprintf(f, datax, 
-              ftbh*tbh_e_err[k][COL2], ftbh*tbh_e_syst_plus[k][COL2], ftbh*tbh_e_syst_minus[k][COL2],
-              ftbh*tbh_e_err[k][COL3], ftbh*tbh_e_syst_plus[k][COL3], ftbh*tbh_e_syst_minus[k][COL3],    
-              ftbh*tbh_e_err[k][COL4], ftbh*tbh_e_syst_plus[k][COL4], ftbh*tbh_e_syst_minus[k][COL4],
-              ftbh*tbh_e_err[k][COL5], ftbh*tbh_e_syst_plus[k][COL5], ftbh*tbh_e_syst_minus[k][COL5],
-              ftbh*tbh_e_err[k][COL6], ftbh*tbh_e_syst_plus[k][COL6], ftbh*tbh_e_syst_minus[k][COL6],
-              ftbh*tbh_e_err[k][COL7], ftbh*tbh_e_syst_plus[k][COL7], ftbh*tbh_e_syst_minus[k][COL7],
-              ftbh*tbh_e_err[k][COL8], ftbh*tbh_e_syst_plus[k][COL8], ftbh*tbh_e_syst_minus[k][COL8]);
+              ftbh[k]*tbh_e_err[k][COL2], ftbh[k]*tbh_e_syst_plus[k][COL2], ftbh[k]*tbh_e_syst_minus[k][COL2],
+              ftbh[k]*tbh_e_err[k][COL3], ftbh[k]*tbh_e_syst_plus[k][COL3], ftbh[k]*tbh_e_syst_minus[k][COL3],    
+              ftbh[k]*tbh_e_err[k][COL4], ftbh[k]*tbh_e_syst_plus[k][COL4], ftbh[k]*tbh_e_syst_minus[k][COL4],
+              ftbh[k]*tbh_e_err[k][COL5], ftbh[k]*tbh_e_syst_plus[k][COL5], ftbh[k]*tbh_e_syst_minus[k][COL5],
+              ftbh[k]*tbh_e_err[k][COL6], ftbh[k]*tbh_e_syst_plus[k][COL6], ftbh[k]*tbh_e_syst_minus[k][COL6],
+              ftbh[k]*tbh_e_err[k][COL7], ftbh[k]*tbh_e_syst_plus[k][COL7], ftbh[k]*tbh_e_syst_minus[k][COL7],
+              ftbh[k]*tbh_e_err[k][COL8], ftbh[k]*tbh_e_syst_plus[k][COL8], ftbh[k]*tbh_e_syst_minus[k][COL8]);
           } 
         }
          ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1338,8 +1348,8 @@ namespace tableutils{
         // Muon contribution //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
         TString line2(" & "); line2.Append(Tcolumn_mc[1]); line2.Append(dtemp); const char * data2 = line2.Data();
     
-        if(      STARTINGPOINT == STARTING_AT_LJETS_        ){ fprintf(f, data2,  ftbh*tbh_m[k][COL2], ftbh*tbh_m[k][COL3], ftbh*tbh_m[k][COL4], ftbh*tbh_m[k][COL5], ftbh*tbh_m[k][COL6], ftbh*tbh_m[k][COL7],ftbh*tbh_m[k][COL8], ftbh*tbh_m[k][COL9] ); }
-        else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){ fprintf(f, data2,  ftbh*tbh_m[k][COL2], ftbh*tbh_m[k][COL3], ftbh*tbh_m[k][COL4], ftbh*tbh_m[k][COL5], ftbh*tbh_m[k][COL6], ftbh*tbh_m[k][COL7], ftbh*tbh_m[k][COL8]); }
+        if(      STARTINGPOINT == STARTING_AT_LJETS_        ){ fprintf(f, data2,  ftbh[k]*tbh_m[k][COL2], ftbh[k]*tbh_m[k][COL3], ftbh[k]*tbh_m[k][COL4], ftbh[k]*tbh_m[k][COL5], ftbh[k]*tbh_m[k][COL6], ftbh[k]*tbh_m[k][COL7],ftbh[k]*tbh_m[k][COL8], ftbh[k]*tbh_m[k][COL9] ); }
+        else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){ fprintf(f, data2,  ftbh[k]*tbh_m[k][COL2], ftbh[k]*tbh_m[k][COL3], ftbh[k]*tbh_m[k][COL4], ftbh[k]*tbh_m[k][COL5], ftbh[k]*tbh_m[k][COL6], ftbh[k]*tbh_m[k][COL7], ftbh[k]*tbh_m[k][COL8]); }
         
 
         if(printAllErrors){
@@ -1353,14 +1363,14 @@ namespace tableutils{
         
             lx.Append(dx);  datax = lx.Data();
             fprintf(f, datax, 
-              ftbh*tbh_m_err[k][COL2], ftbh*tbh_m_syst_plus[k][COL2], ftbh*tbh_m_syst_minus[k][COL2],
-              ftbh*tbh_m_err[k][COL3], ftbh*tbh_m_syst_plus[k][COL3], ftbh*tbh_m_syst_minus[k][COL3],    
-              ftbh*tbh_m_err[k][COL4], ftbh*tbh_m_syst_plus[k][COL4], ftbh*tbh_m_syst_minus[k][COL4], 
-              ftbh*tbh_m_err[k][COL5], ftbh*tbh_m_syst_plus[k][COL5], ftbh*tbh_m_syst_minus[k][COL5],
-              ftbh*tbh_m_err[k][COL6], ftbh*tbh_m_syst_plus[k][COL6], ftbh*tbh_m_syst_minus[k][COL6],
-              ftbh*tbh_m_err[k][COL7], ftbh*tbh_m_syst_plus[k][COL7], ftbh*tbh_m_syst_minus[k][COL7],
-              ftbh*tbh_m_err[k][COL8], ftbh*tbh_m_syst_plus[k][COL8], ftbh*tbh_m_syst_minus[k][COL8],
-              ftbh*tbh_m_err[k][COL9], ftbh*tbh_m_syst_plus[k][COL9], ftbh*tbh_m_syst_minus[k][COL9]);
+              ftbh[k]*tbh_m_err[k][COL2], ftbh[k]*tbh_m_syst_plus[k][COL2], ftbh[k]*tbh_m_syst_minus[k][COL2],
+              ftbh[k]*tbh_m_err[k][COL3], ftbh[k]*tbh_m_syst_plus[k][COL3], ftbh[k]*tbh_m_syst_minus[k][COL3],    
+              ftbh[k]*tbh_m_err[k][COL4], ftbh[k]*tbh_m_syst_plus[k][COL4], ftbh[k]*tbh_m_syst_minus[k][COL4], 
+              ftbh[k]*tbh_m_err[k][COL5], ftbh[k]*tbh_m_syst_plus[k][COL5], ftbh[k]*tbh_m_syst_minus[k][COL5],
+              ftbh[k]*tbh_m_err[k][COL6], ftbh[k]*tbh_m_syst_plus[k][COL6], ftbh[k]*tbh_m_syst_minus[k][COL6],
+              ftbh[k]*tbh_m_err[k][COL7], ftbh[k]*tbh_m_syst_plus[k][COL7], ftbh[k]*tbh_m_syst_minus[k][COL7],
+              ftbh[k]*tbh_m_err[k][COL8], ftbh[k]*tbh_m_syst_plus[k][COL8], ftbh[k]*tbh_m_syst_minus[k][COL8],
+              ftbh[k]*tbh_m_err[k][COL9], ftbh[k]*tbh_m_syst_plus[k][COL9], ftbh[k]*tbh_m_syst_minus[k][COL9]);
           }
           else if(STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){        
             if     (detailed == D2 ){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
@@ -1370,13 +1380,13 @@ namespace tableutils{
             lx.Append(dx);  datax = lx.Data();
 
             fprintf(f, datax, 
-              ftbh*tbh_m_err[k][COL2], ftbh*tbh_m_syst_plus[k][COL2], ftbh*tbh_m_syst_minus[k][COL2],
-              ftbh*tbh_m_err[k][COL3], ftbh*tbh_m_syst_plus[k][COL3], ftbh*tbh_m_syst_minus[k][COL3],    
-              ftbh*tbh_m_err[k][COL4], ftbh*tbh_m_syst_plus[k][COL4], ftbh*tbh_m_syst_minus[k][COL4], 
-              ftbh*tbh_m_err[k][COL5], ftbh*tbh_m_syst_plus[k][COL5], ftbh*tbh_m_syst_minus[k][COL5],
-              ftbh*tbh_m_err[k][COL6], ftbh*tbh_m_syst_plus[k][COL6], ftbh*tbh_m_syst_minus[k][COL6], 
-              ftbh*tbh_m_err[k][COL7], ftbh*tbh_m_syst_plus[k][COL7], ftbh*tbh_m_syst_minus[k][COL7],
-              ftbh*tbh_m_err[k][COL8], ftbh*tbh_m_syst_plus[k][COL8], ftbh*tbh_m_syst_minus[k][COL8]);
+              ftbh[k]*tbh_m_err[k][COL2], ftbh[k]*tbh_m_syst_plus[k][COL2], ftbh[k]*tbh_m_syst_minus[k][COL2],
+              ftbh[k]*tbh_m_err[k][COL3], ftbh[k]*tbh_m_syst_plus[k][COL3], ftbh[k]*tbh_m_syst_minus[k][COL3],    
+              ftbh[k]*tbh_m_err[k][COL4], ftbh[k]*tbh_m_syst_plus[k][COL4], ftbh[k]*tbh_m_syst_minus[k][COL4], 
+              ftbh[k]*tbh_m_err[k][COL5], ftbh[k]*tbh_m_syst_plus[k][COL5], ftbh[k]*tbh_m_syst_minus[k][COL5],
+              ftbh[k]*tbh_m_err[k][COL6], ftbh[k]*tbh_m_syst_plus[k][COL6], ftbh[k]*tbh_m_syst_minus[k][COL6], 
+              ftbh[k]*tbh_m_err[k][COL7], ftbh[k]*tbh_m_syst_plus[k][COL7], ftbh[k]*tbh_m_syst_minus[k][COL7],
+              ftbh[k]*tbh_m_err[k][COL8], ftbh[k]*tbh_m_syst_plus[k][COL8], ftbh[k]*tbh_m_syst_minus[k][COL8]);
            }
 
            //DEBUG 
@@ -2657,11 +2667,174 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
 }
 
 
-
-
-
-
-/*
+///  void TauDileptonTableBuilder::doDatacards(){
+///    // FIXME: plan is to SM datacard, then extend, kind of
+///    string tauType = argv[1];
+///    string inputfile = argv[2]; // no inbetween file
+///
+///  double vHHm80, sErHHm80, jesPHHm80, jesNHHm80, buPHHm80, buNHHm80, trPHHm80, trNHHm80, puHHm80; //yield, stat error, jer uncert. 
+///  double vHHm100, sErHHm100, jesPHHm100, jesNHHm100, buPHHm100, buNHHm100, trPHHm100, trNHHm100, puHHm100;
+///  double vHHm120, sErHHm120, jesPHHm120, jesNHHm120, buPHHm120, buNHHm120, trPHHm120, trNHHm120, puHHm120;
+///  double vHHm140, sErHHm140, jesPHHm140, jesNHHm140, buPHHm140, buNHHm140, trPHHm140, trNHHm140, puHHm140;
+///  double vHHm150, sErHHm150, jesPHHm150, jesNHHm150, buPHHm150, buNHHm150, trPHHm150, trNHHm150, puHHm150;
+///  double vHHm155, sErHHm155, jesPHHm155, jesNHHm155, buPHHm155, buNHHm155, trPHHm155, trNHHm155, puHHm155;
+///  double vHHm160, sErHHm160, jesPHHm160, jesNHHm160, buPHHm160, buNHHm160, trPHHm160, trNHHm160, puHHm160;
+///  double vWHm80, sErWHm80, jesPWHm80, jesNWHm80, buPWHm80, buNWHm80, trPWHm80, trNWHm80, puWHm80; //yield, stat error, jer uncert. 
+///  double vWHm100, sErWHm100, jesPWHm100, jesNWHm100, buPWHm100, buNWHm100, trPWHm100, trNWHm100, puWHm100;
+///  double vWHm120, sErWHm120, jesPWHm120, jesNWHm120, buPWHm120, buNWHm120, trPWHm120, trNWHm120, puWHm120;
+///  double vWHm140, sErWHm140, jesPWHm140, jesNWHm140, buPWHm140, buNWHm140, trPWHm140, trNWHm140, puWHm140;
+///  double vWHm150, sErWHm150, jesPWHm150, jesNWHm150, buPWHm150, buNWHm150, trPWHm150, trNWHm150, puWHm150;
+///  double vWHm155, sErWHm155, jesPWHm155, jesNWHm155, buPWHm155, buNWHm155, trPWHm155, trNWHm155, puWHm155;
+///  double vWHm160, sErWHm160, jesPWHm160, jesNWHm160, buPWHm160, buNWHm160, trPWHm160, trNWHm160, puWHm160;
+///  double tauF, sErtauF, sytauF; //tau fakes, stat err, sys err
+///  double tt, sErtt, jesPtt, jesNtt, buPtt, buNtt, trPtt, trNtt, putt; //tt tau-dilepton, stat err, sys err
+///  double ttll, sErttll, jesPttll, jesNttll, buPttll, buNttll, trPttll, trNttll, puttll; //tt->ll
+///  double Zll, sErZll, jesPZll, jesNZll, buPZll, buNZll, trPZll, trNZll, puZll; //Z->ll
+///  double Ztau, sErZtau, jesPZtau, jesNZtau, buPZtau, buNZtau, trPZtau, trNZtau, puZtau; //Z->tau tau
+///  double sTop, sErsTop, jesPsTop, jesNsTop, buPsTop, buNsTop, trPsTop, trNsTop, pusTop; //singleTop
+///  double VV, sErVV, jesPVV, jesNVV, buPVV, buNVV, trPVV, trNVV, puVV; //diboson
+///  double SM, sErSM, sySM; //SM Total
+///  double ndata;
+///
+///
+///  const char *iput_filename = inputfile.c_str();
+///  ifstream infile;
+///  infile.open(iput_filename);
+///  while(!infile.eof()){
+///    infile>>vHHm80>>sErHHm80>>jesPHHm80>>jesNHHm80>>buPHHm80>>buNHHm80>>trPHHm80>>trNHHm80>>puHHm80;
+///    infile>>vHHm100>>sErHHm100>>jesPHHm100>>jesNHHm100>>buPHHm100>>buNHHm100>>trPHHm100>>trNHHm100>>puHHm100;
+///    infile>>vHHm120>>sErHHm120>>jesPHHm120>>jesNHHm120>>buPHHm120>>buNHHm120>>trPHHm120>>trNHHm120>>puHHm120;
+///    infile>>vHHm140>>sErHHm140>>jesPHHm140>>jesNHHm140>>buPHHm140>>buNHHm140>>trPHHm140>>trNHHm140>>puHHm140;
+///    infile>>vHHm150>>sErHHm150>>jesPHHm150>>jesNHHm150>>buPHHm150>>buNHHm150>>trPHHm150>>trNHHm150>>puHHm150;
+///    infile>>vHHm155>>sErHHm155>>jesPHHm155>>jesNHHm155>>buPHHm155>>buNHHm155>>trPHHm155>>trNHHm155>>puHHm155;
+///    infile>>vHHm160>>sErHHm160>>jesPHHm160>>jesNHHm160>>buPHHm160>>buNHHm160>>trPHHm160>>trNHHm160>>puHHm160;
+///    infile>>vWHm80>>sErWHm80>>jesPWHm80>>jesNWHm80>>buPWHm80>>buNWHm80>>trPWHm80>>trNWHm80>>puWHm80;
+///    infile>>vWHm100>>sErWHm100>>jesPWHm100>>jesNWHm100>>buPWHm100>>buNWHm100>>trPWHm100>>trNWHm100>>puWHm100;
+///    infile>>vWHm120>>sErWHm120>>jesPWHm120>>jesNWHm120>>buPWHm120>>buNWHm120>>trPWHm120>>trNWHm120>>puWHm120;
+///    infile>>vWHm140>>sErWHm140>>jesPWHm140>>jesNWHm140>>buPWHm140>>buNWHm140>>trPWHm140>>trNWHm140>>puWHm140;
+///    infile>>vWHm150>>sErWHm150>>jesPWHm150>>jesNWHm150>>buPWHm150>>buNWHm150>>trPWHm150>>trNWHm150>>puWHm150;
+///    infile>>vWHm155>>sErWHm155>>jesPWHm155>>jesNWHm155>>buPWHm155>>buNWHm155>>trPWHm155>>trNWHm155>>puWHm155;
+///    infile>>vWHm160>>sErWHm160>>jesPWHm160>>jesNWHm160>>buPWHm160>>buNWHm160>>trPWHm160>>trNWHm160>>puWHm160;
+///    infile>>tauF>>sErtauF>>sytauF;
+///    infile>>tt>>sErtt>>jesPtt>>jesNtt>>buPtt>>buNtt>>trPtt>>trNtt>>putt;
+///    infile>>ttll>>sErttll>>jesPttll>>jesNttll>>buPttll>>buNttll>>trPttll>>trNttll>>puttll;
+///    infile>>Zll>>sErZll>>jesPZll>>jesNZll>>buPZll>>buNZll>>trPZll>>trNZll>>puZll;
+///    infile>>Ztau>>sErZtau>>jesPZtau>>jesNZtau>>buPZtau>>buNZtau>>trPZtau>>trNZtau>>puZtau;
+///    infile>>sTop>>sErsTop>>jesPsTop>>jesNsTop>>buPsTop>>buNsTop>>trPsTop>>trNsTop>>pusTop;
+///    infile>>VV>>sErVV>>jesPVV>>jesNVV>>buPVV>>buNVV>>trPVV>>trNVV>>puVV;
+///    //infile>>SM>>sErSM>>sySM;
+///    infile>>ndata;
+///    break;
+///  }
+///
+///  infile.close();
+///  
+///  
+///  //make for all mass points
+///  int HMass[7] = {80, 100, 120, 140, 150, 155, 160};
+///  for(int im = 0; im < 7; im++){
+///    double vHH, sErHH, jesPHH, jesNHH, buHH, trHH, puHH;
+///    if(im == 0){vHH = vHHm80; sErHH = sErHHm80; jesPHH = jesPHHm80; jesNHH = jesNHHm80; buHH = buPHHm80; trHH = trPHHm80; puHH = puHHm80;}
+///    else if(im == 1){vHH = vHHm100; sErHH = sErHHm100; jesPHH = jesPHHm100; jesNHH = jesNHHm100; buHH = buPHHm100; trHH = trPHHm100; puHH = puHHm100;}
+///    else if(im == 2){vHH = vHHm120; sErHH = sErHHm120; jesPHH = jesPHHm120; jesNHH = jesNHHm120; buHH = buPHHm120; trHH = trPHHm120; puHH = puHHm120;}
+///    else if(im == 3){vHH = vHHm140; sErHH = sErHHm140; jesPHH = jesPHHm140; jesNHH = jesNHHm140; buHH = buPHHm140; trHH = trPHHm140; puHH = puHHm140;}
+///    else if(im == 4){vHH = vHHm150; sErHH = sErHHm150; jesPHH = jesPHHm150; jesNHH = jesNHHm150; buHH = buPHHm150; trHH = trPHHm150; puHH = puHHm150;}
+///    else if(im == 5){vHH = vHHm155; sErHH = sErHHm155; jesPHH = jesPHHm155; jesNHH = jesNHHm155; buHH = buPHHm155; trHH = trPHHm155; puHH = puHHm155;}
+///    else if(im == 6){vHH = vHHm160; sErHH = sErHHm160; jesPHH = jesPHHm160; jesNHH = jesNHHm160; buHH = buPHHm160; trHH = trPHHm160; puHH = puHHm160;}
+///
+///    double vWH, sErWH, jesPWH, jesNWH, buWH, trWH, puWH;
+///    if(im == 0){vWH = vWHm80; sErWH = sErWHm80; jesPWH = jesPWHm80; jesNWH = jesNWHm80; buWH = buPWHm80; trWH = trPWHm80; puWH = puWHm80;}
+///    else if(im == 1){vWH = vWHm100; sErWH = sErWHm100; jesPWH = jesPWHm100; jesNWH = jesNWHm100; buWH = buPWHm100; trWH = trPWHm100; puWH = puWHm100;}
+///    else if(im == 2){vWH = vWHm120; sErWH = sErWHm120; jesPWH = jesPWHm120; jesNWH = jesNWHm120; buWH = buPWHm120; trWH = trPWHm120; puWH = puWHm120;}
+///    else if(im == 3){vWH = vWHm140; sErWH = sErWHm140; jesPWH = jesPWHm140; jesNWH = jesNWHm140; buWH = buPWHm140; trWH = trPWHm140; puWH = puWHm140;}
+///    else if(im == 4){vWH = vWHm150; sErWH = sErWHm150; jesPWH = jesPWHm150; jesNWH = jesNWHm150; buWH = buPWHm150; trWH = trPWHm150; puWH = puWHm150;}
+///    else if(im == 5){vWH = vWHm155; sErWH = sErWHm155; jesPWH = jesPWHm155; jesNWH = jesNWHm155; buWH = buPWHm155; trWH = trPWHm155; puWH = puWHm155;}
+///    else if(im == 6){vWH = vWHm160; sErWH = sErWHm160; jesPWH = jesPWHm160; jesNWH = jesNWHm160; buWH = buPWHm160; trWH = trPWHm160; puWH = puWHm160;}
+///    
+///    int iw = 0;
+///    string filename("datacard_m");
+///    if(im == 0)filename = filename+"80_";
+///    else if(im == 1)filename = filename+"100_";
+///    else if(im == 2)filename = filename+"120_";
+///    else if(im == 3)filename = filename+"140_";
+///    else if(im == 4)filename = filename+"150_";
+///    else if(im == 5)filename = filename+"155_";
+///    else if(im == 6)filename = filename+"160_";
+///    
+///    
+///    double nobs = ndata;
+///    filename = filename + tauType + ".txt";
+///    char * file = new char[filename.size() + 1];
+///    strcpy(file, filename.c_str());
+///      
+///    //cout<< fixed << showpoint <<setprecision(2);
+///    time_t secs=time(0);
+///    tm *t=localtime(&secs);
+///    
+///    ofstream outfile;
+///    outfile.open(file);
+///    outfile<< fixed << showpoint <<setprecision(3);
+///    outfile<<"Data: "<<t->tm_mday<<"/"<<t->tm_mon+1<<"/"<<t->tm_year+1900<<endl;
+///    //outfile<<"Description: H+, mu-tau, mass "<<HMass[im]<<" GeV, lumi=2140 pb-1"<<endl;
+///    outfile<<"Description: H+, e-tau, mass "<<HMass[im]<<" GeV, lumi=1900 pb-1"<<endl;
+///    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+///    outfile<<"imax   1  number of channels"<<endl;
+///    outfile<<"jmax   *  number of backgrounds"<<endl;
+///    outfile<<"kmax  34  number of nuisance parameters"<<endl;
+///    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+///    outfile<<"Observation    "<<nobs<<endl;
+///    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+///    outfile<<"bin       1         1          1          1           1           1           1           1         1         "<<endl;
+///    outfile<<"process   HH       WH    tt->ltau    tt~->ll     tau-fake    Z->ee,mumu   Z->tautau   singleTop  di-boson"<<endl;
+///    outfile<<"process   -1        0          1          2           3           4           5           6         7         "<<endl;
+///    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+///    outfile<<"rate      "<<vHH<<setw(10)<<vWH<<setw(10)<<tt<<setw(10)<<ttll<<setw(10)<<tauF<<setw(10)<<Zll<<setw(10)<<Ztau<<setw(10)<<sTop<<setw(10)<<VV<<"       Projected event rates"<<endl; 
+///    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+///    outfile<<endl;
+///    outfile<<" "<<1<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tau+MET trg"<<endl;
+///    outfile<<" "<<2<<"  lnN"<<setw(7)<<1+trHH/vHH<<setw(10)<<1+trWH/vWH<<setw(10)<<1+trPtt/tt<<setw(10)<<1+trPttll/ttll<<setw(10)<<1.00<<setw(10)<<1+trPZll/Zll<<setw(10)<<1+trPZtau/Ztau<<setw(10)<<1+trPsTop/sTop<<setw(10)<<1+trPVV/VV<<"    e+jet+MHT trig"<<endl;
+///    outfile<<" "<<3<<"  lnN"<<setw(7)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<"    tau ID"<<endl;
+///    outfile<<" "<<4<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    jet-> tau miss ID"<<endl;
+///    outfile<<" "<<5<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sytauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tau-fakes syst"<<endl;
+///    outfile<<" "<<6<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErtauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tau-fakes stat"<<endl;
+///    outfile<<" "<<7<<"  lnN"<<setw(7)<<1-jesNHH/vHH<<"/"<<1+jesPHH/vHH<<setw(7)<<1-jesNWH/vWH<<"/"<<1+jesPWH/vWH<<setw(7)<<1-jesNtt/tt<<"/"<<1+jesPtt/tt<<setw(7)<<1-jesNttll/ttll<<"/"<<1+jesPttll/ttll<<setw(7)<<1.00<<setw(10)<<1-jesNZll/Zll<<"/"<<1+jesPZll/Zll<<setw(7)<<1-jesNZtau/Ztau<<"/"<<1+jesPZtau/Ztau<<setw(7)<<1-jesNsTop/sTop<<"/"<<1+jesPsTop/sTop<<setw(7)<<1-jesNVV/VV<<"/"<<1+jesPVV/VV<<"    JES/JER/MET scale"<<endl;
+///    outfile<<" "<<8<<"  lnN"<<setw(7)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.00<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<"    Lepton Efficiency"<<endl;
+///    outfile<<" "<<9<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Lepton Veto"<<endl;
+///    outfile<<10<<"  lnN"<<setw(7)<<1+buHH/vHH<<setw(10)<<1+buWH/vWH<<setw(10)<<1+buPtt/tt<<setw(10)<<1+buPttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPsTop/sTop<<setw(10)<<1.00<<"    b-tagging"<<endl;
+///    outfile<<11<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPZll/Zll<<setw(10)<<1+buPZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1+buPVV/VV<<"    b-mis-tagging"<<endl;
+///    outfile<<12<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: QCD stat."<<endl;
+///    outfile<<13<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: QCD syst."<<endl;
+///    outfile<<14<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: Non-QCD-stat"<<endl;
+///    outfile<<15<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: Non-QCD W->tau->mu"<<endl;
+///    outfile<<16<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: Muon selection"<<endl;
+///    outfile<<17<<"  lnN"<<setw(7)<<1+sErHH/vHH<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    HH     MC stat"<<endl;
+///    outfile<<18<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1+sErWH/vWH<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    WH     MC stat"<<endl;
+///    outfile<<19<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    embedding MC stat"<<endl;
+///    outfile<<20<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErtt/tt<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tt->ltau MC stat "<<endl;
+///    outfile<<21<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tt->ll  MC stat"<<endl;
+///    outfile<<22<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tt->jjtau MC stat"<<endl;
+///    outfile<<23<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZll/Zll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<"    Z->ee,mumu MC stat"<<endl;
+///    outfile<<24<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1.00<<"    Z->tautau  MC stat"<<endl;
+///    outfile<<25<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    W+jets MC stat"<<endl;
+///    outfile<<26<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErsTop/sTop<<setw(10)<<1.00<<"    single top MC stat"<<endl;
+///    outfile<<27<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErVV/VV<<"    diboson MC stat"<<endl;
+///    outfile<<28<<"  lnN"<<setw(7)<<0.90<<"/"<<1.07<<setw(7)<<0.90<<"/"<<1.07<<setw(10)<<0.90<<"/"<<1.07<<setw(7)<<0.90<<"/"<<1.07<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    ttbar cross-section"<<endl;
+///    outfile<<29<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    W+jets cross section"<<endl;
+///    outfile<<30<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.08<<setw(10)<<1.00<<setw(10)<<"    singleTop cross-section"<<endl; 
+///    outfile<<31<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<setw(10)<<1.04<<setw(10)<<1.00<<setw(10)<<1.00<<"    Z->ll cross section"<<endl;
+///    outfile<<32<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<"    diboson cross-section"<<endl;
+///    outfile<<33<<"  lnN"<<setw(7)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.00<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<"    Luminosity Error"<<endl;
+///    outfile<<34<<"  lnN"<<setw(7)<<1+puHH/vHH<<setw(10)<<1+puWH/vWH<<setw(10)<<1+putt/tt<<setw(10)<<1+puttll/ttll<<setw(10)<<1.00<<setw(10)<<1+puZll/Zll<<setw(10)<<1+puZtau/Ztau<<setw(10)<<1+pusTop/sTop<<setw(10)<<1+puVV/VV<<"    pileup"<<endl;
+///    
+///    outfile.close();
+///    
+///    //}
+///  }
+///  return 0;
+///
+///  }
+///
+  /*
 
   // NOTE : THIS PEACE OF CODE CAN BE USED FOR
 
