@@ -93,6 +93,7 @@ physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch fo
 
 
 CHANGELOG for major updates:
+2013-04-15: added chiggs BRs to TauDileptonTableBuilder, almost finished tau fakes software
 2013-04-08: configured combineResults.sh script for different data hadding schemes 
 2013-03-27: fixed jet smearing factors
 	    fixed index of muon trigger eff muon, just for completeness
