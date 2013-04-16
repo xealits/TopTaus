@@ -404,7 +404,7 @@ void HistogramPlotter::processPlots(int i){
     
 
     if(ratioOptions.second)  iRatio->GetYaxis()->SetRangeUser(-1.1,1.1);
-    iRatio->GetYaxis()->SetRangeUser(0.8,1.2);
+    iRatio->GetYaxis()->SetRangeUser(0.,2.);
  
     iRatio->GetXaxis()->SetTitleOffset(0.85);
     iRatio->GetXaxis()->SetLabelSize(0.04 * yscale);

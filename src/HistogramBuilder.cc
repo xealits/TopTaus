@@ -318,6 +318,16 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   //deltaphi tau-met and lepton-met
   h2 = new TH2D("dphiTauMET_dphiLeptonMET","l; dphi(tau-met); dphi(lepton-met);",60,0,3.15, 60, 0, 3.15 ); addHistoToMonitors(h2,h2->GetName(), stepsMons, keys);
 
+  // mjj, mjjj
+  h = new TH1D("choice1_mjj",              "choice1_mjj;M(j,j); Entries",400,0.,1600.);                   addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("choice1_mjjb",              "choice1_mjjb;M(j,j,b); Entries",400,0.,1600.);               addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h2 = new TH2D("choice1_mjjb_mjj","choice1_mjjb_mjj; M(j,j,b); M(j, j);",400,0.,1600., 400, 0., 1600. ); addHistoToMonitors(h2,h2->GetName(), stepsMons, keys);
+
+  h = new TH1D("choice2_mjj",              "choice2_mjj;M(j,j); Entries",400,0.,1600.);                           addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("choice2_mjjb",             "choice2_mjjb;M(j,j,b); Entries",400,0.,1600.);                        addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h2 = new TH2D("choice2_mjjb_mjj",        "choice2_mjjb_mjj; M(j,j,b); M(j, j);",400,0.,1600., 400, 0., 1600. ); addHistoToMonitors(h2,h2->GetName(), stepsMons, keys);
+  
+  
 
   // btag //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   h = new TH1D("btag_j",              "j;btag; Entries",200,-20,20);            addHistoToMonitors(h,h->GetName(), stepsMons, keys);

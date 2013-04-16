@@ -28,6 +28,11 @@ namespace tableutils{
     void mcTable(  int detailed, bool includeSoverB, bool printAllErrors, bool higgs, TString key, TString name, bool syst1, bool syst2, bool syst3 );
     void summaryTable( bool detailed, bool higgs,bool systset1, bool systset2, bool systset3);
     
+    void doDatacards();
+    void doDatacardInput();
+    void doDatacard();
+
+    
   };
   
 }
