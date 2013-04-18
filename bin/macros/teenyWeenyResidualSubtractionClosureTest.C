@@ -155,26 +155,34 @@ void teenyWeenyClosureTest(){
   // Meat of the stuff
 
 
-  TFile* shapes = new TFile("../shapes/shapes_m250_rc_t.root");
+  TFile* shapes = new TFile("shapes/shapes_m250_rc_t.root");
 
-  TH1F* wJets   = (TH1F*) shapes->Get("wjets");
-  TH1F* tauFake = (TH1F*) shapes->Get("tau_fake3");
-  TH1F* ddbkg   = (TH1F*) shapes->Get("fff");
-
-  TH1F* mc = (TH1F*) wJets->Clone("mcDist");
-
-  wJets->Sumw2();
+  TH1F* tauFake   = (TH1F*) shapes->Get("tau_fake");
+  TH1F* tt_ltau	   = (TH1F*) shapes->Get("tt_ltau");	
+  TH1F* tt_ll	   = (TH1F*) shapes->Get("tt_ll");	
+  TH1F* singleTop  = (TH1F*) shapes->Get("singleTop");
+  TH1F* di_boson   = (TH1F*) shapes->Get("di_boson");
+  TH1F* Z_tautau   = (TH1F*) shapes->Get("Z_tautau");
+  TH1F* Z_eemumu   = (TH1F*) shapes->Get("Z_eemumu");
+  
+  TH1F* subtracted = (TH1F*) tauFake->Clone("subtracted");
+  
   tauFake->Sumw2();
-  ddbkg->Sumw2();
+  subtracted->Sumw2();
 
-  mc->Sumw2();
-  mc->Add(ddbkg,1);
-  mc->Sumw2();
+  subtracted->Add(tt_ltau     ,-1);
+  subtracted->Add(tt_ll	      ,-1);
+  subtracted->Add(singleTop   ,-1);
+  subtracted->Add(di_boson    ,-1);
+  subtracted->Add(Z_tautau    ,-1);
+  subtracted->Add(Z_eemumu    ,-1);
+  subtracted->Sumw2();
 
-  mc->SetLineColor(wJets->GetFillColor());
+  subtracted->SetLineColor(tt_ltau->GetFillColor());
+  subtracted->SetFillColor(tt_ltau->GetFillColor());
   tauFake->SetLineColor(tauFake->GetFillColor());
 
-  mc->SetLineWidth(3);
+  subtracted->SetLineWidth(3);
   tauFake->SetLineWidth(3);
 
   
@@ -188,8 +196,8 @@ void teenyWeenyClosureTest(){
   leg_->SetLineWidth(1);
   leg_->SetFillColor(0);
   leg_->SetFillStyle(0);
-  leg_->AddEntry(wJets,"MC shape","lpf");
-  leg_->AddEntry(tauFake,"DD shape","lpf");
+  leg_->AddEntry(subtracted,"DD shape w/ res.sub.","lpf");
+  leg_->AddEntry(tauFake,"DD shape w/out res.sub.","lpf");
 
   TPaveText *pt1 = new TPaveText(0.17,0.45,0.5,0.5, "brNDC");
   pt1->SetBorderSize(1);
@@ -201,7 +209,7 @@ void teenyWeenyClosureTest(){
   //  TText *text = pt1->AddText("#splitline{m_{H^{#pm}} = 120 GeV/c^{2},}{BR(t #rightarrow H^{+}b) = 0.05}");
 
   std::ostringstream strs;
-  double ks = mc->KolmogorovTest(tauFake);
+  double ks = subtracted->KolmogorovTest(tauFake);
   cout << "ks is " << std::setprecision(2) << ks <<  endl;
   strs << std::setprecision(2) << ks;
   std::string str = "p-value from KS test: " + strs.str();
@@ -213,8 +221,9 @@ void teenyWeenyClosureTest(){
 
   TCanvas* myCanva = new TCanvas("closureTest","closureTest",2000,2000);
   myCanva->cd();
-  mc->Draw("e");
-  tauFake->Draw("esame");
+  tauFake->Draw("e4");
+  subtracted->Draw("e4same");
+
   leg_->Draw();
   pt1->Draw("same");
   myCanva->SaveAs("closureTest.pdf");

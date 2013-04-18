@@ -149,23 +149,28 @@ PhysicsObject UncertaintyCalculator::smearedJet(const PhysicsObject &origJet, do
   // Deterministic version (now the Recommended version)  
   if(method==0)
     ptSF=max(0.,(genJetPt+ptSF*(origJet.Pt()-genJetPt)))/origJet.Pt();
+  else if (method==1){
+    
+    ////////// /// Random smearing is now NOT recommended
+    ////////// 
+    ////////// double sin_phi = sin(origJet.Phi()*1000000);
+    ////////// double seed = abs(static_cast<int>(sin_phi*100000));
+    ////////// TRandom3 myRandom(seed);
+    ////////// 
+    ////////// // A seed value of "0" means that the seed is authomatically calculated from memory data, garanteeing that it's unique in space and time, according to documentation of TRandom3
+    ////////// // Still, the sinphi method is valid even if the TRandom3 convention changes eventually
+    ////////// //  TRandom3 myRandom(0); 
+    ////////// 
+    ////////// ptSF=max(0.,(genJetPt+myRandom.Gaus(ptSF,ptSF_err)*(origJet.Pt()-genJetPt)))/origJet.Pt();
+    ////////// //deterministic version
+    
+    
+    
+  }
   
-  
-  /// Random smearing is now NOT recommended
-  
-  ///double sin_phi = sin(origJet.Phi()*1000000);
-  ///double seed = abs(static_cast<int>(sin_phi*100000));
-  ///TRandom3 myRandom(seed);
-  ///
-  ///// A seed value of "0" means that the seed is authomatically calculated from memory data, garanteeing that it's unique in space and time, according to documentation of TRandom3
-  ///// Still, the sinphi method is valid even if the TRandom3 convention changes eventually
-  /////  TRandom3 myRandom(0); 
-  ///
-  ///ptSF=max(0.,(genJetPt+myRandom.Gaus(ptSF,ptSF_err)*(origJet.Pt()-genJetPt)))/origJet.Pt();
-  //deterministic version
   if(ptSF<=0) return origJet;
-
-
+  
+  
   scaleFactor = ptSF; // output scale factor
   double px(origJet.Px()*ptSF), py(origJet.Py()*ptSF),
     pz(origJet.Pz()), mass(origJet.M());

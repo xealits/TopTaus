@@ -2694,135 +2694,163 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   ///////////////////////////////////////////////////////////////////// Study Mjj/Mjjb /////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////// I am being modified because I am wrong ////////
 
+  // FIXME: this piece of code can be heavily optimized
 
-  // WORKINGON
-  if(jets.size() >3 ) // We want 4 jets for the most generic bkg case
-    {
-      vector<PhysicsObject> jetsForMass;
+  // New strategy:
+  // - Use tau-skimmed collection
+  // - Start from 1 btag
+  // - Start from W mass
+  // - bjets from top should be more energetic (earlier branch of the diagram)
+
+  if(j_v.size() > 3){ // Minimum requirement: 4 jets.
+    
+    vector<PhysicsObject> jetsForMass; // Final working collection
+    
+    // Acquire bjets
+    vector<size_t> btagInd;
+    for( size_t j=0; j != j_v.size() ; j++ ){ 
+      size_t ind = j_v[j];
+      if( jets[ind][BTAGIND_] > BTAG_CUT_)
+	btagInd.push_back(ind);
+    }
+    //
+    
+    if(btagInd.size() == 1){ // If I have one btag only 
       
-      for(size_t i=0; i<4; i++) // Store the 4 highest-pt jets
-	jetsForMass.push_back(jets[i]);
-
-      // Bkg ideal:
-      // j1: b (tagged    | nonTagged)
-      // j2: b (nonTagged | tagged   )
-      // j3: j
-      // j4: j
-      
-      // Strategy: 
-      // Mjj is the mass of the non-bs
-      // Mjjb is the mass of the two non-bs plus the main bjet
-
-      // Acquire main tagged bjet
-      vector<size_t> bjetInd;
-      for(size_t i=0; i<jetsForMass.size(); i++){
-	if( jetsForMass[i][BTAGIND_] > BTAG_CUT_)
-	  bjetInd.push_back(i);
+      // Take the btag and the three highest-pt remaining jets
+      jetsForMass.push_back( jets[btagInd[0] ]);
+      for( size_t j=0; j != j_v.size() ; j++ ){ 
+	size_t ind = j_v[j];
+	if( ind==btagInd[0] ) continue;
+	if(jetsForMass.size() < 4) jetsForMass.push_back( jets[ind] );
       }
-      // 
-      
-      vector<size_t> mjjInd; // jets for computing mjj
-      vector<size_t> mjjbInd; // jets for computing mjjb
-      
-      if(bjetInd.size() > 0) 
-	mjjbInd.push_back(bjetInd[0]); // Highest-pt bjet is our main bjet
-      
-      
-      
-      if(bjetInd.size() > 1){ // Assume the second bjet is from the top, so the two remaining jets are for masses computation
-	for(size_t i=0; i< jetsForMass.size(); i++){
-	  if(i != bjetInd[0] &&
-	     i != bjetInd[1]   ){
-	    mjjInd.push_back(i);
-	    mjjbInd.push_back(i);
-	  }
-	}
-	
-	if(mjjInd.size() != 2 || mjjbInd.size() != 3)
-	  cout << "DEBUG: Two bjets. Alarm: mjj has " << mjjInd.size() << " elements, mjjb has " << mjjbInd.size() << " elements, which is definitely not ok" << endl;
-      } // End if we have 2 or more btags
-      
-      else if (bjetInd.size() == 1) { // Here the second bjet is not tagged, so we have to set up choices 
-	
-	// Choice 1: the two lowest-pt jets are from W
-	bool exclude = true;
-	for(size_t i=0; i< jetsForMass.size(); i++){
-	  if( i==bjetInd[0]) continue; // Exclude main bjet
-	  if(exclude){ // Exclude highest pt jet among the remaining ones
-	    exclude = false;
-	    continue;
-	  }
-	  mjjInd.push_back(i);
-	  mjjbInd.push_back(i);
-	  
-	}
-	if(mjjInd.size() != 2 || mjjbInd.size() != 3)
-	  cout << "DEBUG: Only one bjet. Choice 1. Alarm: mjj has " << mjjInd.size() << " elements, mjjb has " << mjjbInd.size() << " elements, which is definitely not ok" << endl;
-	
-	
-	// Plot mass
-	TLorentzVector vjj( mjjInd[0] ); vjj+= mjjInd[1]; 
-	
-	mon.fillHisto("choice1_mjj",extra1+step, vjj.M(),w_ );  mon.fillHisto("choice1_mjj", extra2+step, vjj.M(),w_);
-	
-	TLorentzVector vjjb( mjjbInd[0] ); vjj+= mjjbInd[1]; vjj+= mjjbInd[2];
-	mon.fillHisto("choice1_mjjb",extra1+step, vjjb.M(),w_ );  mon.fillHisto("choice1_mjjb", extra2+step, vjjb.M(),w_);
-	
-	
-	mon.fill2DHisto(TString("choice1_mjjb_mjj"),extra1+step, vjjb.M() , vjj.M(), w_);  mon.fill2DHisto(TString("choice1_mjjb_mjj"),extra2+step, vjjb.M() , vjj.M(), w_);
+      //
+      if(jetsForMass.size() != 4) cout << "DEBUG: WARNING. btagmult " << btagInd.size() << ", selected " << jetsForMass.size() << " instead of 4 jets." << endl;      
+    } // End if 1btag
+    else if (btagInd.size() >1) { // If I have two ore more btags
 
-
+      // Take the two btags and the two highest-pt non-btags
+      jetsForMass.push_back( jets[btagInd[0] ] );
+      jetsForMass.push_back( jets[btagInd[1] ] );
+      for( size_t j=0; j != j_v.size() ; j++ ){ 
+	size_t ind = j_v[j];
+	if( ind==btagInd[0] || ind==btagInd[1]) continue;
+	if(jetsForMass.size() < 4) jetsForMass.push_back( jets[ind] );
+      }
+      //
+      
+      if(jetsForMass.size() != 4) cout << "DEBUG: WARNING. btagmult " << btagInd.size() << ", selected " << jetsForMass.size() << " instead of 4 jets." << endl;
+    } // End if >1btag
  
-	// Choice 2: among the b + 2j combinations, the correct one is the closest to mTop
-	
-	// Regenerate vectors
-	mjjbInd.clear();
-	mjjInd.clear();
-	mjjbInd.push_back(bjetInd[0]); // Highest-pt bjet is our main bjet
-	
-	vector<size_t> remaining; 
-	for(size_t i=0; i< jetsForMass.size(); i++){
-	  if( i==bjetInd[0]) continue; // Exclude main bjet
-	  remaining.push_back(i);
-	}
-	
-	vector<size_t> comb1; comb1.push_back(remaining[0]); comb1.push_back(remaining[1]); 
-	vector<size_t> comb2; comb2.push_back(remaining[0]); comb2.push_back(remaining[2]); 
-	vector<size_t> comb3; comb3.push_back(remaining[1]); comb3.push_back(remaining[2]); 
-	
-	vector<double> mjjs;
-	vector<double> mjjbs;
-	
-	TLorentzVector v1( jetsForMass[comb1[0]] ); v1+= jetsForMass[comb1[1] ]; mjjs.push_back( v1.M() ); v1+= jetsForMass[ bjetInd[0] ]; mjjbs.push_back( v1.M() ); // Avoid temporary object allocation
-	TLorentzVector v2( jetsForMass[comb2[0]] ); v2+= jetsForMass[comb2[1] ]; mjjs.push_back( v2.M() ); v2+= jetsForMass[ bjetInd[0] ]; mjjbs.push_back( v2.M() );
-	TLorentzVector v3( jetsForMass[comb3[0]] ); v3+= jetsForMass[comb3[1] ]; mjjs.push_back( v3.M() ); v3+= jetsForMass[ bjetInd[0] ]; mjjbs.push_back( v3.M() );
-	
-	double chosenmjjb = 10000000.;
-	size_t chosenComb = 10;
-	for(size_t i=0; i< mjjbs.size(); i++){ // Select the combination with mass closest to mtop
-	  if( fabs(mjjbs[i] - 172.5) < fabs(chosenmjjb - 172.5) ){
-	    chosenmjjb = mjjbs[i];
-	    chosenComb = i;
-	  }
-	}
-	
-	if(chosenComb == 10)
-	  cout << "DEBUG: Choice 2. Alarm: chosenComb not set"  << endl;
-	// Plot mass
-	mon.fillHisto("choice2_mjj",extra1+step, mjjs[chosenComb],w_ );  mon.fillHisto("choice2_mjj", extra2+step, mjjs[chosenComb],w_);
-	mon.fillHisto("choice2_mjjb",extra1+step, mjjbs[chosenComb],w_ );  mon.fillHisto("choice2_mjjb", extra2+step, mjjbs[chosenComb],w_);
-	mon.fill2DHisto(TString("choice2_mjjb_mjj"),extra1+step, mjjbs[chosenComb] , mjjs[chosenComb], w_);  mon.fill2DHisto(TString("choice2_mjjb_mjj"),extra2+step, mjjbs[chosenComb], mjjs[chosenComb], w_);
 
+    
+    
 
-	
+    // Now make the assignments:
+    size_t chosenbtag(1000);
+    vector<size_t> chosenbtags;
+    vector<size_t> chosenNonbtags;
+    
+
+    // Assign nonbtags
+    if(btagInd.size() == 1){ // If I have one btag only, I want to take the two non-btags which make mjj closest to mW, and then the btag which make mjjb closest to mTop
+
+      vector<vector<size_t> > comb;
+      vector<double> mjjs;
+      
+      for(size_t i=0; i<3; i++){
+	vector<size_t> tempComb;
+	switch(i){
+	case 0:
+	  tempComb.push_back(1); tempComb.push_back(2);
+	  comb.push_back(tempComb);
+	  break;
+	case 1:
+	  tempComb.push_back(1); tempComb.push_back(3);
+	  comb.push_back(tempComb);
+	  break;
+	case 2:
+	  tempComb.push_back(2); tempComb.push_back(3);
+	  comb.push_back(tempComb);
+	  break;
+	default:
+	  cout << "DEBUG: dafuck? Shoulnd't ever be here" << endl;
+	  break;
+	}
+	TLorentzVector vC( jetsForMass[tempComb[0]] ); vC+= jetsForMass[tempComb[1] ]; mjjs.push_back( vC.M() );  // Avoid temporary object allocation  
+      }
+
+      // WORKINGHERE
+      double chosenmjj = 10000000.;
+      size_t chosenComb = 10;
+      for(size_t i=0; i< mjjs.size(); i++){ // Select the combination with mass closest to mW  
+	if( fabs(mjjs[i] - 80.385) < fabs(chosenmjj - 80.385) ){ // PDG2012
+	  chosenmjj = mjjs[i];
+	  chosenComb = i;
+	}
+      }
+      // Store the two jets from W
+      chosenNonbtags.push_back(comb[chosenComb][0]);
+      chosenNonbtags.push_back(comb[chosenComb][1]);
+      //
+     
+      // Now we have to choose the btag. Note that we don't use the tagged one because it could be from the other leg
+      double chosenbtag = 10000000.;
+      double chosenmjjb = 10000000;
+      for(size_t i=0; i<jetsForMass.size(); i++){
+	if(i==chosenNonbtags[0] || i==chosenNonbtags[1]) continue;
+	TLorentzVector vC( jetsForMass[chosenNonbtags[0] ] ); vC+= jetsForMass[chosenNonbtags[1] ]; vC+= jetsForMass[i]; // Avoid temporary object allocation  
+	if( fabs(vC.M() - 172.5) < fabs(chosenmjjb - 172.5) ) // Nominal reference value
+	  chosenmjjb = vC.M(); 
       }
       
+      // Plot the masses
+      // chosenmjj
+      // chosenmjjb
+      mon.fillHisto("mjj",extra1+step, chosenmjj,w_ );  mon.fillHisto("mjj", extra2+step, chosenmjj,w_);                                                                                    
+      mon.fillHisto("mjjb",extra1+step, chosenmjjb,w_ );  mon.fillHisto("mjjb", extra2+step, chosenmjjb,w_);                                                                                
+      mon.fill2DHisto(TString("mjjb_mjj"),extra1+step, chosenmjjb , chosenmjj, w_);  mon.fill2DHisto(TString("mjjb_mjj"),extra2+step, chosenmjjb, chosenmjj, w_);             
+                                                 
+      
+
+    } // End if 1btag
+    else if (btagInd.size() >1) { // If I have two btags, I want to take the two non-btags and the b which make mjjb closest to mTop
+      chosenNonbtags.push_back(2);
+      chosenNonbtags.push_back(3);
+      
+      TLorentzVector vW( jetsForMass[chosenNonbtags[0]] ); vW+= jetsForMass[chosenNonbtags[1] ]; 
+      double chosenmjj = vW.M();
+
+      // Now we have to choose the btag. Note that we don't use the tagged one because it could be from the other leg
+      double chosenbtag = 10000000.;
+      double chosenmjjb = 10000000;
+      for(size_t i=0; i<jetsForMass.size(); i++){
+	if(i==chosenNonbtags[0] || i==chosenNonbtags[1]) continue;
+	TLorentzVector vC( jetsForMass[chosenNonbtags[0] ] ); vC+= jetsForMass[chosenNonbtags[1] ]; vC+= jetsForMass[i]; // Avoid temporary object allocation  
+	if( fabs(vC.M() - 172.5) < fabs(chosenmjjb - 172.5) ) // Nominal reference value
+	  chosenmjjb = vC.M(); 
+      }
+      
+      // Plot the masses
+      // chosenmjj
+      // chosenmjjb
+      mon.fillHisto("mjj",extra1+step, chosenmjj,w_ );  mon.fillHisto("mjj", extra2+step, chosenmjj,w_);                                                                                    
+      mon.fillHisto("mjjb",extra1+step, chosenmjjb,w_ );  mon.fillHisto("mjjb", extra2+step, chosenmjjb,w_);                                                                                
+      mon.fill2DHisto(TString("mjjb_mjj"),extra1+step, chosenmjjb , chosenmjj, w_);  mon.fill2DHisto(TString("mjjb_mjj"),extra2+step, chosenmjjb, chosenmjj, w_);             
 
       
-    } // End if we have 4 jets
+    } // End if >1btag
+
+    
 
 
 
+    //  for( size_t j=0; j != j_v.size() ; j++ ){ 
+    //
+    //    int ind = j_v[j]; double j_pt = jets[ind].Pt(); double j_eta = jets[ind].Eta(); double j_phi = jets[ind].Phi(); double btag =jets[ind][BTAGIND_]; 
+    
+    
+  } // End of minimum requirement (4 jets)
 
 
 
