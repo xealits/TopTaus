@@ -98,6 +98,11 @@ Produce tables
 --------------
 physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch for higgs/non-higgs
 
+Produce fakerate
+----------------
+doTauFakesStudy test/physicsAnalysisParSets_cfg.py --do new
+(must re-split the --do optionlist)
+
 Datacards
 ---------
 Install repository (CMS members only):
@@ -112,6 +117,7 @@ CHANGELOG for major updates:
 	    added residual mc shape subtraction from dd shape K-S test
 	    added combine installation instructions and datacard automatic maker	
 	    committed revision 702 for chiggs datacards
+	    added doTauFakesStudy (complete tau fakes study)
 2013-04-15: added chiggs BRs to TauDileptonTableBuilder, almost finished tau fakes software
 2013-04-08: configured combineResults.sh script for different data hadding schemes 
 2013-03-27: fixed jet smearing factors

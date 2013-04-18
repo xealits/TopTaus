@@ -2,6 +2,8 @@
 <use name="FWCore/ParameterSet"/>
 <use name="FWCore/FWLite"/>
 <use name="CondFormats/JetMETObjects"/>
+<use name="PhysicsTools/MVAComputer"/>
+<use name="PhysicsTools/MVATrainer"/>
 <use name="root"/>
 <use name="rootmath"/>
 <use name="roottmva"/>
