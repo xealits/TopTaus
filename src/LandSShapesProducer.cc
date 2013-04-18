@@ -201,7 +201,8 @@ void LandSShapesProducer::InitMassPoint(size_t s){
   // Get files
   for(size_t f=0; f<nSamples_; f++){
     TString myTempFileName = inputFileName_[f];
-    if( f==1 || f == 2) myTempFileName = inputFileName_[f] + massPointName_[s] + TString(".root"); // Signals name manipulation
+    //    if( f==1 || f == 2) myTempFileName = inputFileName_[f] + massPointName_[s] + TString(".root"); // Signals name manipulation // WH HH
+    if( f==1 ) myTempFileName = inputFileName_[f] + massPointName_[s] + TString(".root"); // Signals name manipulation // TBH
     cout << "Opening file " << baseDir_[f]   + myTempFileName << " opened." << endl;
     inputFile_.push_back( TFile::Open(baseDir_[f]   + myTempFileName  ) );
     cout << "File " << baseDir_[f]   + myTempFileName << " opened." << endl;
@@ -585,7 +586,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
     cout << "sample " << sampleName_[f] << ", integral " << hist_[f]->Integral() << endl;
     if(isDDbkg_[f]){
-      hist_[f]->Scale(222./hist_[f]->Integral());
+      hist_[f]->Scale(4232.5/hist_[f]->Integral());
       ddbkgHistUp_ =   (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Up") );
       ddbkgHistDown_ = (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Down") );
       
@@ -1622,7 +1623,7 @@ void LandSShapesProducer::UnrollMultiDimensionalShape(){
   // Rescale stat plots - they must have the same integral as the base ones
   for(size_t f=0; f<nSamples_+2; f++){
     if(isDDbkg_[f])
-      unrolled_[f]->Scale(222./unrolled_[f]->Integral());
+      unrolled_[f]->Scale(4232.5/unrolled_[f]->Integral());
     
     unrolledStatUp_[f]  ->Scale(unrolled_[f]->Integral()/unrolledStatUp_[f]->Integral());
     unrolledStatDown_[f]->Scale(unrolled_[f]->Integral()/unrolledStatDown_[f]->Integral());

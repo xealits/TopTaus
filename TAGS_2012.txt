@@ -69,11 +69,13 @@ cvs co -r V01-09-05 RecoLocalTracker/SubCollectionProducers
 # For JER
 cvs co CondFormats/JetMETObjects
 
+# For MVA
+cvs co PhysicsTools/MVATrainer
 
+# Higgs Combination Tool
+# needs >= CMSSW_6_1_1 
 # LIP/TopTaus code for analysis. 2012 is HEAD now
 cvs co -r V13-03-07 -d LIP/TopTaus UserCode/LIP/TopTaus
-
-
 
 ### Old
 ###  # PAT recipe V08-09-50 

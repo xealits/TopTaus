@@ -6,6 +6,7 @@
 // System headers
 #include <cmath>
 #include <map>
+#include <fstream>
 
 #endif
 
@@ -390,7 +391,8 @@ namespace tableutils{
       double syst_tauid_e(0);  double syst_tauid_m(0);
 
       if( x >= TAUSTEP){ syst_tauid_e = TAU_ID_ERR*data_hh_e[x]; syst_tauid_m = TAU_ID_ERR*data_hh_m[x]; } 
-
+      
+      
 
       if(systset1){ 
         syst_tauid_e =0;  syst_tauid_m=0; syst_lum_e =0; syst_lum_m=0; syst_eff_e=0; syst_eff_m=0; syst_ttbar_cs_e=0; syst_ttbar_cs_m=0; 
@@ -614,6 +616,25 @@ namespace tableutils{
 
       if( x >= TAUSTEP){ syst_tauid_e = TAU_ID_ERR*data_tbh_e[x]; syst_tauid_m = TAU_ID_ERR*data_tbh_m[x]; } 
 
+      cout << "DEBUG TBH ME " << "-----------------------------------------------------------------------__" << endl;
+      
+      cout << " syst_plus_e     : " << syst_plus_e     << ", syst_plus_m     : " << syst_plus_m     << endl;    
+      cout << " syst_minus_e    : " << syst_minus_e    << ", syst_minus_m    : " << syst_minus_m    << endl;
+      cout << " syst_uncplus_e  : " << syst_uncplus_e  << ", syst_uncplus_m  : " << syst_uncplus_m  << endl;
+      cout << " syst_uncminus_e : " << syst_uncminus_e << ", syst_uncminus_m : " << syst_uncminus_m << endl;
+      cout << " syst_jerplus_e  : " << syst_jerplus_e  << ", syst_jerplus_m  : " << syst_jerplus_m  << endl;
+      cout << " syst_jerminus_e : " << syst_jerminus_e << ", syst_jerminus_m : " << syst_jerminus_m << endl;
+      cout << " syst_bplus_e    : " << syst_bplus_e    << ", syst_bplus_m    : " << syst_bplus_m    << endl;
+      cout << " syst_bminus_e   : " << syst_bminus_e   << ", syst_bminus_m   : " << syst_bminus_m   << endl;
+      cout << " syst_lum_e      : " << syst_lum_e      << ", syst_lum_m      : " << syst_lum_m      << endl;
+      cout << " syst_eff_e      : " << syst_eff_e      << ", syst_eff_m      : " << syst_eff_m      << endl;
+      cout << " syst_ttbar_cs_e : " << syst_ttbar_cs_e << ", syst_ttbar_cs_m : " << syst_ttbar_cs_m << endl;  
+      cout << " syst_trigger_e  : " << syst_trigger_e  << ", syst_trigger_m  : " << syst_trigger_m  << endl;
+      cout << " syst_tauid_e    : " << syst_tauid_e    << ", syst_tauid_m    : " << syst_tauid_m    << endl;
+
+      cout << " END DEBUG " << endl;
+      
+      
 
       if(systset1){ 
         syst_tauid_e =0;  syst_tauid_m=0; syst_lum_e =0; syst_lum_m=0; syst_eff_e=0; syst_eff_m=0; syst_ttbar_cs_e=0; syst_ttbar_cs_m=0; 
@@ -772,8 +793,27 @@ namespace tableutils{
       if     ( x >= TAUSTEP && y!=LEPJETS_TDCH && y!=ZJETS_TDCH  && y!=LEPLEP_TDCH     ){ syst_tauid = TAU_ID_ERR*d[x][y];     }  
       else if( x >= TAUSTEP && ( y==LEPJETS_TDCH || y==ZJETS_TDCH || y==LEPLEP_TDCH )  ){ syst_tauid = TAU_MISSID_ERR*d[x][y]; }
 
+
+
+
       // signal theory unc.
       double syst_theoryeff(0); if( XSECMEASUREMENT && ( y==ETAU_TDCH || y==MUTAU_TDCH )) syst_theoryeff = SIGNAL_EFF_ERR*d[x][y];
+
+      cout << "DEBUG SM ME for sample " << x << " -----------------------------------------------------------------------__" << endl;
+      cout << "  syst_plus      : " <<   syst_plus     << endl;
+      cout << "  syst_minus     : " <<   syst_minus    << endl;
+      cout << "  syst_uncplus   : " <<   syst_uncplus  << endl;
+      cout << "  syst_uncminus  : " <<   syst_uncminus << endl;
+      cout << "  syst_jerplus   : " <<   syst_jerplus  << endl;
+      cout << "  syst_jerminus  : " <<   syst_jerminus << endl;
+      cout << "  syst_bplus     : " <<   syst_bplus    << endl;
+      cout << "  syst_bminus    : " <<   syst_bminus   << endl;
+      cout << "  syst_lum       : " <<   syst_lum      << endl;
+      cout << "  syst_eff_lep   : " <<   syst_eff_lep  << endl;
+      cout << "  syst_trigger   : " <<   syst_trigger  << endl;
+      cout << "  syst_theoryeff : " <<   syst_theoryeff<< endl;
+      cout << " END DEBUG " << endl;
+
 
       if(systset1){ 
         syst_tauid = 0;  syst_lum = 0; syst_eff_lep=0; syst_cs=0; ;
@@ -1689,14 +1729,18 @@ namespace tableutils{
 // systset1 -> if enabled include only JES + MET +JER
 // systset2 -> if enabled include only btag unc
 // systset3 -> if enabled include only trigger
-void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool systset1, bool systset2, bool systset3){ 
+  void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool systset1, bool systset2, bool systset3){ 
 
 
   //  double ttbar_init(20416081); //SIMPLE evt processed
   double ttbar_init(8228517); // evt processed from debug.txt
    
-    
   
+  // For datacards
+  vector<vector<double> > tbh_datacards;
+  vector<vector<double> > sm_datacards;
+  vector<double>          data_datacards;
+  vector<double>          taufakes_datacards;
   //MUON-TAU channel ( Bkg after OS :  89.3 +/- 9.1 +/- 10.9 )
   //double scale(0.09585155); double lum(2136);    double lumFactor(1);                                               // NO SCALE REWEIGHTING
   //double lum(2203.);   double lumFactor(1); double scalefactor(2203./2136.);  double scale(0.09585155*scalefactor); // WITH SCALE REWEIGHTING :: WARNING DATA SHOULD NOT BE SCALED!!!
@@ -1732,19 +1776,13 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
   //  double lum(4904); double lumFactor(1); double scalefactor(1.); double scale(0.02184544); //    double scale(0.03284470); // double scale(0.08562379); // NEW VALUES
   double lum(commondefinitions::LUM_); double lumFactor(1); double scalefactor(1.); double scale(0.51393073); //    double scale(0.03284470); // double scale(0.08562379); // NEW VALUES
 
-
-  // HIGGS ===>
-  //double tau_fakes(54.9);   double tau_fakes_stat2(6.7*6.7); double tau_fakes_syst2(8.3*8.3); 
-  // XSEC  ===> 
-  //double tau_fakes(54.8);     double tau_fakes_stat2(6.5*6.5); double tau_fakes_syst2(8.2*8.2);
-  //double tau_fakes(54.3);     double tau_fakes_stat2(6.4*6.4); double tau_fakes_syst2(8.1*8.1);    
-  //  double tau_fakes(54.3);     double tau_fakes_stat2(0); double tau_fakes_syst2(8.1*8.1+6.4*6.4);    //no mt, new single top xsec (all syst included)
-  //  double tau_fakes(111.9);     double tau_fakes_stat2(0); double tau_fakes_syst2(8.1*8.1+6.4*6.4);    //no mt, new single top xsec (all syst included)
-  //  double tau_fakes(165.4*0.69);     double tau_fakes_stat2( ( (0.02*0.02)/(0.69*0.69) + (23.7*23.7)/(165.4*165.4) ) * 165.4*165.4*0.69*0.69); double tau_fakes_syst2(8.1*8.1+6.4*6.4);    // faux from prelim likelihood fit
-  //  double tau_fakes(108.8);     double tau_fakes_stat2( 7.3 *7.3); double tau_fakes_syst2(8.1*8.1+6.4*6.4);    // faux from prelim likelihood fit
   //  sqrt( (eA.B)^2 + (A.eB)^2 )
-  //  double tau_fakes(206.92*0.69);     double tau_fakes_stat2( 22.5*22.5*0.69*0.69 + 0.02*0.02*206.92*206.92 ); double tau_fakes_syst2(8.1*8.1+6.4*6.4);    // faux from prelim likelihood fit in 4625/pb
-  double tau_fakes(222.0);     double tau_fakes_stat2( 0); double tau_fakes_syst2( 11.4*11.4);    // from likelihood fit in 4903/pb
+  double tau_fakes(2939.89*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(424.92*424.92*0.69*0.69 + 0.02*0.02*2939.89*2939.89); // Preliminar from kNN
+  taufakes_datacards.push_back(tau_fakes);
+  taufakes_datacards.push_back(tau_fakes_stat2);
+  taufakes_datacards.push_back(sqrt(tau_fakes_syst2));
+
+
   // tau fakes: otherttbarlepton+jets + otherbkgw+jets (+otherbckZlljets?)
   //scale = 0.0856237;
   //ttbar_init = 930480; scale = 0.33835569; //SCALE UP VALUES
@@ -1780,13 +1818,11 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
 
   // table options /////////////////////////////////////////////////////////////////
   bool incDocument(true);
-  bool showAllHiggs(true), processHH(true),processHW(true);
-  if(!higgs){ showAllHiggs=false; processHH=false; processHW=false;}
+  bool showAllHiggs(true), processHH(false),processHW(false),processTBH(true);
+  if(!higgs){ showAllHiggs=false; processTBH=false;}
   bool addXsection; if(XSECMEASUREMENT){ addXsection=true; } else addXsection=false;
   //////////////////////////////////////////////////////////////////////////////////
-
-
-
+  
   // yields for xsection measurement ////////////////////////////////////////////////////////////////////////////////
   double data_yields(0);   
   double acceptance(0.);      double acceptance_stat(0.);      double acceptance_syst(0.);                           
@@ -1798,44 +1834,44 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
   vector<TString> keys; TString fName; keys.push_back("PFlow");
   TString vName("-v2");
   TString systName("");
-
+  
   if( systset1 )             systName=TString("-JESMETJER");
   if( systset2 )             systName=TString("-BTAG");
   if( systset1 && systset2 ) systName=TString("-ERROR");
-
-
+  
+  
   if    (!addXsection){ fName=TString("summary-tab-")+keys[0]+ systName + vName +TString(".tex");}
   else if(addXsection){ fName=TString("summary-tab-xsec-")+keys[0]+ systName + vName +TString(".tex");}
   
   TFile * processedMCFile = TFile::Open(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-mc.root")); TFile * processedDataFile = TFile::Open(outputArea_+TString("nomt-2012-V1-data-MU-20GeV/out-data.root")); 
 
   map<TString,TString> hNameData_m, hNameMC_m, 
-                       hNameMC_plus_m, hNameMC_minus_m, 
-                       hNameMC_uncplus_m, hNameMC_uncminus_m, 
-                       hNameMC_jerplus_m, hNameMC_jerminus_m,
-                       hNameMC_bplus_m, hNameMC_bminus_m,
-                       hNameMC_trigger_m;
-
+    hNameMC_plus_m, hNameMC_minus_m, 
+    hNameMC_uncplus_m, hNameMC_uncminus_m, 
+    hNameMC_jerplus_m, hNameMC_jerminus_m,
+    hNameMC_bplus_m, hNameMC_bminus_m,
+    hNameMC_trigger_m;
+  
   map<TString,TString> hName_higgs_m, hName_higgs_plus_m, hName_higgs_minus_m, 
-                       hName_higgs_uncplus_m, hName_higgs_uncminus_m, 
-                       hName_higgs_jerminus_m, hName_higgs_jerplus_m,
-                       hName_higgs_bminus_m, hName_higgs_bplus_m, hName_higgs_trigger_m;
+    hName_higgs_uncplus_m, hName_higgs_uncminus_m, 
+    hName_higgs_jerminus_m, hName_higgs_jerplus_m,
+    hName_higgs_bminus_m, hName_higgs_bplus_m, hName_higgs_trigger_m;
+  
   
 
-
   TString leptauString,etauString,mtauString, leptauStringMC;
-
-
+  
+  
   leptauStringMC=TString("1");   leptauString=TString("1"); etauString=TString("2"); mtauString=TString("3"); 
-
+  
   for(uint i=0; i<keys.size(); i++){
-
+    
     TString algo=keys[i];
-
+    
     TString hNameData( algo + TString("/Yields")+ TString("/lep_tau/cutflow_yields_") + leptauString); hNameData_m[algo]            = hNameData;
-
+    
     cout<<endl<<" DATA NAME : "<<hNameData<<endl;
- 
+    
     TString hNameMC(         algo+TString("/YieldsMC")+TString("/cutflow_yields_mc_")         + leptauStringMC); hNameMC_m[algo]           = hNameMC;    
     TString hNameMC_plus(    algo+TString("/YieldsMC")+TString("/cutflow_yields_mc_plus_")    + leptauStringMC); hNameMC_plus_m[algo]      = hNameMC_plus;
     TString hNameMC_minus(   algo+TString("/YieldsMC")+TString("/cutflow_yields_mc_minus_")   + leptauStringMC); hNameMC_minus_m[algo]     = hNameMC_minus;
@@ -1860,8 +1896,8 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
     TString hName_higgs_trigger(  algo + TString("/Yields")+ TString("/lep_tau/cutflow_triggErr_")+leptauString); hName_higgs_trigger_m[algo]  = hName_higgs_trigger;
   
   }
-
-
+  
+  
   // map histograms for data
   map< TString, TH1D * > hData;
   // map histograms for MC 
@@ -1869,7 +1905,8 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
   // map histograms for higgs
   map< TString, vector< TH1D * > > h_hh, h_hh_plus, h_hh_minus, h_hh_uncplus, h_hh_uncminus, h_hh_jerplus, h_hh_jerminus, h_hh_bplus, h_hh_bminus, h_hh_trigger;
   map< TString, vector< TH1D * > > h_hw, h_hw_plus, h_hw_minus, h_hw_uncplus, h_hw_uncminus, h_hw_jerplus, h_hw_jerminus, h_hw_bplus, h_hw_bminus, h_hw_trigger;
-
+  map< TString, vector< TH1D * > > h_tbh, h_tbh_plus, h_tbh_minus, h_tbh_uncplus, h_tbh_uncminus, h_tbh_jerplus, h_tbh_jerminus, h_tbh_bplus, h_tbh_bminus, h_tbh_trigger;
+  
 
   // Get Data Histogram //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if(processedDataFile){
@@ -1897,7 +1934,7 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
 
 
   //get Higgs histograms////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  vector<TString> hhFiles; vector<TString> hwFiles;
+  vector<TString> hhFiles; vector<TString> hwFiles; vector<TString> tbhFiles;
   if( processHH ){
     hhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m80.root"));
     hhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m100.root"));
@@ -1916,14 +1953,24 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
     hwFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m155.root"));
     hwFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-wh-pythia-m160.root"));
   }
+  if( processTBH ){
+    tbhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m180.root"));
+    tbhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m190.root"));
+    tbhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m200.root"));
+    tbhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m220.root"));
+    tbhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m250.root"));
+    tbhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m300.root"));
+  }
+  
  
-  vector<TFile *> processedHWFiles; vector<TFile *> processedHHFiles;
+  vector<TFile *> processedHWFiles; vector<TFile *> processedHHFiles; vector<TFile*> processedTBHFiles;
   for(uint i = 0; i<hhFiles.size(); i++ ){  processedHHFiles.push_back( TFile::Open( hhFiles[i] ) ); }
   for(uint i = 0; i<hwFiles.size(); i++ ){  processedHWFiles.push_back( TFile::Open( hwFiles[i] ) ); }
-  cout << "Open hh and wh files if any" << endl;
+  for(uint i = 0; i<tbhFiles.size(); i++ ){  processedTBHFiles.push_back( TFile::Open( tbhFiles[i] ) ); }
+  cout << "Open hh and wh and tbh files if any" << endl;
   for(uint j=0; j<keys.size(); j++){
     vector<TH1D * > v_hh, v_hh_plus, v_hh_minus, v_hh_uncplus, v_hh_uncminus, v_hh_jerplus, v_hh_jerminus, v_hh_bplus, v_hh_bminus, v_hh_trigger;
-     TString algo = keys[j];
+    TString algo = keys[j];
     for(uint i = 0; i< hhFiles.size(); i++ ){ 
       if(processedHHFiles[i]){ 
         TH1D *h;     
@@ -1995,6 +2042,48 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
     h_hw_trigger[algo] = v_hw_trigger;
   } 
   cout << "Got wh  histograms, if any" << endl;
+
+  for(uint j=0; j<keys.size(); j++){
+    vector<TH1D * > v_tbh, v_tbh_plus, v_tbh_minus, v_tbh_uncplus, v_tbh_uncminus, v_tbh_jerplus, v_tbh_jerminus, v_tbh_bplus, v_tbh_bminus, v_tbh_trigger;
+    TString algo = keys[j];
+    for(uint i = 0; i< tbhFiles.size(); i++ ){ 
+      if(processedTBHFiles[i]){ 
+        TH1D *h;     
+	cout << "Now opening histo" << endl;
+        h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_m[algo]);          h->Scale(scalefactor); v_tbh.push_back(h); 
+	cout << "open first histo" << endl;
+        h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_plus_m[algo]);     h->Scale(scalefactor); v_tbh_plus.push_back(h);
+	cout << "open second histo" << endl;
+        h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_minus_m[algo]);    h->Scale(scalefactor); v_tbh_minus.push_back(h);
+        h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_uncplus_m[algo]);  h->Scale(scalefactor); v_tbh_uncplus.push_back(h);
+        h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_uncminus_m[algo]); h->Scale(scalefactor); v_tbh_uncminus.push_back(h);
+	cout << "open fifth histo" << endl;
+        h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_jerplus_m[algo]);  h->Scale(scalefactor); v_tbh_jerplus.push_back(h);
+        h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_jerminus_m[algo]); h->Scale(scalefactor); v_tbh_jerminus.push_back(h);
+        h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_bplus_m[algo]);    h->Scale(scalefactor); v_tbh_bplus.push_back(h);
+	cout << "open ninth histo" << endl;
+        h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_bminus_m[algo]);   h->Scale(scalefactor); v_tbh_bminus.push_back(h);
+	cout << "open tenth histo" << endl;
+        h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_trigger_m[algo]);  h->Scale(scalefactor); v_tbh_trigger.push_back(h);
+	cout << "open last histo" << endl;
+      }
+      else { 
+        v_tbh.push_back(0);         v_tbh_plus.push_back(0);       v_tbh_minus.push_back(0); 
+        v_tbh_uncplus.push_back(0); v_tbh_uncminus.push_back(0); 
+        v_tbh_jerplus.push_back(0); v_tbh_jerminus.push_back(0);
+        v_tbh_bplus.push_back(0);   v_tbh_bminus.push_back(0);
+        v_tbh_trigger.push_back(0);
+      }
+    }
+    h_tbh[algo] = v_tbh;  h_tbh_plus[algo] = v_tbh_plus;  h_tbh_minus[algo] = v_tbh_minus;
+    h_tbh_uncplus[algo] = v_tbh_uncplus;  h_tbh_uncminus[algo] = v_tbh_uncminus;
+    h_tbh_jerplus[algo] = v_tbh_jerplus;  h_tbh_jerminus[algo] = v_tbh_jerminus;
+    h_tbh_bplus[algo]   = v_tbh_bplus;    h_tbh_bminus[algo] = v_tbh_bminus;
+    h_tbh_trigger[algo] = v_tbh_trigger;
+  }
+  cout << "got TBH histograms, if any" << endl;
+
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -2004,6 +2093,9 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
   // HH / WH data/error holders
   map< pair< TString, int > , vector<double> > hh, hw, hh_err, hw_err;
   map< pair< TString, int > , vector<double> > hh_syst_plus, hh_syst_minus, hw_syst_plus, hw_syst_minus;
+
+  map< pair< TString, int > , vector<double> > tbh, tbh_err;
+  map< pair< TString, int > , vector<double> > tbh_syst_plus, tbh_syst_minus;
 
   // SM MC data/errors holders
   map< pair< TString, pair<int,int> > , double > dMC, dMC_err, dMC_plus, dMC_minus, dMC_uncplus, dMC_uncminus, dMC_trigger,
@@ -2136,6 +2228,90 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
  
  
     }
+    // tbh samples //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    for(uint samp=0; samp < h_tbh[algo].size(); samp++){
+      pair< TString, int> key(algo,samp);      
+      vector<double> data_tbh, data_tbh_err, data_syst_plus, data_syst_minus; 
+      for(int x=0; x<12;x++){
+        // get data and stats errors //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        double data_tbh_plus, data_tbh_minus;
+        double data_tbh_uncplus, data_tbh_uncminus, data_tbh_jerplus, data_tbh_jerminus, data_tbh_bplus, data_tbh_bminus, data_tbh_trigger;
+        if( h_tbh[algo][samp]          != 0 ){ data_tbh.push_back(      h_tbh[algo][samp]->GetBinContent(x+1) );  } else { data_tbh.push_back( 0 );   }
+        if( h_tbh[algo][samp]          != 0 ){ data_tbh_err.push_back(  h_tbh[algo][samp]->GetBinError(x+1)   );  } else { data_tbh_err.push_back(0); }
+        if( h_tbh_plus[algo][samp]     != 0 ){ data_tbh_plus  =    h_tbh_plus[algo][samp]->GetBinContent(x+1);    } else { data_tbh_plus       = 0 ;  }
+        if( h_tbh_minus[algo][samp]    != 0 ){ data_tbh_minus =    h_tbh_minus[algo][samp]->GetBinContent(x+1);   } else { data_tbh_minus      = 0 ;  }  
+        if( h_tbh_uncplus[algo][samp]  != 0 ){ data_tbh_uncplus  = h_tbh_uncplus[algo][samp]->GetBinContent(x+1); } else { data_tbh_uncplus    = 0 ;  }
+        if( h_tbh_uncminus[algo][samp] != 0 ){ data_tbh_uncminus = h_tbh_uncminus[algo][samp]->GetBinContent(x+1);} else { data_tbh_uncminus   = 0 ;  }  
+        if( h_tbh_jerplus[algo][samp]  != 0 ){ data_tbh_jerplus  = h_tbh_jerplus[algo][samp]->GetBinContent(x+1); } else { data_tbh_jerplus    = 0 ;  }
+        if( h_tbh_jerminus[algo][samp] != 0 ){ data_tbh_jerminus = h_tbh_jerminus[algo][samp]->GetBinContent(x+1);} else { data_tbh_jerminus   = 0 ;  }  
+        if( h_tbh_bplus[algo][samp]    != 0 ){ data_tbh_bplus    = h_tbh_bplus[algo][samp]->GetBinContent(x+1); }   else { data_tbh_bplus      = 0 ;  }
+        if( h_tbh_bminus[algo][samp]   != 0 ){ data_tbh_bminus   = h_tbh_bminus[algo][samp]->GetBinContent(x+1);}   else { data_tbh_bminus     = 0 ;  }
+        if( h_tbh_trigger[algo][samp]  != 0 ){ data_tbh_trigger  = h_tbh_trigger[algo][samp]->GetBinContent(x+1);}  else { data_tbh_trigger    = 0 ;  }  
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        //compute systematics //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        double syst_plus     = fabs( data_tbh[x]-data_tbh_plus );         double syst_minus    = fabs( data_tbh[x]-data_tbh_minus );   
+        double syst_uncplus  = fabs( data_tbh[x]-data_tbh_uncplus );      double syst_uncminus = fabs( data_tbh[x]-data_tbh_uncminus );   
+        double syst_jerplus  = fabs( data_tbh[x]-data_tbh_jerplus );      double syst_jerminus = fabs( data_tbh[x]-data_tbh_jerminus );
+        double syst_bplus    = fabs( data_tbh[x]-data_tbh_bplus );        double syst_bminus   = fabs( data_tbh[x]-data_tbh_bminus );      
+
+        double syst_lum      = LUM_ERR*data_tbh[x];         
+        double syst_eff_lep  = LEP_EFF_ERR*data_tbh[x];             
+        double syst_ttbar_cs = TTBAR_CS_ERR*data_tbh[x];
+        
+        double syst_tauid(0);  if( x >= TAUSTEP) { syst_tauid = TAU_ID_ERR*data_tbh[x];   }  
+        double syst_trigger = data_tbh_trigger;
+        
+        if(systset1){ syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_trigger=0; } 
+        if(systset2){ 
+          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_trigger=0;
+        } 
+        if(systset3){ 
+          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; 
+        } 
+     
+        double temp =  pow(syst_lum,2) + pow(syst_eff_lep,2) + pow(syst_ttbar_cs,2) + pow(syst_tauid,2) + pow(syst_trigger,2);
+
+        data_syst_plus.push_back(  sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2)  + pow(syst_bplus,2)  + temp) );   
+        data_syst_minus.push_back( sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_bminus,2) + temp) ); 
+  
+        //cout<<endl<<" TBH algo : "<<algo<<" data syst plus "<<(data_syst_plus[x])<<" data syst minus "<<(data_syst_minus[x])<<" temp "<<temp<<endl;
+
+	// WORKING HERE
+	
+	if(x==11){ // OS
+	  vector<double> temp_tbh_datacards;
+	  temp_tbh_datacards.push_back(data_tbh[x] );
+	  temp_tbh_datacards.push_back( data_tbh_err[x]  );
+	  
+	  temp_tbh_datacards.push_back( syst_plus     );
+	  temp_tbh_datacards.push_back( syst_minus    );
+	  temp_tbh_datacards.push_back( syst_uncplus  );
+	  temp_tbh_datacards.push_back( syst_uncminus );
+	  temp_tbh_datacards.push_back( syst_jerplus  );
+	  temp_tbh_datacards.push_back( syst_jerminus );
+	  temp_tbh_datacards.push_back( syst_bplus    );
+	  temp_tbh_datacards.push_back( syst_bminus   );
+	  temp_tbh_datacards.push_back( syst_lum      );
+	  temp_tbh_datacards.push_back( syst_eff_lep  );
+	  //        temp_tbh_datacards.push_back( syst_ttbar_cs );
+	  temp_tbh_datacards.push_back( syst_tauid    );
+	  temp_tbh_datacards.push_back( syst_trigger  );
+
+	  
+	  tbh_datacards.push_back(temp_tbh_datacards);
+	}
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+      }
+      
+
+      tbh[key] = data_tbh; tbh_err[key] = data_tbh_err;  tbh_syst_minus[key] = data_syst_minus; tbh_syst_plus[key] = data_syst_plus; 
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     cout << "Processed hw and hh histos, if any" << endl;
@@ -2147,8 +2323,10 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
     
       // fill data /////////////////////////////////////////////////////////////////////////////////
       pair<TString,int> dk(algo,x); if( hData[algo] ) dataTotal[dk]= hData[algo]->GetBinContent(x+1);
+      if(x==11) // OS
+	data_datacards.push_back( dataTotal[dk] );
       //////////////////////////////////////////////////////////////////////////////////////////////
-
+      
       // fill values with histogram data /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       for(int y=0;y<13;y++){  
 
@@ -2211,7 +2389,28 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
         if     ( x >= TAUSTEP && y!=LEPJETS_TDCH && y!=ZJETS_TDCH  && y!=LEPLEP_TDCH   ){ syst_tauid = TAU_ID_ERR*dMC[k];     }  
         else if( x >= TAUSTEP && ( y==LEPJETS_TDCH || y==ZJETS_TDCH || y==LEPLEP_TDCH )){ syst_tauid = TAU_MISSID_ERR*dMC[k]; }
 
- 
+	if(x==11){ //OS
+	  vector<double> temp_sm_datacards;
+
+	  temp_sm_datacards.push_back(dMC[k] );
+	  temp_sm_datacards.push_back(dMC_err[k] );	  
+	  temp_sm_datacards.push_back( syst_plus     );
+	  temp_sm_datacards.push_back( syst_minus    );
+	  temp_sm_datacards.push_back( syst_uncplus  );
+	  temp_sm_datacards.push_back( syst_uncminus );
+	  temp_sm_datacards.push_back( syst_jerplus  );
+	  temp_sm_datacards.push_back( syst_jerminus );
+	  temp_sm_datacards.push_back( syst_bplus    );
+	  temp_sm_datacards.push_back( syst_bminus   );
+	  temp_sm_datacards.push_back( syst_lum      );
+	  temp_sm_datacards.push_back( syst_eff_lep  );
+	  // syst_theory? syst_cs? sample_cs? // FIXME: fixme
+	  temp_sm_datacards.push_back( syst_tauid    );
+	  temp_sm_datacards.push_back( syst_trigger  );
+	  sm_datacards.push_back(temp_sm_datacards);
+	  cout<<endl<< "KNOW BETTER WHAT IS WHAT " << sm_datacards.size() << " " << temp_sm_datacards[0] << endl; 
+	}
+	
         if(systset1){ syst_lum=0; syst_tauid=0; syst_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_theory=0; syst_trigger=0; } 
         if(systset2){ syst_lum=0; syst_tauid=0; syst_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_theory=0; syst_trigger=0;} 
         if(systset3){ syst_lum=0; syst_tauid=0; syst_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_theory=0; } 
@@ -2250,6 +2449,11 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
     "HH, $M_{H^{+}}=80GeV/c^{2}$ &",  "HH, $M_{H^{+}}=100GeV/c^{2}$ &", "HH, $M_{H^{+}}=120GeV/c^{2}$ &", "HH, $M_{H^{+}}=140GeV/c^{2}$ &",
     "HH, $M_{H^{+}}=150GeV/c^{2}$ &", "HH, $M_{H^{+}}=155GeV/c^{2}$ &", "HH, $M_{H^{+}}=160GeV/c^{2}$ &"
   }; 
+
+  TString  T_TBH_mc[] = {
+    "TBH, $M_{H^{+}}=180GeV/c^{2}$ &",  "TBH, $M_{H^{+}}=190GeV/c^{2}$ &", "TBH, $M_{H^{+}}=200GeV/c^{2}$ &",
+    "TBH, $M_{H^{+}}=220GeV/c^{2}$ &", "TBH, $M_{H^{+}}=250GeV/c^{2}$ &", "TBH, $M_{H^{+}}=300GeV/c^{2}$ &"
+  };
 
   TString    other[] = {
     "$t\\bar{t}$ tau-dilepton &","$\\tau$ fakes &", "$t\\bar{t}\\to\\ell\\ell$ &", "$Z/\\gamma\\rightarrow ee,\\mu\\mu$ &", "$Z/\\gamma\\rightarrow \\tau\\tau$ &",
@@ -2298,11 +2502,31 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
   }
 
 
+  // TBH contribution
+  for(uint l=0; l<tbhFiles.size(); l++){
+    if( !showAllHiggs && l!= 2  ){ continue;}
+    
+    TString line(""); line.Append(T_TBH_mc[l]); 
+    
+    if(detailed){ TString d(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); line.Append(d);}
+    else        { TString d(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); line.Append(d);}                                    
+    
+    int massPoint(l);
+    pair<TString, int> k0(algo0,massPoint); 
+    const char * data = line.Data();
+    double systerr0(tbh_syst_plus[k0][STEP]); if( tbh_syst_minus[k0][STEP] > tbh_syst_plus[k0][STEP] ) systerr0 = tbh_syst_minus[k0][STEP];
+   
+    fprintf(f, data, tbh[k0][STEP], tbh_err[k0][STEP], systerr0 );
+   
+    
+  }
+
+
   //tt tau-dilepton
   {    
     fprintf(f,"\\hline \n");        
     pair<int,int> ktemp0_e(STEP,0);  pair<TString ,pair<int,int> > e0(algo0,ktemp0_e); pair<int,int> ktemp0_mu(STEP,1); pair<TString ,pair<int,int> > mu0(algo0,ktemp0_mu);
-   
+    
 
 
     // first algorithm /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2451,7 +2675,7 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
       //if(codes[k]==SINGLETOP_TDCH ){ syst_0 = 0.8; }
       //if(codes[k]==EWKDI_TDCH     ){ syst_0 = 0.2; }
 
-
+      cout<<endl<< "KNOW WHAT IS WHAT " << k << "     " << line << endl;
       fprintf(f, datatemp2, dMC[entry_0], dMC_err[entry_0], syst_0);   
       
     }
@@ -2659,6 +2883,9 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
   if(incDocument) fprintf(f,"\\end{document} \n"); //COMMENT
   fclose(f);
 
+  if(higgs) doDatacards(data_datacards, tbh_datacards, sm_datacards, taufakes_datacards, string("PFlow"));
+
+
   processedMCFile->Close();
   processedDataFile->Close();
 
@@ -2667,173 +2894,234 @@ void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool syst
 }
 
 
-///  void TauDileptonTableBuilder::doDatacards(){
-///    // FIXME: plan is to SM datacard, then extend, kind of
-///    string tauType = argv[1];
-///    string inputfile = argv[2]; // no inbetween file
-///
-///  double vHHm80, sErHHm80, jesPHHm80, jesNHHm80, buPHHm80, buNHHm80, trPHHm80, trNHHm80, puHHm80; //yield, stat error, jer uncert. 
-///  double vHHm100, sErHHm100, jesPHHm100, jesNHHm100, buPHHm100, buNHHm100, trPHHm100, trNHHm100, puHHm100;
-///  double vHHm120, sErHHm120, jesPHHm120, jesNHHm120, buPHHm120, buNHHm120, trPHHm120, trNHHm120, puHHm120;
-///  double vHHm140, sErHHm140, jesPHHm140, jesNHHm140, buPHHm140, buNHHm140, trPHHm140, trNHHm140, puHHm140;
-///  double vHHm150, sErHHm150, jesPHHm150, jesNHHm150, buPHHm150, buNHHm150, trPHHm150, trNHHm150, puHHm150;
-///  double vHHm155, sErHHm155, jesPHHm155, jesNHHm155, buPHHm155, buNHHm155, trPHHm155, trNHHm155, puHHm155;
-///  double vHHm160, sErHHm160, jesPHHm160, jesNHHm160, buPHHm160, buNHHm160, trPHHm160, trNHHm160, puHHm160;
-///  double vWHm80, sErWHm80, jesPWHm80, jesNWHm80, buPWHm80, buNWHm80, trPWHm80, trNWHm80, puWHm80; //yield, stat error, jer uncert. 
-///  double vWHm100, sErWHm100, jesPWHm100, jesNWHm100, buPWHm100, buNWHm100, trPWHm100, trNWHm100, puWHm100;
-///  double vWHm120, sErWHm120, jesPWHm120, jesNWHm120, buPWHm120, buNWHm120, trPWHm120, trNWHm120, puWHm120;
-///  double vWHm140, sErWHm140, jesPWHm140, jesNWHm140, buPWHm140, buNWHm140, trPWHm140, trNWHm140, puWHm140;
-///  double vWHm150, sErWHm150, jesPWHm150, jesNWHm150, buPWHm150, buNWHm150, trPWHm150, trNWHm150, puWHm150;
-///  double vWHm155, sErWHm155, jesPWHm155, jesNWHm155, buPWHm155, buNWHm155, trPWHm155, trNWHm155, puWHm155;
-///  double vWHm160, sErWHm160, jesPWHm160, jesNWHm160, buPWHm160, buNWHm160, trPWHm160, trNWHm160, puWHm160;
-///  double tauF, sErtauF, sytauF; //tau fakes, stat err, sys err
-///  double tt, sErtt, jesPtt, jesNtt, buPtt, buNtt, trPtt, trNtt, putt; //tt tau-dilepton, stat err, sys err
-///  double ttll, sErttll, jesPttll, jesNttll, buPttll, buNttll, trPttll, trNttll, puttll; //tt->ll
-///  double Zll, sErZll, jesPZll, jesNZll, buPZll, buNZll, trPZll, trNZll, puZll; //Z->ll
-///  double Ztau, sErZtau, jesPZtau, jesNZtau, buPZtau, buNZtau, trPZtau, trNZtau, puZtau; //Z->tau tau
-///  double sTop, sErsTop, jesPsTop, jesNsTop, buPsTop, buNsTop, trPsTop, trNsTop, pusTop; //singleTop
-///  double VV, sErVV, jesPVV, jesNVV, buPVV, buNVV, trPVV, trNVV, puVV; //diboson
-///  double SM, sErSM, sySM; //SM Total
-///  double ndata;
-///
-///
-///  const char *iput_filename = inputfile.c_str();
-///  ifstream infile;
-///  infile.open(iput_filename);
-///  while(!infile.eof()){
-///    infile>>vHHm80>>sErHHm80>>jesPHHm80>>jesNHHm80>>buPHHm80>>buNHHm80>>trPHHm80>>trNHHm80>>puHHm80;
-///    infile>>vHHm100>>sErHHm100>>jesPHHm100>>jesNHHm100>>buPHHm100>>buNHHm100>>trPHHm100>>trNHHm100>>puHHm100;
-///    infile>>vHHm120>>sErHHm120>>jesPHHm120>>jesNHHm120>>buPHHm120>>buNHHm120>>trPHHm120>>trNHHm120>>puHHm120;
-///    infile>>vHHm140>>sErHHm140>>jesPHHm140>>jesNHHm140>>buPHHm140>>buNHHm140>>trPHHm140>>trNHHm140>>puHHm140;
-///    infile>>vHHm150>>sErHHm150>>jesPHHm150>>jesNHHm150>>buPHHm150>>buNHHm150>>trPHHm150>>trNHHm150>>puHHm150;
-///    infile>>vHHm155>>sErHHm155>>jesPHHm155>>jesNHHm155>>buPHHm155>>buNHHm155>>trPHHm155>>trNHHm155>>puHHm155;
-///    infile>>vHHm160>>sErHHm160>>jesPHHm160>>jesNHHm160>>buPHHm160>>buNHHm160>>trPHHm160>>trNHHm160>>puHHm160;
-///    infile>>vWHm80>>sErWHm80>>jesPWHm80>>jesNWHm80>>buPWHm80>>buNWHm80>>trPWHm80>>trNWHm80>>puWHm80;
-///    infile>>vWHm100>>sErWHm100>>jesPWHm100>>jesNWHm100>>buPWHm100>>buNWHm100>>trPWHm100>>trNWHm100>>puWHm100;
-///    infile>>vWHm120>>sErWHm120>>jesPWHm120>>jesNWHm120>>buPWHm120>>buNWHm120>>trPWHm120>>trNWHm120>>puWHm120;
-///    infile>>vWHm140>>sErWHm140>>jesPWHm140>>jesNWHm140>>buPWHm140>>buNWHm140>>trPWHm140>>trNWHm140>>puWHm140;
-///    infile>>vWHm150>>sErWHm150>>jesPWHm150>>jesNWHm150>>buPWHm150>>buNWHm150>>trPWHm150>>trNWHm150>>puWHm150;
-///    infile>>vWHm155>>sErWHm155>>jesPWHm155>>jesNWHm155>>buPWHm155>>buNWHm155>>trPWHm155>>trNWHm155>>puWHm155;
-///    infile>>vWHm160>>sErWHm160>>jesPWHm160>>jesNWHm160>>buPWHm160>>buNWHm160>>trPWHm160>>trNWHm160>>puWHm160;
-///    infile>>tauF>>sErtauF>>sytauF;
-///    infile>>tt>>sErtt>>jesPtt>>jesNtt>>buPtt>>buNtt>>trPtt>>trNtt>>putt;
-///    infile>>ttll>>sErttll>>jesPttll>>jesNttll>>buPttll>>buNttll>>trPttll>>trNttll>>puttll;
-///    infile>>Zll>>sErZll>>jesPZll>>jesNZll>>buPZll>>buNZll>>trPZll>>trNZll>>puZll;
-///    infile>>Ztau>>sErZtau>>jesPZtau>>jesNZtau>>buPZtau>>buNZtau>>trPZtau>>trNZtau>>puZtau;
-///    infile>>sTop>>sErsTop>>jesPsTop>>jesNsTop>>buPsTop>>buNsTop>>trPsTop>>trNsTop>>pusTop;
-///    infile>>VV>>sErVV>>jesPVV>>jesNVV>>buPVV>>buNVV>>trPVV>>trNVV>>puVV;
-///    //infile>>SM>>sErSM>>sySM;
-///    infile>>ndata;
-///    break;
-///  }
-///
-///  infile.close();
-///  
-///  
-///  //make for all mass points
-///  int HMass[7] = {80, 100, 120, 140, 150, 155, 160};
-///  for(int im = 0; im < 7; im++){
-///    double vHH, sErHH, jesPHH, jesNHH, buHH, trHH, puHH;
-///    if(im == 0){vHH = vHHm80; sErHH = sErHHm80; jesPHH = jesPHHm80; jesNHH = jesNHHm80; buHH = buPHHm80; trHH = trPHHm80; puHH = puHHm80;}
-///    else if(im == 1){vHH = vHHm100; sErHH = sErHHm100; jesPHH = jesPHHm100; jesNHH = jesNHHm100; buHH = buPHHm100; trHH = trPHHm100; puHH = puHHm100;}
-///    else if(im == 2){vHH = vHHm120; sErHH = sErHHm120; jesPHH = jesPHHm120; jesNHH = jesNHHm120; buHH = buPHHm120; trHH = trPHHm120; puHH = puHHm120;}
-///    else if(im == 3){vHH = vHHm140; sErHH = sErHHm140; jesPHH = jesPHHm140; jesNHH = jesNHHm140; buHH = buPHHm140; trHH = trPHHm140; puHH = puHHm140;}
-///    else if(im == 4){vHH = vHHm150; sErHH = sErHHm150; jesPHH = jesPHHm150; jesNHH = jesNHHm150; buHH = buPHHm150; trHH = trPHHm150; puHH = puHHm150;}
-///    else if(im == 5){vHH = vHHm155; sErHH = sErHHm155; jesPHH = jesPHHm155; jesNHH = jesNHHm155; buHH = buPHHm155; trHH = trPHHm155; puHH = puHHm155;}
-///    else if(im == 6){vHH = vHHm160; sErHH = sErHHm160; jesPHH = jesPHHm160; jesNHH = jesNHHm160; buHH = buPHHm160; trHH = trPHHm160; puHH = puHHm160;}
-///
-///    double vWH, sErWH, jesPWH, jesNWH, buWH, trWH, puWH;
-///    if(im == 0){vWH = vWHm80; sErWH = sErWHm80; jesPWH = jesPWHm80; jesNWH = jesNWHm80; buWH = buPWHm80; trWH = trPWHm80; puWH = puWHm80;}
-///    else if(im == 1){vWH = vWHm100; sErWH = sErWHm100; jesPWH = jesPWHm100; jesNWH = jesNWHm100; buWH = buPWHm100; trWH = trPWHm100; puWH = puWHm100;}
-///    else if(im == 2){vWH = vWHm120; sErWH = sErWHm120; jesPWH = jesPWHm120; jesNWH = jesNWHm120; buWH = buPWHm120; trWH = trPWHm120; puWH = puWHm120;}
-///    else if(im == 3){vWH = vWHm140; sErWH = sErWHm140; jesPWH = jesPWHm140; jesNWH = jesNWHm140; buWH = buPWHm140; trWH = trPWHm140; puWH = puWHm140;}
-///    else if(im == 4){vWH = vWHm150; sErWH = sErWHm150; jesPWH = jesPWHm150; jesNWH = jesNWHm150; buWH = buPWHm150; trWH = trPWHm150; puWH = puWHm150;}
-///    else if(im == 5){vWH = vWHm155; sErWH = sErWHm155; jesPWH = jesPWHm155; jesNWH = jesNWHm155; buWH = buPWHm155; trWH = trPWHm155; puWH = puWHm155;}
-///    else if(im == 6){vWH = vWHm160; sErWH = sErWHm160; jesPWH = jesPWHm160; jesNWH = jesNWHm160; buWH = buPWHm160; trWH = trPWHm160; puWH = puWHm160;}
-///    
-///    int iw = 0;
-///    string filename("datacard_m");
-///    if(im == 0)filename = filename+"80_";
-///    else if(im == 1)filename = filename+"100_";
-///    else if(im == 2)filename = filename+"120_";
-///    else if(im == 3)filename = filename+"140_";
-///    else if(im == 4)filename = filename+"150_";
-///    else if(im == 5)filename = filename+"155_";
-///    else if(im == 6)filename = filename+"160_";
-///    
-///    
-///    double nobs = ndata;
-///    filename = filename + tauType + ".txt";
-///    char * file = new char[filename.size() + 1];
-///    strcpy(file, filename.c_str());
-///      
-///    //cout<< fixed << showpoint <<setprecision(2);
-///    time_t secs=time(0);
-///    tm *t=localtime(&secs);
-///    
-///    ofstream outfile;
-///    outfile.open(file);
-///    outfile<< fixed << showpoint <<setprecision(3);
-///    outfile<<"Data: "<<t->tm_mday<<"/"<<t->tm_mon+1<<"/"<<t->tm_year+1900<<endl;
-///    //outfile<<"Description: H+, mu-tau, mass "<<HMass[im]<<" GeV, lumi=2140 pb-1"<<endl;
-///    outfile<<"Description: H+, e-tau, mass "<<HMass[im]<<" GeV, lumi=1900 pb-1"<<endl;
-///    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-///    outfile<<"imax   1  number of channels"<<endl;
-///    outfile<<"jmax   *  number of backgrounds"<<endl;
-///    outfile<<"kmax  34  number of nuisance parameters"<<endl;
-///    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-///    outfile<<"Observation    "<<nobs<<endl;
-///    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-///    outfile<<"bin       1         1          1          1           1           1           1           1         1         "<<endl;
-///    outfile<<"process   HH       WH    tt->ltau    tt~->ll     tau-fake    Z->ee,mumu   Z->tautau   singleTop  di-boson"<<endl;
-///    outfile<<"process   -1        0          1          2           3           4           5           6         7         "<<endl;
-///    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-///    outfile<<"rate      "<<vHH<<setw(10)<<vWH<<setw(10)<<tt<<setw(10)<<ttll<<setw(10)<<tauF<<setw(10)<<Zll<<setw(10)<<Ztau<<setw(10)<<sTop<<setw(10)<<VV<<"       Projected event rates"<<endl; 
-///    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-///    outfile<<endl;
-///    outfile<<" "<<1<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tau+MET trg"<<endl;
-///    outfile<<" "<<2<<"  lnN"<<setw(7)<<1+trHH/vHH<<setw(10)<<1+trWH/vWH<<setw(10)<<1+trPtt/tt<<setw(10)<<1+trPttll/ttll<<setw(10)<<1.00<<setw(10)<<1+trPZll/Zll<<setw(10)<<1+trPZtau/Ztau<<setw(10)<<1+trPsTop/sTop<<setw(10)<<1+trPVV/VV<<"    e+jet+MHT trig"<<endl;
-///    outfile<<" "<<3<<"  lnN"<<setw(7)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<"    tau ID"<<endl;
-///    outfile<<" "<<4<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    jet-> tau miss ID"<<endl;
-///    outfile<<" "<<5<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sytauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tau-fakes syst"<<endl;
-///    outfile<<" "<<6<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErtauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tau-fakes stat"<<endl;
-///    outfile<<" "<<7<<"  lnN"<<setw(7)<<1-jesNHH/vHH<<"/"<<1+jesPHH/vHH<<setw(7)<<1-jesNWH/vWH<<"/"<<1+jesPWH/vWH<<setw(7)<<1-jesNtt/tt<<"/"<<1+jesPtt/tt<<setw(7)<<1-jesNttll/ttll<<"/"<<1+jesPttll/ttll<<setw(7)<<1.00<<setw(10)<<1-jesNZll/Zll<<"/"<<1+jesPZll/Zll<<setw(7)<<1-jesNZtau/Ztau<<"/"<<1+jesPZtau/Ztau<<setw(7)<<1-jesNsTop/sTop<<"/"<<1+jesPsTop/sTop<<setw(7)<<1-jesNVV/VV<<"/"<<1+jesPVV/VV<<"    JES/JER/MET scale"<<endl;
-///    outfile<<" "<<8<<"  lnN"<<setw(7)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.00<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<"    Lepton Efficiency"<<endl;
-///    outfile<<" "<<9<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Lepton Veto"<<endl;
-///    outfile<<10<<"  lnN"<<setw(7)<<1+buHH/vHH<<setw(10)<<1+buWH/vWH<<setw(10)<<1+buPtt/tt<<setw(10)<<1+buPttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPsTop/sTop<<setw(10)<<1.00<<"    b-tagging"<<endl;
-///    outfile<<11<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPZll/Zll<<setw(10)<<1+buPZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1+buPVV/VV<<"    b-mis-tagging"<<endl;
-///    outfile<<12<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: QCD stat."<<endl;
-///    outfile<<13<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: QCD syst."<<endl;
-///    outfile<<14<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: Non-QCD-stat"<<endl;
-///    outfile<<15<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: Non-QCD W->tau->mu"<<endl;
-///    outfile<<16<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: Muon selection"<<endl;
-///    outfile<<17<<"  lnN"<<setw(7)<<1+sErHH/vHH<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    HH     MC stat"<<endl;
-///    outfile<<18<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1+sErWH/vWH<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    WH     MC stat"<<endl;
-///    outfile<<19<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    embedding MC stat"<<endl;
-///    outfile<<20<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErtt/tt<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tt->ltau MC stat "<<endl;
-///    outfile<<21<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tt->ll  MC stat"<<endl;
-///    outfile<<22<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tt->jjtau MC stat"<<endl;
-///    outfile<<23<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZll/Zll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<"    Z->ee,mumu MC stat"<<endl;
-///    outfile<<24<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1.00<<"    Z->tautau  MC stat"<<endl;
-///    outfile<<25<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    W+jets MC stat"<<endl;
-///    outfile<<26<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErsTop/sTop<<setw(10)<<1.00<<"    single top MC stat"<<endl;
-///    outfile<<27<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErVV/VV<<"    diboson MC stat"<<endl;
-///    outfile<<28<<"  lnN"<<setw(7)<<0.90<<"/"<<1.07<<setw(7)<<0.90<<"/"<<1.07<<setw(10)<<0.90<<"/"<<1.07<<setw(7)<<0.90<<"/"<<1.07<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    ttbar cross-section"<<endl;
-///    outfile<<29<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    W+jets cross section"<<endl;
-///    outfile<<30<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.08<<setw(10)<<1.00<<setw(10)<<"    singleTop cross-section"<<endl; 
-///    outfile<<31<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<setw(10)<<1.04<<setw(10)<<1.00<<setw(10)<<1.00<<"    Z->ll cross section"<<endl;
-///    outfile<<32<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<"    diboson cross-section"<<endl;
-///    outfile<<33<<"  lnN"<<setw(7)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.00<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<"    Luminosity Error"<<endl;
-///    outfile<<34<<"  lnN"<<setw(7)<<1+puHH/vHH<<setw(10)<<1+puWH/vWH<<setw(10)<<1+putt/tt<<setw(10)<<1+puttll/ttll<<setw(10)<<1.00<<setw(10)<<1+puZll/Zll<<setw(10)<<1+puZtau/Ztau<<setw(10)<<1+pusTop/sTop<<setw(10)<<1+puVV/VV<<"    pileup"<<endl;
-///    
-///    outfile.close();
-///    
-///    //}
-///  }
-///  return 0;
-///
-///  }
-///
+  void TauDileptonTableBuilder::doDatacards(vector<double> data, vector<vector<double> > tbh, vector<vector<double> > sm, vector<double> fakes, string tauType){
+    
+    
+    
+    
+    /// light charged ///     double vHHm80, sErHHm80, jesPHHm80, jesNHHm80, buPHHm80, buNHHm80, trPHHm80, trNHHm80, puHHm80; //yield, stat error, jer uncert. 
+    /// light charged ///     double vHHm100, sErHHm100, jesPHHm100, jesNHHm100, buPHHm100, buNHHm100, trPHHm100, trNHHm100, puHHm100;
+    /// light charged ///     double vHHm120, sErHHm120, jesPHHm120, jesNHHm120, buPHHm120, buNHHm120, trPHHm120, trNHHm120, puHHm120;
+    /// light charged ///     double vHHm140, sErHHm140, jesPHHm140, jesNHHm140, buPHHm140, buNHHm140, trPHHm140, trNHHm140, puHHm140;
+    /// light charged ///     double vHHm150, sErHHm150, jesPHHm150, jesNHHm150, buPHHm150, buNHHm150, trPHHm150, trNHHm150, puHHm150;
+    /// light charged ///     double vHHm155, sErHHm155, jesPHHm155, jesNHHm155, buPHHm155, buNHHm155, trPHHm155, trNHHm155, puHHm155;
+    /// light charged ///     double vHHm160, sErHHm160, jesPHHm160, jesNHHm160, buPHHm160, buNHHm160, trPHHm160, trNHHm160, puHHm160;
+    /// light charged ///     double vWHm80, sErWHm80, jesPWHm80, jesNWHm80, buPWHm80, buNWHm80, trPWHm80, trNWHm80, puWHm80; //yield, stat error, jer uncert. 
+    /// light charged ///     double vWHm100, sErWHm100, jesPWHm100, jesNWHm100, buPWHm100, buNWHm100, trPWHm100, trNWHm100, puWHm100;
+    /// light charged ///     double vWHm120, sErWHm120, jesPWHm120, jesNWHm120, buPWHm120, buNWHm120, trPWHm120, trNWHm120, puWHm120;
+    /// light charged ///     double vWHm140, sErWHm140, jesPWHm140, jesNWHm140, buPWHm140, buNWHm140, trPWHm140, trNWHm140, puWHm140;
+    /// light charged ///     double vWHm150, sErWHm150, jesPWHm150, jesNWHm150, buPWHm150, buNWHm150, trPWHm150, trNWHm150, puWHm150;
+    /// light charged ///     double vWHm155, sErWHm155, jesPWHm155, jesNWHm155, buPWHm155, buNWHm155, trPWHm155, trNWHm155, puWHm155;
+    /// light charged ///     double vWHm160, sErWHm160, jesPWHm160, jesNWHm160, buPWHm160, buNWHm160, trPWHm160, trNWHm160, puWHm160;
+    
+    //yield, stat error, jer uncert. 
+    double vTBHm180(tbh[0][0]); double sErTBHm180(tbh[0][1]); double jesPTBHm180(sqrt(tbh[0][2]*tbh[0][2] + tbh[0][4]*tbh[0][4] + tbh[0][6]*tbh[0][6])); double jesNTBHm180(sqrt(tbh[0][3]*tbh[0][3] + tbh[0][5]*tbh[0][5] + tbh[0][7]*tbh[0][7])); double buPTBHm180(tbh[0][8]); double buNTBHm180(tbh[0][9]); double trPTBHm180(tbh[0][13]); double trNTBHm180(tbh[0][13]); double puTBHm180(0); 
+    double vTBHm190(tbh[1][0]); double sErTBHm190(tbh[1][1]); double jesPTBHm190(sqrt(tbh[1][2]*tbh[1][2] + tbh[1][4]*tbh[1][4] + tbh[1][6]*tbh[1][6])); double jesNTBHm190(sqrt(tbh[1][3]*tbh[1][3] + tbh[1][5]*tbh[1][5] + tbh[1][7]*tbh[1][7])); double buPTBHm190(tbh[1][8]); double buNTBHm190(tbh[1][9]); double trPTBHm190(tbh[1][13]); double trNTBHm190(tbh[1][13]); double puTBHm190(0);
+    double vTBHm200(tbh[2][0]); double sErTBHm200(tbh[2][1]); double jesPTBHm200(sqrt(tbh[2][2]*tbh[2][2] + tbh[2][4]*tbh[2][4] + tbh[2][6]*tbh[2][6])); double jesNTBHm200(sqrt(tbh[2][3]*tbh[2][3] + tbh[2][5]*tbh[2][5] + tbh[2][7]*tbh[2][7])); double buPTBHm200(tbh[2][8]); double buNTBHm200(tbh[2][9]); double trPTBHm200(tbh[2][13]); double trNTBHm200(tbh[2][13]); double puTBHm200(0);
+    double vTBHm220(tbh[3][0]); double sErTBHm220(tbh[3][1]); double jesPTBHm220(sqrt(tbh[3][2]*tbh[3][2] + tbh[3][4]*tbh[3][4] + tbh[3][6]*tbh[3][6])); double jesNTBHm220(sqrt(tbh[3][3]*tbh[3][3] + tbh[3][5]*tbh[3][5] + tbh[3][7]*tbh[3][7])); double buPTBHm220(tbh[3][8]); double buNTBHm220(tbh[3][9]); double trPTBHm220(tbh[3][13]); double trNTBHm220(tbh[3][13]); double puTBHm220(0);
+    double vTBHm250(tbh[4][0]); double sErTBHm250(tbh[4][1]); double jesPTBHm250(sqrt(tbh[4][2]*tbh[4][2] + tbh[4][4]*tbh[4][4] + tbh[4][6]*tbh[4][6])); double jesNTBHm250(sqrt(tbh[4][3]*tbh[4][3] + tbh[4][5]*tbh[4][5] + tbh[4][7]*tbh[4][7])); double buPTBHm250(tbh[4][8]); double buNTBHm250(tbh[4][9]); double trPTBHm250(tbh[4][13]); double trNTBHm250(tbh[4][13]); double puTBHm250(0);
+    double vTBHm300(tbh[5][0]); double sErTBHm300(tbh[5][1]); double jesPTBHm300(sqrt(tbh[5][2]*tbh[5][2] + tbh[5][4]*tbh[5][4] + tbh[5][6]*tbh[5][6])); double jesNTBHm300(sqrt(tbh[5][3]*tbh[5][3] + tbh[5][5]*tbh[5][5] + tbh[5][7]*tbh[5][7])); double buPTBHm300(tbh[5][8]); double buNTBHm300(tbh[5][9]); double trPTBHm300(tbh[5][13]); double trNTBHm300(tbh[5][13]); double puTBHm300(0);
+    
+    //tau fakes, stat err, sys err
+    double tauF    (fakes[0]);
+    double sErtauF (fakes[1]);
+    double sytauF  (fakes[2]); 
+
+    //tt tau-dilepton, stat err, sys err    
+    double tt     (sm[1][0]);							   
+    double sErtt  (sm[1][1]); 							   
+    double jesPtt (sqrt(sm[1][2]*sm[1][2] + sm[1][4]*sm[1][4] +  sm[1][6]*sm[1][6]));   
+    double jesNtt (sqrt(sm[1][3]*sm[1][3] + sm[1][5]*sm[1][5] + sm[1][7]*sm[1][7]));   
+    double buPtt  (sm[1][8]);							   
+    double buNtt  (sm[1][9]);							   
+    double trPtt  (sm[1][13]);							   
+    double trNtt  (sm[1][13]);							   
+    double putt   (0);                                                                 
+
+    double ttll     (sm[3][0]);							   
+    double sErttll  (sm[3][1]); 							
+    double jesPttll (sqrt(sm[3][2]*sm[3][2] + sm[3][4]*sm[3][4] + sm[3][6]*sm[3][6]));   
+    double jesNttll (sqrt(sm[3][3]*sm[3][3] + sm[3][5]*sm[3][5] + sm[3][7]*sm[3][7]));   
+    double buPttll  (sm[3][8]);							   
+    double buNttll  (sm[3][9]);							   
+    double trPttll  (sm[3][13]);						   
+    double trNttll  (sm[3][13]);						   
+    double puttll   (0);                                                           
+
+    double Zll     (sm[8][0]);							   
+    double sErZll  (sm[8][1]); 							   
+    double jesPZll (sqrt(sm[8][2]*sm[8][2] + sm[8][4]*sm[8][4] +  sm[8][6]*sm[8][6]))   ;
+    double jesNZll (sqrt(sm[8][3]*sm[8][3] + sm[8][5]*sm[8][5] + sm[8][7]*sm[8][7]))   ;
+    double buPZll  (sm[8][8]);							   
+    double buNZll  (sm[8][9]);							   
+    double trPZll  (sm[8][13]);							   
+    double trNZll  (sm[8][13]);							   
+    double puZll   (0);                                                            
+
+    double Ztau     (sm[9][0]);							   
+    double sErZtau  (sm[9][1]) 							   ;
+    double jesPZtau (sqrt(sm[9][2]*sm[9][2] + sm[9][4]*sm[9][4] +  sm[9][6]*sm[9][6]))   ;
+    double jesNZtau (sqrt(sm[9][3]*sm[9][3] + sm[9][5]*sm[9][5] + sm[9][7]*sm[9][7]))   ;
+    double buPZtau  (sm[9][8])							   ;
+    double buNZtau  (sm[9][9])							   ;
+    double trPZtau  (sm[9][13])							   ;
+    double trNZtau  (sm[9][13])							   ;
+    double puZtau   (0)                                                                 ;
+
+    double sTop     (sm[10][0])							   ;
+    double sErsTop  (sm[10][1]) 							   ;
+    double jesPsTop (sqrt(sm[10][2]*sm[10][2] + sm[10][4]*sm[10][4] +  sm[10][6]*sm[10][6]))   ;
+    double jesNsTop (sqrt(sm[10][3]*sm[10][3] + sm[10][5]*sm[10][5] + sm[10][7]*sm[10][7]))   ;
+    double buPsTop  (sm[10][8])							   ;
+    double buNsTop  (sm[10][9])							   ;
+    double trPsTop  (sm[10][13])							   ;
+    double trNsTop  (sm[10][13])							   ;
+    double pusTop   (0)                                                                 ;
+
+    cout << "SIZE: " << sm.size() << endl;
+    double VV     (sm[12][0])							   ;
+    double sErVV  (sm[12][1]) 							   ;
+    double jesPVV (sqrt(sm[12][2]*sm[12][2] + sm[12][4]*sm[12][4] +  sm[12][6]*sm[12][6]))   ;
+    double jesNVV (sqrt(sm[12][3]*sm[12][3] + sm[12][5]*sm[12][5] + sm[12][7]*sm[12][7]))   ;
+    double buPVV  (sm[12][8])							   ;
+    double buNVV  (sm[12][9])							   ;
+    double trPVV  (sm[12][13])							   ;
+    double trNVV  (sm[12][13])							   ;
+    double puVV   (0)                                                                 ;
+
+    double SM, sErSM, sySM; //SM Total
+
+    double ndata(data[0]);
+
+  
+  //make for all mass points
+  int HMass[6] = {180,
+		  190,
+		  200,
+		  220,
+		  250,
+		  300};
+  for(int im = 0; im < 6; im++){
+    double vTBH, sErTBH, jesPTBH, jesNTBH, buTBH, trTBH, puTBH;
+    if(im == 0)     {vTBH = vTBHm180; sErTBH = sErTBHm180; jesPTBH = jesPTBHm180; jesNTBH = jesNTBHm180; buTBH = buPTBHm180; trTBH = trPTBHm180; puTBH = puTBHm180;}
+    else if(im == 1){vTBH = vTBHm190; sErTBH = sErTBHm190; jesPTBH = jesPTBHm190; jesNTBH = jesNTBHm190; buTBH = buPTBHm190; trTBH = trPTBHm190; puTBH = puTBHm190;}
+    else if(im == 2){vTBH = vTBHm200; sErTBH = sErTBHm200; jesPTBH = jesPTBHm200; jesNTBH = jesNTBHm200; buTBH = buPTBHm200; trTBH = trPTBHm200; puTBH = puTBHm200;}
+    else if(im == 3){vTBH = vTBHm220; sErTBH = sErTBHm220; jesPTBH = jesPTBHm220; jesNTBH = jesNTBHm220; buTBH = buPTBHm220; trTBH = trPTBHm220; puTBH = puTBHm220;}
+    else if(im == 4){vTBH = vTBHm250; sErTBH = sErTBHm250; jesPTBH = jesPTBHm250; jesNTBH = jesNTBHm250; buTBH = buPTBHm250; trTBH = trPTBHm250; puTBH = puTBHm250;}
+    else if(im == 5){vTBH = vTBHm300; sErTBH = sErTBHm300; jesPTBH = jesPTBHm300; jesNTBH = jesNTBHm300; buTBH = buPTBHm300; trTBH = trPTBHm300; puTBH = puTBHm300;}
+    
+    int iw = 0;
+    string filename("datacard_m");
+    if(im == 0)filename = filename+"180_";
+    else if(im == 1)filename = filename+"190_";
+    else if(im == 2)filename = filename+"200_";
+    else if(im == 3)filename = filename+"220_";
+    else if(im == 4)filename = filename+"250_";
+    else if(im == 5)filename = filename+"300_";
+
+//  int HMass[7] = {80, 100, 120, 140, 150, 155, 160};
+//  for(int im = 0; im < 7; im++){
+//    double vHH, sErHH, jesPHH, jesNHH, buHH, trHH, puHH;
+//    if(im == 0){vHH = vHHm80; sErHH = sErHHm80; jesPHH = jesPHHm80; jesNHH = jesNHHm80; buHH = buPHHm80; trHH = trPHHm80; puHH = puHHm80;}
+//    else if(im == 1){vHH = vHHm100; sErHH = sErHHm100; jesPHH = jesPHHm100; jesNHH = jesNHHm100; buHH = buPHHm100; trHH = trPHHm100; puHH = puHHm100;}
+//    else if(im == 2){vHH = vHHm120; sErHH = sErHHm120; jesPHH = jesPHHm120; jesNHH = jesNHHm120; buHH = buPHHm120; trHH = trPHHm120; puHH = puHHm120;}
+//    else if(im == 3){vHH = vHHm140; sErHH = sErHHm140; jesPHH = jesPHHm140; jesNHH = jesNHHm140; buHH = buPHHm140; trHH = trPHHm140; puHH = puHHm140;}
+//    else if(im == 4){vHH = vHHm150; sErHH = sErHHm150; jesPHH = jesPHHm150; jesNHH = jesNHHm150; buHH = buPHHm150; trHH = trPHHm150; puHH = puHHm150;}
+//    else if(im == 5){vHH = vHHm155; sErHH = sErHHm155; jesPHH = jesPHHm155; jesNHH = jesNHHm155; buHH = buPHHm155; trHH = trPHHm155; puHH = puHHm155;}
+//    else if(im == 6){vHH = vHHm160; sErHH = sErHHm160; jesPHH = jesPHHm160; jesNHH = jesNHHm160; buHH = buPHHm160; trHH = trPHHm160; puHH = puHHm160;}
+//
+//    double vWH, sErWH, jesPWH, jesNWH, buWH, trWH, puWH;
+//    if(im == 0){vWH = vWHm80; sErWH = sErWHm80; jesPWH = jesPWHm80; jesNWH = jesNWHm80; buWH = buPWHm80; trWH = trPWHm80; puWH = puWHm80;}
+//    else if(im == 1){vWH = vWHm100; sErWH = sErWHm100; jesPWH = jesPWHm100; jesNWH = jesNWHm100; buWH = buPWHm100; trWH = trPWHm100; puWH = puWHm100;}
+//    else if(im == 2){vWH = vWHm120; sErWH = sErWHm120; jesPWH = jesPWHm120; jesNWH = jesNWHm120; buWH = buPWHm120; trWH = trPWHm120; puWH = puWHm120;}
+//    else if(im == 3){vWH = vWHm140; sErWH = sErWHm140; jesPWH = jesPWHm140; jesNWH = jesNWHm140; buWH = buPWHm140; trWH = trPWHm140; puWH = puWHm140;}
+//    else if(im == 4){vWH = vWHm150; sErWH = sErWHm150; jesPWH = jesPWHm150; jesNWH = jesNWHm150; buWH = buPWHm150; trWH = trPWHm150; puWH = puWHm150;}
+//    else if(im == 5){vWH = vWHm155; sErWH = sErWHm155; jesPWH = jesPWHm155; jesNWH = jesNWHm155; buWH = buPWHm155; trWH = trPWHm155; puWH = puWHm155;}
+//    else if(im == 6){vWH = vWHm160; sErWH = sErWHm160; jesPWH = jesPWHm160; jesNWH = jesNWHm160; buWH = buPWHm160; trWH = trPWHm160; puWH = puWHm160;}
+//    
+//    int iw = 0;
+//    string filename("datacard_m");
+//    if(im == 0)filename = filename+"80_";
+//    else if(im == 1)filename = filename+"100_";
+//    else if(im == 2)filename = filename+"120_";
+//    else if(im == 3)filename = filename+"140_";
+//    else if(im == 4)filename = filename+"150_";
+//    else if(im == 5)filename = filename+"155_";
+//    else if(im == 6)filename = filename+"160_";
+    
+    
+    double nobs = ndata;
+    filename = "datacards/"+filename + tauType + ".txt";
+    char * file = new char[filename.size() + 1];
+    strcpy(file, filename.c_str());
+      
+    //cout<< fixed << showpoint <<setprecision(2);
+    time_t secs=time(0);
+    tm *t=localtime(&secs);
+    
+    ofstream outfile;
+    outfile.open(file);
+    outfile<< fixed << showpoint <<setprecision(3);
+    outfile<<"Data: "<<t->tm_mday<<"/"<<t->tm_mon+1<<"/"<<t->tm_year+1900<<endl;
+    //outfile<<"Description: H+, mu-tau, mass "<<HMass[im]<<" GeV, lumi=2140 pb-1"<<endl;
+    outfile<<"Description: H+, e-tau, mass "<<HMass[im]<<" GeV, lumi=1900 pb-1"<<endl;
+    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+    outfile<<"imax   1  number of channels"<<endl;
+    outfile<<"jmax   *  number of backgrounds"<<endl;
+    outfile<<"kmax  34  number of nuisance parameters"<<endl;
+    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+    outfile<<"Observation    "<<nobs<<endl;
+    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+    outfile<<"bin              1          1          1           1           1           1           1         1         "<<endl;
+    outfile<<"process         TBH    tt_ltau    tt_ll     tau_fake    Z_eemumu   Z_tautau   singleTop  di_boson"<<endl;
+    outfile<<"process          0          1          2           3           4           5           6         7         "<<endl;
+    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+    outfile<<"rate      "<<vTBH<<setw(10)<<tt<<setw(10)<<ttll<<setw(10)<<tauF<<setw(10)<<Zll<<setw(10)<<Ztau<<setw(10)<<sTop<<setw(10)<<VV<<endl;//"       Projected event rates"<<endl; 
+    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+    outfile<<endl;
+    outfile<<" "<<1<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tau+MET trg"<<endl;
+    outfile<<" "<<2<<"  lnN"<<setw(7)<<1+trTBH/vTBH<<setw(10)<<1+trPtt/tt<<setw(10)<<1+trPttll/ttll<<setw(10)<<1.00<<setw(10)<<1+trPZll/Zll<<setw(10)<<1+trPZtau/Ztau<<setw(10)<<1+trPsTop/sTop<<setw(10)<<1+trPVV/VV<<endl;//"    e+jet+MHT trig"<<endl;
+    outfile<<" "<<3<<"  lnN"<<setw(7)<<1.06<<setw(10)<<1.06<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<endl;//"    tau ID"<<endl;
+    outfile<<" "<<4<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    jet-> tau miss ID"<<endl;
+    outfile<<" "<<5<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sytauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tau-fakes syst"<<endl;
+    outfile<<" "<<6<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErtauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tau-fakes stat"<<endl;
+    outfile<<" "<<7<<"  lnN"<<setw(7)<<1-jesNTBH/vTBH<<"/"<<1+jesPTBH/vTBH<<setw(7)<<1-jesNtt/tt<<"/"<<1+jesPtt/tt<<setw(7)<<1-jesNttll/ttll<<"/"<<1+jesPttll/ttll<<setw(7)<<1.00<<setw(10)<<1-jesNZll/Zll<<"/"<<1+jesPZll/Zll<<setw(7)<<1-jesNZtau/Ztau<<"/"<<1+jesPZtau/Ztau<<setw(7)<<1-jesNsTop/sTop<<"/"<<1+jesPsTop/sTop<<setw(7)<<1-jesNVV/VV<<"/"<<1+jesPVV/VV<<endl;//"    JES/JER/MET scale"<<endl;
+    outfile<<" "<<8<<"  lnN"<<setw(7)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.00<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<endl;//"    Lepton Efficiency"<<endl;
+    outfile<<" "<<9<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Lepton Veto"<<endl;
+    outfile<<10<<"  lnN"<<setw(7)<<1+buTBH/vTBH<<setw(10)<<1+buPtt/tt<<setw(10)<<1+buPttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPsTop/sTop<<setw(10)<<1.00<<endl;//"    b-tagging"<<endl;
+    outfile<<11<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPZll/Zll<<setw(10)<<1+buPZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1+buPVV/VV<<endl;//"    b-mis-tagging"<<endl;
+    outfile<<12<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Hadr: QCD stat."<<endl;
+    outfile<<13<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Hadr: QCD syst."<<endl;
+    outfile<<14<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Hadr: Non-QCD-stat"<<endl;
+    outfile<<15<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Hadr: Non-QCD W->tau->mu"<<endl;
+    outfile<<16<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Hadr: Muon selection"<<endl;
+    outfile<<17<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    HH     MC stat"<<endl;
+    outfile<<18<<"  lnN"<<setw(7)<<1+sErTBH/vTBH<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    TBH     MC stat"<<endl;
+    outfile<<19<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    embedding MC stat"<<endl;
+    outfile<<20<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1+sErtt/tt<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tt->ltau MC stat "<<endl;
+    outfile<<21<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tt->ll  MC stat"<<endl;
+    outfile<<22<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tt->jjtau MC stat"<<endl;
+    outfile<<23<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZll/Zll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<endl;//"    Z->ee,mumu MC stat"<<endl;
+    outfile<<24<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Z->tautau  MC stat"<<endl;
+    outfile<<25<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    W+jets MC stat"<<endl;
+    outfile<<26<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErsTop/sTop<<setw(10)<<1.00<<endl;//"    single top MC stat"<<endl;
+    outfile<<27<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErVV/VV<<endl;//"    diboson MC stat"<<endl;
+    outfile<<28<<"  lnN"<<setw(7)<<0.90<<"/"<<1.07<<setw(10)<<0.90<<"/"<<1.07<<setw(7)<<0.90<<"/"<<1.07<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    ttbar cross-section"<<endl;
+    outfile<<29<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    W+jets cross section"<<endl;
+    outfile<<30<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.08<<setw(10)<<1.00<<setw(10)<<endl;//"    singleTop cross-section"<<endl; 
+    outfile<<31<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<setw(10)<<1.04<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Z->ll cross section"<<endl;
+    outfile<<32<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<endl;//"    diboson cross-section"<<endl;
+    outfile<<33<<"  lnN"<<setw(7)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.00<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<endl;//"    Luminosity Error"<<endl;
+    outfile<<34<<"  lnN"<<setw(7)<<1+puTBH/vTBH<<setw(10)<<1+putt/tt<<setw(10)<<1+puttll/ttll<<setw(10)<<1.00<<setw(10)<<1+puZll/Zll<<setw(10)<<1+puZtau/Ztau<<setw(10)<<1+pusTop/sTop<<setw(10)<<1+puVV/VV<<endl;//"    pileup"<<endl;
+    
+    outfile.close();
+    
+    //}
+  }
+  return ;
+
+  }
+
   /*
 
   // NOTE : THIS PEACE OF CODE CAN BE USED FOR
@@ -3115,6 +3403,62 @@ root [37]
 
 
 */
+/*
+    ofstream outfile;
+    outfile.open(file);
+    outfile<< fixed << showpoint <<setprecision(3);
+    outfile<<"Data: "<<t->tm_mday<<"/"<<t->tm_mon+1<<"/"<<t->tm_year+1900<<endl;
+    //outfile<<"Description: H+, mu-tau, mass "<<HMass[im]<<" GeV, lumi=2140 pb-1"<<endl;
+    outfile<<"Description: H+, e-tau, mass "<<HMass[im]<<" GeV, lumi=1900 pb-1"<<endl;
+    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+    outfile<<"imax   1  number of channels"<<endl;
+    outfile<<"jmax   *  number of backgrounds"<<endl;
+    outfile<<"kmax  34  number of nuisance parameters"<<endl;
+    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+    outfile<<"Observation    "<<nobs<<endl;
+    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+    outfile<<"bin       1         1          1          1           1           1           1           1         1         "<<endl;
+    outfile<<"process   HH       WH    tt->ltau    tt~->ll     tau-fake    Z->ee,mumu   Z->tautau   singleTop  di-boson"<<endl;
+    outfile<<"process   -1        0          1          2           3           4           5           6         7         "<<endl;
+    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+    outfile<<"rate      "<<vHH<<setw(10)<<vWH<<setw(10)<<tt<<setw(10)<<ttll<<setw(10)<<tauF<<setw(10)<<Zll<<setw(10)<<Ztau<<setw(10)<<sTop<<setw(10)<<VV<<"       Projected event rates"<<endl; 
+    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+    outfile<<endl;
+    outfile<<" "<<1<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tau+MET trg"<<endl;
+    outfile<<" "<<2<<"  lnN"<<setw(7)<<1+trHH/vHH<<setw(10)<<1+trWH/vWH<<setw(10)<<1+trPtt/tt<<setw(10)<<1+trPttll/ttll<<setw(10)<<1.00<<setw(10)<<1+trPZll/Zll<<setw(10)<<1+trPZtau/Ztau<<setw(10)<<1+trPsTop/sTop<<setw(10)<<1+trPVV/VV<<"    e+jet+MHT trig"<<endl;
+    outfile<<" "<<3<<"  lnN"<<setw(7)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<"    tau ID"<<endl;
+    outfile<<" "<<4<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    jet-> tau miss ID"<<endl;
+    outfile<<" "<<5<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sytauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tau-fakes syst"<<endl;
+    outfile<<" "<<6<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErtauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tau-fakes stat"<<endl;
+    outfile<<" "<<7<<"  lnN"<<setw(7)<<1-jesNHH/vHH<<"/"<<1+jesPHH/vHH<<setw(7)<<1-jesNWH/vWH<<"/"<<1+jesPWH/vWH<<setw(7)<<1-jesNtt/tt<<"/"<<1+jesPtt/tt<<setw(7)<<1-jesNttll/ttll<<"/"<<1+jesPttll/ttll<<setw(7)<<1.00<<setw(10)<<1-jesNZll/Zll<<"/"<<1+jesPZll/Zll<<setw(7)<<1-jesNZtau/Ztau<<"/"<<1+jesPZtau/Ztau<<setw(7)<<1-jesNsTop/sTop<<"/"<<1+jesPsTop/sTop<<setw(7)<<1-jesNVV/VV<<"/"<<1+jesPVV/VV<<"    JES/JER/MET scale"<<endl;
+    outfile<<" "<<8<<"  lnN"<<setw(7)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.00<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<"    Lepton Efficiency"<<endl;
+    outfile<<" "<<9<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Lepton Veto"<<endl;
+    outfile<<10<<"  lnN"<<setw(7)<<1+buHH/vHH<<setw(10)<<1+buWH/vWH<<setw(10)<<1+buPtt/tt<<setw(10)<<1+buPttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPsTop/sTop<<setw(10)<<1.00<<"    b-tagging"<<endl;
+    outfile<<11<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPZll/Zll<<setw(10)<<1+buPZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1+buPVV/VV<<"    b-mis-tagging"<<endl;
+    outfile<<12<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: QCD stat."<<endl;
+    outfile<<13<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: QCD syst."<<endl;
+    outfile<<14<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: Non-QCD-stat"<<endl;
+    outfile<<15<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: Non-QCD W->tau->mu"<<endl;
+    outfile<<16<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    Hadr: Muon selection"<<endl;
+    outfile<<17<<"  lnN"<<setw(7)<<1+sErHH/vHH<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    HH     MC stat"<<endl;
+    outfile<<18<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1+sErWH/vWH<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    WH     MC stat"<<endl;
+    outfile<<19<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    embedding MC stat"<<endl;
+    outfile<<20<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErtt/tt<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tt->ltau MC stat "<<endl;
+    outfile<<21<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tt->ll  MC stat"<<endl;
+    outfile<<22<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    tt->jjtau MC stat"<<endl;
+    outfile<<23<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZll/Zll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<"    Z->ee,mumu MC stat"<<endl;
+    outfile<<24<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1.00<<"    Z->tautau  MC stat"<<endl;
+    outfile<<25<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    W+jets MC stat"<<endl;
+    outfile<<26<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErsTop/sTop<<setw(10)<<1.00<<"    single top MC stat"<<endl;
+    outfile<<27<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErVV/VV<<"    diboson MC stat"<<endl;
+    outfile<<28<<"  lnN"<<setw(7)<<0.90<<"/"<<1.07<<setw(7)<<0.90<<"/"<<1.07<<setw(10)<<0.90<<"/"<<1.07<<setw(7)<<0.90<<"/"<<1.07<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    ttbar cross-section"<<endl;
+    outfile<<29<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<"    W+jets cross section"<<endl;
+    outfile<<30<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.08<<setw(10)<<1.00<<setw(10)<<"    singleTop cross-section"<<endl; 
+    outfile<<31<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<setw(10)<<1.04<<setw(10)<<1.00<<setw(10)<<1.00<<"    Z->ll cross section"<<endl;
+    outfile<<32<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<"    diboson cross-section"<<endl;
+    outfile<<33<<"  lnN"<<setw(7)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.00<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<"    Luminosity Error"<<endl;
+    outfile<<34<<"  lnN"<<setw(7)<<1+puHH/vHH<<setw(10)<<1+puWH/vWH<<setw(10)<<1+putt/tt<<setw(10)<<1+puttll/ttll<<setw(10)<<1.00<<setw(10)<<1+puZll/Zll<<setw(10)<<1+puZtau/Ztau<<setw(10)<<1+pusTop/sTop<<setw(10)<<1+puVV/VV<<"    pileup"<<endl;
 
+*/
 
 } // namespace tableutils 

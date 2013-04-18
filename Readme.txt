@@ -23,6 +23,13 @@ cmsenv
 cvs co -p UserCode/LIP/TopTaus/TAGS_2012.txt | sh
 scram b -j8
 
+# Production version for Higgs Combination Tool
+setenv SCRAM_ARCH slc5_amd64_gcc472 
+cmsrel CMSSW_6_1_1 ### must be >= 6.1.1, as older versions have bugs
+cd CMSSW_6_1_1/src 
+cmsenv
+addpkg HiggsAnalysis/CombinedLimit V03-01-08
+scramv1 b
 
 # 444
 setenv SCRAM_ARCH slc5_amd64_gcc434
@@ -77,7 +84,7 @@ Run physicsAnalysis - this corresponds to the obsolete PhysicsAnalyzer code
   qstat -u username --> this checks whether your jobs are running and if they did already finish
   sh combineResults.sh path/to/dir hadd [AB|ABC|ABCD] --> this hadds the relevant output files
   RUN physicsAnalysis test/physicsAnalysisParSets_cfg.py doPlots   ---> this produces plots
-  RUN physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables  ---> this produces tables
+  RUN physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables  ---> this produces tables and datacards (if "higgs" is turned on)
 - have fun
 
 Produce plots
@@ -91,8 +98,20 @@ Produce tables
 --------------
 physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch for higgs/non-higgs
 
+Datacards
+---------
+Install repository (CMS members only):
+svn co svn+ssh://vischia@svn.cern.ch/reps/lipcms/Physics/datacards lipcms/Physics/datacards
+chiggs datacards are in lipcms/Physics/datacards/chiggs/
+xsec datacards are in lipcms/Physics/datacards/xsec/
+See lipcms/Physics/datacards/Readme.txt for additional info
 
-CHANGELOG for major updates:
+
+CHANGELOG for major updates:	
+2013-04-18: added mjj vs mjjb study (discrimination sig/ttbarbkg)
+	    added residual mc shape subtraction from dd shape K-S test
+	    added combine installation instructions and datacard automatic maker	
+	    committed revision 702 for chiggs datacards
 2013-04-15: added chiggs BRs to TauDileptonTableBuilder, almost finished tau fakes software
 2013-04-08: configured combineResults.sh script for different data hadding schemes 
 2013-03-27: fixed jet smearing factors
@@ -136,6 +155,9 @@ FIXED TAGS:
 - V13-03-07: full working heavy charged higgs tag
 - V12-12-21 / V12-12-17: 2011 code.
 
+CHANGELOG for datacards:
+
+rev 702 (2012-04-18): first counting-only chiggs datacards for heavy charged higgs
 
 
 TODO:
