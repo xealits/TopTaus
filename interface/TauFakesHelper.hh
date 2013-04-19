@@ -6,7 +6,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: TauFakesHelper.hh,v 1.1 2013/03/21 10:55:35 vischia Exp $                                                                                                       
+      \version  $Id: TauFakesHelper.hh,v 1.2 2013/04/18 12:51:36 vischia Exp $                                                                                                       
 */
 
 
@@ -110,130 +110,5 @@ private:
 
 };
 
-class FRMCQCDTree : public ObjectSelector {
-public:
-  FRMCQCDTree(double, TString, TString);
-  ~FRMCQCDTree(){}
-
-  void processEvents();
-
-  void ComputeFakeRate(TString myKey="PF", TString histoFiles_="TauFRMC", bool passing = true, bool isAntiBTag = false);
-
-  TString inputArea_;
-  TString outputArea_;
-  int    TAUPRONGS_;
-  double DRMIN_JET_E_, DRMIN_JET_M_, DRMIN_T_E_, DRMIN_T_M_, DRMIN_T_J_, MIN_JET_PT_CUT_, MIN_TAU_PT_CUT_;
-
-  double JES_;
-  
-  double JetPt, AbsJetEta, JetWidth, __WEIGHT__;
-  int __TARGET__;
-  event::Reader *evReader;
-};
-
-
-class FRDataQCDTree : public ObjectSelector {
-public:
-  FRDataQCDTree(double, TString, TString);
-  ~FRDataQCDTree(){}
-
-  void processEvents();
-  void ComputeFakeRate(TString url,  TString myKey="PF", TString histoFiles_="TauFRData", bool passing = true, bool isAntiBTag = false);
-
-  TString inputArea_; // FIXME: mutuate from commondefinitions
-  TString outputArea_; 
-  int    TAUPRONGS_;
-  double DRMIN_JET_E_, DRMIN_JET_M_, DRMIN_T_E_, DRMIN_T_M_, DRMIN_T_J_, MIN_JET_PT_CUT_, MIN_TAU_PT_CUT_;
-
-  double JES_;
-  
-  double JetPt, AbsJetEta, JetWidth, __WEIGHT__;
-  int __TARGET__;
-  event::Reader *evReader;
-};
-
-class FRWJetsTree : public ObjectSelector {
-public: 
-  FRWJetsTree(double, TString, TString, TString);
-  ~FRWJetsTree(){}
-  
-  void processEvents();
-  void ComputeFakeRate(TString url,  TString myKey="PF", TString histoFiles_="TauFakeRate_data", bool passing = true, bool isDATA = true, bool isAntiBTag = false);
-
-  TString inputArea_; // FIXME: mutuate from commondefinitions
-  TString outputArea_;
-  TString puFileName_;
-
-  int    TAUPRONGS_;
-  double DRMIN_JET_E_, DRMIN_JET_M_, DRMIN_T_E_, DRMIN_T_M_, DRMIN_T_J_, MET_CUT_, MIN_JET_PT_CUT_, MIN_TAU_PT_CUT_;
-
-  double JES_;
-
-  double JetPt, AbsJetEta, JetWidth, __WEIGHT__;
-  int __TARGET__;
-
-  event::Reader *evReader;
-
-  reweight::LumiReWeighting LumiWeights_;
-
-};
-
-
-
-
-class MyFakesTrainer {
-public:
-  MyFakesTrainer(TString, TString, TString, TString, TString);
-  
-  TString inputArea_;
-  TString configArea_;
-  TString outputArea_;
-  TString type_;
-  TString infix_;
-
-  TFile* fPassing_;
-  TFile* fFailing_;
-  
-  TTree* tPassing_;
-  TTree* tFailing_;
-  
-  
-
-};
-
-class FakesMonitor {
-public:
-  FakesMonitor(TString, TString, TString, TString);
-  
-private:
-  void AddFakeRate(TH1*, TH1*, TH1*);
-  double GetErrorFraction(double&, double&);
-  // FIXME: condensate into one
-  void GetPlotsFRPt(TH1D* data, TH1D* mc, TString name, const char* xaxis_title="Jet p_{T} [GeV]", float ymin=0.0001, float ymax=1.0, float xmin=0., float xmax=100.0);
-  void GetPlotsFRAbsEta(TH1D* data, TH1D* mc, TString name, const char* xaxis_title="Jet |#eta|", float ymin=0.0001, float ymax=1.0, float xmin=0.0, float xmax=3.0);
-  void GetPlotsFRR(TH1D* data, TH1D* mc, TString name,  const char* xaxis_title="Jet Width", float ymin=0.0001, float ymax=1.0, float xmin=0, float xmax=0.32);
-  TString inputArea_;
-  TString calibrationFile_;
-  TString infix_;
-  TString outputArea_;
-};
-
-class FakesComputer {
-public:
-  FakesComputer(TString, TString);
-  void PrepareFiles(TString );
-  void ComputeTauFake(string type , double TauPt = 20., int option =1);
-  void TauFakeEstimate(TString, TString, PhysicsTools::MVAComputer*, TH1F*, double*, double*);
-  
-
-private:
-  void AddFakeRate(TH1*, TH1*, TH1*);
-  double GetErrorFraction(double&, double& );
-
-  TString inputArea_;
-  TString outputArea_;
-  TString infix_;
-
-};
 
 #endif

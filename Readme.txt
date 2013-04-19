@@ -100,8 +100,10 @@ physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch fo
 
 Produce fakerate
 ----------------
-doTauFakesStudy test/physicsAnalysisParSets_cfg.py --do new
-(must re-split the --do optionlist)
+for a list of all the options:
+    doTauFakesStudy test/physicsAnalysisParSets_cfg.py --help 
+for running everything:
+    doTauFakesStudy test/physicsAnalysisParSets_cfg.py --do all
 
 Datacards
 ---------

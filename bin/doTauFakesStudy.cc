@@ -5,7 +5,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: doTauFakesStudy.cc,v 1.1 2013/03/21 10:55:35 vischia Exp $                                                                                                       
+      \version  $Id: doTauFakesStudy.cc,v 1.2 2013/04/18 12:51:19 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/TauFakesHelper.hh"
@@ -32,15 +32,30 @@ doTauFakesStudy
 
 
 
-//std::vector<std::string> actions_;
-std::string actions_;
+std::vector<std::string> actions_;
+//std::string actions_;
 
 //
 void printHelp()
 {
-  std::cout<< "Options\n" 
+  std::cout<< "Usage\n" 
 	   << "--help      --> print this help and exit.\n" 
-	   << "--do        --> list of actions to be performed (they must be comma separated without space)\n\t\tChoices are: qcdTrees, wjetsTrees, trainData, trainMC, monitor, calcFakes" << std::endl;
+	   << "--do        --> list of actions to be performed (they must be comma separated without space)\n" 
+	   << "\t\t\t Options documentation:\n"
+	   << "\t\t\t\t\t all:\n"
+	   << "\t\t\t\t\t \t\t do all the following.\n"
+	   << "\t\t\t\t\t allTrees wmuTrees qctTrees:\n"
+	   << "\t\t\t\t\t \t\t produce training trees.\n"
+	   << "\t\t\t\t\t trainAll trainWMuAll trainWMuData trainWMuMC trainQCDAll trainQCDData trainQCDMC:\n"
+	   << "\t\t\t\t\t \t\t train with nearest-neighbours algorithm.\n"
+	   << "\t\t\t\t\t prepareAll prepareWMuAll prepareWMuData prepareWMuMC prepareQCDAll prepareQCDData prepareQCDMC:\n"
+	   << "\t\t\t\t\t \t\t prepare reweighted files for fakes computation.\n"
+	   << "\t\t\t\t\t computeAll computeWMuFakes computeQCDFakes:\n"
+	   << "\t\t\t\t\t \t\t compute fakes.\n"
+	   << "\t\t\t\t\t produceDDfile:\n"
+	   << "\t\t\t\t\t \t\t produce final data driven file with data rescaled events.\n"
+	   << std::endl;
+  
 }
 //
 int main(int argc, char* argv[])
@@ -61,8 +76,8 @@ int main(int argc, char* argv[])
   for(int i=1;i<argc;i++){
     string arg(argv[i]);
     if(arg.find("--help")        !=string::npos) { printHelp(); return -1;}   
-    else if(arg.find("--do")     !=string::npos && i+1<argc) { char* pch = strtok(argv[i+1],",");printf("actions to perform are : "); actions_=argv[i+1]; // Do stuff in order (see below) in order to allow for consistent updates
-      //while (pch!=NULL){printf(" %s ",pch); actions_.push_back(pch);  pch = strtok(NULL,",");}printf("\n"); i++;
+    else if(arg.find("--do")     !=string::npos && i+1<argc) { char* pch = strtok(argv[i+1],",");printf("actions to perform are : "); //actions_=argv[i+1]; // Do stuff in order (see below) in order to allow for consistent updates
+      while (pch!=NULL){printf(" %s ",pch); actions_.push_back(pch);  pch = strtok(NULL,",");}printf("\n"); i++;
     }    
     
     //check arguments // FIXME: implement --blah bih
@@ -84,94 +99,86 @@ int main(int argc, char* argv[])
   TString puFileName = TString(pSet.getParameter<string>("puFileName"));
   TString ntuplesArea = TString(pSet.getParameter<string>("ntuplesArea"));
   
-  if(actions_.find("new") !=string::npos){
-    TauFakesHelper* helper = new TauFakesHelper(
-						tauPtCut,
-						inputArea,
-						trainingTreesArea,
-						configArea,
-						trainingOutputArea,
-						outputArea,
-						puFileName,
-						ntuplesArea
-						);
-    //    helper->ProcessEvents(TauFakesHelper::WMUDATA);
-    //    helper->ProcessEvents(TauFakesHelper::WMUMC);
-    //    helper->ProcessEvents(TauFakesHelper::QCDDATA);
-    //    helper->ProcessEvents(TauFakesHelper::QCDMC);
-    
-    //   helper->Trainer(TauFakesHelper::WMUDATA);
-    //   helper->Trainer(TauFakesHelper::WMUMC);
-    //   helper->Trainer(TauFakesHelper::QCDDATA);
-    //    helper->Trainer(TauFakesHelper::QCDMC);
-    
-//    helper->Monitor(TauFakesHelper::WMUDATA);
-//    helper->Monitor(TauFakesHelper::WMUMC);
-//    helper->Monitor(TauFakesHelper::QCDDATA);
-//    helper->Monitor(TauFakesHelper::QCDMC);
-//    
-//    helper->PrepareFiles(TauFakesHelper::WMUDATA);
-//    helper->PrepareFiles(TauFakesHelper::WMUMC);
-//    helper->PrepareFiles(TauFakesHelper::QCDDATA);
-//    helper->PrepareFiles(TauFakesHelper::QCDMC);
-//    
-// //   std::cout << "WMu tau fakes:" << std::endl;
-//    helper->ComputeTauFake("WMu");
-// //   std::cout << "QCD tau fakes:" << std::endl;
-//    helper->ComputeTauFake("DiJet");
-    
-    helper->ProduceDataDrivenDistributions();
-  }
 
-
-  //  TString puFileName = TString(pSet.getParameter<string>("puFileName"));
-  if(actions_.find("qcdTrees") !=string::npos ){
-    FRDataQCDTree* qcdTreeCreator = new FRDataQCDTree( tauPtCut, inputArea, trainingTreesArea /*parSet*/ );
-    std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;    
-    qcdTreeCreator->processEvents();
-  }
-  if(actions_.find("wjetsTrees") !=string::npos ){
-    FRWJetsTree* wjetsTreeCreator = new FRWJetsTree( tauPtCut, inputArea, trainingTreesArea, puFileName /*parSet*/);
-    std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;    
-    wjetsTreeCreator->processEvents();
-  }
+  TauFakesHelper* helper = new TauFakesHelper(
+					      tauPtCut,
+					      inputArea,
+					      trainingTreesArea,
+					      configArea,
+					      trainingOutputArea,
+					      outputArea,
+					      puFileName,
+					      ntuplesArea
+					      );
   
-  if( actions_.find("trainMC") !=string::npos )
-    std::cout << "Do nothing for now" << std::endl;
-
-  if(actions_.find("trainData") !=string::npos ){
-    MyFakesTrainer* myQCDTrainer = new MyFakesTrainer(trainingTreesArea, configArea, trainingOutputArea, "QCD", "Data");
-    //    MyFakesTrainer* myWMuTrainer = new MyFakesTrainer(trainingTreesArea, configArea, trainingOutputArea, "WMu", "Data");
-
-  }
-
-  if(actions_.find("monitor") !=string::npos ){
-    FakesMonitor qcdData(trainingOutputArea+TString("/train_QCDData/"), "QCD", trainingOutputArea+TString("/Trained_QCDDataPFlow_pt20.mva"), outputArea+TString("QCD")); // QCD data
-    FakesMonitor wjetsData(trainingOutputArea+TString("/train_WMuData"), "WMu", trainingOutputArea+TString("/Trained_WMuDataPFlow_pt20.mva"), outputArea+TString("WMu")); // WJets data
-    //FakesMonitor qcdMC(trainingOutputArea, configArea+TString("/calibrationFile"), outputArea); // QCD MC
-    //FakesMonitor wjetsMC(trainingOutputArea, configArea+TString("/calibrationFile"), outputArea); // WJets MC
-  }
-  
-  if(actions_.find("calcFakes") !=string::npos ){
-    FakesComputer myComputer (trainingOutputArea, outputArea);
-
-    // Create intermediate files
-    myComputer.PrepareFiles("QCDData");
-    std::cout << "Prepared QCDdata files" << std::endl;
-    myComputer.PrepareFiles("WMuData");
-    std::cout << "Prepared WMuData" << std::endl;
-//    myComputer.PrepareFiles("QCDMC");
-//    myComputer.PrepareFiles("WMuMC");
-
-    // Compute and display tau fakes values from kNN
-    std::cout << "WMu tau fakes:" << std::endl;
-    //    myComputer.ComputeTauFake("WMu");
-    std::cout << "QCD tau fakes:" << std::endl;
-    myComputer.ComputeTauFake("DiJet");
-  }
+  for(size_t i=0; i<actions_.size(); i++){
+    // Produce training trees
+    if(actions_[i] == "wmuTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
+      helper->ProcessEvents(TauFakesHelper::WMUDATA);
+      helper->ProcessEvents(TauFakesHelper::WMUMC);
+    }
     
-  cout << "physicsAnalysis reached its natural end" << endl;
-  
+    if(actions_[i] == "qcdTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
+      helper->ProcessEvents(TauFakesHelper::QCDDATA);
+      helper->ProcessEvents(TauFakesHelper::QCDMC);
+    }
+    
+    // Train and monitor
+    if(actions_[i] == "trainWMuData" || actions_[i] == "trainWMuAll" || actions_[i] == "trainAll" || actions_[i] == "all"){
+      helper->Trainer(TauFakesHelper::WMUDATA);      
+      helper->Monitor(TauFakesHelper::WMUDATA);
+    }
+    
+    if(actions_[i] == "trainWmuMC" || actions_[i] == "trainWmuAll" || actions_[i] == "trainAll" || actions_[i] == "all"){
+      helper->Trainer(TauFakesHelper::WMUMC);
+      helper->Monitor(TauFakesHelper::WMUMC);
+    }
+    
+    if(actions_[i] == "trainQCDData" || actions_[i] == "trainQCDAll" || actions_[i] == "trainAll" || actions_[i] == "all"){
+      helper->Trainer(TauFakesHelper::QCDDATA);
+      helper->Monitor(TauFakesHelper::QCDDATA);
+    }
+
+    if(actions_[i] == "trainQCDMC" || actions_[i] == "trainQCDAll" || actions_[i] == "trainAll" || actions_[i] == "all"){
+      helper->Trainer(TauFakesHelper::QCDMC);
+      helper->Monitor(TauFakesHelper::QCDMC);
+    }
+    
+    // Prepare reweighted files for fake computation
+    if(actions_[i] == "prepareWMuData" || actions_[i] == "prepareWMuAll" || actions_[i] == "prepareAll" || actions_[i] == "all"){
+      helper->PrepareFiles(TauFakesHelper::WMUDATA);
+    }
+    
+    if(actions_[i] == "prepareWmuMC" || actions_[i] == "prepareWmuAll" || actions_[i] == "prepareAll" || actions_[i] == "all"){
+      helper->PrepareFiles(TauFakesHelper::WMUMC);
+    }
+
+    if(actions_[i] == "prepareQCDData" || actions_[i] == "prepareQCDAll" || actions_[i] == "prepareAll" || actions_[i] == "all"){
+      helper->PrepareFiles(TauFakesHelper::QCDDATA);
+    }
+    
+    if(actions_[i] == "prepareQCDMC" || actions_[i] == "prepareQCDAll" || actions_[i] == "prepareAll" || actions_[i] == "all"){
+      helper->PrepareFiles(TauFakesHelper::QCDMC);
+    }
+
+    // Compute fakes  
+    if(actions_[i] == "computeWMuFakes" || actions_[i] == "computeAll" || actions_[i] == "all"){
+      helper->ComputeTauFake("WMu");
+    }
+    
+    if(actions_[i] == "computeQCDFakes" || actions_[i] == "computeAll" || actions_[i] == "all"){
+      helper->ComputeTauFake("DiJet");
+    }
+    
+    // Produce final data driven file with data rescaled events
+    if(actions_[i] == "produceDDfile" || actions_[i] == "all"){
+      helper->ProduceDataDrivenDistributions();
+    }
+    
+    
+  }
+    cout << "physicsAnalysis reached its natural end" << endl;
+    
   return 0;
   
 }
