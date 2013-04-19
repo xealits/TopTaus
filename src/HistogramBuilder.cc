@@ -322,8 +322,11 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   h = new TH1D("mjj",              "mjj;M(j,j); Entries",400,0.,1600.);                   addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("mjjb",              "mjjb;M(j,j,b); Entries",400,0.,1600.);               addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h2 = new TH2D("mjjb_mjj","mjjb_mjj; M(j,j,b); M(j, j);",400,0.,1600., 400, 0., 1600. ); addHistoToMonitors(h2,h2->GetName(), stepsMons, keys);
-
-
+  
+  h = new TH1D("sumpt_taub",              "sumpt_taub;p_{T}^{\tau} + p_{T}^{b} [GeV/c]; Entries",600,0,1500);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("sumpt_jj",                "sumpt_jj;p_{T}^{jet1} + p_{T}^{jet2} [GeV/c]; Entries",600,0,1500);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_taub",              "m_taub;M(#tau,b); Entries",400,0.,1600.);                   addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  
   // btag //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   h = new TH1D("btag_j",              "j;btag; Entries",200,-20,20);            addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("btagmultiplicity_j",  "j;N_{b-tags}; Entries",4,0,4);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);

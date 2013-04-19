@@ -2702,6 +2702,13 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   // - Start from W mass
   // - bjets from top should be more energetic (earlier branch of the diagram)
 
+
+  if(jets.size()>1){
+    // WORKING HERE
+    //  pT(jet1)+pT(jet2) (leading pt jets, included taus)
+    mon.fillHisto("sumpt_jj",extra1+step,jets[0].Pt()+jets[1].Pt(),w_); mon.fillHisto("sumpt_jj",extra2+step,jets[0].Pt()+jets[1].Pt(),w_);    
+  }
+
   if(j_v.size() > 3){ // Minimum requirement: 4 jets.
     
     vector<PhysicsObject> jetsForMass; // Final working collection
@@ -2780,7 +2787,6 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
 	TLorentzVector vC( jetsForMass[tempComb[0]] ); vC+= jetsForMass[tempComb[1] ]; mjjs.push_back( vC.M() );  // Avoid temporary object allocation  
       }
 
-      // WORKINGHERE
       double chosenmjj = 10000000.;
       size_t chosenComb = 10;
       for(size_t i=0; i< mjjs.size(); i++){ // Select the combination with mass closest to mW  
@@ -2794,11 +2800,12 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
       chosenNonbtags.push_back(comb[chosenComb][1]);
       //
      
-      // Now we have to choose the btag. Note that we don't use the tagged one because it could be from the other leg
+      // Now we have to choose the btag. Note that we don't use necessarily the tagged one because it could be from the other leg
       double chosenbtag = 10000000.;
       double chosenmjjb = 10000000;
       for(size_t i=0; i<jetsForMass.size(); i++){
 	if(i==chosenNonbtags[0] || i==chosenNonbtags[1]) continue;
+	chosenbtags.push_back(i);
 	TLorentzVector vC( jetsForMass[chosenNonbtags[0] ] ); vC+= jetsForMass[chosenNonbtags[1] ]; vC+= jetsForMass[i]; // Avoid temporary object allocation  
 	if( fabs(vC.M() - 172.5) < fabs(chosenmjjb - 172.5) ) // Nominal reference value
 	  chosenmjjb = vC.M(); 
@@ -2826,6 +2833,7 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
       double chosenmjjb = 10000000;
       for(size_t i=0; i<jetsForMass.size(); i++){
 	if(i==chosenNonbtags[0] || i==chosenNonbtags[1]) continue;
+	chosenbtags.push_back(i);
 	TLorentzVector vC( jetsForMass[chosenNonbtags[0] ] ); vC+= jetsForMass[chosenNonbtags[1] ]; vC+= jetsForMass[i]; // Avoid temporary object allocation  
 	if( fabs(vC.M() - 172.5) < fabs(chosenmjjb - 172.5) ) // Nominal reference value
 	  chosenmjjb = vC.M(); 
@@ -2841,14 +2849,33 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
       
     } // End if >1btag
 
+    // Now that we have the two btags (chosenbtags[]) and the two nonbtags (chosenNonbtags[]) we can play
     
 
+    // If we have a tau
 
-
-    //  for( size_t j=0; j != j_v.size() ; j++ ){ 
+    // pT(b)+pT(tau)  /////////////////////////////////////////////////////////////////////////////                                                                                                                
+    // This can be done with the main chosen b or with the b which results in a highest sumPt
+    if(t_v.size() == 1){
+      int t_i = t_v[0]; double tauPt = TMath::Abs(taus[t_i].Pt());     double deltaPhiWithTau = taus[t_i].DeltaPhi( metObj );
+      
+      double chosenSumpt(0.);
+      double chosenmass(0.);
+      for(size_t i=0; i< chosenbtags.size(); i++){
+	if(chosenSumpt < tauPt+jetsForMass[chosenbtags[i] ].Pt() )
+	  chosenSumpt = tauPt+jetsForMass[chosenbtags[i] ].Pt();
+	TLorentzVector taujv(taus[t_i]); taujv+=jetsForMass[chosenbtags[i] ]; // Avoid temporary object allocation 
+	if(chosenmass < taujv.M())
+	  chosenmass = taujv.M();
+      }
+      
+      mon.fillHisto("sumpt_taub",extra1+step,chosenSumpt,w_); mon.fillHisto("sumpt_taub",extra2+step,chosenSumpt,w_);
+      mon.fillHisto("m_taub",extra1+step,chosenmass,w_); mon.fillHisto("m_taub",extra2+step,chosenmass,w_);
+      
+    }
     //
-    //    int ind = j_v[j]; double j_pt = jets[ind].Pt(); double j_eta = jets[ind].Eta(); double j_phi = jets[ind].Phi(); double btag =jets[ind][BTAGIND_]; 
     
+
     
   } // End of minimum requirement (4 jets)
 
