@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.20 2013/04/18 12:46:26 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.21 2013/04/19 12:58:51 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -130,13 +130,13 @@ int main(int argc, char* argv[])
   // FIXME: manage with --blah for having parameters like "withHiggs" and so on
   else if(runOn == "doTables"){
     cout << "Doing tables" << endl;
-    bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false); 
+    bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false), withShapes(true), withStatShapes(false);
     int detailed(2), notDetailed(1);      
     analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, sm, "PFlow", "yields-mc-", false, false, false); 
     cout << "Done SM table" << endl;
     analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false); 
     cout << "Done TBH table" << endl;
-    analyzer->summaryTable( notDetailed, true, false, false, false);
+    analyzer->summaryTable( notDetailed, true, false, false, false, withShapes, withStatShapes);
     cout << "Done summary table" << endl;
   }
   else if(runOn == "doPlots"){

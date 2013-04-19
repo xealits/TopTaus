@@ -1729,7 +1729,7 @@ namespace tableutils{
 // systset1 -> if enabled include only JES + MET +JER
 // systset2 -> if enabled include only btag unc
 // systset3 -> if enabled include only trigger
-  void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool systset1, bool systset2, bool systset3){ 
+  void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool systset1, bool systset2, bool systset3, bool withShapes, bool withStatShapes){ 
 
 
   //  double ttbar_init(20416081); //SIMPLE evt processed
@@ -2883,7 +2883,7 @@ namespace tableutils{
   if(incDocument) fprintf(f,"\\end{document} \n"); //COMMENT
   fclose(f);
 
-  if(higgs) doDatacards(data_datacards, tbh_datacards, sm_datacards, taufakes_datacards, string("PFlow"));
+  if(higgs) doDatacards(data_datacards, tbh_datacards, sm_datacards, taufakes_datacards, withShapes, withStatShapes, string("PFlow"));
 
 
   processedMCFile->Close();
@@ -2894,7 +2894,7 @@ namespace tableutils{
 }
 
 
-  void TauDileptonTableBuilder::doDatacards(vector<double> data, vector<vector<double> > tbh, vector<vector<double> > sm, vector<double> fakes, string tauType){
+  void TauDileptonTableBuilder::doDatacards(vector<double> data, vector<vector<double> > tbh, vector<vector<double> > sm, vector<double> fakes, bool withShapes, bool withStatShapes, string tauType){
     
     
     
@@ -3068,7 +3068,11 @@ namespace tableutils{
     outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
     outfile<<"imax   1  number of channels"<<endl;
     outfile<<"jmax   *  number of backgrounds"<<endl;
-    outfile<<"kmax  34  number of nuisance parameters"<<endl;
+    outfile<<"kmax   *  number of nuisance parameters"<<endl;
+    if(withShapes){
+      outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+      outfile<<"shapes * * shapes_m"<<HMass[im]<<"_rc_t.root $PROCESS $PROCESS_$SYSTEMATIC"<<endl;
+	}
     outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
     outfile<<"Observation    "<<nobs<<endl;
     outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
@@ -3113,7 +3117,22 @@ namespace tableutils{
     outfile<<32<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<endl;//"    diboson cross-section"<<endl;
     outfile<<33<<"  lnN"<<setw(7)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.00<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<endl;//"    Luminosity Error"<<endl;
     outfile<<34<<"  lnN"<<setw(7)<<1+puTBH/vTBH<<setw(10)<<1+putt/tt<<setw(10)<<1+puttll/ttll<<setw(10)<<1.00<<setw(10)<<1+puZll/Zll<<setw(10)<<1+puZtau/Ztau<<setw(10)<<1+pusTop/sTop<<setw(10)<<1+puVV/VV<<endl;//"    pileup"<<endl;
-    
+    if(withShapes){
+      outfile<<"jes           "<<"  shape        1        1        1           1           1           1           1           1            1     "<<endl;  //        JES_effect_on_shape                             
+      outfile<<"met           "<<"  shape        1        1        1           1           1           1           1           1            1     "<<endl; //        MET_effect_on_shape                             
+      outfile<<"jer           "<<"  shape        1        1        1           1           1           1           1           1            1     "<<endl;  //       JER_effect_on_shape                
+      if(!withStatShapes) outfile<<"#";outfile<<"TBH_Stat      "<<"  shape        1        -        -           -           -           -           -           -            -     "<<endl;
+      if(!withStatShapes) outfile<<"#";outfile<<"tt_ltau_Stat  "<<"  shape        -        -        1           -           -           -           -           -            -     "<<endl;
+      if(!withStatShapes) outfile<<"#";outfile<<"tt_ll_Stat    "<<"  shape        -        -        -           1           -           -           -           -            -     "<<endl;
+      if(!withStatShapes) outfile<<"#";outfile<<"tau_fake_Stat "<<"  shape        -        -        -           -           1           -           -           -            -     "<<endl;
+      if(!withStatShapes) outfile<<"#";outfile<<"Z_eemumu_Stat "<<"  shape        -        -        -           -           -           1           -           -            -     "<<endl;
+      if(!withStatShapes) outfile<<"#";outfile<<"Z_tautau_Stat "<<"  shape        -        -        -           -           -           -           1           -            -     "<<endl;
+      if(!withStatShapes) outfile<<"#";outfile<<"singleTop_Stat"<<"  shape        -        -        -           -           -           -           -           1            -     "<<endl;
+      if(!withStatShapes) outfile<<"#";outfile<<"di_boson_Stat "<<"  shape        -        -        -           -           -           -           -           -            1     "<<endl;
+      //             
+      //outfile<< HH3_Stat        shape  1         -        -           -           -           -           -           -            -
+      //outfile<< WH3_Stat        shape  -         1        -           -           -           -           -           -            -
+    }
     outfile.close();
     
     //}
