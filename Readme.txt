@@ -120,7 +120,7 @@ CHANGELOG for major updates:
 2013-04-19: added index.html automatically put inside plots directory for easy and fancy propagation of the plots
 	    configured LandsShapesProducer class for heavyChiggs
 	    configured TauDileptonTableBuilder for producing datacards with shapes
-	    committed revision 713 for chiggs datacards
+	    committed revision 714 for chiggs datacards
 2013-04-18: added mjj vs mjjb study (discrimination sig/ttbarbkg)
 	    added residual mc shape subtraction from dd shape K-S test
 	    added combine installation instructions and datacard automatic maker	
@@ -170,7 +170,7 @@ FIXED TAGS:
 - V12-12-21 / V12-12-17: 2011 code.
 
 CHANGELOG for datacards:
-
+rev 714 (2012-04-19): fixed first shapes files and datacards with support for shapes (R_tau) for heavy charged higgs		
 rev 713 (2012-04-19): first shapes files and datacards with support for shapes (R_tau) for heavy charged higgs	
 rev 702 (2012-04-18): first counting-only chiggs datacards for heavy charged higgs
 
