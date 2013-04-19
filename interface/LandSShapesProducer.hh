@@ -4,7 +4,7 @@
 /**                                                                                                                                                                              
 																						 \class    LandSShapesProducer LandSShapesProducer.cc "UserCode/LIP/TopTaus/interface/LandSShapesProducer.hh"                                                                   																						 \brief    executable for performing multivariable likelihood fit in order to improve estimation of N_fakes
 																						 																						 \author   Pietro Vischia
-																						 																						 \version  $Id: LandSShapesProducer.hh,v 1.13 2012/11/17 04:40:45 vischia Exp $                                                                                                       
+																						 																						 \version  $Id: LandSShapesProducer.hh,v 1.14 2012/12/17 18:01:51 vischia Exp $                                                                                                       
 																																												 TODO List:
   - generalize to array of samples, simplifying the approach and maintainability
   - de-zero the zeroed bins (Pedro suggestion: essentially RooFit (->combine tool) does not like zero bins -> set them to 1E-06
@@ -64,7 +64,7 @@ class LandSShapesProducer: protected utilities::EditorialUtils, utilities::StatU
 public :
   
   // Constructor
-  LandSShapesProducer(string);
+  LandSShapesProducer(string, bool);
   // Destructor
   ~LandSShapesProducer();
   

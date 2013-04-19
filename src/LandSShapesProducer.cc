@@ -20,8 +20,9 @@
 using namespace std;
 using namespace RooFit;
 
-LandSShapesProducer::LandSShapesProducer(string parSet):
-  parSet_(parSet)
+LandSShapesProducer::LandSShapesProducer(string parSet, bool produceOnly):
+  parSet_(parSet),
+  produceOnly_(produceOnly)
 {
   
   using namespace std; 
@@ -100,7 +101,7 @@ void LandSShapesProducer::Init(){
   sampleColour_     = mFitPars.getParameter<vector<Int_t> >("sampleColour");
   sampleFillStyle_ = mFitPars.getParameter<vector<Int_t> >("sampleFillStyle");
   
-  produceOnly_ = mFitPars.getParameter<bool>("produceOnly");
+  //  produceOnly_ = mFitPars.getParameter<bool>("produceOnly"); // Moved to command line
   doMultiDimensionalShapes_       = mFitPars.getParameter<bool>("doMultiDimensionalShapes"); 
 
   unsplitUncertainties_       = mFitPars.getParameter<bool>("unsplitUncertainties"); // The finnish guys for some reason stack all the variations simultaneously.
@@ -1156,8 +1157,9 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
     //  signalHistWH_->Add(signalHistHH_, fhh);
     higgsH_ = hist_[1];
-    higgsH_->Scale(fhw/higgsH_->Integral());
-    higgsH_->Add(hist_[2],fhh);
+    // FIXME: fix for heavy/light in a non-hardcoded way
+    //    higgsH_->Scale(fhw/higgsH_->Integral());
+    //    higgsH_->Add(hist_[2],fhh);
     
     perMassPointSignalShapesToCompare_.push_back((TH1*)higgsH_->Clone(higgsH_->GetName() + TString("totComparison") + massPointName_[currentMassPoint_].c_str() ) );    
     // Stacked drawing -------------------------------------------

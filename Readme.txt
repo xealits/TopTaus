@@ -63,12 +63,14 @@ Relevant parameters: straightforward cfg file. Must write doc here, though
 
 Produce shapes:
 ---------------
-produceLandSShapes tauDileptonAnalysisParSets_cfg.py
+produceLandSShapes tauDileptonAnalysisParSets_cfg.py --produceOnly (true|false [false])
 
 Relevant parameters: straightforward cfg file.
+Command options: 
 - produceOnly: (necessary because in plots HH and WH are rescaled, in rootfile not)
+               in TBH won't be necessary,  so fuck it.
 	       -True: just produces rootfile with all the shapes, no plot.
-	       -False: just produces plots, no rootfile.
+	       -False: [default] just produces plots, no rootfile.
 
 Run physicsAnalysis - this corresponds to the obsolete PhysicsAnalyzer code
 ------------------------------------------------------------------
@@ -116,6 +118,7 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 CHANGELOG for major updates:	
 2013-04-19: added index.html automatically put inside plots directory for easy and fancy propagation of the plots
+	    configured LandsShapesProducer class for heavyChiggs
 2013-04-18: added mjj vs mjjb study (discrimination sig/ttbarbkg)
 	    added residual mc shape subtraction from dd shape K-S test
 	    added combine installation instructions and datacard automatic maker	

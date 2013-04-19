@@ -24,13 +24,12 @@ LandSShapesProducerParSet = cms.PSet(
                           "/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/",
                           "/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/"
                           ),
-
+    
     
     # obsolete format # for fig7 #    mcBkgFileName      = cms.vstring(    "out-ttbar_mutau.root", "out-ttbar_other.root", "out-singletop.root",  "out-wjets.root"  , "out-dibosons.root", "out-zjets.root"    ),
     #    inputFileName      = cms.vstring( "out-data.root", "out-wh-pythia-", "out-hh-pythia-", "out-data_rescaled.root", "out-ttbar_mutau.root", "out-ttbar_mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
     inputFileName      = cms.vstring( "out-data.root", "out-tbh-pythia-", "out-data_rescaled.root", "out-ttbar_mutau.root", "out-ttbar_mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
-    
-    # is it *really* needed that "3" that was told it is necessary in the lands framework?
+        # is it *really* needed that "3" that was told it is necessary in the lands framework?
     #    sampleName      = cms.vstring( "data_obs", "WH3", "HH3", "tau_fake3", "tt_ltau3", "tt_ll3", "singleTop3","di_boson3", "Z_tautau3",  "Z_eemumu3" ),
     sampleName      = cms.vstring( "data_obs", "TBH", "tau_fake", "tt_ltau", "tt_ll", "singleTop","di_boson", "Z_tautau",  "Z_eemumu" ),
     
@@ -41,7 +40,6 @@ LandSShapesProducerParSet = cms.PSet(
     #sampleColour    = cms.vint32( 1,  616, 799, 614, 8, 824,  596, 831, 809),
     sampleFillStyle = cms.vint32( 1001, 0, 1001, 1001, 1001,  1001, 1001, 1001, 1001),
     
-    produceOnly = cms.bool(True),
     doMultiDimensionalShapes = cms.bool(False),
     unsplitUncertainties = cms.bool(False),
     
