@@ -3064,7 +3064,7 @@ namespace tableutils{
     outfile<< fixed << showpoint <<setprecision(3);
     outfile<<"Data: "<<t->tm_mday<<"/"<<t->tm_mon+1<<"/"<<t->tm_year+1900<<endl;
     //outfile<<"Description: H+, mu-tau, mass "<<HMass[im]<<" GeV, lumi=2140 pb-1"<<endl;
-    outfile<<"Description: H+, e-tau, mass "<<HMass[im]<<" GeV, lumi=1900 pb-1"<<endl;
+    outfile<<"Description: H+, e-tau, mass "<<HMass[im]<<" GeV, lumi=" << commondefinitions::LUM_<<" pb-1"<<endl;
     outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
     outfile<<"imax   1  number of channels"<<endl;
     outfile<<"jmax   *  number of backgrounds"<<endl;
