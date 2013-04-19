@@ -4,7 +4,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: physicsAnalysis.cc,v 1.19 2013/04/16 15:12:36 vischia Exp $                                                                                                       
+      \version  $Id: physicsAnalysis.cc,v 1.20 2013/04/18 12:46:26 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
@@ -145,6 +145,8 @@ int main(int argc, char* argv[])
       
     TString samples("data/plotter/samples.xml");
     TString outFolder("plots/"); // move to input line
+    TString cmd = "mkdir -p "+outFolder+"; cp data/plotter/index.html+"+outFolder+";";
+    gSystem->Exec(cmd);
     TString limits("data/plotter/limits.xml");
     TString leptons("data/plotter/leptons.xml");
     TString met("data/plotter/met.xml");

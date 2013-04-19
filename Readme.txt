@@ -115,6 +115,7 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:	
+2013-04-19: added index.html automatically put inside plots directory for easy and fancy propagation of the plots
 2013-04-18: added mjj vs mjjb study (discrimination sig/ttbarbkg)
 	    added residual mc shape subtraction from dd shape K-S test
 	    added combine installation instructions and datacard automatic maker	
