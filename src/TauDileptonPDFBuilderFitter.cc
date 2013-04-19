@@ -357,9 +357,9 @@ void TauDileptonPDFBuilderFitter::BuildDatasetWithCorrelations(size_t f){
       myvars_[i]->setVal(myVarAllocatorVec[i]);
     //      sumWeights_ += myVarWeightAllocator;
     if(useOS_) myvar_weightsGlob_->setVal(osCutEff_*myVarWeightAllocator);
-    else myvar_weightsGlob_->setVal(myVarWeightAllocator);
+    else myvar_weightsGlob_->setVal((2939.89/4280.8)*myVarWeightAllocator); // FIXME: hardcoded quick temp
     if(useOS_) myDDBkgDSGlob_->add(varList,osCutEff_*myVarWeightAllocator);
-    else myDDBkgDSGlob_->add(varList,myVarWeightAllocator);
+    else myDDBkgDSGlob_->add(varList,(2939.89/4280.8)*myVarWeightAllocator); // FIXME: hardcoded quick temp
   }
   
   if(standaloneTTbar_){
@@ -579,9 +579,9 @@ void TauDileptonPDFBuilderFitter::BuildDatasets(size_t i){
     myvar_->setVal(myVarAllocator);
     //      sumWeights_ += myVarWeightAllocator;
     if(useOS_) myvar_weights_->setVal(osCutEff_*myVarWeightAllocator);
-    else myvar_weights_->setVal(myVarWeightAllocator);
+    else myvar_weights_->setVal((2939.89/4280.8)*myVarWeightAllocator); // FIXME: hardcoded quick temp
     if(useOS_) myDDBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),osCutEff_*myVarWeightAllocator);
-    else myDDBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),myVarWeightAllocator);
+    else myDDBkgDS_->add(RooArgSet(*myvar_,*myvar_weights_),(2939.89/4280.8)*myVarWeightAllocator); // FIXME: hardcoded quick temp
   }
   
   if(standaloneTTbar_){
@@ -828,7 +828,7 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
 
   cout<<endl<<endl<<" ******************************************************************************************* "<<endl;
   /////////////////////////////////////////////////////////////////////////////////////
-  
+
   
   // Building the constrained models for signal mc bkg ///////////////////////////////////////////////////////////////////////////////////////////////
   double nsignalMean, nsignalSigma, nttbarmcbkgMean, nttbarmcbkgSigma;
@@ -836,6 +836,7 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
   double nddbkgMean(nddbkg); double nddbkgSigma(ddbkgStatError_);
   if(standaloneTTbar_) nttbarmcbkgMean=nttbarmcbkg; nttbarmcbkgSigma=ttbarmcbkgStatError_;
   double nmcbkgMean(nmcbkg); double nmcbkgSigma(mcbkgStatError_);
+
   
   if(includeSignal_){
     if( ! sigVar_         ) sigVar_         = new RooRealVar( "globalSignalVarName",       "globalSignalVarName",         nsig,   0, ndata);
@@ -847,6 +848,20 @@ void TauDileptonPDFBuilderFitter::BuildConstrainedModels(size_t i){
     if( ! sigSigmaVar_  ) sigSigmaVar_  = new RooRealVar( "globalSignalSigmaVarName",   "globalSignalSigmaVarName",     nsignalSigma ); 
     else{ sigSigmaVar_->setVal(nsignalSigma); }
   }
+
+  resultsFile_ << endl
+	       << "INPUT  REPORT FOR " << fitVars_[i]->getVarName() << endl
+	       << "---------------------------------------------------" << endl
+	       << "[Observed] " << ndata << endl 
+	       << "---------------------------------------------------" << endl
+	       << "[H+ expected]" << nsig << endl
+	       << "[DD expected] " <<  nddbkg << endl 
+	       << "[ttbar expected]:" << nttbarmcbkg << " +/- " << nttbarmcbkgSigma << endl
+	       << "[other mc expected]:" << nmcbkg << " +/- " << nmcbkgSigma << endl
+	       << "---------------------------------------------------" << endl;
+
+
+  
   
   // FIXME?    
   //    if(! ddbkgVar_        ) ddbkgVar_       = new RooRealVar( "globalDDBkgVarName",        "globalDDBkgVarName",          nddbkgMean, 0, nddbkgMean*1.5); 
@@ -1201,16 +1216,16 @@ void TauDileptonPDFBuilderFitter::DoPerVariableLikelihoodFit(size_t i){
     if(standaloneTTbar_){
       contourPlot_ = minuit.contour( *ddbkgVar_, *ttbarmcbkgVar_,1,2,3);
       contourPlot_->GetYaxis()->SetTitle("N(t#bar{t}#rightarrow l#tau)");
-      contourPlot_->GetYaxis()->SetRangeUser(0,400);
+      contourPlot_->GetYaxis()->SetRangeUser(2500.,2700.);
     }
     else{
       contourPlot_ = minuit.contour( *ddbkgVar_, *mcbkgVar_,1,2,3);
       contourPlot_->GetYaxis()->SetTitle("N^{MCdriven}_{Bkg}");
-      contourPlot_->GetYaxis()->SetRangeUser(0,200);
+      contourPlot_->GetYaxis()->SetRangeUser(600.,1000.);
     }
   contourPlot_->SetTitle("");
   contourPlot_->GetXaxis()->SetTitle("N^{DD}_{Bkg}");
-  contourPlot_->GetXaxis()->SetRangeUser(0,400);
+  contourPlot_->GetXaxis()->SetRangeUser(2700.,3300.);
   contourPlot_->GetYaxis()->SetTitleOffset(0.9);
   contourPlot_->Draw();
   canvas_->SaveAs((outFolder_+string("contour_")+identifier_+string(".pdf")).c_str());
@@ -1279,17 +1294,17 @@ void TauDileptonPDFBuilderFitter::DoCombinedLikelihoodFit(){
       myNllFitResult_->Print("v");
       contourPlot_->GetYaxis()->SetTitle("N(t#bar{t}#rightarrow l#tau)");
       cout << "Here I am not. contour access crashed because of lack of component" << endl;
-      contourPlot_->GetYaxis()->SetRangeUser(0,400);
+      contourPlot_->GetYaxis()->SetRangeUser(2500.,2700.);
     }
     else{
       contourPlot_ = minuit.contour( *ddbkgVar_ , *mcbkgVar_,1,2,3);
-      contourPlot_->GetYaxis()->SetTitle("N(t#bar{t}#rightarrow l#tau)");
-      contourPlot_->GetYaxis()->SetRangeUser(0,200);
+      contourPlot_->GetYaxis()->SetTitle("N^{MCdriven}_{Bkg}");
+      contourPlot_->GetYaxis()->SetRangeUser(600.,1000.);
     }
   }
   contourPlot_->SetTitle("");
   contourPlot_->GetXaxis()->SetTitle("N^{DD}_{Bkg}");
-  contourPlot_->GetXaxis()->SetRangeUser(0,400);
+  contourPlot_->GetXaxis()->SetRangeUser(2700.,3300.);
   contourPlot_->Draw();
   
   

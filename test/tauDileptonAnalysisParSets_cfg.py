@@ -177,6 +177,7 @@ TauDileptonPDFBuilderFitterParSet = cms.PSet(
     #, 2, 3, 0),
     useOS       = cms.bool(False),
 
+    #    osCutEff               = cms.double(0.69 * 220.92/242.915),
     osCutEff               = cms.double(0.69 * 220.92/242.915),
     cHiggsBR               = cms.double(0.01),
     
