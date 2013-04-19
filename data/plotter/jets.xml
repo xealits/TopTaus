@@ -76,11 +76,11 @@
   </id>
 
 
-  <id tag="muCh_m_mbj" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="M^{lep-bjet} [GeV/c^{2}]" yrange="10,10000000"  xbin="16" >
+  <id tag="muCh_m_mbj" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="M^{lep-bjet} [GeV/c^{2}]" yrange="0.1,10000000"  xbin="16" >
     <item dir="PFlow/RecoSteps/lep_tau/1 btag">m_mubj_6</item>
   </id> 
 
-  <id tag="muCh_max_m_muj" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="max M^{lep-jet} [GeV/c^{2}]" yrange="10,10000000"  xbin="16" >
+  <id tag="muCh_max_m_muj" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="max M^{lep-jet} [GeV/c^{2}]" yrange="0.1,10000000"  xbin="16" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">max_m_muj_4</item>
   </id> 
 
@@ -94,6 +94,19 @@
   <id tag="muCh_mjjb" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(j, j, b)" yrange="0.1,100000" xrange="0,1200" xbin="2">
     <item dir="PFlow/RecoSteps/lep_tau/OS" >mjjb_8</item>
   </id>
+
+
+
+  <id tag="muCh_sumpt_taub" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p_{T}^{\tau} + p_{T}^{b} [GeV/c]" yrange="0.1,5000" xrange="35,1000" xbin="4" >
+    <item dir="PFlow/RecoSteps/lep_tau/OS">sumpt_taub_8</item>
+  </id> 
+  <id tag="muCh_sumpt_jj" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p_{T}^{jet1} + p_{T}^{jet2} [GeV/c]" yrange="0.1,1000" xrange="35,1000" xbin="4" >
+    <item dir="PFlow/RecoSteps/lep_tau/OS">sumpt_jj_8</item>
+  </id> 
+
+  <id tag="muCh_m_taub" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="M^{#tau-bjet} [GeV/c^{2}]" yrange="10,10000000"  xbin="16" >
+    <item dir="PFlow/RecoSteps/lep_tau/OS">m_taub_8</item>
+  </id> 
 
 <!--  <id tag="muCh_m_muj1" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="M(j, j)"  xtitle="M(j, j, b)" yrange="0.1,100000" >
     <item dir="PFlow/RecoSteps/lep_tau/OS" >mjjb_mjj_8</item>
