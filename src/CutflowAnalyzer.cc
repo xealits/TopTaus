@@ -12,20 +12,33 @@
 
 using namespace std;
 
-CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis, TString inputArea, TString outputArea, TString puFileName) : UncertaintyCalculator(),  
-																				AnalysisMonitoring(tauPtCut, inputArea, outputArea), 
-																				ObjectSelector(tauPtCut),
-																				noUncertainties_(noUncertainties),
-																				doWPlusJetsAnalysis_(doWPlusJetsAnalysis),
-																				testMe_(0),
-																				testMe_Nev_(0)
+CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis, TString inputArea, TString outputArea, TString puFileName, TString runRange) : UncertaintyCalculator(),  
+																						  AnalysisMonitoring(tauPtCut, inputArea, outputArea), 
+																						  ObjectSelector(tauPtCut),
+																						  noUncertainties_(noUncertainties),
+																						  doWPlusJetsAnalysis_(doWPlusJetsAnalysis),
+																						  testMe_(0),
+																						  testMe_Nev_(0)
 {    
   
   //  inputArea_  = inputArea; // Moved to AnalysisMonitoring -> SampleProcessor // FIXME: check if it is possible to initialize them in the constructor init list
   //  outputArea_ = outputArea;
   puFileName_ = puFileName ;
-    
- 
+  // runRange_ = runRange;    // save time
+
+  // Default is ABCD in CommonDefinitions.cc
+  if(runRange=="ABCD")     LUM_ = 18072.17; // 2012 ABCD final ntuples
+  else if(runRange=="AB")  LUM_ = 5040.32; // 2013 AB final ntuples
+  else if(runRange=="ABC") LUM_ = 11514.17; // 2012 ABC final ntuples
+  else if(runRange=="A")   LUM_ = 803.38+82.52; // 2012 A final ntuples
+  //  else if(runRange=="Ar")  LUM_ = 82.52; // 2012 Ar final ntuples	
+  else if(runRange=="B")   LUM_ = 4154.; // 2012 B final ntuples	
+  else if(runRange=="C1")  LUM_ = 482.26; // 2012 C1 final ntuples	
+  else if(runRange=="C2")  LUM_ = 5992.; // 2012 C2 final ntuples	
+  else if(runRange=="D")   LUM_ = 6558.; // 2012 D final ntuples   
+
+
+
   // Acquire pileup weights
   float dataDist[100] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
 			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
