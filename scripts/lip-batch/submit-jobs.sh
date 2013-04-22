@@ -5,6 +5,9 @@ myFolder=${LIPCMS_BASE}/scripts/lip-batch/
 
 cd $myFolder;
 
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-dibosons.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunA.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunAr.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunB_1.sh
@@ -49,13 +52,10 @@ qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunD_12.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunD_13.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh
+#qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh
+#qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh
 #qsub -v LIPCMS_BASE${LIPCMS_BASE}/    ./job-ttbar-unc.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-dibosons.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-hh-higgs-bychannel.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-hh-higgs.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-qcd.sh

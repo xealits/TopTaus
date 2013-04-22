@@ -65,13 +65,13 @@ if [ "${2}" = "hadd" ]; then
 
     cd $DATAPLACE
 
-    if [ "${3}" = "AB" ]; then
-	hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root
-    elif ["${3}" = "ABC" ]; then
-    hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root out-Muon_RunC1.root out-Muon_RunC2_*.root
-    elif ["${3}" = "ABCD" ]; then
-	hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root out-Muon_RunC1.root out-Muon_RunC2_*.root out-Muon_RunD_*.root 
-    fi
+#    if [ "${3}" = "AB" ]; then
+#    	hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root
+#    elif ["${3}" = "ABC" ]; then
+#        hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root out-Muon_RunC1.root out-Muon_RunC2_*.root
+#    elif ["${3}" = "ABCD" ]; then
+    hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root out-Muon_RunC1.root out-Muon_RunC2_*.root out-Muon_RunD_*.root 
+#    fi
 
 elif [ "${2}" = "clean" ]; then
   # Clean processed files

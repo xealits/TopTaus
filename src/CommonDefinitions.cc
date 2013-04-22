@@ -115,7 +115,7 @@ namespace commondefinitions{
   bool eChONmuChOFF_ = false;
   double LUM_ = 18072.17; // 2012 ABCD final ntuples
   //  double LUM_ = 11514.17; // 2012 ABC final ntuples
-  //double LUM_ = 5040.32; // 2013 AB final ntuples
+  //  double LUM_ = 5040.32; // 2013 AB final ntuples
 
   //  double LUM_ = 803.38; // 2012 A final ntuples
   //  double LUM_ = 82.52; // 2012 Ar final ntuples
