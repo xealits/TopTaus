@@ -204,6 +204,7 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
     
     event::MiniEvent_t *ev   = evR_->GetNewMiniEvent(i_,"data");  if( ev == 0 ) continue;
     is_os_=0.; // Stored in tree for fitters // Reset for each event
+    tauR_=-1; // Reset for each event
     if( ! (i_% 1000 ) ){cout<<" -> Processing ... : "<<(i_+1)<<endl;}
 
     // TAU DILEPTON ANALYZER ////////////////////////////////////////////////////////
