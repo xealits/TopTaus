@@ -180,7 +180,7 @@ rev 702 (2012-04-18): first counting-only chiggs datacards for heavy charged hig
 TODO:
 - git test completed: decide when to move to git
 - reweight MC distros con q/g fraction evaluated from MC
-- recalculate fakes feeding the wmu sample the qcd mva and vice versa
+- From my 2013-04-22 presentation at TauPOG: recalculate fakes feeding the wmu sample the qcd mva and vice versa, try training with more kinematical variables
 - patch squared plots
 - move all 234.s in the code (TauDileptonTableBuilder in particular) to the value from SampleProcessor (or move the xsecs to CommonDefinitions, better) 
 - apply method to jerunc
