@@ -117,6 +117,8 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:	
+2013-04-22: fixed bug in variables for OS shapes (it was fixed in 2011 and was never committed to the 2012 branch
+	    added automatic calculation and table of fakes
 2013-04-19: added index.html automatically put inside plots directory for easy and fancy propagation of the plots
 	    configured LandsShapesProducer class for heavyChiggs
 	    configured TauDileptonTableBuilder for producing datacards with shapes
@@ -177,6 +179,9 @@ rev 702 (2012-04-18): first counting-only chiggs datacards for heavy charged hig
 
 TODO:
 - git test completed: decide when to move to git
+- reweight MC distros con q/g fraction evaluated from MC
+- recalculate fakes feeding the wmu sample the qcd mva and vice versa
+- patch squared plots
 - move all 234.s in the code (TauDileptonTableBuilder in particular) to the value from SampleProcessor (or move the xsecs to CommonDefinitions, better) 
 - apply method to jerunc
 - vstrings in physicsAnalysisParSets_cfg.py for pileup syst

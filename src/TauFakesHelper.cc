@@ -5,7 +5,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: TauFakesHelper.cc,v 1.2 2013/04/18 12:51:42 vischia Exp $                                                                                                       
+      \version  $Id: TauFakesHelper.cc,v 1.3 2013/04/19 12:44:04 vischia Exp $                                                                                                       
 */
 
 
@@ -1300,7 +1300,7 @@ void TauFakesHelper::PrepareFiles(unsigned int qualifier){
 
 
 
-void TauFakesHelper::ComputeTauFake(string type, double TauPt, int option)
+void TauFakesHelper::ComputeTauFake(string type, vector<double>& finalValues, double TauPt, int option)
 {
   string kNNfileData_, kNNfileMC_; 
   string frFileNameData_, frFileNameMC_;
@@ -1487,7 +1487,14 @@ void TauFakesHelper::ComputeTauFake(string type, double TauPt, int option)
   }
   
   cout<<"Residual estimation from MC : no b-tag "<<fake_mc_res<<" +/- "<<sqrt(fake_mc_res_err) <<"    1 b-tag "<<fake_mc_res_btag<<endl;
-  
+
+  finalValues.push_back(fake_data);
+  finalValues.push_back(fake_data_err);
+  finalValues.push_back(fake_mc);
+  finalValues.push_back(sqrt(fake_mc_err));
+  finalValues.push_back(fake_mc_res);
+  finalValues.push_back(sqrt(fake_mc_res_err));
+   
 }
 
 void TauFakesHelper::TauFakeEstimate(TString filename_, TString jetObject_, PhysicsTools::MVAComputer *mva, TH1F* frHisto, double* sumFakes, double* sumFakesError)
@@ -1567,6 +1574,7 @@ void TauFakesHelper::TauFakeEstimate(TString filename_, TString jetObject_, Phys
   cout<<"events pass "<<sumEvent<<", squaredError " << sumEvent_err << " unweighted "<<sumUnw<<endl;
   
   f->Close();
+
   return;// sumEvent;
 }
 

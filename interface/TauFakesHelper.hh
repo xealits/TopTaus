@@ -6,7 +6,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: TauFakesHelper.hh,v 1.2 2013/04/18 12:51:36 vischia Exp $                                                                                                       
+      \version  $Id: TauFakesHelper.hh,v 1.3 2013/04/19 12:44:04 vischia Exp $                                                                                                       
 */
 
 
@@ -62,7 +62,7 @@ public:
   void Monitor(unsigned int);
 
   void PrepareFiles(unsigned int);
-  void ComputeTauFake(string type , double TauPt = 20., int option =1);
+  void ComputeTauFake(string type , vector<double>& finalValues, double TauPt = 20., int option =1);
   void TauFakeEstimate(TString, TString, PhysicsTools::MVAComputer*, TH1F*, double*, double*);
 
   void ProduceDataDrivenDistributions();

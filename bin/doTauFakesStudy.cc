@@ -5,7 +5,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: doTauFakesStudy.cc,v 1.2 2013/04/18 12:51:19 vischia Exp $                                                                                                       
+      \version  $Id: doTauFakesStudy.cc,v 1.3 2013/04/19 12:44:04 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/TauFakesHelper.hh"
@@ -162,12 +162,73 @@ int main(int argc, char* argv[])
     }
 
     // Compute fakes  
+    vector<double> wmuValues;
+    vector<double> qcdValues;
+
     if(actions_[i] == "computeWMuFakes" || actions_[i] == "computeAll" || actions_[i] == "all"){
-      helper->ComputeTauFake("WMu");
+      helper->ComputeTauFake("WMu", wmuValues);
     }
     
     if(actions_[i] == "computeQCDFakes" || actions_[i] == "computeAll" || actions_[i] == "all"){
-      helper->ComputeTauFake("DiJet");
+      helper->ComputeTauFake("DiJet", qcdValues);
+    }
+    
+    if( (actions_[i] == "computeWMuFakes" && actions_[i] == "computeQCDFakes")
+	|| actions_[i] == "computeAll" || actions_[i] == "all"){
+
+      double tempErr;
+
+      double wmuExp(657.76), wmuExpErr(10.); // FIXME: hardcoded
+      double qcdExp(82.4), qcdExpErr(19.);
+      
+      double wmuData(wmuValues[0]), wmuDataErr(wmuValues[1]);
+      double wmuMC  (wmuValues[2]), wmuMCErr  (wmuValues[3]);
+      double wmuRes (wmuValues[4]), wmuResErr (wmuValues[5]);
+
+      double qcdData(qcdValues[0]), qcdDataErr(qcdValues[1]);
+      double qcdMC  (qcdValues[2]), qcdMCErr  (qcdValues[3]);
+      double qcdRes (qcdValues[4]), qcdResErr (qcdValues[5]);
+      
+      wmuData = wmuData - wmuRes;
+      tempErr = sqrt(wmuDataErr*wmuDataErr + wmuResErr*wmuResErr);
+      wmuDataErr = tempErr;
+
+      wmuMC = wmuMC - wmuRes;
+      tempErr = sqrt(wmuMCErr*wmuMCErr + wmuResErr*wmuResErr);
+      wmuMCErr = tempErr;
+
+      qcdData = qcdData - qcdRes;
+      tempErr = sqrt(qcdDataErr*qcdDataErr + qcdResErr*qcdResErr);
+      qcdDataErr = tempErr;
+
+      qcdMC = qcdMC - qcdRes;
+      tempErr = sqrt(qcdMCErr*qcdMCErr + qcdResErr*qcdResErr);
+      qcdMCErr = tempErr;
+
+      
+      double data( (wmuData+qcdData)/2. ), dataErr( fabs(wmuData-qcdData)/2. );
+      double mc( (wmuMC+qcdMC)/2. ), mcErr( fabs(wmuMC-qcdMC)/2. );
+      double res( (wmuRes+qcdRes)/2. ), resErr( fabs(wmuRes-qcdRes)/2. );
+      
+      double expFinal(wmuExp+qcdExp), expErrFinal( sqrt(wmuExpErr*wmuExpErr + qcdExpErr*qcdExpErr) );
+      //      double dataFinal(data-res ), dataErrFinal( sqrt(dataErr*dataErr + resErr*resErr) );
+      //      double mcFinal(mc-res), mcErrFinal( sqrt(mcErr*mcErr + resErr*resErr) );
+      
+      cout << "exp: " << expFinal << " +/- " << expErrFinal << endl;
+      cout << "mc: " << mc << " +/- " << mcErr << endl;
+      cout << "data: " << dataErr << " +/- " << dataErr << endl;
+      
+      cout<<"--------------------------------------- LATEX SUMMARY  --------------------------------------" << endl<<endl;
+      cout<<"\\begin{tabular}{c|c|c|c}"<<endl;
+      cout<<"\\multicolumn{4}{c}{ } \\\\"<< endl;
+      cout<<"\\hline"<<endl;
+      cout<<"Sample &  MC expectation & Estimated from MC & Estimated from data  \\\\\\hline"<<endl;
+      cout<<"\\hline"<<endl;
+      cout<<"QCD multi-jet & \\multirow{3}{*}{"<<expFinal<<"$\\pm$"<<expErrFinal<<"} & "<<qcdMC<<" & "<<qcdData<<" \\\\\\cline{1-1} \\cline{3-4}"<<endl;
+      cout<<"W+jets &   & "<<wmuMC<<" & "<<wmuData<<" \\\\\\cline{1-1} \\cline{3-4}"<<endl;
+      cout<<"Average &  & "<<mc<<"$\\pm$"<<100*mcErr/mc<<"\\% & "<<data<<"$\\pm$"<<100*dataErr/data<<"\\%  \\\\\\hline"<< endl;
+      cout<<"\\hline"<<endl;
+      cout<<"\\end{tabular}"<< endl;
     }
     
     // Produce final data driven file with data rescaled events
