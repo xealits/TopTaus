@@ -176,6 +176,8 @@ rev 702 (2012-04-18): first counting-only chiggs datacards for heavy charged hig
 
 
 TODO:
+- git test completed: decide when to move to git
+- move all 234.s in the code (TauDileptonTableBuilder in particular) to the value from SampleProcessor (or move the xsecs to CommonDefinitions, better) 
 - apply method to jerunc
 - vstrings in physicsAnalysisParSets_cfg.py for pileup syst
 - Fix multiplicity plots for lead/sublead/subsublead jets 
