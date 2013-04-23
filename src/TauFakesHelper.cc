@@ -5,7 +5,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: TauFakesHelper.cc,v 1.3 2013/04/19 12:44:04 vischia Exp $                                                                                                       
+      \version  $Id: TauFakesHelper.cc,v 1.4 2013/04/22 16:58:36 vischia Exp $                                                                                                       
 */
 
 
@@ -1620,13 +1620,13 @@ void TauFakesHelper::ProduceDataDrivenDistributions(){
   jetObject_.push_back("m_tau_Selected");
   jetObject_.push_back("m_tau_DataDriven");
 
-  // Syst // FIXME: look for additional ones (tauenergy?)
-  jetObject_.push_back("m_tau_Selected_plus"     );
-  jetObject_.push_back("m_tau_Selected_minus"    );
-  jetObject_.push_back("m_tau_Selected_uncplus"  );
-  jetObject_.push_back("m_tau_Selected_uncminus" );
-  jetObject_.push_back("m_tau_Selected_jerplus"  );
-  jetObject_.push_back("m_tau_Selected_jerminus" );
+  //  // Syst // FIXME: look for additional ones (tauenergy?)
+  //  jetObject_.push_back("m_tau_Selected_plus"     );
+  //  jetObject_.push_back("m_tau_Selected_minus"    );
+  //  jetObject_.push_back("m_tau_Selected_uncplus"  );
+  //  jetObject_.push_back("m_tau_Selected_uncminus" );
+  //  jetObject_.push_back("m_tau_Selected_jerplus"  );
+  //  jetObject_.push_back("m_tau_Selected_jerminus" );
   
   
   //Get Estimate from WMu
