@@ -54,7 +54,7 @@ void ObjectSelector::SetLeptonPlusJetsSelection(){
   JET_EMF_MIN_       = 0.01;       
   JET_LTK_           = 5.;
   JET_LEPTON_DRMIN_  = 0.3;
-  applyJetLtkCut_    = false;
+  applyJetLtkCut_    = true; // TODAY: false
   //////////////////////////////////////////////////
   
   
@@ -121,7 +121,7 @@ void ObjectSelector::SetDileptonSelection(){
   JET_ETA_MAX_       = 2.5;       //
   JET_EMF_MIN_       = 0.;        // which cut to be applied? 
   JET_LTK_           = 5.;       // warning
-  applyJetLtkCut_    = false;
+  applyJetLtkCut_    = true; // today: false
   JET_LEPTON_DRMIN_  = 0.4;
   
   
@@ -390,11 +390,15 @@ void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject
     againstElectronTightMVA3  : tau_dis_electron= 6;
     */ 
     
-
+    
     //if( tau_dis_muon == 0 || tau_dis_electron == 0 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;    // LooseLoose
     //    if( tau_dis_muon == 0 || tau_dis_electron < 2 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;        //LooseMedium
     //if( tau_dis_muon < 2 || tau_dis_electron < 3 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;       //TightTight
+
+    // Only 4,5,6 work for electrons/muons, until next CRAB reprocessing.
     if( tau_dis_muon < 6 || tau_dis_electron < 5 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;        //MuonTight2 ElectronMedium
+    //    if( tau_dis_muon < 5 || tau_dis_electron < 5 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;        //MuonMedium2 ElectronMedium
+
     // If putting electron descrimination against electron to tight no muons pass...  
     // if( tau_dis_muon == 0 || tau_dis_electron < 2.5 || tauPt < TAU_PT_MIN_ || tauEta > TAU_ETA_MAX_ ) continue;
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
