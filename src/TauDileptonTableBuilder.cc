@@ -1776,7 +1776,7 @@ namespace tableutils{
   //  double lum(4904); double lumFactor(1); double scalefactor(1.); double scale(0.02184544); //    double scale(0.03284470); // double scale(0.08562379); // NEW VALUES
   double lum(commondefinitions::LUM_); double lumFactor(1); double scalefactor(1.); double scale(0.51393073); //    double scale(0.03284470); // double scale(0.08562379); // NEW VALUES
 
-  //  sqrt( (eA.B)^2 + (A.eB)^2 )
+  //  sqrt( (eA.B)^2 + (A.eB)^2 ), /B^2
 
   double tau_fakes(2939.9*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(261.6*261.6*0.699*0.699 + 0.02*0.02*2939.9*2939.9); // Preliminar from kNN
   taufakes_datacards.push_back(tau_fakes);
