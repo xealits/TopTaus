@@ -118,11 +118,15 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   ///////////////////////////////////////////////////
   
   // New BTAG uncertainty method /////////////////////////////////
-  //taken from BTV-11-004 ////////////////////////////////////////
-  BTagSF_     = 0.95; err_BTagSF_     = 0.03;
-  LightJetSF_ = 1.1;  err_LightJetSF_ = sqrt(0.01*0.01+0.011*0.11);
+  ////////////////////////////////////////  
+  // New BTAG: >= Moriond 2013
+  BTagSF_     = 0.966; err_BTagSF_     = 0.025;
+  LightJetSF_ = 1.16;  err_LightJetSF_ = sqrt(0.02*0.02+0.014*0.014);
+  // Old BTAG: < HCP 2012
+  //  BTagSF_     = 0.95; err_BTagSF_     = 0.03;
+  //  LightJetSF_ = 1.1;  err_LightJetSF_ = sqrt(0.01*0.01+0.011*0.11);
   /////////////////////////////////////////////////////////////////
-  
+
   
 }
 
@@ -3563,7 +3567,7 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   int index_btag(-1); int numb_btags(0); 
 
   if( isData_ || !  applybtagweight_){
-    for(uint j=0; j<hardJets.size(); j++){  
+    for(uint j=0; j<j_final.size(); j++){  
       int j_ind = hardJets[j]; 
       double btagvalue = jets[j_ind][BTAGIND_] ;
       if( btagvalue>BTAG_CUT_){numb_btags++; index_btag = j_ind;} 
