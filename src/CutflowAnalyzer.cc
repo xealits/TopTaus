@@ -2715,12 +2715,63 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   // - bjets from top should be more energetic (earlier branch of the diagram)
 
 
-  if(jets.size()>1){
-    // WORKING HERE
+  if(jets.size()>1){ // >=2 jets before tau removal
     //  pT(jet1)+pT(jet2) (leading pt jets, included taus)
     mon.fillHisto("sumpt_jj",extra1+step,jets[0].Pt()+jets[1].Pt(),w_); mon.fillHisto("sumpt_jj",extra2+step,jets[0].Pt()+jets[1].Pt(),w_);    
+    
+    
   }
+  
+  if(j_v.size()>1 && t_v.size() == 1 && m_v.size()==1 ){ // >=2 jets after tau removal, 1 tau, 1 muon
+    // Calculate invariant mass of lep-jet and tau-jet pairs
+    
+    //    se riesci, prova a calcolare i valori di massa invariante delle coppie lep-jet e tau-jet, e trova l'accoppiamento che ti da la differenza minima di massa (se prendi i 2 jet piu` energetici, per ciascun evento hai almeno 2 combinazioni).
+    //
+    //    Poi, fai la distribuzione delle masse cosi' calcolate. Ovvero, hai 2 entries per evento. Alternativamente, puoi fare la distribuzione solo con il valore minimo (o massimo) delle due masse.
+    
+    
+    // lep-jet, tau-jet pairs (using the two most energetic jets)
+    vector<pair<TLorentzVector, TLorentzVector> > withJetPairs;
+    TLorentzVector vLepJet(muons[m_v[0]]); vLepJet += jets[j_v[0]]; 
+    TLorentzVector vTauJet(taus[t_v[0]]);  vTauJet += jets[j_v[1]];
+    withJetPairs.push_back( make_pair(vLepJet, vTauJet) );       
+    vLepJet = muons[m_v[0]]; vLepJet += jets[j_v[1]]; 
+    vTauJet = taus[t_v[0]];  vTauJet += jets[j_v[0]];
+    withJetPairs.push_back( make_pair(vLepJet, vTauJet) );       
+    
+    // Find the assignment which minimizes the mass difference
+    double minDeltaM(100000000000.);
+    unsigned int chosenPair(10000);
+    for(size_t i=0; i< withJetPairs.size(); ++i){
+      double deltaM = fabs(withJetPairs[i].first.M() - withJetPairs[i].second.M());
+      if(deltaM < minDeltaM){
+	minDeltaM = deltaM;
+	chosenPair = i;
+      }
+    }
 
+    if(chosenPair<10000){
+      mon.fillHisto("m_lepj_all"  ,extra1+step,withJetPairs[chosenPair].first.M() ,w_); mon.fillHisto("m_lepj_all"  ,extra2+step,withJetPairs[chosenPair].first.M() ,w_);    
+      mon.fillHisto("m_lepj_all"  ,extra1+step,withJetPairs[chosenPair].second.M(),w_); mon.fillHisto("m_lepj_all"  ,extra2+step,withJetPairs[chosenPair].second.M(),w_);    
+      
+      if(withJetPairs[chosenPair].first.M() > withJetPairs[chosenPair].second.M()){
+	mon.fillHisto("m_lepj_min"  ,extra1+step,withJetPairs[chosenPair].second.M(),w_); mon.fillHisto("m_lepj_min"  ,extra2+step,withJetPairs[chosenPair].second.M(),w_);    
+	mon.fillHisto("m_lepj_max"  ,extra1+step,withJetPairs[chosenPair].first.M(),w_); mon.fillHisto("m_lepj_max"  ,extra2+step,withJetPairs[chosenPair].first.M(),w_);    
+      } else{
+	mon.fillHisto("m_lepj_min"  ,extra1+step,withJetPairs[chosenPair].first.M(),w_); mon.fillHisto("m_lepj_min"  ,extra2+step,withJetPairs[chosenPair].first.M(),w_);    
+	mon.fillHisto("m_lepj_max"  ,extra1+step,withJetPairs[chosenPair].second.M(),w_); mon.fillHisto("m_lepj_max"  ,extra2+step,withJetPairs[chosenPair].second.M(),w_);    
+      }
+
+      mon.fillHisto("m_lepj_delta",extra1+step,minDeltaM,w_); mon.fillHisto("m_lepj_delta",extra2+step,minDeltaM,w_);    
+      
+      mon.fill2DHisto(TString("m_lepj_mmj_mtj"  ),extra1+step, withJetPairs[chosenPair].second.M() , withJetPairs[chosenPair].first.M(), w_);  mon.fill2DHisto(TString("m_lepj_mmj_mtj"  ),extra2+step, withJetPairs[chosenPair].second.M() , withJetPairs[chosenPair].first.M() , w_);             
+      mon.fill2DHisto(TString("m_lepj_delta_mtj"),extra1+step, withJetPairs[chosenPair].second.M() , minDeltaM                         , w_);  mon.fill2DHisto(TString("m_lepj_delta_mtj"),extra2+step, withJetPairs[chosenPair].second.M() , minDeltaM                          , w_);             
+    }
+
+    
+  }      
+  
+  
   if(j_v.size() > 3){ // Minimum requirement: 4 jets.
     
     vector<PhysicsObject> jetsForMass; // Final working collection
@@ -2861,7 +2912,9 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
       
     } // End if >1btag
 
+
     // Now that we have the two btags (chosenbtags[]) and the two nonbtags (chosenNonbtags[]) we can play
+    /////////
     
 
     // If we have a tau
@@ -2883,7 +2936,8 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
       
       mon.fillHisto("sumpt_taub",extra1+step,chosenSumpt,w_); mon.fillHisto("sumpt_taub",extra2+step,chosenSumpt,w_);
       mon.fillHisto("m_taub",extra1+step,chosenmass,w_); mon.fillHisto("m_taub",extra2+step,chosenmass,w_);
-      
+     
+
     }
     //
     
@@ -3416,18 +3470,37 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
 
   //jet energy corrections /////////////////////////////////////////////////////////////////////////////
   vector<double> jerFactors;
-  if( jerc && !fast_ ){
-    for(uint i=0;i<jets.size();i++){ 
-      double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
-      double scaleFactor(0.1);  //bias correction
-      double corr_jer(1);
-      if( jer_ < 0 ){ scaleFactor = 0.;  }
-      if( jer_ > 0 ){ scaleFactor = 0.2; }
-      if (scaleFactor)corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 );      
-      if( corr_jer <0 ){ corr_jer=1;}
-      jerFactors.push_back(corr_jer);
-    }  
-  }else if (jerc && fast_){ for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
+  ///  // Old jet energy resolution factors
+  ///  if(jerc){ // Split condition for optimizazion
+  ///    fast_=false;
+  ///    if(!fast_ ) {
+  ///      for(unsigned int i=0;i<jets.size();i++){ 
+  ///  	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
+  ///  	double scaleFactor(0.1);  //bias correction
+  ///  	double corr_jer(1);
+  ///  	if( jer < 0 ){ scaleFactor = 0.;  }
+  ///  	if( jer > 0 ){ scaleFactor = 0.2; }
+  ///  	
+  ///  	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
+  ///  	
+  ///  	if( corr_jer < 0 ){ corr_jer = 1; }
+  ///  	jerFactors.push_back(corr_jer);
+  ///      }
+  ///    }  
+  ///    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
+  ///  }
+  // Base scale factors must be applied in any case (modify code above then)
+  
+  
+  jerFactors.clear();
+  for(unsigned int i=0;i<jets.size();i++){ 
+    double corr_jer(1.);
+    if(!isData_) smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
+    jerFactors.push_back(corr_jer);
+    //    std::cout << " jerfac: " << corr_jer << std::endl;
+  }
+
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
   double metWithJES = jetMETScaling(jerFactors, jes_,junc, jets , met.Px(), met.Py()); 
