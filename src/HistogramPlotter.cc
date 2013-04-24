@@ -390,6 +390,7 @@ void HistogramPlotter::processPlots(int i){
 
     TPad * p = (TPad*)c_->cd(2);   
 
+
     TH1 * dataClone = (TH1 * ) dataHisto->Clone("dataclone");
     
 
@@ -403,6 +404,29 @@ void HistogramPlotter::processPlots(int i){
 
     
     iRatio->Divide(denominator); 
+    
+
+    TGraphErrors* myRelError;
+    TH1* myDataClone = (TH1*) dataClone->Clone("forValues");
+    myDataClone->Add(denominator,-1);
+    if(includeErrors_){
+      TGraphErrors* myRelErrorTemp = (TGraphErrors*) myError->Clone("myRelError");
+      myRelError = myRelErrorTemp;
+      //      cout << "MyRelError bins " << myRelError->GetN() <<", iRatio bins " << iRatio->GetNbinsX() << endl;
+      for(int n=1;n<myRelError->GetN(); n++){// FIXME: 1?
+	double xValue, yValue;
+	myRelError->GetPoint(n, xValue, yValue);
+	double xError   = myRelError->GetErrorX(n);
+	double yError   = myRelError->GetErrorY(n);
+	
+	double newX(iRatio->GetBinCenter(n)), newY(iRatio->GetBinContent(n));
+	//  sqrt( (eA.B)^2 + (A.eB)^2 ), /B^2
+       	double newError( sqrt( pow(myDataClone->GetBinError(n) * denominator->GetBinContent(n),2) + pow(myDataClone->GetBinContent(n) * yError,2) )/pow(denominator->GetBinContent(n),2)  );
+	myRelError->SetPoint(n, newX, newY );
+	myRelError->SetPointError(n, xError, newError );
+	
+      }
+    }
     
     // set iRatio x axis and title to the same as data /////////////////////////////////////////////////////////////////////////////////
     map<int, pair<float,float> >::iterator it1; it1=mapIdXrange_.find(i);   
@@ -431,8 +455,12 @@ void HistogramPlotter::processPlots(int i){
     iRatio->SetMarkerColor(1);
     iRatio->SetLineColor(1);
     iRatio->SetMarkerStyle(20);
-
     iRatio->Draw();
+    if(includeErrors_){
+      myRelError->SetFillColor(1);
+      myRelError->SetFillStyle(3001);
+      myRelError->Draw("2same");
+    }
 
     //draw the canvas
     p->SetTopMargin(0);
@@ -516,7 +544,7 @@ void HistogramPlotter::plotLegend( TH1 * higgs, TLegend *l, TString title, vecto
 //   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  1.9 fb^{-1}  CMS ");
 //   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  4.0 fb^{-1} CMS Preliminary");
 //   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  4.7 fb^{-1} CMS Preliminary");
-   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  18.1 fb^{-1} CMS Preliminary");
+   TText *text = pt->AddText("#sqrt{s} = 8 TeV,  18.1 fb^{-1} CMS Preliminary");
    text->SetTextAlign(11);
    pt->Draw();
 

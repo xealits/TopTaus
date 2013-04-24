@@ -117,6 +117,7 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:	
+2013-04-24: 2.41AM: added stat+syst bands in ratio plots
 2013-04-22: fixed bug in variables for OS shapes (it was fixed in 2011 and was never committed to the 2012 branch
 	    added automatic calculation and table of fakes
 2013-04-19: added index.html automatically put inside plots directory for easy and fancy propagation of the plots
