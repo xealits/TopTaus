@@ -327,6 +327,14 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   h = new TH1D("sumpt_jj",                "sumpt_jj;p_{T}^{jet1} + p_{T}^{jet2} [GeV/c]; Entries",600,0,1500);    addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("m_taub",              "m_taub;M(#tau,b); Entries",400,0.,1600.);                   addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   
+  
+  h = new TH1D("m_lepj_all",              "m_lepj_all;M(l,j); Entries",400,0.,1600.);                   addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_lepj_min",              "m_lepj_min;min M(l,j); Entries",400,0.,1600.);                   addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_lepj_max",              "m_lepj_max;max M(l,j); Entries",400,0.,1600.);                   addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("m_lepj_delta",            "m_lepj_delta;|M(#tau,j)-M(#mu,j)|; Entries",4000,0.,400.);                   addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h2 = new TH2D("m_lepj_mmj_mtj","m_lepj_mmj_mtj; M(#tau,j); M(#mu, j);",400,0.,1600., 400, 0., 1600. ); addHistoToMonitors(h2,h2->GetName(), stepsMons, keys);
+  h2 = new TH2D("m_lepj_delta_mtj","m_lepj_delta_mtj; M(#tau,j);|M(#tau,j)-M(#mu,j)|;",400,0.,1600., 4000, 0., 400. ); addHistoToMonitors(h2,h2->GetName(), stepsMons, keys);
+  
   // btag //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   h = new TH1D("btag_j",              "j;btag; Entries",200,-20,20);            addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("btagmultiplicity_j",  "j;N_{b-tags}; Entries",4,0,4);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
