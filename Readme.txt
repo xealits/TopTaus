@@ -194,18 +194,8 @@ TODO:
 - move all 234.s in the code (TauDileptonTableBuilder in particular) to the value from SampleProcessor (or move the xsecs to CommonDefinitions, better) 
 - apply method to jerunc
 - vstrings in physicsAnalysisParSets_cfg.py for pileup syst
-- Fix multiplicity plots for lead/sublead/subsublead jets 
-- Fix HistogramPlotter to read LUM from commondefinitions
-- Substitute random smearing for JER with smearing by genPt
-  (it's the recommended method and should be faster, since it does not call the random() function)
-  (almost done: it just needs to be applied to the CutflowAnalyzer)
-
 - move path of plots output directory to command line or cfg file.
-
-- btagmulticorrected splitting by leadjet/nlj/nnlj
-
 - split JEC uncertainty sources into the 16 components.
-
 - scripts/getTriggers.hs: implement running through sh getTriggers.sh PARS, in order to allow to choose
   at runtime whether to print the prescales table or just the triggers
 

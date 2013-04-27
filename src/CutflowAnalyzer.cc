@@ -2646,9 +2646,7 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   double jphi1(0), jphi2(0), jphi3(0);
 
   int jet1_ind(-1), jet2_ind(-1), jet3_ind(-1);
-  double btag1(0), btag2(0), btag3(0); 
   int btagmul(0);
-  double btagmul1(0), btagmul2(0), btagmul3(0);
   
   PhysicsObject hptbjet; double ptbjet(0);// highest-pt bjet and its pt
   
@@ -2664,16 +2662,13 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
       jet3=jet2; jeta3=jeta2; jphi3=jphi2; jet3_ind=jet2_ind; 
       jet2=jet1; jeta2=jeta1; jphi2=jphi1; jet2_ind=jet1_ind; 
       jet1=j_pt; jeta1=j_eta; jphi1=j_phi; jet1_ind = ind; 
-      btag3=btag2; btag2 = btag1; btag1 = btag; 
     } // leading jet
     else if( j_pt > jet2 ){
       jet3=jet2; jeta3=jeta2; jphi3=jphi2; jet3_ind=jet2_ind;
       jet2=j_pt; jeta2=j_eta; jphi2=j_phi; jet2_ind=ind;
-      btag3=btag2; btag2=btag; 
     } // next leading jet
     else if( j_pt > jet3 ){ 
       jet3=j_pt; jeta3=j_eta; jphi3=j_phi; jet3_ind=ind;   
-      btag3=btag;
     } // next to next to leading jet
     mon.fillHisto(TString("pt_j"),extra1+step, j_pt,w_);  mon.fillHisto(TString("pt_j"), extra2+step, j_pt,w_);
 
@@ -2707,9 +2702,6 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
       }
     }
     
-    if( btag1 > BTAG_CUT_) btagmul1++;
-    if( btag2 > BTAG_CUT_) btagmul2++;
-    if( btag3 > BTAG_CUT_) btagmul3++;
     if(! isData_ ){
       if(btag > BTAG_CUT_){
         if     ( pgid == PGID_B       ){ mon.fillHisto("btag_eff_realbs_num",  extra1+step,  j_pt ,w_);  mon.fillHisto("btag_eff_realbs_num",  extra2+step, j_pt,w_); }
@@ -2989,9 +2981,6 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
 
   // Fill btag multiplicity  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   mon.fillHisto("btagmultiplicity_j",extra1+step, btagmul,w_);                   mon.fillHisto("btagmultiplicity_j", extra2+step, btagmul,w_);
-  mon.fillHisto("btagmultiplicity_j1",extra1+step, btagmul1,w_);                 mon.fillHisto("btagmultiplicity_j1", extra2+step, btagmul1,w_);
-  mon.fillHisto("btagmultiplicity_j2",extra1+step, btagmul2,w_);                 mon.fillHisto("btagmultiplicity_j2", extra2+step, btagmul2,w_);
-  mon.fillHisto("btagmultiplicity_j3",extra1+step, btagmul3,w_);                 mon.fillHisto("btagmultiplicity_j3", extra2+step, btagmul3,w_);
   mon.fillHisto("corrected_btagmultiplicity_j",extra1+step, btagscorrected,w_);  mon.fillHisto("corrected_btagmultiplicity_j", extra2+step, btagscorrected,w_);   
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
