@@ -4,7 +4,7 @@
 
   <!-- jet distribition (After lepton + 3jets  -->
   <id tag="muCh_pt_j" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{jets}_{T}
-  [GeV/c]" yrange="10,600000000" xrange="35,500" xbin="4" >
+  [GeV/c]" yrange="10,20000000" xrange="35,500" xbin="4" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j_4</item>
   </id> 
 
@@ -28,19 +28,19 @@
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j3_4</item>
   </id> 
 
-  <id tag="muCh_eta_j" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,2000000" xbin="2" >
+  <id tag="muCh_eta_j" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,400000" xbin="2" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">eta_j_4</item>
   </id> 
 
-  <id tag="muCh_eta_j1" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,1000000" xbin="2" >
+  <id tag="muCh_eta_j1" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,200000" xbin="2" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">eta_j1_4</item>
   </id> 
 
-  <id tag="muCh_eta_j2" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,1000000" xbin="2" >
+  <id tag="muCh_eta_j2" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,200000" xbin="2" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">eta_j2_4</item>
   </id> 
 
-  <id tag="muCh_eta_j3" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,1000000" xbin="2" >
+  <id tag="muCh_eta_j3" doratio="1" logy="0" cmspublic="y" oflow="0" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}" xrange="-2.8,2.8" yrange="1,200000" xbin="2" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">eta_j3_4</item>
   </id> 
 
@@ -71,7 +71,7 @@
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >btag_j_4</item>
   </id>
 
-  <id tag="muCh_m_muj1" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(#mu, lead jet)" yrange="0.1,1000000000" >
+  <id tag="muCh_m_muj1" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(#mu, lead jet)" yrange="0.1,1000000000" xbin="2">
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >m_muj1_4</item>
   </id>
 
@@ -111,6 +111,23 @@
 <!--  <id tag="muCh_m_muj1" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="M(j, j)"  xtitle="M(j, j, b)" yrange="0.1,100000" >
     <item dir="PFlow/RecoSteps/lep_tau/OS" >mjjb_mjj_8</item>
   </id>
+-->
+
+  <id tag="muCh_m_lepj_all" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(l, j)" yrange="0.1,100000" xrange="0,1200" xbin="2">
+    <item dir="PFlow/RecoSteps/lep_tau/OS" >m_lepj_all_8</item>
+  </id>
+  <id tag="muCh_m_lepj_min" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(l, j)" yrange="0.1,100000" xrange="0,1200" xbin="2">
+    <item dir="PFlow/RecoSteps/lep_tau/OS" >m_lepj_min_8</item>
+  </id>
+  <id tag="muCh_m_lepj_max" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(l, j)" yrange="0.1,100000" xrange="0,1200" xbin="2">
+    <item dir="PFlow/RecoSteps/lep_tau/OS" >m_lepj_max_8</item>
+  </id>
+  <id tag="muCh_m_lepj_delta" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="|M(#tau, j) - M(#mu, j)|" yrange="0.1,100000" xrange="0,1200" xbin="2">
+    <item dir="PFlow/RecoSteps/lep_tau/OS" >m_lepj_delta_8</item>
+  </id>
+<!-- 
+ h2 = new TH2D("m_lepj_mmj_mtj","m_lepj_mmj_mtj; M(#tau,j); M(#mu, j);",400,0.,1600., 400, 0., 1600. ); addHistoToMonitors(h2,h2->GetName(), stepsMons, keys);
+  h2 = new TH2D("m_lepj_delta_mtj","m_lepj_delta_mtj; M(#tau,j);|M(#tau,j)-M(#mu,j)|;",400,0.,1600., 4000, 0., 400. ); addHistoToMonitors(h2,h2->GetName(), stepsMons, keys);
 -->
 
 </monitor>
