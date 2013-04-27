@@ -91,7 +91,7 @@ namespace event
     if(coll==0) return objColl;
     bool acquireJets(false);
     //build the collection of physics objects
-    for(int i=0; i< coll->GetEntriesFast(); i++)
+    for(int i=0; i< coll->GetEntriesFast(); ++i)
       {
 	if( (type==ELECTRON || type==MUON ) )
 	  {
@@ -134,15 +134,15 @@ namespace event
     if(type==JET){
       PhysicsObjectCollection fixedColl;
       vector<size_t> excluded;
-      for(size_t i=0; i<objColl.size(); i++){
+      for(size_t i=0; i<objColl.size(); ++i){
 	bool doStuff = true;
-	for(size_t b=0; b<excluded.size(); b++)
+	for(size_t b=0; b<excluded.size(); ++b)
 	  if(i== excluded[b]) doStuff = false;
 	if(!doStuff) continue;
 	
 	PhysicsObject ijet= objColl[i];
 	bool lock = false;
-	for(size_t j=0; j<objColl.size(); j++){
+	for(size_t j=0; j<objColl.size(); ++j){
 	  if(j==i) continue;
 	  PhysicsObject jjet = objColl[j];
 	  //if(lock == false){
@@ -185,7 +185,7 @@ namespace event
     if(ev->vertexColl==0) return vtxColl;
     
     //build the collection of physics objects
-    for(int i=0; i< ev->vertexColl->GetEntriesFast(); i++)
+    for(int i=0; i< ev->vertexColl->GetEntriesFast(); ++i)
       {
 	TVectorD *info = (TVectorD *) ev->vertexColl->At(i);
 	TLorentzVector vtxMom(0,0,0,0);
@@ -210,7 +210,7 @@ namespace event
     PhysicsObjectCollection electrons;
     for(PhysicsObjectCollection::iterator eIt = origElectrons.begin();
 	eIt != origElectrons.end();
-	eIt++)
+	++eIt)
       {
 	if( HasArbitration(dilArbitration,event::Reader::ID) && !ElectronId( *eIt ) ) continue;
 	if( HasArbitration(dilArbitration,event::Reader::ISO) && !ElectronIso( *eIt) ) continue;
@@ -218,7 +218,7 @@ namespace event
 	
 	//add ee dileptons
 	PhysicsObjectCollection::iterator newEit = eIt; newEit++;
-	for( ; newEit != origElectrons.end(); newEit++ )
+	for( ; newEit != origElectrons.end(); ++newEit )
 	  {
 	    if(eIt==newEit) continue;
 	    bool sameCharge( ((*newEit)[0])*((*eIt)[0])>0 );	    
@@ -230,7 +230,7 @@ namespace event
     PhysicsObjectCollection muons;
     for(PhysicsObjectCollection::iterator mIt = origMuons.begin();
 	mIt != origMuons.end();
-	mIt++)
+	++mIt)
       {
 	if(HasArbitration(dilArbitration,event::Reader::ID) && !MuonId( *mIt ) ) continue;
 	if(HasArbitration(dilArbitration,event::Reader::ISO) && !MuonIso( *mIt) ) continue;
@@ -238,7 +238,7 @@ namespace event
 	
 	//add mumu dileptons
 	PhysicsObjectCollection::iterator newMit = mIt; newMit++;
-	for( ; newMit != origMuons.end(); newMit++ )
+	for( ; newMit != origMuons.end(); ++newMit )
 	  {	 
 	    bool sameCharge( ((*newMit)[0])*((*mIt)[0])>0 );
 	    if(HasArbitration(dilArbitration,event::Reader::OS) && sameCharge) continue;
@@ -249,7 +249,7 @@ namespace event
 	//add emu dileptons
 	for(PhysicsObjectCollection::iterator newEit = electrons.begin();
 	    newEit != electrons.end();
-	    newEit++)
+	    ++newEit)
 	  {
 	    bool sameCharge( ((*newEit)[0])*((*mIt)[0])>0 );
 	    if(HasArbitration(dilArbitration,event::Reader::OS) && sameCharge) continue;
@@ -357,10 +357,10 @@ namespace event
   PhysicsObjectCollection Reader::PrunePhysicsObjectsFor(PhysicsObjectCollection &origObjects, PhysicsObjectCollection &otherObjects,double minDRallowed)
   {
     PhysicsObjectCollection cleanObjects;
-    for(size_t iobj=0; iobj<origObjects.size(); iobj++)
+    for(size_t iobj=0; iobj<origObjects.size(); ++iobj)
       {
 	double minDR(1000);
-	for(size_t jobj=0; jobj<otherObjects.size(); jobj++)
+	for(size_t jobj=0; jobj<otherObjects.size(); ++jobj)
 	  {
 	    double dR = origObjects[iobj].DeltaR( otherObjects[jobj] );
 	    if(dR<minDR) minDR=dR;
@@ -376,7 +376,7 @@ namespace event
   {
     PhysicsObjectCollection arbitratedJets;
     double fassocmin(0.);
-    for(PhysicsObjectCollection::iterator jIt = origJets.begin(); jIt != origJets.end(); jIt++)
+    for(PhysicsObjectCollection::iterator jIt = origJets.begin(); jIt != origJets.end(); ++jIt)
       {
 	if( HasArbitration(jetArbitration,event::Reader::VTXCONSTRAINED) && fabs((*jIt)[16])<=fassocmin ) continue;
 	TLorentzVector jetMom(*jIt);

@@ -117,6 +117,10 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:	
+2013-04-27: new kinematic variables added
+	    plots ranges for eta tuned
+	    some prefixes for optimization
+	    metscaling testing
 2013-04-24: 2.41AM: added stat+syst bands in ratio plots
 	    wJetsAnalysis was not using jerc (bugfix)
 	    fixed btag bug for wJetsAnalysis

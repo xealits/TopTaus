@@ -887,23 +887,23 @@ void SampleProcessor::process_wh_higgs_bychannel(){
 
 
 void SampleProcessor::process_tbh_higgs_bychannel(){
-  url_ = TBH180_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m180.root"), oFolder_+TString("out-tbh-pythia-m180_mutau.root"),keys_, MUTAU_); 
-  url_ = TBH190_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m190.root"), oFolder_+TString("out-tbh-pythia-m190_mutau.root"),keys_, MUTAU_); 
-  url_ = TBH200_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m200.root"), oFolder_+TString("out-tbh-pythia-m200_mutau.root"),keys_, MUTAU_); 
-  url_ = TBH220_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m220.root"), oFolder_+TString("out-tbh-pythia-m220_mutau.root"),keys_, MUTAU_); 
-  url_ = TBH250_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m250.root"), oFolder_+TString("out-tbh-pythia-m250_mutau.root"),keys_, MUTAU_); 
-  url_ = TBH300_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m300.root"), oFolder_+TString("out-tbh-pythia-m300_mutau.root"),keys_, MUTAU_); 
+  url_ = TBH180_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("tbh-pythia-m180.root"), oFolder_+TString("out-tbh-pythia-m180_mutau.root"),keys_, MUTAU_); 
+  url_ = TBH190_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("tbh-pythia-m190.root"), oFolder_+TString("out-tbh-pythia-m190_mutau.root"),keys_, MUTAU_); 
+  url_ = TBH200_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("tbh-pythia-m200.root"), oFolder_+TString("out-tbh-pythia-m200_mutau.root"),keys_, MUTAU_); 
+  url_ = TBH220_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("tbh-pythia-m220.root"), oFolder_+TString("out-tbh-pythia-m220_mutau.root"),keys_, MUTAU_); 
+  url_ = TBH250_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("tbh-pythia-m250.root"), oFolder_+TString("out-tbh-pythia-m250_mutau.root"),keys_, MUTAU_); 
+  url_ = TBH300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("tbh-pythia-m300.root"), oFolder_+TString("out-tbh-pythia-m300_mutau.root"),keys_, MUTAU_); 
   
 }
 
 
 void SampleProcessor::process_tbh_higgs(){
-  url_ = TBH180_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m180.root"), oFolder_+TString("out-tbh-pythia-m180.root"),keys_); 
-  url_ = TBH190_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m190.root"), oFolder_+TString("out-tbh-pythia-m190.root"),keys_); 
-  url_ = TBH200_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m200.root"), oFolder_+TString("out-tbh-pythia-m200.root"),keys_); 
-  url_ = TBH220_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m220.root"), oFolder_+TString("out-tbh-pythia-m220.root"),keys_); 
-  url_ = TBH250_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m250.root"), oFolder_+TString("out-tbh-pythia-m250.root"),keys_); 
-  url_ = TBH300_URL; process(false, url_, iFolder_ + TString("tbh-pythia-m300.root"), oFolder_+TString("out-tbh-pythia-m300.root"),keys_); 
+  url_ = TBH180_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("tbh-pythia-m180.root"), oFolder_+TString("out-tbh-pythia-m180.root"),keys_); 
+  url_ = TBH190_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("tbh-pythia-m190.root"), oFolder_+TString("out-tbh-pythia-m190.root"),keys_); 
+  url_ = TBH200_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("tbh-pythia-m200.root"), oFolder_+TString("out-tbh-pythia-m200.root"),keys_); 
+  url_ = TBH220_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("tbh-pythia-m220.root"), oFolder_+TString("out-tbh-pythia-m220.root"),keys_); 
+  url_ = TBH250_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("tbh-pythia-m250.root"), oFolder_+TString("out-tbh-pythia-m250.root"),keys_); 
+  url_ = TBH300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("tbh-pythia-m300.root"), oFolder_+TString("out-tbh-pythia-m300.root"),keys_); 
 
 
 }

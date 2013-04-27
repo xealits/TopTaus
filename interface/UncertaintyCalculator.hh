@@ -6,7 +6,7 @@
   
   \author   Pietro Vischia, pietro.vischia@gmail.com
 
-  \version  $Id: UncertaintyCalculator.hh,v 1.3 2013/03/21 17:55:33 vischia Exp $                                                                                                       
+  \version  $Id: UncertaintyCalculator.hh,v 1.4 2013/03/27 15:25:11 vischia Exp $                                                                                                       
 */
 
 // System headers
@@ -42,6 +42,7 @@ using namespace std;
 class UncertaintyCalculator {
 public:
   double jetMETScaling( vector<double> & jerFactors, double jes,JetCorrectionUncertainty * junc, vector<PhysicsObject> & vJ , double missetX, double missetY);
+  double jetMETScalingTest( vector<double> & jerFactors, double jes,JetCorrectionUncertainty * junc, vector<PhysicsObject> & vJ , PhysicsObject& met);
   double jetMETUnclustered( vector<double> & jerFactors, PhysicsObject * obj, double unc, vector<PhysicsObject> & vJ, double missetX, double missetY);
   double jetMETResolution( vector<double> & jerFactors , vector<PhysicsObject> & vJ, double missetX, double missetY);
   double getJetPt( PhysicsObject &j ,JetCorrectionUncertainty * junc, double jerFactor,double jes);

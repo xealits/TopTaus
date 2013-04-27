@@ -140,7 +140,7 @@ void ObjectSelector::SetDileptonSelection(){
 
 bool ObjectSelector::LooseElectronVeto(event::Reader* reader, int selectedElectron, const vector<PhysicsObject>& vE){
   bool looseVeto(false);
-  for( int i=0;i< (int) vE.size();i++ ){
+  for( int i=0;i< (int) vE.size();++i ){
     if(i==selectedElectron){ continue; }
     
     const PhysicsObject * e = &vE[i];
@@ -162,7 +162,7 @@ bool ObjectSelector::LooseMuonVeto( int selectedMuon, const vector<PhysicsObject
 
   bool looseVeto(false);
   
-  for(int i=0;i< (int)vM.size();i++){
+  for(int i=0;i< (int)vM.size();++i){
     
     if( i==selectedMuon ){continue;}
     
@@ -188,7 +188,7 @@ bool ObjectSelector::LooseMuonVeto( int selectedMuon, const vector<PhysicsObject
 
 void ObjectSelector::PreSelectElectrons( event::Reader* reader, vector<int>* e_i, const vector<PhysicsObject>& vE, PhysicsObject& vertex) {
   
-  for(unsigned int i=0;i<vE.size();i++){
+  for(unsigned int i=0;i<vE.size();++i){
     
     const PhysicsObject * e = &vE[i]; 
     double scEta    = (*e)[39];  
@@ -226,7 +226,7 @@ void ObjectSelector::PreSelectElectrons( event::Reader* reader, vector<int>* e_i
 
 void ObjectSelector::PreSelectMuons( event::Reader* reader, vector<int>* m_i, const vector<PhysicsObject>& vM, PhysicsObject& vertex) {
   
-  for( int i=0;i< (int) vM.size();i++){
+  for( int i=0;i< (int) vM.size();++i){
     
     const PhysicsObject * m = &vM[i];
     
@@ -253,7 +253,7 @@ void ObjectSelector::PreSelectMuons( event::Reader* reader, vector<int>* m_i, co
 
 void ObjectSelector::PreSelectJets( bool isData, vector<double>& jerFactors, double jes, JetCorrectionUncertainty* junc, int jetAlgo, vector<int>* j_i, const vector<PhysicsObject>& vJ) {
   
-  for(unsigned int i=0;i<vJ.size();i++){
+  for(unsigned int i=0;i<vJ.size();++i){
     
     double jetEta     = TMath::Abs(vJ[i].Eta());
     double jetPt      = TMath::Abs(vJ[i].Pt());
@@ -316,7 +316,7 @@ void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject
   else if( myKey =="PFlow"   ){ applyHPS =true; HPS_ISO_ = HPS_MEDIUMISO; }  // MEDIUM WORKING POINT
   
   
-  for(unsigned int i=0;i<vT.size();i++){
+  for(unsigned int i=0;i<vT.size();++i){
     
     
     double tauEta            = TMath::Abs(vT[i].Eta());
@@ -511,7 +511,7 @@ void ObjectSelector::GetObjectsBasedOnPt(
 					 ){
   
   
-  for(unsigned int i=0;i<obj_input.size();i++){
+  for(unsigned int i=0;i<obj_input.size();++i){
     int obj_ind = obj_input[i];
     double objPt  = TMath::Abs(v[obj_ind].Pt());
     
@@ -557,11 +557,11 @@ void ObjectSelector::ProcessSelfCleaning(  const vector<PhysicsObject>& vParticl
   map< int, vector<int> * > nonIso;  
   
   //Build map of non isolated particules and fill new index of isolated ones //////////
-  for(itv1 = vi_old->begin(); itv1 != vi_old->end(); itv1++){
+  for(itv1 = vi_old->begin(); itv1 != vi_old->end(); ++itv1){
     
     vector<int> * p = new vector<int>;
     
-    for(itv2 = vi_old->begin(); itv2 != vi_old->end(); itv2++){ 
+    for(itv2 = vi_old->begin(); itv2 != vi_old->end(); ++itv2){ 
       if (  *itv1 != *itv2 ){
 	double dr =vParticle[(*itv1)].DeltaR(vParticle[(*itv2)]);
 	if(dr<DR){  p->push_back(*itv2); }
@@ -579,11 +579,11 @@ void ObjectSelector::ProcessCleaning(
   
   vector<int>::iterator itv1,itv2;
   
-  for(itv1 = va_old->begin(); itv1 != va_old->end(); itv1++){
+  for(itv1 = va_old->begin(); itv1 != va_old->end(); ++itv1){
     if( find(a_remove->begin(),a_remove->end(), *itv1 ) ==  a_remove->end() ){
       
       
-      for( itv2 = vb_old->begin(); itv2 != vb_old->end(); itv2++){
+      for( itv2 = vb_old->begin(); itv2 != vb_old->end(); ++itv2){
 	
 	if( find(b_remove->begin(),b_remove->end(), *itv2 ) ==  b_remove->end() ){
 	  double dr =aParticles[(*itv1)].DeltaR(bParticles[(*itv2)]);
@@ -599,7 +599,7 @@ void ObjectSelector::ProcessCleaning(
 
 void ObjectSelector::ApplyCleaning( vector<int>* i_old , vector<int>* i_remove, vector<int>* i_new){
   vector<int>::iterator itv1,itv2; 
-  for(itv1 = i_old->begin(); itv1 != i_old->end(); itv1++){
+  for(itv1 = i_old->begin(); itv1 != i_old->end(); ++itv1){
     if( find( i_remove->begin(), i_remove->end(), *itv1) == i_remove->end()){  i_new->push_back(*itv1); }
   }
 }
