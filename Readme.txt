@@ -121,6 +121,8 @@ CHANGELOG for major updates:
 	    plots ranges for eta tuned
 	    some prefixes for optimization
 	    metscaling testing
+	    cleanup in plots
+	    cleanup in todolist
 2013-04-24: 2.41AM: added stat+syst bands in ratio plots
 	    wJetsAnalysis was not using jerc (bugfix)
 	    fixed btag bug for wJetsAnalysis
@@ -190,9 +192,8 @@ TODO:
 - move to txt file the cout of the fakes computation in TauFakesHelper.cc (latex table and everything)
 - reweight MC distros con q/g fraction evaluated from MC
 - From my 2013-04-22 presentation at TauPOG: recalculate fakes feeding the wmu sample the qcd mva and vice versa, try training with more kinematical variables
-- patch squared plots
 - move all 234.s in the code (TauDileptonTableBuilder in particular) to the value from SampleProcessor (or move the xsecs to CommonDefinitions, better) 
-- apply method to jerunc
+- tdrStyle in kNN plots
 - vstrings in physicsAnalysisParSets_cfg.py for pileup syst
 - move path of plots output directory to command line or cfg file.
 - split JEC uncertainty sources into the 16 components.
@@ -220,9 +221,6 @@ TODO:
 		 --> import batch submission and modify process in order to run on a given subset of events.
 		     (add s.th like void processEvents(uint firstEv, uint lastEv, string dataset){ if(string...) CutflowAnalyzer::process_ttbar(.. process(firstEv, lastEv) ..)  }
 		     Doing that needs to redefine the total number of events in the event reweighting according to xsec and N_mc_evts
-
-- MVA code --> port to binary and commit
-
 - Tau energy scale for main analysis code. 
 
 - Split fake contribution into e and mu
