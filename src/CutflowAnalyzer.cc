@@ -1555,7 +1555,7 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
   //Opposite sign //////////////////////////////////
   bool oscut(false);
   if( lepton_charge * tau_charge < 0 ) oscut = true; 
-  //  if(oscut) is_os_ = 1.; // FIXME: fix
+  if(oscut) is_os_ = 1.; // FIXME: fix
   //////////////////////////////////////////////////
 
 
@@ -1621,7 +1621,6 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
 
     if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,OS_STEP2,tauDilCh,w_); }
     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"OS",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
-    is_os_ = 1; // this is the correct place
 
     //SPY AFTER TAU ID AND OS /////////////////////////////////////////////////////////////////////////
     //if(jes_== 0 && unc_== 0 && jer_== 0 && btagunc_==0 && pu_ == NOPU ) listOfReaders_[0]->SpyEvent();
