@@ -55,18 +55,6 @@
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >btagmultiplicity_j_4</item>
   </id>
 
-  <id tag="muCh_btagmultiplicity_j1" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  yrange="10,10000000" xtitle="N_{b-tags lead}">
-    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >btagmultiplicity_j1_4</item>
-  </id>
-
-  <id tag="muCh_btagmultiplicity_j2" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  yrange="10,10000000" xtitle="N_{b-tags sublead}">
-    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >btagmultiplicity_j2_4</item>
-  </id>
-
-  <id tag="muCh_btagmultiplicity_j3" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  yrange="10,10000000" xtitle="N_{b-tags subsublead}">
-    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >btagmultiplicity_j3_4</item>
-  </id>
-
   <id tag="muCh_btag_j" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xrange="0,1.2" xtitle="Combined Secondary Vertex b-tag" yrange="100,1000000" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >btag_j_4</item>
   </id>
