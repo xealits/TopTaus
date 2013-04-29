@@ -117,6 +117,7 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:	
+2013-04-29: committed revision 715 for chiggs datacards
 2013-04-27: new kinematic variables added
 	    plots ranges for eta tuned
 	    some prefixes for optimization
@@ -182,6 +183,7 @@ FIXED TAGS:
 - V12-12-21 / V12-12-17: 2011 code.
 
 CHANGELOG for datacards:
+rev 715 (2012-04-29): cHiggs: moved to use pt_tau shapes. Fixed datacards with values after met correction.
 rev 714 (2012-04-19): fixed first shapes files and datacards with support for shapes (R_tau) for heavy charged higgs		
 rev 713 (2012-04-19): first shapes files and datacards with support for shapes (R_tau) for heavy charged higgs	
 rev 702 (2012-04-18): first counting-only chiggs datacards for heavy charged higgs
@@ -189,6 +191,8 @@ rev 702 (2012-04-18): first counting-only chiggs datacards for heavy charged hig
 
 TODO:
 - git test completed: decide when to move to git
+- fix uncertainty band plotting in case the plot is normalized to 1 (Rtau)
+- update uncertainties in HistogramPlotter
 - move to txt file the cout of the fakes computation in TauFakesHelper.cc (latex table and everything)
 - reweight MC distros con q/g fraction evaluated from MC
 - From my 2013-04-22 presentation at TauPOG: recalculate fakes feeding the wmu sample the qcd mva and vice versa, try training with more kinematical variables
