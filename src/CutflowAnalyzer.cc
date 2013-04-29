@@ -3544,7 +3544,7 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
     jerFactors.push_back(1.);
     //    std::cout << " jerfac: " << corr_jer << std::endl;
   }
-  jets=newJets;
+  if(!isData_) jets=newJets;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
