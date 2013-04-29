@@ -6,7 +6,7 @@
   
   \author   Pietro Vischia, pietro.vischia@gmail.com
 
-  \version  $Id: CutflowAnalyzer.hh,v 1.6 2013/03/05 19:11:08 vischia Exp $                                                                                                       
+  \version  $Id: CutflowAnalyzer.hh,v 1.7 2013/04/22 20:26:44 vischia Exp $                                                                                                       
 */
 
 // System headers
@@ -68,7 +68,9 @@ public:
 				std::vector<PhysicsObject>&, vector<int>&, 
 				std::vector<PhysicsObject>&, vector<int>&, int, JetCorrectionUncertainty*, vector<double>&, 
 				TString,
-				event::MiniEvent_t*
+				event::MiniEvent_t*,
+				std::vector<PhysicsObject>&,
+				vector<double>&
 				);
   
 void dileptonEventAnalysis(

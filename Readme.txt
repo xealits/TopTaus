@@ -119,6 +119,7 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 CHANGELOG for major updates:	
 2013-04-29: committed revision 715 for chiggs datacards
 	    cleanup and fix of shapes producer
+	    jer and propagation to met fix
 2013-04-27: new kinematic variables added
 	    plots ranges for eta tuned
 	    some prefixes for optimization

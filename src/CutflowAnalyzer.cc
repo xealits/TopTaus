@@ -387,6 +387,9 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
 
   //jet energy corrections ////////////////////////////////////////////////////////////////////////////////
   vector<double> jerFactors;
+  vector<double> oldJerFactorsForMet;
+  vector<PhysicsObject> newJets;
+  vector<PhysicsObject> oldJetsForMet;
 ///  // Old jet energy resolution factors
 ///  if(jerc){ // Split condition for optimizazion
 ///    fast_=false;
@@ -410,17 +413,25 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
 
 
   jerFactors.clear();
+  oldJerFactorsForMet.clear();
+  newJets.clear();
+  oldJetsForMet.clear();
+  if(i_ == 45) cout<<endl<< "CORR JETS IN EVENT " << i_ << endl;
   for(unsigned int i=0;i<jets.size();++i){ 
     double corr_jer(1.);
     if(!isData_){
-      if(jer_== 0) smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
-      if(jer_> 0) smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
-      if(jer_< 0) smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
+      if(jer_== 0) newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      if(jer_> 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      if(jer_< 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
     }
-    jerFactors.push_back(corr_jer);
+    jerFactors.push_back(1.);
+    oldJerFactorsForMet.push_back(corr_jer);
     //    std::cout << " jerfac: " << corr_jer << std::endl;
-  }
-
+    if(!isData_ && i_ == 45) cout << setprecision(6) << "\t\t jet " << i << ", pt " << newJets[i].Pt() <<", eta " << newJets[i].Eta() << ", phi " << newJets[i].Phi() << endl;
+    
+  } 
+  oldJetsForMet=jets;
+  if(!isData_) jets=newJets;
 
   // DEBUG (successful)
   //    if(isData_) for(size_t i=0; i<jerFactors.size(); i++)
@@ -624,8 +635,7 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
 
   if(newPhys){ newPhysics(vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey,ev);}
   
-  tauDileptonEventAnalysis(lepReq, vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey,ev);
-
+  tauDileptonEventAnalysis(lepReq, vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey,ev, oldJetsForMet, oldJerFactorsForMet);
 
 }
 
@@ -724,6 +734,7 @@ void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniE
 
   //jet energy corrections ////////////////////////////////////////////////////////////////////////////////
   vector<double> jerFactors;
+  vector<PhysicsObject> newJets;
    ///  // Old jet energy resolution factors
   ///  if(jerc){ // Split condition for optimizazion
   ///    fast_=false;
@@ -747,16 +758,19 @@ void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniE
   
   
   jerFactors.clear();
+  newJets.clear();
   for(unsigned int i=0;i<jets.size();++i){ 
     double corr_jer(1.);
     if(!isData_){
-      if(jer_== 0) smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
-      if(jer_> 0) smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
-      if(jer_< 0) smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
+      if(jer_== 0) newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      if(jer_> 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      if(jer_< 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
     }
-    jerFactors.push_back(corr_jer);
+    //    jerFactors.push_back(corr_jer);
+    jerFactors.push_back(1.);
     //    std::cout << " jerfac: " << corr_jer << std::endl;
   }
+  jets=newJets;
 
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -956,7 +970,9 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
   std::vector<PhysicsObject> & taus,      vector<int>  & t_afterLeptonRemoval, 
   std::vector<PhysicsObject> & jets,      vector<int>  & j_final, 
   int totalJets, JetCorrectionUncertainty* junc, vector<double> & jerFactors, 
-  TString myKey, event::MiniEvent_t *ev
+  TString myKey, event::MiniEvent_t *ev,
+  std::vector<PhysicsObject> & oldJetsForMet,
+  vector<double> & oldJerFactorsForMet
 ) {
 
 
@@ -1093,7 +1109,7 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
  
   // WORKING HERE
   //  double metValue = jetMETScaling( jerFactors, jes_, junc , jets ,met.Px(), met.Py());
-  double metValue = jetMETScalingTest( jerFactors, jes_, junc, jets  , met);
+  double metValue = jetMETScalingTest( oldJerFactorsForMet, jes_, junc, oldJetsForMet  , met);
   // rescaling of met based on unclustered energy ////////////////////////////////////////////////
 //  if( unc_ ){ metValue = jetMETUnclustered( jerFactors, lep_obj, unc_, jets, met.Px(), met.Py());}
 //  if( jer_ ){ metValue = jetMETResolution( jerFactors, jets, met.Px(), met.Py());}
@@ -1555,7 +1571,7 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
   //Opposite sign //////////////////////////////////
   bool oscut(false);
   if( lepton_charge * tau_charge < 0 ) oscut = true; 
-  if(oscut) is_os_ = 1.; // FIXME: fix
+  if(oscut) is_os_ = 1.;
   //////////////////////////////////////////////////
 
 
@@ -3492,6 +3508,7 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
 
   //jet energy corrections /////////////////////////////////////////////////////////////////////////////
   vector<double> jerFactors;
+  vector<PhysicsObject> newJets;
   ///  // Old jet energy resolution factors
   ///  if(jerc){ // Split condition for optimizazion
   ///    fast_=false;
@@ -3515,17 +3532,19 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   
   
   jerFactors.clear();
+  newJets.clear();
   for(unsigned int i=0;i<jets.size();++i){ 
     double corr_jer(1.);
     if(!isData_){
-      if(jer_== 0) smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
-      if(jer_> 0) smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
-      if(jer_< 0) smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer);
+      if(jer_== 0) newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      if(jer_> 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      if(jer_< 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
     }
-    jerFactors.push_back(corr_jer);
+    //    jerFactors.push_back(corr_jer);
+    jerFactors.push_back(1.);
     //    std::cout << " jerfac: " << corr_jer << std::endl;
   }
-
+  jets=newJets;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
 

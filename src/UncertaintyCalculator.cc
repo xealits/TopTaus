@@ -36,6 +36,51 @@ double UncertaintyCalculator::jetMETScaling( vector<double> & jerFactors, double
 
 
 
+// Propagate met variation test
+double UncertaintyCalculator::jetMETScalingTest( vector<double> & jerFactors, double jes,JetCorrectionUncertainty * junc, vector<PhysicsObject> & vJ , PhysicsObject& met) {
+  vector<PhysicsObject> newJets;
+  //  PhysicsObject newMet(met),jetDiff(0,0,0,0),lepDiff(0,0,0,0), unclustDiff(0,0,0,0), clusteredFlux(0,0,0,0);
+  
+  PhysicsObject 
+    newMet        (new TLorentzVector(met), new TVectorD(0)),
+    jetDiff       (new TLorentzVector(0,0,0,0), new TVectorD(0)),
+    lepDiff       (new TLorentzVector(0,0,0,0), new TVectorD(0)), 
+    unclustDiff   (new TLorentzVector(0,0,0,0), new TVectorD(0)), 
+    clusteredFlux (new TLorentzVector(0,0,0,0), new TVectorD(0));
+  for(size_t ijet=0; ijet<vJ.size(); ++ijet)
+    {
+      PhysicsObject origJet = vJ[ijet];
+      
+      double jerF(0);
+      if(jerFactors.size() !=0) jerF = jerFactors[ijet];
+      
+      double 
+	px(origJet.Px()*jerF), 
+	py(origJet.Py()*jerF),
+	pz(origJet.Pz()*jerF), 
+	mass(origJet.M());
+      double en = sqrt(mass*mass+px*px+py*py+pz*pz);
+      
+      PhysicsObject iSmearJet = origJet;
+      //  toReturn.SetCoordinates(px, py, pz, en);
+      iSmearJet.SetPtEtaPhiE(px, py, pz, en);
+      
+      jetDiff += (iSmearJet-vJ[ijet]);
+      newJets.push_back( iSmearJet );
+    }
+  
+  
+  //add new met
+  newMet -= jetDiff; 
+  newMet -= lepDiff; 
+  newMet -= unclustDiff; 
+  
+  return newMet.Pt();
+  
+}
+
+ 
+ 
 double UncertaintyCalculator::jetMETUnclustered( vector<double> & jerFactors, PhysicsObject * obj, double unc, vector<PhysicsObject> & vJ, double missetX, double missetY){
 
 
@@ -168,17 +213,23 @@ PhysicsObject UncertaintyCalculator::smearedJet(const PhysicsObject &origJet, do
     
   }
   
-  if(ptSF<=0) return origJet;
-  
+  if(ptSF<=0){
+    scaleFactor= 1.;
+    return origJet;
+  }
   
   scaleFactor = ptSF; // output scale factor
-  double px(origJet.Px()*ptSF), py(origJet.Py()*ptSF),
-    pz(origJet.Pz()), mass(origJet.M());
+  double 
+    px(origJet.Px()*ptSF),
+    py(origJet.Py()*ptSF),
+    pz(origJet.Pz()*ptSF),
+    mass(origJet.M());
   double en = sqrt(mass*mass+px*px+py*py+pz*pz);
   
   PhysicsObject toReturn = origJet;
   //  toReturn.SetCoordinates(px, py, pz, en);
-  toReturn.SetPtEtaPhiE(px, py, pz, en);
+  //  toReturn.SetPtEtaPhiE(px, py, pz, en); LoL
+  toReturn.SetPxPyPzE(px, py, pz, en);
   
   return toReturn;
   
