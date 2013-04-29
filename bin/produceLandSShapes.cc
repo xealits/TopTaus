@@ -4,7 +4,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: produceLandSShapes.cc,v 1.4 2012/11/08 14:40:14 vischia Exp $                                                                                                       
+  \version  $Id: produceLandSShapes.cc,v 1.5 2013/04/19 14:46:45 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/LandSShapesProducer.hh"
@@ -39,16 +39,26 @@ int main(int argc, char* argv[])
     std::cout << "Usage : " << argv[0] << " parameters_cfg.py --produceOnly [true|false]" << std::endl;
     return 0;
   }
-
+  
+  string sProduceOnly("");
   bool produceOnly(false);
   // Get input arguments
   for(int i=2;i<argc;i++){
     string arg(argv[i]);
     //    if(arg.find("--help")        !=string::npos) { printHelp(); return -1;}   
-    if(arg.find("--produceOnly") !=string::npos) { produceOnly = argv[i+1];}
+    if(arg.find("--produceOnly") !=string::npos) { sProduceOnly = argv[i+1];}
     //check arguments // FIXME: implement --blah bih
   }
   
+  if(sProduceOnly == "true")
+    produceOnly=true;
+  else if(sProduceOnly == "false")
+    produceOnly=false;
+  else{
+    cout << "Error. ProduceOnly value not defined. Defaulting to true" << endl;
+    produceOnly=true;
+  }
+
   string parSet(argv[1]);
 
   LandSShapesProducer* myProducer = new LandSShapesProducer(parSet, produceOnly);

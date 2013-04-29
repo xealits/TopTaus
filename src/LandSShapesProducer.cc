@@ -75,8 +75,8 @@ void LandSShapesProducer::Init(){
   // Reset identifier string
   identifier_ = "";
 
-  cout << "Getting Parameter sets" << endl;
-
+  //  cout << "Getting Parameter sets" << endl;
+  
   // Get ParameterSet from cfg file
   const edm::ParameterSet &mFitPars = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSet");
 
@@ -136,22 +136,23 @@ void LandSShapesProducer::Init(){
   unbinned_    = mFitPars.getParameter<vector<Int_t> >("unbinned");
   smoothOrder_ = mFitPars.getParameter<vector<Int_t> >("smoothOrder");
   
-  cout << "Got all parameter sets" << endl;
+  //  cout << "Got all parameter sets" << endl;
   
   // Open files and get trees
   // ddBkg is the only to be taken from data driven estimation (tree)
   nSamples_ = inputFileName_.size();
   nSysts_     = systComponents_.size();
   
-  cout << "Files opened" << endl;
+  //  cout << "Files opened" << endl;
   // Set variables
   //
   nVars_ = vars_.size();
   
   
-  for(size_t i=0; i<nVars_; i++)
+  for(size_t i=0; i<nVars_; i++){
     fitVars_.push_back( new FitVar(vars_[i], mins_[i], maxs_[i], bins_[i], hmin_[i], hmax_[i], unbinned_[i], smoothOrder_[i]));
-  
+    cout << "\t Acquired parameters for variable: " << fitVars_[i]->getVarName() << endl;
+  }
   
   // Set canvas
   SetTDRStyle();
@@ -172,7 +173,7 @@ void LandSShapesProducer::SetOptions(){
 
 void LandSShapesProducer::InitMassPoint(size_t s){
 
-  cout << "Initializing mass point " << endl;
+  cout << "Initializing mass point " << massPointName_[s] << endl;
 
   th2_         .clear();
   th2StatUp_   .clear();
@@ -184,7 +185,7 @@ void LandSShapesProducer::InitMassPoint(size_t s){
   unrolledStatDown_ .clear();
   unrolledSyst_     .clear();
   
-
+  
   currentMassPoint_ = s;
   inputFile_.clear();
   inputTree_.clear();
@@ -204,20 +205,20 @@ void LandSShapesProducer::InitMassPoint(size_t s){
     TString myTempFileName = inputFileName_[f];
     //    if( f==1 || f == 2) myTempFileName = inputFileName_[f] + massPointName_[s] + TString(".root"); // Signals name manipulation // WH HH
     if( f==1 ) myTempFileName = inputFileName_[f] + massPointName_[s] + TString(".root"); // Signals name manipulation // TBH
-    cout << "Opening file " << baseDir_[f]   + myTempFileName << " opened." << endl;
+    //cout << "Opening file " << baseDir_[f]   + myTempFileName << " opened." << endl;
     inputFile_.push_back( TFile::Open(baseDir_[f]   + myTempFileName  ) );
-    cout << "File " << baseDir_[f]   + myTempFileName << " opened." << endl;
+    //cout << "File " << baseDir_[f]   + myTempFileName << " opened." << endl;
   }
-  cout << "Got files" << endl;
-
+  //  cout << "Got files" << endl;
+  
   // Get base trees
   for(size_t f=0; f<nSamples_; f++)
     inputTree_.push_back( (TTree*) inputFile_[f]     ->Get(minitree_[f]) );
   
-  cout << "Got base trees " << endl;
+  //  cout << "Got base trees " << endl;
   // Get syst trees
   for(size_t a=0; a<nSysts_; a++){
-    cout << "Getting tree " << systComponents_[a] << endl;
+    //    cout << "Getting tree " << systComponents_[a] << endl;
     vector<TTree*> temp;
     temp.clear();
     for(size_t f=0; f<nSamples_; f++){
@@ -229,7 +230,7 @@ void LandSShapesProducer::InitMassPoint(size_t s){
   
   cout << "Mass points set" << endl;
 }
- 
+
 void LandSShapesProducer::InitPerVariableAmbient(size_t i){
   
   // Base trees
@@ -238,16 +239,16 @@ void LandSShapesProducer::InitPerVariableAmbient(size_t i){
   // Syst trees
   for(size_t a=0; a<nSysts_; a++){
     for(size_t f=0; f<nSamples_; f++){
-      cout << "variable " << i << ", syst " << a << ", sample " << f << ", entries " << systTree_[a][f]->GetEntries() << endl;
+      //    cout << "variable " << i << ", syst " << a << ", sample " << f << ", entries " << systTree_[a][f]->GetEntries() << endl;
       systTree_[a][f]->ResetBranchAddresses();
     }
   }
   
   histo_.clear();
-
+  
   myDSName_.clear();
   myDS_.clear();
-
+  
   for(size_t a=0; a<nSysts_; a++){
     mySystDSName_.clear();
   }
@@ -268,20 +269,21 @@ void LandSShapesProducer::InitPerVariableAmbient(size_t i){
   leg_            = 0;
   
 
-  cout << "------------------------------------------------------" << endl;
-  cout << "----------------- index " << i << "..................." << endl;
-  cout << "Variable: " << fitVars_[i]->getVarName().c_str() << endl;
-  cout << "Minimum: " << fitVars_[i]->getMin() << endl;
-  cout << "Maximum: " << fitVars_[i]->getMax() << endl;
-  cout << "Bins: " << fitVars_[i]->getBins() << endl;
-  cout << "SmoothOrder: " << fitVars_[i]->getSmoothOrder() << endl;
-  cout << "------------------------------------------------------" << endl;
-
+  //  cout << "------------------------------------------------------\n"
+  //       << "------------------------------------------------------" << endl;
+  //  //  cout << "----------------- index " << i << "..................." << endl;
+  //  cout << "Variable: " << fitVars_[i]->getVarName().c_str() << endl;
+  //  cout << "Minimum: " << fitVars_[i]->getMin() << endl;
+  //  cout << "Maximum: " << fitVars_[i]->getMax() << endl;
+  //  cout << "Bins: " << fitVars_[i]->getBins() << endl;
+  //  cout << "SmoothOrder: " << fitVars_[i]->getSmoothOrder() << endl;
+  //  cout << "------------------------------------------------------" << endl;
+  
   // Binned fit variable
   myvar_           = new RooRealVar(fitVars_[i]->getVarName().c_str(), fitVars_[i]->getVarName().c_str(), fitVars_[i]->getMin(), fitVars_[i]->getMax());  myvar_->setBins(fitVars_[i]->getBins()); 
   myvar_weights_   = new RooRealVar("weight","weight",0,1000);
   isOSvar_         = new RooRealVar("is_os","is_os",0,2);
-
+  
   // In multidimensional case, add the next variable too
   if(doMultiDimensionalShapes_){
     size_t nextVar;
@@ -292,8 +294,8 @@ void LandSShapesProducer::InitPerVariableAmbient(size_t i){
     myvarMultiD_ = new RooRealVar(fitVars_[nextVar]->getVarName().c_str(), fitVars_[nextVar]->getVarName().c_str(), fitVars_[nextVar]->getMin(), fitVars_[nextVar]->getMax());
     myvarMultiD_->setBins(fitVars_[nextVar]->getBins());
   }
-
-
+  
+  
   //Define data sets /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   for(size_t f=0; f<nSamples_; f++){
     myDSName_.push_back( fitVars_[i]->getVarName().c_str() + sampleName_[f] + massPointName_[currentMassPoint_] );
@@ -305,12 +307,12 @@ void LandSShapesProducer::InitPerVariableAmbient(size_t i){
     temp.clear();
     for(size_t f=0; f<nSamples_; f++){
       temp.push_back( myDSName_[f] + string(systComponents_[a]) );
-     }
-     mySystDSName_.push_back(temp);
+    }
+    mySystDSName_.push_back(temp);
   }
   
   sumWeights_ = 0;
-  cout << "per-variable ambient initialized" << endl;
+  cout << "Per-variable ambient initialized" << endl;
 }
 
 void LandSShapesProducer::BuildDatasets(size_t i){
@@ -325,9 +327,9 @@ void LandSShapesProducer::BuildDatasets(size_t i){
   // In multidimensional case, add the next variable too
   if(doMultiDimensionalShapes_){
     size_t nextVar;
-    cout << "i is " << i << ", and nVars_-1 is " << nVars_-1 << endl;
+    //    cout << "i is " << i << ", and nVars_-1 is " << nVars_-1 << endl;
     if(i <nVars_-1){
-      cout << "I am inside" << endl;
+      //      cout << "I am inside" << endl;
       nextVar = i+1;
       //      else if(i== nVars_-1)
       //	nextVar = i-1;
@@ -373,7 +375,7 @@ void LandSShapesProducer::BuildDatasets(size_t i){
       }
       
       
-      cout << "Got base datasets" << endl;
+      //      cout << "Got base datasets" << endl;
       
       ///// Syst get
       for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
@@ -420,7 +422,7 @@ void LandSShapesProducer::BuildDatasets(size_t i){
       } // End loop on syst components
       ///// End syst get
     }
-    cout << "Done multiD stuff" << endl;
+    //    cout << "Done multiD stuff" << endl;
   }
   else {
   
@@ -433,7 +435,13 @@ void LandSShapesProducer::BuildDatasets(size_t i){
       //    cout << "getIsoS      ";
       for(unsigned int ev=0; ev<inputTree_[f]->GetEntries(); ev++){
 	inputTree_[f]->GetEntry(ev);
-	if(isOSsig < 0.5 || myVarAllocator < fitVars_[i]->getMin()) continue;
+//	if(isOSsig < 0.5 && myVarWeightAllocator != 0)
+//	  cout << "DEBUG:"
+//	       << "\n\t\t isOSsig: " << isOSsig
+//	       << "\n\t\t myVarAllocator: " << myVarAllocator
+//	       << "\n\t\t min for current var: " << fitVars_[i]->getMin()
+//	       << "\n\t\t myVarWeightAllocator: " << myVarWeightAllocator << endl;
+	if(( !isDDbkg_[f] && isOSsig < 0.5) || myVarAllocator < fitVars_[i]->getMin()) continue; // Don't check isOS for non-datadriven samples
 	myvar_->setVal(myVarAllocator);
 	sumWeights_ += myVarWeightAllocator;
 	if(isDDbkg_[f]){
@@ -446,8 +454,8 @@ void LandSShapesProducer::BuildDatasets(size_t i){
 	}
       }
     }
-
-    cout << "Got base datasets" << endl;
+    
+    //    cout << "Got base datasets" << endl;
     
     ///// Syst get
     for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
@@ -482,52 +490,52 @@ void LandSShapesProducer::BuildDatasets(size_t i){
     } // End loop on syst components
     ///// End syst get
     
-
-  cout << "Got syst datasets" << endl;
+    
+    //  cout << "Got syst datasets" << endl;
+    
+    
+    cout << "All datasets built" << endl;
   
-  
-  cout << "All datasets built" << endl;
-  
-  // // Legacy: seems not to give correct inputs
-  //  string myOsCut = "is_os>0.5";
-  //  unrMyDDBkgDS_      = new RooDataSet(myDDBkgDSName_.c_str(), myDDBkgDSName_.c_str(),  ddBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
-  //  myDDBkgDS_ = (RooDataSet*) unrMyDDBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-  //  if(standaloneTTbar_){
-  //    unrMyTTBARMCBkgDS_ = new RooDataSet(myTTBARMCBkgDSName_.c_str(), myTTBARMCBkgDSName_.c_str(),  ttbarmcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
-  //    myTTBARMCBkgDS_ = (RooDataSet*) unrMyTTBARMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-  //  }
-  //  unrMyMCBkgDS_      = new RooDataSet(myMCBkgDSName_.c_str(), myMCBkgDSName_.c_str(),  mcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
-  //  myMCBkgDS_ = (RooDataSet*) unrMyMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-  //  unrMyDataDS_       = new RooDataSet(myDataDSName_.c_str(),  myDataDSName_.c_str(),   dataTree_,   RooArgSet(*myvar_,*isOSvar_), myOsCut.c_str() );
-  //  myDataDS_ = (RooDataSet*) unrMyDataDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
-  //  
-  
-  // Build binned clones
-  for(size_t f=0; f<nSamples_; f++) histo_.push_back( myDS_[f]->binnedClone());
-
-  cout << "Binned clones built" << endl;
-
-  for(size_t f=0; f<nSamples_; f++)
-    cout << myDSName_[f] << " unbinned entries: " << myDS_[f]->numEntries() << ". weighted entries: " << histo_[f]->sum(kFALSE) << endl;
-  
-  cout << "BuildDatasets successful" << endl;
-  
-
-
-  /// Build binned clones - syst case
-  for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
-    vector<RooDataHist*> temp;
-    temp.clear();
-    for(size_t f=0; f<nSamples_; f++){
-      temp.push_back( mySystDS_[a][f]->binnedClone() );
-    }
-    systHisto_.push_back(temp);
-    cout << "Syst binned clones built" << endl;
+    // // Legacy: seems not to give correct inputs
+    //  string myOsCut = "is_os>0.5";
+    //  unrMyDDBkgDS_      = new RooDataSet(myDDBkgDSName_.c_str(), myDDBkgDSName_.c_str(),  ddBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
+    //  myDDBkgDS_ = (RooDataSet*) unrMyDDBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+    //  if(standaloneTTbar_){
+    //    unrMyTTBARMCBkgDS_ = new RooDataSet(myTTBARMCBkgDSName_.c_str(), myTTBARMCBkgDSName_.c_str(),  ttbarmcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
+    //    myTTBARMCBkgDS_ = (RooDataSet*) unrMyTTBARMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+    //  }
+    //  unrMyMCBkgDS_      = new RooDataSet(myMCBkgDSName_.c_str(), myMCBkgDSName_.c_str(),  mcBkgTree_,  RooArgSet(*myvar_,*myvar_weights_,*isOSvar_),myOsCut.c_str(),"weight" );
+    //  myMCBkgDS_ = (RooDataSet*) unrMyMCBkgDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+    //  unrMyDataDS_       = new RooDataSet(myDataDSName_.c_str(),  myDataDSName_.c_str(),   dataTree_,   RooArgSet(*myvar_,*isOSvar_), myOsCut.c_str() );
+    //  myDataDS_ = (RooDataSet*) unrMyDataDS_->reduce(RooArgSet(*myvar_,*myvar_weights_));
+    //  
+    
+    // Build binned clones
+    for(size_t f=0; f<nSamples_; f++) histo_.push_back( myDS_[f]->binnedClone());
+    
+    //    cout << "Binned clones built" << endl;
     
     for(size_t f=0; f<nSamples_; f++)
-      cout << mySystDSName_[a][f] << " unbinned entries: " << mySystDS_[a][f]->numEntries() << ". weighted entries: " << systHisto_[a][f]->sum(kFALSE) << endl;
+      cout << "DEBUG: \n" << "Dataset " << myDSName_[f] << " has " << myDS_[f]->numEntries() << " unbinned entries and " << histo_[f]->sum(kFALSE) << " weighted entries." << endl;
     
-  } // End syst loop
+    cout << "BuildDatasets successful" << endl;
+    
+    
+    
+    /// Build binned clones - syst case
+    for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+      vector<RooDataHist*> temp;
+      temp.clear();
+      for(size_t f=0; f<nSamples_; f++){
+	temp.push_back( mySystDS_[a][f]->binnedClone() );
+      }
+      systHisto_.push_back(temp);
+      //  cout << "Syst binned clones built" << endl;
+      
+      //for(size_t f=0; f<nSamples_; f++)
+	//cout << mySystDSName_[a][f] << " unbinned entries: " << mySystDS_[a][f]->numEntries() << ". weighted entries: " << systHisto_[a][f]->sum(kFALSE) << endl;
+    
+    } // End syst loop
     /// End build binned clones - syst case
   }  
   cout << "BuildDatasets successful" << endl;
@@ -584,10 +592,10 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     hist_[f]->SetFillStyle(sampleFillStyle_[f]); //1001 for background and data, 0 for signal // 3017);
     
     
-
-    cout << "sample " << sampleName_[f] << ", integral " << hist_[f]->Integral() << endl;
+    cout << "DEBUG: Drawing templates." << endl;
+    cout << "Sample " << sampleName_[f] << ", integral " << hist_[f]->Integral() << endl;
     if(isDDbkg_[f]){
-      hist_[f]->Scale(4232.5/hist_[f]->Integral());
+      //      hist_[f]->Scale(4232.5/hist_[f]->Integral());
       ddbkgHistUp_ =   (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Up") );
       ddbkgHistDown_ = (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Down") );
       
@@ -601,7 +609,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       
       ddbkgHistUp_->Scale((222+11.4)/ddbkgHistUp_->Integral());
       ddbkgHistDown_->Scale((222-11.4)/ddbkgHistDown_->Integral());
-      cout << "sample " << sampleName_[f] << ", integral " << hist_[f]->Integral() << " after rescaling " << endl;
+      //cout << "sample " << sampleName_[f] << ", integral " << hist_[f]->Integral() << " after rescaling " << endl;
     }
   }
   //    ///////////////////////////////////////////////////////////////////
@@ -612,11 +620,11 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   hist_[nSamples_]  ->Sumw2();
   hist_[nSamples_+1]->Sumw2();
 
-  hist_[nSamples_]->Scale(50.5/hist_[nSamples_]->Integral());      // Normalize to sample
-  hist_[nSamples_+1]->Scale(0.4/hist_[nSamples_+1]->Integral()); // Normalize to sample
+  hist_[nSamples_]->Scale(230.44/hist_[nSamples_]->Integral());      // Normalize to sample
+  hist_[nSamples_+1]->Scale(36.97/hist_[nSamples_+1]->Integral()); // Normalize to sample
 
-  cout << "sample " << sampleName_[nSamples_] << ", integral " << hist_[nSamples_]->Integral() << endl;
-  cout << "sample " << sampleName_[nSamples_+1] << ", integral " << hist_[nSamples_+1]->Integral() << endl;
+  //	  cout << "sample " << sampleName_[nSamples_] << ", integral " << hist_[nSamples_]->Integral() << endl;
+  //	  cout << "sample " << sampleName_[nSamples_+1] << ", integral " << hist_[nSamples_+1]->Integral() << endl;
 
   ddbkgHistUp_ =   (TH1*) hist_[3]->Clone(hist_[3]->GetName() + TString("Up") );
   ddbkgHistDown_ = (TH1*) hist_[3]->Clone(hist_[3]->GetName() + TString("Down") );
@@ -672,8 +680,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     systHist_[a][nSamples_]  ->Sumw2();
     systHist_[a][nSamples_+1]->Sumw2();
     
-    systHist_[a][nSamples_]  ->Scale( (50.5/systHist_[a][nSamples_]->Integral()  )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )    );
-    systHist_[a][nSamples_+1]->Scale( (0.4/systHist_[a][nSamples_+1]->Integral() )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )  );
+    systHist_[a][nSamples_]  ->Scale( (230.44/systHist_[a][nSamples_]->Integral()  )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )    );
+    systHist_[a][nSamples_+1]->Scale( (36.97/systHist_[a][nSamples_+1]->Integral() )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )  );
     
     for(size_t f=0; f<nSamples_+2; f++){
       if(f>nSamples_-1){ // Repeat colours for newly cloned histos
@@ -687,7 +695,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 	systHist_[a][f]->SetLineWidth(3);
 	systHist_[a][f]->SetFillStyle(sampleFillStyle_[f]); //1001 for background and data, 0 for signal // 3017);
       }
-      cout << "sample " << sampleName_[f] << "" << systComponents_[a] << ", integral " << systHist_[a][f]->Integral() << endl;
+      //      cout << "sample " << sampleName_[f] << "" << systComponents_[a] << ", integral " << systHist_[a][f]->Integral() << endl;
     }
   } // End loop on systs
   
@@ -1171,8 +1179,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     hist_[0]->GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
     hist_[0]->GetXaxis()->SetTitleOffset(0.85);
     
-    cout << " DATA HIST BIN 0: " << hist_[0]->GetBinContent(0) << " +/- " << hist_[0]->GetBinError(0) << endl;
-    cout << " DATA HIST BIN 1: " << hist_[0]->GetBinContent(1) << " +/- " << hist_[0]->GetBinError(1) << endl;
+//    cout << " DATA HIST BIN 0: " << hist_[0]->GetBinContent(0) << " +/- " << hist_[0]->GetBinError(0) << endl;
+//    cout << " DATA HIST BIN 1: " << hist_[0]->GetBinContent(1) << " +/- " << hist_[0]->GetBinError(1) << endl;
     
     hist_[1]->GetYaxis()->SetTitle("a.u.");
     hist_[1]->GetYaxis()->SetTitleOffset(0.85);
@@ -1204,7 +1212,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     //  dataHist_->SetMarkerSize(0.8);
     
  
-    cout << "dd integral: " << hist_[3]->Integral() << endl;
+    //    cout << "dd integral: " << hist_[3]->Integral() << endl;
     normalize(hs, 1.);
     hs.SetMaximum(0.4);
     hs.Draw("hist");
@@ -1321,13 +1329,13 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   for(size_t f=0; f<nSamples_+2; f++){
     for(int ibin=1; ibin<=hist_[f]->GetNbinsX(); ibin++){ // <= is for overflow
       
-      hist_[nSamples_]->Scale(50.5/hist_[nSamples_]->Integral());      // Normalize to sample
-      hist_[nSamples_+1]->Scale(0.4/hist_[nSamples_+1]->Integral()); // Normalize to sample
+      hist_[nSamples_]->Scale(230.44/hist_[nSamples_]->Integral());      // Normalize to sample
+      hist_[nSamples_+1]->Scale(36.97/hist_[nSamples_+1]->Integral()); // Normalize to sample
       
       //      if(f == 1 | f == 2)
       if(ibin==1 && hist_[f]->GetBinContent(ibin) != 0){
 	hist_[f]->SetBinError(ibin,  hist_[f]->GetBinContent(ibin) * hist_[f]->GetBinError(ibin+1)/hist_[f]->GetBinContent(ibin+1)  );
-	cout << "bin " << ibin << ", bin error: " << hist_[f]->GetBinError(ibin) << endl;
+	///	cout << "bin " << ibin << ", bin error: " << hist_[f]->GetBinError(ibin) << endl;
 	//	if(f<nSamples_){
 	//	  cout << "sample " << hist_[f]->GetName();
 	//	  cout << ", bincontent scaled " <<    myDS_[f]->numEntries()*hist_[f]->GetBinContent(ibin)/hist_[f]->Integral() << endl;
@@ -1342,13 +1350,13 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
       if(hist_[f]->GetBinContent(ibin) == 0){ // Protection from RooStat/Fit breaking in combine
 	hist_[f]->SetBinContent(ibin, 1e-6);
-	cout << hist_[f]->GetName() << " has 0 bin with content " << hist_[f]->GetBinContent(ibin) << " and error " << hist_[f]->GetBinError(ibin) << endl;
+	//cout << hist_[f]->GetName() << " has 0 bin with content " << hist_[f]->GetBinContent(ibin) << " and error " << hist_[f]->GetBinError(ibin) << endl;
 	//	hist_[f]->SetBinError(ibin,0);
       }
       // Fill stat uncertainty histograms
       histStatUp_[f]  ->SetBinContent(ibin, std::max( hist_[f]->GetBinContent(ibin) + hist_[f]->GetBinError(ibin) , 1e-6 ) );
       histStatDown_[f]->SetBinContent(ibin, std::max( hist_[f]->GetBinContent(ibin) - hist_[f]->GetBinError(ibin) , 1e-6 ) );
-      cout << "==================================" << hist_[f]->GetName() << ": statUp " << hist_[f]->GetBinContent(ibin) + hist_[f]->GetBinError(ibin) << ", statDown " << hist_[f]->GetBinContent(ibin) - hist_[f]->GetBinError(ibin) << endl;
+      //cout << "==================================" << hist_[f]->GetName() << ": statUp " << hist_[f]->GetBinContent(ibin) + hist_[f]->GetBinError(ibin) << ", statDown " << hist_[f]->GetBinContent(ibin) - hist_[f]->GetBinError(ibin) << endl;
     }
   }
 
@@ -1382,7 +1390,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 	  
 	  if(systHist_[a][f]->GetBinContent(ibin) == 0){ // Protection from RooStat/Fit breaking in combine
 	    systHist_[a][f]->SetBinContent(ibin, 1e-6);
-	    cout << systHist_[a][f]->GetName() << " has 0 bin error " << systHist_[a][f]->GetBinError(ibin) << endl;
+	    //cout << systHist_[a][f]->GetName() << " has 0 bin error " << systHist_[a][f]->GetBinError(ibin) << endl;
 	  //	hist_[f]->SetBinError(ibin,0);
 	  }
 	}
@@ -1496,7 +1504,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     outputFile->Write();
   
   if(doMultiDimensionalShapes_){
-    cout << "Now filling multiDim list of histos" << endl;
+    //cout << "Now filling multiDim list of histos" << endl;
     
     vector<TH1*> tempMasterHist;
     vector<TString> tempMasterHistNames;
@@ -1521,10 +1529,10 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       }
     }
     // End syst loop
-    cout << "Stored temp histograms" << endl;
+    //cout << "Stored temp histograms" << endl;
     masterHist_.push_back( tempMasterHist );
     masterHistNames_.push_back( tempMasterHistNames );
-    cout << "Stored master histograms" << endl;
+    //cout << "Stored master histograms" << endl;
   }
   // ---
   
@@ -1618,14 +1626,13 @@ void LandSShapesProducer::UnrollMultiDimensionalShape(){
   }
 
     
-  unrolled_[nSamples_]->Scale(50.5/unrolled_[nSamples_]->Integral());      // Normalize to sample
-  unrolled_[nSamples_+1]->Scale(0.4/unrolled_[nSamples_+1]->Integral()); // Normalize to sample
+  unrolled_[nSamples_]->Scale(230.44/unrolled_[nSamples_]->Integral());      // Normalize to sample
+  unrolled_[nSamples_+1]->Scale(36.97/unrolled_[nSamples_+1]->Integral()); // Normalize to sample
 
   
   // Rescale stat plots - they must have the same integral as the base ones
   for(size_t f=0; f<nSamples_+2; f++){
-    if(isDDbkg_[f])
-      unrolled_[f]->Scale(4232.5/unrolled_[f]->Integral());
+    //    if(isDDbkg_[f]) unrolled_[f]->Scale(4232.5/unrolled_[f]->Integral());
     
     unrolledStatUp_[f]  ->Scale(unrolled_[f]->Integral()/unrolledStatUp_[f]->Integral());
     unrolledStatDown_[f]->Scale(unrolled_[f]->Integral()/unrolledStatDown_[f]->Integral());
@@ -1649,8 +1656,8 @@ void LandSShapesProducer::UnrollMultiDimensionalShape(){
 	}
       }
     }
-    unrolledSyst_[a][nSamples_]->Scale(50.5/unrolledSyst_[a][nSamples_]->Integral());      // Normalize to sample
-    unrolledSyst_[a][nSamples_+1]->Scale(0.4/unrolledSyst_[a][nSamples_+1]->Integral()); // Normalize to sample
+    unrolledSyst_[a][nSamples_]->Scale(230.44/unrolledSyst_[a][nSamples_]->Integral());      // Normalize to sample
+    unrolledSyst_[a][nSamples_+1]->Scale(36.97/unrolledSyst_[a][nSamples_+1]->Integral()); // Normalize to sample
 
   }
 
@@ -1786,14 +1793,14 @@ void LandSShapesProducer::Produce(){
     cout << "============================= MASS POINT: " << s << " ===============================" << endl;
     cout << "=============================================================================" << endl;
     for(size_t i = 0; i< nVars_; i++){
-
+      cout << "============================= PROCESSING VARIABLE: " << fitVars_[i]->getVarName() << " ===============================" << endl;            
 
 
       InitPerVariableAmbient(i);
 
-      cout << "============================= VARIABLE: " << i << ": init ambient completed ===============================" << endl;            
+      //      cout << "============================= VARIABLE: " << i << ": init ambient completed ===============================" << endl;            
       BuildDatasets(i);
-      cout << "============================= VARIABLE: " << i << ": datasets built ===============================" << endl;      
+      //      cout << "============================= VARIABLE: " << i << ": datasets built ===============================" << endl;      
       //    BuildPDFs(i);
       
       if(!doMultiDimensionalShapes_)
