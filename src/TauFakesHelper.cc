@@ -5,7 +5,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: TauFakesHelper.cc,v 1.4 2013/04/22 16:58:36 vischia Exp $                                                                                                       
+      \version  $Id: TauFakesHelper.cc,v 1.5 2013/04/23 10:51:16 vischia Exp $                                                                                                       
 */
 
 
@@ -340,6 +340,15 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	    
 	    JetCorrectionUncertainty * junc(0);
 	    vector<double> jerFactors; jerFactors.clear();
+	    vector<PhysicsObject> newJets; newJets.clear();
+	    for(unsigned int i=0;i<jets.size();++i){ 
+	      double corr_jer(1.);
+	      /*if(!isData_)*/ newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+	      jerFactors.push_back(1.);
+	      //    std::cout << " jerfac: " << corr_jer << std::endl;
+	    } 
+	    /*if(!isData_)*/ jets=newJets;
+
 	    // preselect objects /////////////////////////////////
 	    DisableLtkCutOnJets(); Pt_Jet(MIN_JET_PT_CUT_); // select hard jets
 	    //pt_Tau(MIN_TAU_PT_CUT_);  //select tau pT
@@ -518,6 +527,15 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	  
 	  JetCorrectionUncertainty * junc(0);
 	  vector<double> jerFactors; jerFactors.clear();
+	  vector<PhysicsObject> newJets; newJets.clear();
+	  for(unsigned int i=0;i<jets.size();++i){ 
+	    double corr_jer(1.);
+	    if(qualifier_==WMUMC)
+	      newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+	    jerFactors.push_back(1.);
+	    //    std::cout << " jerfac: " << corr_jer << std::endl;
+	  } 
+	  if(qualifier_==WMUMC) jets=newJets;
 	  // preselect objects /////////////////////////////////
 	  DisableLtkCutOnJets(); Pt_Jet(MIN_JET_PT_CUT_); // select hard jets
 	  //pt_Tau(MIN_TAU_PT_CUT_);  //select tau pT

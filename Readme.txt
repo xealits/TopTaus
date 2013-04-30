@@ -11,6 +11,8 @@ Repository for tauDilepton analysis
 to remove levels of messiness in the original code to be compiled every time together with
 its libraries - whoah running time is already 1/2 than before, LoL
 
+* MOVED TO GITHUB.COM ON APRIL 30th, 2013 because of CERN CVS service shutdown
+
 ------------
 Installation
 ------------
@@ -117,6 +119,8 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:	
+2013-04-30: plot fixes
+	    jer smearing to tf
 2013-04-29: committed revision 715 for chiggs datacards
 	    cleanup and fix of shapes producer
 	    jer and propagation to met fix
@@ -193,7 +197,6 @@ rev 702 (2012-04-18): first counting-only chiggs datacards for heavy charged hig
 
 
 TODO:
-- git test completed: decide when to move to git
 - fix uncertainty band plotting in case the plot is normalized to 1 (Rtau)
 - update uncertainties in HistogramPlotter
 - move to txt file the cout of the fakes computation in TauFakesHelper.cc (latex table and everything)

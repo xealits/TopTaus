@@ -6,7 +6,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: TauFakesHelper.hh,v 1.3 2013/04/19 12:44:04 vischia Exp $                                                                                                       
+      \version  $Id: TauFakesHelper.hh,v 1.4 2013/04/22 16:58:36 vischia Exp $                                                                                                       
 */
 
 
@@ -33,6 +33,7 @@
 #include "LIP/TopTaus/interface/SelectionMonitor.hh"
 #include "LIP/TopTaus/interface/MiniEvent.hh"
 #include "LIP/TopTaus/interface/ObjectSelector.hh"
+#include "LIP/TopTaus/interface/UncertaintyCalculator.hh"
   
 #include "CondFormats/JetMETObjects/interface/JetResolution.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
@@ -48,7 +49,7 @@ using namespace std;
 
 // FIXME: have a single class for all the four tree producing
 
-class TauFakesHelper : public ObjectSelector {
+class TauFakesHelper : public ObjectSelector, UncertaintyCalculator {
 public:
   TauFakesHelper(double, TString, TString, TString, TString, TString, TString, TString);
   ~TauFakesHelper(){}
