@@ -9,7 +9,7 @@
   </id> 
 
   <id tag="muCh_pt_bj" doratio="1" logy="1" cmspublic="y"  oflow="0" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{bjets}_{T}
-  [GeV/c]" yrange="10,600000000" xrange="35,500" xbin="4" >
+  [GeV/c]" yrange="10,2000000" xrange="35,500" xbin="4" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_bj_4</item>
   </id> 
 
@@ -76,10 +76,10 @@
 
 
 
-  <id tag="muCh_mjj" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(j, j)" yrange="0.1,100000" xrange="0,1200" xbin="2">
+  <id tag="muCh_mjj" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(j, j)" yrange="0.1,100000" xrange="0,1200" xbin="8">
     <item dir="PFlow/RecoSteps/lep_tau/OS" >mjj_8</item>
   </id>
-  <id tag="muCh_mjjb" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(j, j, b)" yrange="0.1,100000" xrange="0,1200" xbin="2">
+  <id tag="muCh_mjjb" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(j, j, b)" yrange="0.1,100000" xrange="0,1200" xbin="8">
     <item dir="PFlow/RecoSteps/lep_tau/OS" >mjjb_8</item>
   </id>
 
@@ -101,16 +101,16 @@
   </id>
 -->
 
-  <id tag="muCh_m_lepj_all" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(l, j)" yrange="0.1,100000" xrange="0,1200" xbin="2">
+  <id tag="muCh_m_lepj_all" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(l, j)" yrange="0.1,100000" xrange="0,1200" xbin="16">
     <item dir="PFlow/RecoSteps/lep_tau/OS" >m_lepj_all_8</item>
   </id>
-  <id tag="muCh_m_lepj_min" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(l, j)" yrange="0.1,100000" xrange="0,1200" xbin="2">
+  <id tag="muCh_m_lepj_min" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(l, j)" yrange="0.1,100000" xrange="0,1200" xbin="16">
     <item dir="PFlow/RecoSteps/lep_tau/OS" >m_lepj_min_8</item>
   </id>
-  <id tag="muCh_m_lepj_max" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(l, j)" yrange="0.1,100000" xrange="0,1200" xbin="2">
+  <id tag="muCh_m_lepj_max" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="M(l, j)" yrange="0.1,100000" xrange="0,1200" xbin="16">
     <item dir="PFlow/RecoSteps/lep_tau/OS" >m_lepj_max_8</item>
   </id>
-  <id tag="muCh_m_lepj_delta" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="|M(#tau, j) - M(#mu, j)|" yrange="0.1,100000" xrange="0,1200" xbin="2">
+  <id tag="muCh_m_lepj_delta" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xtitle="|M(#tau, j) - M(#mu, j)|" yrange="0.1,100000" xrange="0,1200" xbin="16">
     <item dir="PFlow/RecoSteps/lep_tau/OS" >m_lepj_delta_8</item>
   </id>
 <!-- 
