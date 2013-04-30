@@ -119,7 +119,8 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:	
-2013-04-30: plot fixes
+2013-04-30: REPOSITORY MOVED TO https://github.com/vischia/TopTaus.git. No more updates will be committed to CERN CVS. After a week of testing at github, LIP/TopTaus/ files will be zeroed with the exception of the Readme.txt
+	    plot fixes
 	    jer smearing to tf
 2013-04-29: committed revision 715 for chiggs datacards
 	    cleanup and fix of shapes producer
