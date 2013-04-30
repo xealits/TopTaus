@@ -1779,10 +1779,9 @@ namespace tableutils{
   //  sqrt( (eA.B)^2 + (A.eB)^2 ), /B^2
 
   //  double tau_fakes(2939.9*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(261.6*261.6*0.699*0.699 + 0.02*0.02*2939.9*2939.9); // Preliminar from kNN
-  double tau_fakes(4035.95*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(313.83*313.83*0.699*0.699 + 0.02*0.02*4035.95*4035.95); // Preliminar from kNN
+  double tau_fakes(4021.3*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(309.6*309.6*0.699*0.699 + 0.02*0.02*4021.3*4021.3); // Preliminar from kNN
 
-  //4035.95$\pm$7.77584\%
-
+  //  4021.3$\pm$7.7\%  --> 309.6401
   taufakes_datacards.push_back(tau_fakes);
   taufakes_datacards.push_back(tau_fakes_stat2);
   taufakes_datacards.push_back(sqrt(tau_fakes_syst2));
