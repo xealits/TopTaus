@@ -413,7 +413,7 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
 
   h = new TH1D("dr_t",                "dr;dr tau-lepton; Entries",100,0,2);  addHistoToMonitors(h,h->GetName(), stepsMons, keys);
  
-  h = new TH1D("pt_met" ,             "met;E_{T}^{miss} [GeV]; Entries",1000,0,1000);  addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("pt_met" ,             "met;E_{T}^{miss} [GeV]; Entries",2000,0,2000);  addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
  
 
 
@@ -428,11 +428,11 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
 
 
   // wT mass without met cut (note this plot is only filled at lepton level and met)
-  h = new TH1D("w_mass" ,          "Mwt; m_{T}; Entries",600,0,300);          addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
-  h = new TH1D("w_mass2" ,         "Mwt; m_{T}; Entries",600,0,300);          addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
-  h = new TH1D("w_mass_tau" ,      "Mwt; m_{T}; Entries",600,0,300);          addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h = new TH1D("w_mass_min" ,      "Mwt; m_{T}; Entries",600,0,300);          addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
-  h = new TH1D("w_mass_max" ,      "Mwt; m_{T}; Entries",600,0,300);          addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("w_mass" ,          "Mwt; m_{T}; Entries",2000,0,900);          addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("w_mass2" ,         "Mwt; m_{T}; Entries",2000,0,900);          addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("w_mass_tau" ,      "Mwt; m_{T}; Entries",2000,0,900);          addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h = new TH1D("w_mass_min" ,      "Mwt; m_{T}; Entries",2000,0,900);          addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
+  h = new TH1D("w_mass_max" ,      "Mwt; m_{T}; Entries",2000,0,900);          addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h = new TH1D("w_mass_deltaphi" , "Mwt; #Delta_{#phi}; Entries",400,-4,4);   addHistoToMonitors(h,h->GetName(), stepsMons, keys); 
 
 
