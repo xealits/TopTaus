@@ -47,13 +47,17 @@ double UncertaintyCalculator::jetMETScalingTest( vector<double> & jerFactors, do
     lepDiff       (new TLorentzVector(0,0,0,0), new TVectorD(0)), 
     unclustDiff   (new TLorentzVector(0,0,0,0), new TVectorD(0)), 
     clusteredFlux (new TLorentzVector(0,0,0,0), new TVectorD(0));
+
+  bool noCorrection(true);
+
   for(size_t ijet=0; ijet<vJ.size(); ++ijet)
     {
       PhysicsObject origJet = vJ[ijet];
       
       double jerF(0);
       if(jerFactors.size() !=0) jerF = jerFactors[ijet];
-      
+      noCorrection = noCorrection && (jerF==1.);
+
       double 
 	px(origJet.Px()*jerF), 
 	py(origJet.Py()*jerF),
@@ -63,13 +67,24 @@ double UncertaintyCalculator::jetMETScalingTest( vector<double> & jerFactors, do
       
       PhysicsObject iSmearJet = origJet;
       //  toReturn.SetCoordinates(px, py, pz, en);
-      iSmearJet.SetPtEtaPhiE(px, py, pz, en);
-      
+      //      iSmearJet.SetPtEtaPhiE(px, py, pz, en); // D'oh!
+      iSmearJet.SetPxPyPzE(px, py, pz, en);      
       jetDiff += (iSmearJet-vJ[ijet]);
+      
+//      if(jerF==1){
+//	cout << "-------------------------------------" << endl;
+//	cout << "JERF " << jerF << endl;
+//	cout << "orig jet   : ("<< origJet.Px() <<", " << origJet.Py() << ", " << origJet.Pz() << ", " << origJet.E() << ")" << endl; 
+//	cout << "scaled vals: ("<< px <<", " << py << ", " << pz << ", " << en << ")" << endl; 
+//	cout << "smear jet  : ("<< iSmearJet.Px() <<", " << iSmearJet.Py() << ", " << iSmearJet.Pz() << ", " << iSmearJet.E() << ")" << endl; 
+//	cout << "-------------------------------------" << endl;
+//      }
+
       newJets.push_back( iSmearJet );
     }
   
-  
+//  if(noCorrection)
+//    cout << "jetDiff should be 0 and it is: ("<< jetDiff.Px() <<", " << jetDiff.Py() << ", " << jetDiff.Pz() << ", " << jetDiff.E() << ")" << endl; 
   //add new met
   newMet -= jetDiff; 
   newMet -= lepDiff; 
