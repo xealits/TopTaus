@@ -98,6 +98,8 @@ public :
   void process_dibosons();
   void process_tbh_higgs();
   void process_tbh_higgs_bychannel();
+  void process_htb_higgs();
+  void process_htb_higgs_bychannel();
   void process_ttbar_unc();
 
   void process_triggersamples_mht();

@@ -125,6 +125,8 @@ int main(int argc, char* argv[])
   else if(runOn == "wh_higgs")            analyzer->process_wh_higgs()           ;
   else if(runOn == "tbh_higgs_bychannel") analyzer->process_tbh_higgs_bychannel() ;
   else if(runOn == "tbh_higgs")           analyzer->process_tbh_higgs()           ;
+  else if(runOn == "htb_higgs_bychannel") analyzer->process_htb_higgs_bychannel() ;
+  else if(runOn == "htb_higgs")           analyzer->process_htb_higgs()           ;
   else if(runOn == "wjets")               analyzer->process_wjets()              ;
   else if(runOn == "zjets_from50")        analyzer->process_zjets_from50()       ;
   else if(runOn == "zjets_10to50")        analyzer->process_zjets_10to50()       ;

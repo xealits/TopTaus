@@ -68,3 +68,5 @@ qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_from50.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_10to50.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-tbh-higgs.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-tbh-higgs-bychannel.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs-bychannel.sh

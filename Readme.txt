@@ -118,7 +118,9 @@ xsec datacards are in lipcms/Physics/datacards/xsec/
 See lipcms/Physics/datacards/Readme.txt for additional info
 
 
-CHANGELOG for major updates:	
+CHANGELOG for major updates:
+2013-05-02: Enabled analsis of the new H+->tb (noH+->\tau\nu) samples
+2013-05-01: Fixed bug in jer smearing propagation to met
 2013-04-30: REPOSITORY MOVED TO https://github.com/vischia/TopTaus.git. No more updates will be committed to CERN CVS. After a week of testing at github, LIP/TopTaus/ files will be zeroed with the exception of the Readme.txt
 	    plot fixes
 	    jer smearing to tf
