@@ -201,6 +201,7 @@ rev 702 (2012-04-18): first counting-only chiggs datacards for heavy charged hig
 
 TODO:
 - fix uncertainty band plotting in case the plot is normalized to 1 (Rtau)
+- update tau ID uncertainties
 - update uncertainties in HistogramPlotter
 - move to txt file the cout of the fakes computation in TauFakesHelper.cc (latex table and everything)
 - reweight MC distros con q/g fraction evaluated from MC
