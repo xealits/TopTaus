@@ -42,7 +42,9 @@ public:
   void setTDRStyle();
   void fixOverlay();
   void tdrGrid(bool gridOn=true);
-  
+
+  void setXerrorBars();
+
   /**
      @short retrieves a standard monitor canvas
   */

@@ -62,9 +62,11 @@ TauFakesHelper::TauFakesHelper(double tauPtCut,
   trainingOutputArea_	(trainingOutputArea ),
   outputArea_		(outputArea	    ),   
   puFileName_         	(puFileName         ),
-  ntuplesArea_          (ntuplesArea        )
+  ntuplesArea_          (ntuplesArea        ),
+  PlotStyle()
 {
 
+  setTDRStyle();
   
 }
 
@@ -883,6 +885,7 @@ void TauFakesHelper::GetReweightedPlots(TH1D* trueDist, TH1D* mvaDist, TString n
   mvaDist->GetYaxis()->SetTitleOffset(1.4);
   mvaDist->GetYaxis()->SetTitle("Events/bin");
 
+  setXerrorBars();
   mvaDist->Draw();
   trueDist->Draw("same");
   

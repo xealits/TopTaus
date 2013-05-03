@@ -48,6 +48,8 @@ void printHelp()
 	   << "\t\t\t\t\t \t\t produce training trees.\n"
 	   << "\t\t\t\t\t trainAll trainWMuAll trainWMuData trainWMuMC trainQCDAll trainQCDData trainQCDMC:\n"
 	   << "\t\t\t\t\t \t\t train with nearest-neighbours algorithm.\n"
+	   << "\t\t\t\t\t monitorAll:\n"
+	   << "\t\t\t\t\t \t\t Create all monitoring plots. Don't use with trainAll (it is already included in it).\n"
 	   << "\t\t\t\t\t prepareAll prepareWMuAll prepareWMuData prepareWMuMC prepareQCDAll prepareQCDData prepareQCDMC:\n"
 	   << "\t\t\t\t\t \t\t prepare reweighted files for fakes computation.\n"
 	   << "\t\t\t\t\t computeAll computeWMuFakes computeQCDFakes:\n"
@@ -143,7 +145,15 @@ int main(int argc, char* argv[])
       helper->Trainer(TauFakesHelper::QCDMC);
       helper->Monitor(TauFakesHelper::QCDMC);
     }
-    
+
+    // MonitorOnly
+    if(actions_[i] == "monitorAll" ){
+      helper->Monitor(TauFakesHelper::WMUDATA);
+      helper->Monitor(TauFakesHelper::WMUMC);
+      helper->Monitor(TauFakesHelper::QCDDATA);
+      helper->Monitor(TauFakesHelper::QCDMC);
+    }
+        
     // Prepare reweighted files for fake computation
     if(actions_[i] == "prepareWMuData" || actions_[i] == "prepareWMuAll" || actions_[i] == "prepareAll" || actions_[i] == "all"){
       helper->PrepareFiles(TauFakesHelper::WMUDATA);

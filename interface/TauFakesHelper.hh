@@ -49,7 +49,7 @@ using namespace std;
 
 // FIXME: have a single class for all the four tree producing
 
-class TauFakesHelper : public ObjectSelector, UncertaintyCalculator {
+class TauFakesHelper : public ObjectSelector, UncertaintyCalculator, PlotStyle {
 public:
   TauFakesHelper(double, TString, TString, TString, TString, TString, TString, TString);
   ~TauFakesHelper(){}

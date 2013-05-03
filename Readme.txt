@@ -119,6 +119,7 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-05-03: Enabled TDRStyle for kNN monitoring plots
 2013-05-02: Enabled analsis of the new H+->tb (noH+->\tau\nu) samples
 2013-05-01: Fixed bug in jer smearing propagation to met
 2013-04-30: REPOSITORY MOVED TO https://github.com/vischia/TopTaus.git. No more updates will be committed to CERN CVS. After a week of testing at github, LIP/TopTaus/ files will be zeroed with the exception of the Readme.txt
@@ -207,7 +208,6 @@ TODO:
 - reweight MC distros con q/g fraction evaluated from MC
 - From my 2013-04-22 presentation at TauPOG: recalculate fakes feeding the wmu sample the qcd mva and vice versa, try training with more kinematical variables
 - move all 234.s in the code (TauDileptonTableBuilder in particular) to the value from SampleProcessor (or move the xsecs to CommonDefinitions, better) 
-- tdrStyle in kNN plots
 - vstrings in physicsAnalysisParSets_cfg.py for pileup syst
 - move path of plots output directory to command line or cfg file.
 - split JEC uncertainty sources into the 16 components.

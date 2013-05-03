@@ -174,7 +174,9 @@ void PlotStyle::setTDRStyle() {
 
 }
 
-
+void PlotStyle::setXerrorBars(){
+  tdrStyle->SetErrorX();
+}
 /*-------------------------
   -------------------------*/
 TLegend* PlotStyle::ShowInStack(TString name, TString title, TList &plots, Int_t w, Int_t h,TPad *c, TLegend * leg, TString legopt,bool plotSum)
