@@ -80,9 +80,9 @@ private:
   PhysicsObject met_;
   double metValue_;
   vector<double> jerFactors_;
-  vector<double> oldJerFactorsForMet_;
-  vector<PhysicsObject> newJets_;
-  vector<PhysicsObject> oldJetsForMet_;
+  //  vector<double> oldJerFactorsForMet_;
+  //  vector<PhysicsObject> newJets_;
+  //  vector<PhysicsObject> oldJetsForMet_;
   vector<int> e_init_;
   vector<int> m_init_;
   vector<int> j_init_;
@@ -91,7 +91,8 @@ private:
 
   vector<int> j_init2_;
 
-  void eventAnalysis(bool, TString,double, double, double, double, double); // FIXME: move TString to TString&
+  void CleanStoreObjects();
+  void eventAnalysis(bool, double, double, double, double, double); // FIXME: move TString to TString&
   void tauDileptonSelection(bool, vector<int> &,int);
 
   

@@ -228,22 +228,23 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
     vector<TString>::iterator it;
     for(it=keys.begin();it!=keys.end();++it){   
       // tau dilepton analysis (newphys,tau algo, miniEvent, jes, unc, jer )
-      eventAnalysis(false, (*it), 0 ,        0,        0  ,             0,                0); 
+      myKey_ = (*it);
+      eventAnalysis(false,  0 ,        0,        0  ,             0,                0); 
       //     tauDileptonAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0); 
       //dileptonAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0); 
       //tauDileptonAnalysis( true, (*it),ev,         0 ,        0,        0  ,            0,                0); // newphysics 
       if(!isData_)
 	if(!noUncertainties_){
-	  eventAnalysis( false, (*it),      JES_ ,        0,        0  ,             0,                0);        
-	  eventAnalysis( false, (*it), (-1)*JES_ ,        0,        0  ,             0,                0);
-	  eventAnalysis( false, (*it),        0  ,     UNC_,        0  ,             0,                0);
-	  eventAnalysis( false, (*it),        0  ,(-1)*UNC_,        0  ,             0,                0);
-	  eventAnalysis( false, (*it),        0  ,        0,      JER_ ,             0,                0);
-	  eventAnalysis( false, (*it),        0  ,        0, (-1)*JER_ ,             0,                0);
-	  eventAnalysis( false, (*it),        0  ,        0,        0  ,      BTAGUNC_,                0);
-	  eventAnalysis( false, (*it),        0  ,        0,        0  , (-1)*BTAGUNC_,                0);
-	  eventAnalysis( false, (*it),        0  ,        0,        0  ,             0,       UNBTAGUNC_);
-	  eventAnalysis( false, (*it),        0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_);
+	  eventAnalysis( false,       JES_ ,        0,        0  ,             0,                0);        
+	  eventAnalysis( false,  (-1)*JES_ ,        0,        0  ,             0,                0);
+	  eventAnalysis( false,         0  ,     UNC_,        0  ,             0,                0);
+	  eventAnalysis( false,         0  ,(-1)*UNC_,        0  ,             0,                0);
+	  eventAnalysis( false,         0  ,        0,      JER_ ,             0,                0);
+	  eventAnalysis( false,         0  ,        0, (-1)*JER_ ,             0,                0);
+	  eventAnalysis( false,         0  ,        0,        0  ,      BTAGUNC_,                0);
+	  eventAnalysis( false,         0  ,        0,        0  , (-1)*BTAGUNC_,                0);
+	  eventAnalysis( false,         0  ,        0,        0  ,             0,       UNBTAGUNC_);
+	  eventAnalysis( false,         0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_);
 
 	  //	  tauDileptonAnalysis( false, (*it),ev,      JES_ ,        0,        0  ,             0,                0);        
 	  //	  tauDileptonAnalysis( false, (*it),ev, (-1)*JES_ ,        0,        0  ,             0,                0);
@@ -296,11 +297,8 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void CutflowAnalyzer::eventAnalysis(bool newPhys, TString myKey, double jes , double unc, double jer, double btagunc, double unbtagunc)
+void CutflowAnalyzer::eventAnalysis(bool newPhys, double jes , double unc, double jer, double btagunc, double unbtagunc)
 {
-
-
-  myKey_=myKey;
   jes_=jes;
   unc_=unc;
   jer_=jer;
@@ -308,7 +306,7 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys, TString myKey, double jes , do
   unbtagunc_=unbtagunc;
   sys_ = jes_ || unc_ || jer_ || btagunc_ || unbtagunc_;
 
-
+  CleanStoreObjects();
 
   // Set default lepton + jet selection
   SetLeptonPlusJetsSelection();
@@ -330,16 +328,16 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys, TString myKey, double jes , do
   junc_=0; JetResolution* jerc(0);
   //  unsigned int metAlgo; // unused
   
-  if( myKey.Contains("PFlow")   ) { // Moved up for optimization
+  if( myKey_.Contains("PFlow")   ) { // Moved up for optimization
     jetAlgo=event::AK5PFLOW, leptonType=event::PFLOWLEPTON; tauType = PFLOWTAU; if(!isData_){junc_=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc_=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PFLOWMET;  
   } 
-  else if( myKey=="PF"               ) { 
+  else if( myKey_=="PF"               ) { 
     jetAlgo=event::AK5PF;  leptonType=event::STDLEPTON;    tauType = PFTAU;    if(!isData_){junc_=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc_=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;   
   }
-  else if( myKey.Contains("TaNC")    ) { 
+  else if( myKey_.Contains("TaNC")    ) { 
     jetAlgo=event::AK5PF;   leptonType=event::STDLEPTON;   tauType = PFTAU;    if(!isData_){junc_=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc_=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;  
   }
-  else if( myKey.Contains("HPS")     ) { 
+  else if( myKey_.Contains("HPS")     ) { 
     jetAlgo=event::AK5PF,    leptonType=event::STDLEPTON;   tauType = HPSTAU;   if(!isData_){junc_=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc_=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;  
   } 
 
@@ -396,26 +394,6 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys, TString myKey, double jes , do
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   //jet resolution corrections ////////////////////////////////////////////////////////////////////////////////
-  jerFactors_.clear();
-  oldJerFactorsForMet_.clear();
-  newJets_.clear();
-  oldJetsForMet_.clear();
-  if(i_ == 45) cout<<endl<< "CORR JETS IN EVENT " << i_ << endl;
-  for(unsigned int i=0;i<jets_.size();++i){ 
-    double corr_jer(1.);
-    if(!isData_){
-      if(jer_== 0) newJets_.push_back( smearedJet(jets_[i], jets_[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-      if(jer_> 0)  newJets_.push_back( smearedJet(jets_[i], jets_[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-      if(jer_< 0)  newJets_.push_back( smearedJet(jets_[i], jets_[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-    }
-    jerFactors_.push_back(1.);
-    oldJerFactorsForMet_.push_back(corr_jer);
-    //    std::cout << " jerfac: " << corr_jer << std::endl;
-    if(!isData_ && i_ == 45) cout << setprecision(6) << "\t\t jet " << i << ", pt " << newJets_[i].Pt() <<", eta " << newJets_[i].Eta() << ", phi " << newJets_[i].Phi() << endl;
-    
-  } 
-  oldJetsForMet_=jets_;
-  if(!isData_) jets_=newJets_;
 
   // Add here allinone met propagation and do stuff here for that yaya.
   uint metAlgo;
@@ -429,9 +407,22 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys, TString myKey, double jes , do
   mets_ = evR_->GetPhysicsObjectsFrom(ev_,event::MET,metAlgo);           
   if(mets_.size()==0) { cout << "No met available for " << myKey_ <<" analysis type ! "<< endl;  return;}
   met_ = mets_[0]; 
-  // WORKING HERE
-  //  double metValue = jetMETScaling( jerFactors, jes_, junc , jets ,met.Px(), met.Py());
-  metValue_ = jetMETScalingTest( oldJerFactorsForMet_, jes_, junc_, oldJetsForMet_  , met_);
+
+  if(i_ == 45) cout<<endl<< "MET: pt " << met_.Pt() << ", eta " << met_.Eta() << ", phi " << met_.Phi() << endl;
+  doPropagations( jerFactors_, jes_, jer_, junc_, jets_ , met_, isData_);
+  if(i_ == 45){
+    cout<<endl<< "RESCALED JETS IN EVENT " << i_ << endl;
+    for(size_t ijet=0; ijet<jets_.size(); ++ijet){
+      cout << setprecision(6) << "\t\t jet " << ijet << ", pt " << jets_[ijet].Pt() <<", eta " << jets_[ijet].Eta() << ", phi " << jets_[ijet].Phi() << endl;
+      
+    }
+    cout<<endl<< "PROPAGATED MET: pt " << met_.Pt() << ", eta " << met_.Eta() << ", phi " << met_.Phi() << endl;
+  }
+
+  metValue_ = met_.Pt();
+  //  // WORKING HERE
+  //  //  double metValue = jetMETScaling( jerFactors, jes_, junc , jets ,met.Px(), met.Py());
+  //  metValue_ = jetMETScalingTest( oldJerFactorsForMet_, jes_, junc_, oldJetsForMet_  , met_);
   // rescaling of met based on unclustered energy ////////////////////////////////////////////////
   //  if( unc_ ){ metValue = jetMETUnclustered( jerFactors, lep_obj, unc_, jets, met.Px(), met.Py());}
   //  if( jer_ ){ metValue = jetMETResolution( jerFactors, jets, met.Px(), met.Py());}
@@ -622,6 +613,34 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys, TString myKey, double jes , do
 
   tauDileptonSelection(lepReq, t_afterLeptonRemoval, numbJets);
   //  tauDileptonEventAnalysis(lepReq, vertices_, muons_,m_init_,electrons_,e_init_,taus_,t_afterLeptonRemoval,jets_,j_final_,numbJets,junc,jerFactors_,myKey_,ev_, oldJetsForMet_, oldJerFactorsForMet_);
+
+}
+
+void CutflowAnalyzer::CleanStoreObjects(){
+
+  junc_=0;
+  vertices_                 .clear();
+  jets_without_arbitration_ .clear();
+  jets_                     .clear();
+  muons_                    .clear();
+  electrons_                .clear();
+  tausColl_                 .clear();
+  taus_                     .clear(); 
+  mets_.clear();
+  met_ = PhysicsObject( new TLorentzVector(0,0,0,0), new TVectorD(0));
+  metValue_ = -10;
+  jerFactors_.clear();
+  //  oldJerFactorsForMet_.clear();
+  //  newJets_.clear();
+  //  oldJetsForMet_.clear();
+  e_init_.clear();
+  m_init_.clear();
+  j_init_.clear();
+  t_init_.clear();
+  j_final_.clear();
+  
+  j_init2_.clear();
+
 
 }
 
