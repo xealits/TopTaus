@@ -39,6 +39,12 @@ public:
   CutflowAnalyzer(double, bool, bool, TString, TString, TString, TString);
   
   void process(bool, urlCodes, TString, TString, vector<TString>&, uint);
+
+
+  
+private:
+
+  
   void setSelectionParameters();
   
   void computeMHT( std::vector<PhysicsObject>&,  vector<int>&, PhysicsObject&);
@@ -54,7 +60,42 @@ public:
   pair<double, pair<double,double> > getNbtags( std::vector<PhysicsObject>&, vector<int>&); // unc, p0 and p1
   pair< double,double >             get2Nbtags( std::vector<PhysicsObject>&, vector<int>&); // unc, p2
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  // NEW Event analysis:
+  event::MiniEvent_t* ev_;
+  TString myKey_;
+  double JER_, JES_, UNC_, BTAGUNC_, UNBTAGUNC_; // unceretainties applied
+  double jer_, jes_, unc_, btagunc_, unbtagunc_; // unceretainties applied
+  bool sys_;
+  JetCorrectionUncertainty* junc_;
+  std::vector<PhysicsObject> vertices_                 ;
+  std::vector<PhysicsObject> jets_without_arbitration_ ;
+  std::vector<PhysicsObject> jets_                     ;
+  std::vector<PhysicsObject> muons_                    ;
+  std::vector<PhysicsObject> electrons_                ;
+  std::vector<PhysicsObject> tausColl_                 ;
+  std::vector<PhysicsObject> taus_; 
+  PhysicsObjectCollection mets_;
+  PhysicsObject met_;
+  double metValue_;
+  vector<double> jerFactors_;
+  vector<double> oldJerFactorsForMet_;
+  vector<PhysicsObject> newJets_;
+  vector<PhysicsObject> oldJetsForMet_;
+  vector<int> e_init_;
+  vector<int> m_init_;
+  vector<int> j_init_;
+  vector<int> t_init_;  
+  vector<int> j_final_;
+
+  vector<int> j_init2_;
+
+  void eventAnalysis(bool, TString,double, double, double, double, double); // FIXME: move TString to TString&
+  void tauDileptonSelection(bool, vector<int> &,int);
+
   
+
   // TAU DILEPTON ANALYSIS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   void tauDileptonAnalysis( bool, TString, event::MiniEvent_t*, double, double, double, double, double);
   void dileptonAnalysis( bool, TString, event::MiniEvent_t*, double, double, double, double, double);
@@ -90,8 +131,7 @@ void dileptonEventAnalysis(
 		  std::vector<PhysicsObject>&, vector<int>&,
 		  std::vector<PhysicsObject>&, vector<int>&, 
 		  std::vector<PhysicsObject>&, vector<int>&, int, JetCorrectionUncertainty*, vector<double>&, 
-		  TString,
-		  event::MiniEvent_t*
+		  TString
 		  );
   
   
@@ -162,8 +202,6 @@ void dileptonEventAnalysis(
   
   double DRMIN_JET_E_, DRMIN_JET_M_, DRMIN_T_E_, DRMIN_T_M_, DRMIN_T_J_; // Object spliting
   
-  double JER_, JES_, UNC_, BTAGUNC_, UNBTAGUNC_; // unceretainties applied
-  double jer_, jes_, unc_, btagunc_, unbtagunc_; // unceretainties applied
   
   int urlCode_, evType_;   // url code of sample being processed and the caractherized event type
   int nVertex_;
@@ -201,7 +239,7 @@ void dileptonEventAnalysis(
   double originalPDFEvents_;
   double PDFSelectedEvents_;
   
-  bool sys_;
+
   
   double BTagSF_;     double err_BTagSF_;
   double LightJetSF_; double err_LightJetSF_;

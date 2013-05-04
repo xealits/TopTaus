@@ -298,14 +298,15 @@ void ObjectSelector::PreSelectJets( bool isData, vector<double>& jerFactors, dou
   
 }
 
-void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject>& vT, int requiredProngs, TString myKey, PhysicsObject& vertex){
+void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject>& vT, int requiredProngs, TString& myKey, PhysicsObject& vertex){
   
   // cout<<endl<<" tau collection size is : "<<vT.size()<<endl;
   
   bool applyTanc(false);
   bool applyHPS(false);
-  
-  if(      myKey =="TaNC0"   ){ applyTanc=true; TANC_FRDISCRIMINATOR_ = TANCFR_ONE;    }
+
+  if( myKey =="PFlow"   ){ applyHPS =true; HPS_ISO_ = HPS_MEDIUMISO; }  // MEDIUM WORKING POINT  
+  else if(      myKey =="TaNC0"   ){ applyTanc=true; TANC_FRDISCRIMINATOR_ = TANCFR_ONE;    }
   else if( myKey =="TaNC1"   ){ applyTanc=true; TANC_FRDISCRIMINATOR_ = TANCFR_HALF;   }
   else if( myKey =="TaNC2"   ){ applyTanc=true; TANC_FRDISCRIMINATOR_ = TANCFR_QUARTER;} 
   else if( myKey =="TaNC3"   ){ applyTanc=true; TANC_FRDISCRIMINATOR_ = TANCFR_TENTH;  } 
@@ -313,7 +314,7 @@ void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject
   else if( myKey =="HPS1"    ){ applyHPS =true; HPS_ISO_ = HPS_MEDIUMISO;  } 
   else if( myKey =="HPS2"    ){ applyHPS =true; HPS_ISO_ = HPS_TIGHTISO;   } 
   //else if( myKey =="PFlow" ){ applyHPS =true; HPS_ISO_ = HPS_LOOSEISO;  }  // LOOSE WORKING POINT WARNING
-  else if( myKey =="PFlow"   ){ applyHPS =true; HPS_ISO_ = HPS_MEDIUMISO; }  // MEDIUM WORKING POINT
+  
   
   
   for(unsigned int i=0;i<vT.size();++i){
