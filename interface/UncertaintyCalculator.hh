@@ -43,6 +43,7 @@ class UncertaintyCalculator {
 public:
   double jetMETScaling( vector<double> & jerFactors, double jes,JetCorrectionUncertainty * junc, vector<PhysicsObject> & vJ , double missetX, double missetY);
   double jetMETScalingTest( vector<double> & jerFactors, double jes,JetCorrectionUncertainty * junc, vector<PhysicsObject> & vJ , PhysicsObject& met);
+  void doPropagations( vector<double>&, const double&, const double&, JetCorrectionUncertainty*, vector<PhysicsObject> & , PhysicsObject&, const bool);
   double jetMETUnclustered( vector<double> & jerFactors, PhysicsObject * obj, double unc, vector<PhysicsObject> & vJ, double missetX, double missetY);
   double jetMETResolution( vector<double> & jerFactors , vector<PhysicsObject> & vJ, double missetX, double missetY);
   double getJetPt( PhysicsObject &j ,JetCorrectionUncertainty * junc, double jerFactor,double jes);

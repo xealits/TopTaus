@@ -94,6 +94,62 @@ double UncertaintyCalculator::jetMETScalingTest( vector<double> & jerFactors, do
   
 }
 
+
+
+
+// Propagate met variation test
+void UncertaintyCalculator::doPropagations( vector<double> & jerFactors, const double& jes, const double& jer, JetCorrectionUncertainty * junc, vector<PhysicsObject> & vJ , PhysicsObject& met, const bool isData) {
+  jerFactors.clear();
+  
+  
+  // For data, jerFactors are 1. and collections remain untouched
+  if(isData){
+    for(size_t ijet=0; ijet<vJ.size(); ++ijet)
+      jerFactors.push_back(1.);
+    return;
+  }
+
+
+  vector<PhysicsObject> newJets; newJets.clear();
+  PhysicsObject 
+    newMet        (met),
+    //    newMet        (new TLorentzVector(met), met.GetInfo()),
+    //    newMet        (new TLorentzVector(met), new TVectorD(0)),
+    jetDiff       (new TLorentzVector(0,0,0,0), new TVectorD(0)),
+    lepDiff       (new TLorentzVector(0,0,0,0), new TVectorD(0)), 
+    unclustDiff   (new TLorentzVector(0,0,0,0), new TVectorD(0)), 
+    clusteredFlux (new TLorentzVector(0,0,0,0), new TVectorD(0));
+
+  bool noCorrection(true);
+
+
+  for(size_t ijet=0; ijet<vJ.size(); ++ijet)
+    {
+      PhysicsObject origJet = vJ[ijet];
+      double corr_jer(1.);
+      if(jer== 0) newJets.push_back( smearedJet(origJet, origJet[34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      if(jer> 0)  newJets.push_back( smearedJet(origJet, origJet[34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      if(jer< 0)  newJets.push_back( smearedJet(origJet, origJet[34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      jerFactors.push_back(corr_jer);
+      
+      jetDiff += (newJets[ijet]-vJ[ijet]);
+    }
+  
+  //add new met
+  newMet -= jetDiff; 
+  
+  // FIXME: unsupported for now
+  //  newMet -= lepDiff; 
+  //  newMet -= unclustDiff; 
+
+
+  vJ = newJets; // Output rescaled jets
+  met = newMet; // Output rescaled met
+  
+}
+
+
+
  
  
 double UncertaintyCalculator::jetMETUnclustered( vector<double> & jerFactors, PhysicsObject * obj, double unc, vector<PhysicsObject> & vJ, double missetX, double missetY){
