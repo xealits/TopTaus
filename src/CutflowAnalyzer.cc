@@ -9,17 +9,19 @@
 
 #include "PhysicsTools/Utilities/interface/LumiReweightingStandAlone.h"
 
-
 using namespace std;
 
-CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis, TString inputArea, TString outputArea, TString puFileName, TString runRange) : UncertaintyCalculator(),  
-																						  AnalysisMonitoring(tauPtCut, inputArea, outputArea), 
-																						  ObjectSelector(tauPtCut),
-																						  noUncertainties_(noUncertainties),
-																						  doWPlusJetsAnalysis_(doWPlusJetsAnalysis),
-																						  testMe_(0),
-																						  testMe_Nev_(0)
+CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis, TString inputArea, TString outputArea, TString puFileName, TString runRange, vector<double> brHtaunu) :
+  UncertaintyCalculator(),  
+  AnalysisMonitoring(tauPtCut, inputArea, outputArea), 
+  ObjectSelector(tauPtCut),
+  noUncertainties_(noUncertainties),
+  doWPlusJetsAnalysis_(doWPlusJetsAnalysis),
+  testMe_(0),
+  testMe_Nev_(0)
+
 {    
+  brHtaunu_ = brHtaunu;
   
   //  inputArea_  = inputArea; // Moved to AnalysisMonitoring -> SampleProcessor // FIXME: check if it is possible to initialize them in the constructor init list
   //  outputArea_ = outputArea;

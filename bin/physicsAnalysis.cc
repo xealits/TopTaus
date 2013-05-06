@@ -43,13 +43,33 @@ int main(int argc, char* argv[])
   
   //check arguments
   if ( argc < 3 ) {
-    std::cout << "Usage : " << argv[0] << " parameters_cfg.py sample" << std::endl;
+    std::cout << "Usage : " << argv[0] << " parameters_cfg.py action --doDatacards [bool]" << std::endl;
     return 0;
   }
   
+  string sDoDatacards("");
+  bool doDatacards(false);
+  // Get input arguments                                                                                                                                                                                           
+  for(int i=3;i<argc;i++){
+    string arg(argv[i]);
+    //    if(arg.find("--help")        !=string::npos) { printHelp(); return -1;}                                                                                                                                  
+    if(arg.find("--doDatacards") !=string::npos) { sDoDatacards = argv[i+1];}
+    //check arguments // FIXME: implement --blah bih                             
+  }
+  if(sDoDatacards == "true")
+    doDatacards=true;
+  else if(sDoDatacards == "false")
+    doDatacards=false;
+  else{
+    cout << "Error. DoDatacards value not defined. Defaulting to false (tables mode)" << endl;
+    doDatacards=false;
+  }
+  
+  
+  
   string parSet(argv[1]);
   string runOn(argv[2]);
-
+  
   const edm::ParameterSet &pSet = edm::readPSetsFrom(parSet)->getParameter<edm::ParameterSet>("PhysicsAnalysisParSet");
   
   double tauPtCut = pSet.getParameter<double>("tauPtCut");
@@ -59,8 +79,9 @@ int main(int argc, char* argv[])
   TString outputArea = TString(pSet.getParameter<string>("outputArea"));
   TString puFileName = TString(pSet.getParameter<string>("puFileName"));
   TString runRange   = TString(pSet.getParameter<string>("runRange"));
-
-  CutflowAnalyzer* analyzer = new CutflowAnalyzer( tauPtCut, noUncertainties, doWPlusJetsAnalysis, inputArea, outputArea, puFileName, runRange /*parSet*/ );
+  std::vector<double> brHtaunu = pSet.getParameter<std::vector<double> >("brHtaunu");
+  
+  CutflowAnalyzer* analyzer = new CutflowAnalyzer( tauPtCut, noUncertainties, doWPlusJetsAnalysis, inputArea, outputArea, puFileName, runRange, brHtaunu /*parSet*/ );
   
   std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;
   
@@ -139,7 +160,7 @@ int main(int argc, char* argv[])
     cout << "Done SM table" << endl;
     analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false); 
     cout << "Done TBH table" << endl;
-    analyzer->summaryTable( notDetailed, true, false, false, false, withShapes, withStatShapes);
+    analyzer->summaryTable( notDetailed, true, false, false, false, withShapes, withStatShapes, doDatacards);
     cout << "Done summary table" << endl;
   }
   else if(runOn == "doPlots"){

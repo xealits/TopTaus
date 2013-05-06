@@ -71,7 +71,7 @@ LandSShapesProducerParSet = cms.PSet(
     
     #osCutEff               = cms.double(0.69*220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
 #    osCutEff               = cms.double(2054.99/4232.500009), #FIXME: subtract residual shape 0.699), # // FIXME: fixme 220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
-    osCutEff = cms.double( 2821.13/5736.58),
+    osCutEff = cms.double( 2810.89/5736.58),
     #fitType     = cms.vstring( HIGGS2BKG, HIGGS3BKG, SM2BKG, SM3BKG)
     #    fitType     = cms.vint32( 0),
     #, 2, 3, 0),
@@ -83,24 +83,24 @@ LandSShapesProducerParSet = cms.PSet(
 
 
 
-#    vars        = cms.vstring( "rc_t"    ),
-#    mins        = cms.vdouble(   -0.099  ),
-#    maxs        = cms.vdouble(    1.001  ),
-#    bins        = cms.vint32(      11     ),
-#    hmin        = cms.vdouble(      0    ),
-#    hmax        = cms.vdouble(    200    ),
-#    unbinned    = cms.vint32(       0    ),
-#    smoothOrder = cms.vint32(       3    ),   
+    vars        = cms.vstring( "rc_t"    ),
+    mins        = cms.vdouble(   -0.099  ),
+    maxs        = cms.vdouble(    1.001  ),
+    bins        = cms.vint32(      11     ),
+    hmin        = cms.vdouble(      0    ),
+    hmax        = cms.vdouble(    200    ),
+    unbinned    = cms.vint32(       0    ),
+    smoothOrder = cms.vint32(       3    ),   
 
 
-vars        = cms.vstring(    "pt_t"  ),
-mins        = cms.vdouble(         0  ),
-maxs        = cms.vdouble(       500  ),
-bins        = cms.vint32(         20  ),
-hmin        = cms.vdouble(         0  ),
-hmax        = cms.vdouble(       200  ),
-unbinned    = cms.vint32(          0  ),
-smoothOrder = cms.vint32(          3  ),
+# vars        = cms.vstring(    "pt_t"  ),
+# mins        = cms.vdouble(         0  ),
+# maxs        = cms.vdouble(       500  ),
+# bins        = cms.vint32(         20  ),
+# hmin        = cms.vdouble(         0  ),
+# hmax        = cms.vdouble(       200  ),
+# unbinned    = cms.vint32(          0  ),
+# smoothOrder = cms.vint32(          3  ),
 
 
 

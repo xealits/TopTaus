@@ -184,7 +184,8 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[WH160_URL]              = 234;                                           
       defaultXSections_[HH160_URL]              = 234;                                                                                 
       
-      // 1.1 is for plots, 234 is for tables
+      // 1.1 is for plots and tables: for plots it's already implemented in the data/plotter/samples.xml. For tables must be implemented via switchable parameter in cfg file. 
+      // 234 is for datacards.
       defaultXSections_[TBH180_URL]             = 234. * 0.831852  ; //1.1; //234;
       defaultXSections_[TBH190_URL]             = 234. * 0.407966  ; //1.1; //234;  
       defaultXSections_[TBH200_URL]             = 234. * 0.228564  ; //1.1; //234;  

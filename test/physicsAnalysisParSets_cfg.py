@@ -20,7 +20,14 @@ PhysicsAnalysisParSet = cms.PSet(
     #    puFileName = cms.string("/exper-sw/cmst3/cmssw/users/vischia/chiggs/CMSSW_5_3_7_patch4/src/LIP/TopTaus/data/pileup/MyDataPileupHistogram_RunAB_73500.root"),
     #    puFileName = cms.string("/exper-sw/cmst3/cmssw/users/vischia/chiggs/CMSSW_5_3_7_patch4/src/LIP/TopTaus/data/pileup/MyDataPileupHistogram_RunABC_73500.root")
     #         puFileName = cms.string("/exper-sw/cmst3/cmssw/users/vischia/chiggs/CMSSW_5_3_7_patch4/src/LIP/TopTaus/data/pileup/MyDataPileupHistogram_All_73500_pix.root")
-    runRange = cms.string("ABCD")
+    runRange = cms.string("ABCD"),
+    brHtaunu = cms.vdouble(
+    0.831852,
+    0.407966,
+    0.228564,
+    0.106446,
+    0.04129783,
+    0.02514242)
     )
 
 #########

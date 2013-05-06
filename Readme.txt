@@ -100,7 +100,9 @@ physicsAnalysis test/physicsAnalysisParSets_cfg.py doPlots
 
 Produce tables
 --------------
-physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables # must add switch for higgs/non-higgs
+physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables --doDatacards [true|false]
+		--doDatacards: true means datacards are produced, and tbh yields are rescaled to the ttbar production cross-section
+			       false means datacards are not produced, and tbh yields are rescaled to the production cross section of the tbh samples (1.1pb)
 
 Produce fakerate
 ----------------
@@ -119,6 +121,9 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-05-06: Fixed jer smearing/met propagation (condensed in single loop)
+	    Fixed normalization for datacards and shapes
+	    committed revision 716 for chiggs datacards - supersedes all previous revisions
 2013-05-03: Enabled TDRStyle for kNN monitoring plots
 	    Not show anymore ratio in R plot
 2013-05-02: Enabled analsis of the new H+->tb (noH+->\tau\nu) samples
@@ -195,6 +200,7 @@ FIXED TAGS:
 - V12-12-21 / V12-12-17: 2011 code.
 
 CHANGELOG for datacards:
+rev 716 (2013-05-06): cHiggs: fixed yields and shapes. This version supersedes all the previous.
 rev 715 (2012-04-29): cHiggs: moved to use pt_tau shapes. Fixed datacards with values after met correction.
 rev 714 (2012-04-19): fixed first shapes files and datacards with support for shapes (R_tau) for heavy charged higgs		
 rev 713 (2012-04-19): first shapes files and datacards with support for shapes (R_tau) for heavy charged higgs	

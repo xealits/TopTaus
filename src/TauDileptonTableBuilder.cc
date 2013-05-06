@@ -49,6 +49,8 @@ namespace tableutils{
     double fhh(1),fhw(1); // this is for the datacards (so that they are normalized to 234 (xsecttbar)
     // for ftbh see below (search for "vector<double> ftbh")
     //    double ftbh(1); // This is for the datacards, so that they are normalized to 234
+
+
      
     bool XSECMEASUREMENT( true );  if( XSECMEASUREMENT ){ TTBAR_CS_ERR = XSEC_EXP_ERR_; } else { SIGNAL_EFF_ERR = 0; }
     
@@ -1326,14 +1328,14 @@ namespace tableutils{
           if(        detailed == D2 )  {dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f \\\\ \n");}
           else  if(  detailed == D3 )  {dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f \\\\ \n");}
           line.Append(dtemp); const char * data = line.Data();
-          fprintf(f,data,ftbh[k]*(tbh_e[k])[COL2],ftbh[k]*(tbh_e[k])[COL3],ftbh[k]*(tbh_e[k])[COL4],ftbh[k]*(tbh_e[k])[COL5],ftbh[k]*(tbh_e[k])[COL6],ftbh[k]*(tbh_e[k])[COL7],ftbh[k]*(tbh_e[k])[COL8],ftbh[k]*(tbh_e[k])[COL9]);
+          fprintf(f,data,brHtaunu_[k]*(tbh_e[k])[COL2],brHtaunu_[k]*(tbh_e[k])[COL3],brHtaunu_[k]*(tbh_e[k])[COL4],brHtaunu_[k]*(tbh_e[k])[COL5],brHtaunu_[k]*(tbh_e[k])[COL6],brHtaunu_[k]*(tbh_e[k])[COL7],brHtaunu_[k]*(tbh_e[k])[COL8],brHtaunu_[k]*(tbh_e[k])[COL9]);
         }
         else if ( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){
           dtemp = TString(" & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n"); 
           if     ( detailed == D2 )  {dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f  \\\\ \n");  }
           else if( detailed == D3 )  {dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f  \\\\ \n");  }
           line.Append(dtemp); const char * data = line.Data();
-          fprintf(f, data, ftbh[k]*(tbh_e[k])[COL2] , ftbh[k]*(tbh_e[k])[COL3] ,ftbh[k]*(tbh_e[k])[COL4], ftbh[k]*(tbh_e[k])[COL5], ftbh[k]*(tbh_e[k])[COL6], ftbh[k]*(tbh_e[k])[COL7], ftbh[k]*(tbh_e[k])[COL8]);
+          fprintf(f, data, brHtaunu_[k]*(tbh_e[k])[COL2] , brHtaunu_[k]*(tbh_e[k])[COL3] ,brHtaunu_[k]*(tbh_e[k])[COL4], brHtaunu_[k]*(tbh_e[k])[COL5], brHtaunu_[k]*(tbh_e[k])[COL6], brHtaunu_[k]*(tbh_e[k])[COL7], brHtaunu_[k]*(tbh_e[k])[COL8]);
         }
 
         if(printAllErrors){
@@ -1348,14 +1350,14 @@ namespace tableutils{
             lx.Append(dx); datax= lx.Data();
           
             fprintf(f, datax, 
-              ftbh[k]*tbh_e_err[k][COL2], ftbh[k]*tbh_e_syst_plus[k][COL2], ftbh[k]*tbh_e_syst_minus[k][COL2],
-              ftbh[k]*tbh_e_err[k][COL3], ftbh[k]*tbh_e_syst_plus[k][COL3], ftbh[k]*tbh_e_syst_minus[k][COL3],    
-              ftbh[k]*tbh_e_err[k][COL4], ftbh[k]*tbh_e_syst_plus[k][COL4], ftbh[k]*tbh_e_syst_minus[k][COL4],
-              ftbh[k]*tbh_e_err[k][COL5], ftbh[k]*tbh_e_syst_plus[k][COL5], ftbh[k]*tbh_e_syst_minus[k][COL5],
-              ftbh[k]*tbh_e_err[k][COL6], ftbh[k]*tbh_e_syst_plus[k][COL6], ftbh[k]*tbh_e_syst_minus[k][COL6],
-              ftbh[k]*tbh_e_err[k][COL7], ftbh[k]*tbh_e_syst_plus[k][COL7], ftbh[k]*tbh_e_syst_minus[k][COL7],              
-              ftbh[k]*tbh_e_err[k][COL8], ftbh[k]*tbh_e_syst_plus[k][COL8], ftbh[k]*tbh_e_syst_minus[k][COL8],
-              ftbh[k]*tbh_e_err[k][COL9], ftbh[k]*tbh_e_syst_plus[k][COL9], ftbh[k]*tbh_e_syst_minus[k][COL9]); 
+              brHtaunu_[k]*tbh_e_err[k][COL2], brHtaunu_[k]*tbh_e_syst_plus[k][COL2], brHtaunu_[k]*tbh_e_syst_minus[k][COL2],
+              brHtaunu_[k]*tbh_e_err[k][COL3], brHtaunu_[k]*tbh_e_syst_plus[k][COL3], brHtaunu_[k]*tbh_e_syst_minus[k][COL3],    
+              brHtaunu_[k]*tbh_e_err[k][COL4], brHtaunu_[k]*tbh_e_syst_plus[k][COL4], brHtaunu_[k]*tbh_e_syst_minus[k][COL4],
+              brHtaunu_[k]*tbh_e_err[k][COL5], brHtaunu_[k]*tbh_e_syst_plus[k][COL5], brHtaunu_[k]*tbh_e_syst_minus[k][COL5],
+              brHtaunu_[k]*tbh_e_err[k][COL6], brHtaunu_[k]*tbh_e_syst_plus[k][COL6], brHtaunu_[k]*tbh_e_syst_minus[k][COL6],
+              brHtaunu_[k]*tbh_e_err[k][COL7], brHtaunu_[k]*tbh_e_syst_plus[k][COL7], brHtaunu_[k]*tbh_e_syst_minus[k][COL7],              
+              brHtaunu_[k]*tbh_e_err[k][COL8], brHtaunu_[k]*tbh_e_syst_plus[k][COL8], brHtaunu_[k]*tbh_e_syst_minus[k][COL8],
+              brHtaunu_[k]*tbh_e_err[k][COL9], brHtaunu_[k]*tbh_e_syst_plus[k][COL9], brHtaunu_[k]*tbh_e_syst_minus[k][COL9]); 
           } 
           else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){
             if      ( detailed == D2 ){ dx = TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
@@ -1365,13 +1367,13 @@ namespace tableutils{
             lx.Append(dx); datax= lx.Data();
           
             fprintf(f, datax, 
-              ftbh[k]*tbh_e_err[k][COL2], ftbh[k]*tbh_e_syst_plus[k][COL2], ftbh[k]*tbh_e_syst_minus[k][COL2],
-              ftbh[k]*tbh_e_err[k][COL3], ftbh[k]*tbh_e_syst_plus[k][COL3], ftbh[k]*tbh_e_syst_minus[k][COL3],    
-              ftbh[k]*tbh_e_err[k][COL4], ftbh[k]*tbh_e_syst_plus[k][COL4], ftbh[k]*tbh_e_syst_minus[k][COL4],
-              ftbh[k]*tbh_e_err[k][COL5], ftbh[k]*tbh_e_syst_plus[k][COL5], ftbh[k]*tbh_e_syst_minus[k][COL5],
-              ftbh[k]*tbh_e_err[k][COL6], ftbh[k]*tbh_e_syst_plus[k][COL6], ftbh[k]*tbh_e_syst_minus[k][COL6],
-              ftbh[k]*tbh_e_err[k][COL7], ftbh[k]*tbh_e_syst_plus[k][COL7], ftbh[k]*tbh_e_syst_minus[k][COL7],
-              ftbh[k]*tbh_e_err[k][COL8], ftbh[k]*tbh_e_syst_plus[k][COL8], ftbh[k]*tbh_e_syst_minus[k][COL8]);
+              brHtaunu_[k]*tbh_e_err[k][COL2], brHtaunu_[k]*tbh_e_syst_plus[k][COL2], brHtaunu_[k]*tbh_e_syst_minus[k][COL2],
+              brHtaunu_[k]*tbh_e_err[k][COL3], brHtaunu_[k]*tbh_e_syst_plus[k][COL3], brHtaunu_[k]*tbh_e_syst_minus[k][COL3],    
+              brHtaunu_[k]*tbh_e_err[k][COL4], brHtaunu_[k]*tbh_e_syst_plus[k][COL4], brHtaunu_[k]*tbh_e_syst_minus[k][COL4],
+              brHtaunu_[k]*tbh_e_err[k][COL5], brHtaunu_[k]*tbh_e_syst_plus[k][COL5], brHtaunu_[k]*tbh_e_syst_minus[k][COL5],
+              brHtaunu_[k]*tbh_e_err[k][COL6], brHtaunu_[k]*tbh_e_syst_plus[k][COL6], brHtaunu_[k]*tbh_e_syst_minus[k][COL6],
+              brHtaunu_[k]*tbh_e_err[k][COL7], brHtaunu_[k]*tbh_e_syst_plus[k][COL7], brHtaunu_[k]*tbh_e_syst_minus[k][COL7],
+              brHtaunu_[k]*tbh_e_err[k][COL8], brHtaunu_[k]*tbh_e_syst_plus[k][COL8], brHtaunu_[k]*tbh_e_syst_minus[k][COL8]);
           } 
         }
          ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1380,8 +1382,8 @@ namespace tableutils{
         // Muon contribution //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
         TString line2(" & "); line2.Append(Tcolumn_mc[1]); line2.Append(dtemp); const char * data2 = line2.Data();
     
-        if(      STARTINGPOINT == STARTING_AT_LJETS_        ){ fprintf(f, data2,  ftbh[k]*tbh_m[k][COL2], ftbh[k]*tbh_m[k][COL3], ftbh[k]*tbh_m[k][COL4], ftbh[k]*tbh_m[k][COL5], ftbh[k]*tbh_m[k][COL6], ftbh[k]*tbh_m[k][COL7],ftbh[k]*tbh_m[k][COL8], ftbh[k]*tbh_m[k][COL9] ); }
-        else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){ fprintf(f, data2,  ftbh[k]*tbh_m[k][COL2], ftbh[k]*tbh_m[k][COL3], ftbh[k]*tbh_m[k][COL4], ftbh[k]*tbh_m[k][COL5], ftbh[k]*tbh_m[k][COL6], ftbh[k]*tbh_m[k][COL7], ftbh[k]*tbh_m[k][COL8]); }
+        if(      STARTINGPOINT == STARTING_AT_LJETS_        ){ fprintf(f, data2,  brHtaunu_[k]*tbh_m[k][COL2], brHtaunu_[k]*tbh_m[k][COL3], brHtaunu_[k]*tbh_m[k][COL4], brHtaunu_[k]*tbh_m[k][COL5], brHtaunu_[k]*tbh_m[k][COL6], brHtaunu_[k]*tbh_m[k][COL7],brHtaunu_[k]*tbh_m[k][COL8], brHtaunu_[k]*tbh_m[k][COL9] ); }
+        else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){ fprintf(f, data2,  brHtaunu_[k]*tbh_m[k][COL2], brHtaunu_[k]*tbh_m[k][COL3], brHtaunu_[k]*tbh_m[k][COL4], brHtaunu_[k]*tbh_m[k][COL5], brHtaunu_[k]*tbh_m[k][COL6], brHtaunu_[k]*tbh_m[k][COL7], brHtaunu_[k]*tbh_m[k][COL8]); }
         
 
         if(printAllErrors){
@@ -1395,14 +1397,14 @@ namespace tableutils{
         
             lx.Append(dx);  datax = lx.Data();
             fprintf(f, datax, 
-              ftbh[k]*tbh_m_err[k][COL2], ftbh[k]*tbh_m_syst_plus[k][COL2], ftbh[k]*tbh_m_syst_minus[k][COL2],
-              ftbh[k]*tbh_m_err[k][COL3], ftbh[k]*tbh_m_syst_plus[k][COL3], ftbh[k]*tbh_m_syst_minus[k][COL3],    
-              ftbh[k]*tbh_m_err[k][COL4], ftbh[k]*tbh_m_syst_plus[k][COL4], ftbh[k]*tbh_m_syst_minus[k][COL4], 
-              ftbh[k]*tbh_m_err[k][COL5], ftbh[k]*tbh_m_syst_plus[k][COL5], ftbh[k]*tbh_m_syst_minus[k][COL5],
-              ftbh[k]*tbh_m_err[k][COL6], ftbh[k]*tbh_m_syst_plus[k][COL6], ftbh[k]*tbh_m_syst_minus[k][COL6],
-              ftbh[k]*tbh_m_err[k][COL7], ftbh[k]*tbh_m_syst_plus[k][COL7], ftbh[k]*tbh_m_syst_minus[k][COL7],
-              ftbh[k]*tbh_m_err[k][COL8], ftbh[k]*tbh_m_syst_plus[k][COL8], ftbh[k]*tbh_m_syst_minus[k][COL8],
-              ftbh[k]*tbh_m_err[k][COL9], ftbh[k]*tbh_m_syst_plus[k][COL9], ftbh[k]*tbh_m_syst_minus[k][COL9]);
+              brHtaunu_[k]*tbh_m_err[k][COL2], brHtaunu_[k]*tbh_m_syst_plus[k][COL2], brHtaunu_[k]*tbh_m_syst_minus[k][COL2],
+              brHtaunu_[k]*tbh_m_err[k][COL3], brHtaunu_[k]*tbh_m_syst_plus[k][COL3], brHtaunu_[k]*tbh_m_syst_minus[k][COL3],    
+              brHtaunu_[k]*tbh_m_err[k][COL4], brHtaunu_[k]*tbh_m_syst_plus[k][COL4], brHtaunu_[k]*tbh_m_syst_minus[k][COL4], 
+              brHtaunu_[k]*tbh_m_err[k][COL5], brHtaunu_[k]*tbh_m_syst_plus[k][COL5], brHtaunu_[k]*tbh_m_syst_minus[k][COL5],
+              brHtaunu_[k]*tbh_m_err[k][COL6], brHtaunu_[k]*tbh_m_syst_plus[k][COL6], brHtaunu_[k]*tbh_m_syst_minus[k][COL6],
+              brHtaunu_[k]*tbh_m_err[k][COL7], brHtaunu_[k]*tbh_m_syst_plus[k][COL7], brHtaunu_[k]*tbh_m_syst_minus[k][COL7],
+              brHtaunu_[k]*tbh_m_err[k][COL8], brHtaunu_[k]*tbh_m_syst_plus[k][COL8], brHtaunu_[k]*tbh_m_syst_minus[k][COL8],
+              brHtaunu_[k]*tbh_m_err[k][COL9], brHtaunu_[k]*tbh_m_syst_plus[k][COL9], brHtaunu_[k]*tbh_m_syst_minus[k][COL9]);
           }
           else if(STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){        
             if     (detailed == D2 ){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
@@ -1412,13 +1414,13 @@ namespace tableutils{
             lx.Append(dx);  datax = lx.Data();
 
             fprintf(f, datax, 
-              ftbh[k]*tbh_m_err[k][COL2], ftbh[k]*tbh_m_syst_plus[k][COL2], ftbh[k]*tbh_m_syst_minus[k][COL2],
-              ftbh[k]*tbh_m_err[k][COL3], ftbh[k]*tbh_m_syst_plus[k][COL3], ftbh[k]*tbh_m_syst_minus[k][COL3],    
-              ftbh[k]*tbh_m_err[k][COL4], ftbh[k]*tbh_m_syst_plus[k][COL4], ftbh[k]*tbh_m_syst_minus[k][COL4], 
-              ftbh[k]*tbh_m_err[k][COL5], ftbh[k]*tbh_m_syst_plus[k][COL5], ftbh[k]*tbh_m_syst_minus[k][COL5],
-              ftbh[k]*tbh_m_err[k][COL6], ftbh[k]*tbh_m_syst_plus[k][COL6], ftbh[k]*tbh_m_syst_minus[k][COL6], 
-              ftbh[k]*tbh_m_err[k][COL7], ftbh[k]*tbh_m_syst_plus[k][COL7], ftbh[k]*tbh_m_syst_minus[k][COL7],
-              ftbh[k]*tbh_m_err[k][COL8], ftbh[k]*tbh_m_syst_plus[k][COL8], ftbh[k]*tbh_m_syst_minus[k][COL8]);
+              brHtaunu_[k]*tbh_m_err[k][COL2], brHtaunu_[k]*tbh_m_syst_plus[k][COL2], brHtaunu_[k]*tbh_m_syst_minus[k][COL2],
+              brHtaunu_[k]*tbh_m_err[k][COL3], brHtaunu_[k]*tbh_m_syst_plus[k][COL3], brHtaunu_[k]*tbh_m_syst_minus[k][COL3],    
+              brHtaunu_[k]*tbh_m_err[k][COL4], brHtaunu_[k]*tbh_m_syst_plus[k][COL4], brHtaunu_[k]*tbh_m_syst_minus[k][COL4], 
+              brHtaunu_[k]*tbh_m_err[k][COL5], brHtaunu_[k]*tbh_m_syst_plus[k][COL5], brHtaunu_[k]*tbh_m_syst_minus[k][COL5],
+              brHtaunu_[k]*tbh_m_err[k][COL6], brHtaunu_[k]*tbh_m_syst_plus[k][COL6], brHtaunu_[k]*tbh_m_syst_minus[k][COL6], 
+              brHtaunu_[k]*tbh_m_err[k][COL7], brHtaunu_[k]*tbh_m_syst_plus[k][COL7], brHtaunu_[k]*tbh_m_syst_minus[k][COL7],
+              brHtaunu_[k]*tbh_m_err[k][COL8], brHtaunu_[k]*tbh_m_syst_plus[k][COL8], brHtaunu_[k]*tbh_m_syst_minus[k][COL8]);
            }
 
            //DEBUG 
@@ -1721,9 +1723,13 @@ namespace tableutils{
 // systset1 -> if enabled include only JES + MET +JER
 // systset2 -> if enabled include only btag unc
 // systset3 -> if enabled include only trigger
-  void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool systset1, bool systset2, bool systset3, bool withShapes, bool withStatShapes){ 
+  void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool systset1, bool systset2, bool systset3, bool withShapes, bool withStatShapes, bool doTheDatacards){ 
 
-
+    if(!doTheDatacards) // For datacards we want 234., for tables we want 1.1
+      for(size_t i=0; i<brHtaunu_.size(); ++i)
+	brHtaunu_[i] = brHtaunu_[i]*1./234.;
+    
+    
   //  double ttbar_init(20416081); //SIMPLE evt processed
   double ttbar_init(8228517); // evt processed from debug.txt
    
@@ -2278,7 +2284,7 @@ namespace tableutils{
 	
 	if(x==11){ // OS
 
-	  cout << "=========================== DEBUG: samp: " << samp << ", FTBH[samp]: " << ftbh[samp] << endl;
+	  cout << "=========================== DEBUG: samp: " << samp << ", BRHTAUNU[samp]: " << brHtaunu_[samp] << endl;
 	  vector<double> temp_tbh_datacards;
 	  temp_tbh_datacards.push_back(data_tbh[x] );
 	  temp_tbh_datacards.push_back( data_tbh_err[x]  );
@@ -2881,7 +2887,7 @@ namespace tableutils{
   if(incDocument) fprintf(f,"\\end{document} \n"); //COMMENT
   fclose(f);
 
-  if(higgs) doDatacards(data_datacards, tbh_datacards, sm_datacards, taufakes_datacards, withShapes, withStatShapes, string("PFlow"));
+  if(higgs && doTheDatacards) doDatacards(data_datacards, tbh_datacards, sm_datacards, taufakes_datacards, withShapes, withStatShapes, string("PFlow"));
 
 
   processedMCFile->Close();
