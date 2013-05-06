@@ -7,8 +7,7 @@
 
 namespace commondefinitions{
   
-  //double LUM_ERR            = 0.045; // check it 
-  double LUM_ERR            = 0.022;
+  double LUM_ERR            = 0.044; // ICHEP 2012 https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM
   
   double TAU_ID_ERR         = 0.06;  
   
