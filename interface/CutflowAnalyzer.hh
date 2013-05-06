@@ -111,8 +111,9 @@ private:
 				std::vector<PhysicsObject>&, vector<int>&, int, JetCorrectionUncertainty*, vector<double>&, 
 				TString,
 				event::MiniEvent_t*,
-				std::vector<PhysicsObject>&,
-				vector<double>&
+				PhysicsObjectCollection&
+//				std::vector<PhysicsObject>&,
+//				vector<double>&
 				);
   
 void dileptonEventAnalysis(

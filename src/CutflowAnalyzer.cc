@@ -219,7 +219,8 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
   // Main event loop ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   for(i_=0; i_< nevents_; ++i_){
     
-    ev_   = evR_->GetNewMiniEvent(i_,"data");  if( ev_ == 0 ) continue;
+    //    ev_   = evR_->GetNewMiniEvent(i_,"data");  if( ev_ == 0 ) continue;
+    event::MiniEvent_t*  ev   = evR_->GetNewMiniEvent(i_,"data");  if( ev == 0 ) continue;
     is_os_=0.; // Stored in tree for fitters // Reset for each event
     tauR_=-1; // Reset for each event
     if( ! (i_% 1000 ) ){cout<<" -> Processing ... : "<<(i_+1)<<endl;}
@@ -229,40 +230,40 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
     for(it=keys.begin();it!=keys.end();++it){   
       // tau dilepton analysis (newphys,tau algo, miniEvent, jes, unc, jer )
       myKey_ = (*it);
-      eventAnalysis(false,  0 ,        0,        0  ,             0,                0); 
-      //     tauDileptonAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0); 
+      //eventAnalysis(false,  0 ,        0,        0  ,             0,                0); 
+      tauDileptonAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0); 
       //dileptonAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0); 
       //tauDileptonAnalysis( true, (*it),ev,         0 ,        0,        0  ,            0,                0); // newphysics 
       if(!isData_)
 	if(!noUncertainties_){
-	  eventAnalysis( false,       JES_ ,        0,        0  ,             0,                0);        
-	  eventAnalysis( false,  (-1)*JES_ ,        0,        0  ,             0,                0);
-	  eventAnalysis( false,         0  ,     UNC_,        0  ,             0,                0);
-	  eventAnalysis( false,         0  ,(-1)*UNC_,        0  ,             0,                0);
-	  eventAnalysis( false,         0  ,        0,      JER_ ,             0,                0);
-	  eventAnalysis( false,         0  ,        0, (-1)*JER_ ,             0,                0);
-	  eventAnalysis( false,         0  ,        0,        0  ,      BTAGUNC_,                0);
-	  eventAnalysis( false,         0  ,        0,        0  , (-1)*BTAGUNC_,                0);
-	  eventAnalysis( false,         0  ,        0,        0  ,             0,       UNBTAGUNC_);
-	  eventAnalysis( false,         0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_);
+	//  eventAnalysis( false,       JES_ ,        0,        0  ,             0,                0);        
+	//  eventAnalysis( false,  (-1)*JES_ ,        0,        0  ,             0,                0);
+	//  eventAnalysis( false,         0  ,     UNC_,        0  ,             0,                0);
+	//  eventAnalysis( false,         0  ,(-1)*UNC_,        0  ,             0,                0);
+	//  eventAnalysis( false,         0  ,        0,      JER_ ,             0,                0);
+	//  eventAnalysis( false,         0  ,        0, (-1)*JER_ ,             0,                0);
+	//  eventAnalysis( false,         0  ,        0,        0  ,      BTAGUNC_,                0);
+	//  eventAnalysis( false,         0  ,        0,        0  , (-1)*BTAGUNC_,                0);
+	//  eventAnalysis( false,         0  ,        0,        0  ,             0,       UNBTAGUNC_);
+	//  eventAnalysis( false,         0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_);
 
-	  //	  tauDileptonAnalysis( false, (*it),ev,      JES_ ,        0,        0  ,             0,                0);        
-	  //	  tauDileptonAnalysis( false, (*it),ev, (-1)*JES_ ,        0,        0  ,             0,                0);
-	  //	  tauDileptonAnalysis( false, (*it),ev,        0  ,     UNC_,        0  ,             0,                0);
-	  //	  tauDileptonAnalysis( false, (*it),ev,        0  ,(-1)*UNC_,        0  ,             0,                0);
-	  //	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,      JER_ ,             0,                0);
-	  //	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0, (-1)*JER_ ,             0,                0);
-	  //	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,      BTAGUNC_,                0);
-	  //	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  , (-1)*BTAGUNC_,                0);
-	  //	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,       UNBTAGUNC_);
-	  //	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_);
+	  tauDileptonAnalysis( false, (*it),ev,      JES_ ,        0,        0  ,             0,                0);        
+	  tauDileptonAnalysis( false, (*it),ev, (-1)*JES_ ,        0,        0  ,             0,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,     UNC_,        0  ,             0,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,(-1)*UNC_,        0  ,             0,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,      JER_ ,             0,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0, (-1)*JER_ ,             0,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,      BTAGUNC_,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  , (-1)*BTAGUNC_,                0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,       UNBTAGUNC_);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_);
 	  
 	}
       
       
       // WARNING : we only store WplusJets info for PFlow (HPS Pftopat based jets) 
-      if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev_, 0,0,0,0,0); }
-      
+      //      if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev_, 0,0,0,0,0); }
+      if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev, 0,0,0,0,0); }
     }
     //////////////////////////////////////////////////////////////////////////////////
 
@@ -746,63 +747,93 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
   else  { intimepuWeight_ = 1;  outtimepuWeight_= 1; }
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
-  //jet energy corrections ////////////////////////////////////////////////////////////////////////////////
+
+
+  //jet resolution corrections ////////////////////////////////////////////////////////////////////////////////
+
+  // Add here allinone met propagation and do stuff here for that yaya.
+  uint metAlgo;
+  if( myKey.Contains("PFlow")   ) { metAlgo=event::PFLOWMET;  } 
+  else if( myKey=="PF"               ) { metAlgo=event::PF;        }
+  else if( myKey.Contains("TaNC")    ) { metAlgo=event::PF;        }
+  else if( myKey.Contains("HPS")     ) { metAlgo=event::PF;        } 
+  
+  // HERE
+  PhysicsObjectCollection mets = evR_->GetPhysicsObjectsFrom(ev,event::MET,metAlgo);           
+  if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
+  PhysicsObject met = mets[0]; 
+
+  if(i_ == 45) cout<<endl<< "MET: pt " << met.Pt() << ", eta " << met.Eta() << ", phi " << met.Phi() << endl;
   vector<double> jerFactors;
-  vector<double> oldJerFactorsForMet;
-  vector<PhysicsObject> newJets;
-  vector<PhysicsObject> oldJetsForMet;
-///  // Old jet energy resolution factors
-///  if(jerc){ // Split condition for optimizazion
-///    fast_=false;
-///    if(!fast_ ) {
-///      for(unsigned int i=0;i<jets.size();i++){ 
-///  	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
-///  	double scaleFactor(0.1);  //bias correction
-///  	double corr_jer(1);
-///  	if( jer < 0 ){ scaleFactor = 0.;  }
-///  	if( jer > 0 ){ scaleFactor = 0.2; }
-///  	
-///  	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
-///  	
-///  	if( corr_jer < 0 ){ corr_jer = 1; }
-///  	jerFactors.push_back(corr_jer);
-///      }
-///    }  
-///    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
-///  }
-  // Base scale factors must be applied in any case (modify code above then)
-
-
-  jerFactors.clear();
-  oldJerFactorsForMet.clear();
-  newJets.clear();
-  oldJetsForMet.clear();
-  if(i_ == 45) cout<<endl<< "CORR JETS IN EVENT " << i_ << endl;
-  for(unsigned int i=0;i<jets.size();++i){ 
-    double corr_jer(1.);
-    if(!isData_){
-      if(jer_== 0) newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-      if(jer_> 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-      if(jer_< 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+  doPropagations( jerFactors, jes, jer, junc, jets , met, isData_);
+  if(i_ == 45){
+    cout<<endl<< "RESCALED JETS IN EVENT " << i_ << endl;
+    for(size_t ijet=0; ijet<jets.size(); ++ijet){
+      cout << setprecision(6) << "\t\t jet " << ijet << ", pt " << jets[ijet].Pt() <<", eta " << jets[ijet].Eta() << ", phi " << jets[ijet].Phi() << endl;
+      
     }
-    jerFactors.push_back(1.);
-    oldJerFactorsForMet.push_back(corr_jer);
-    //    std::cout << " jerfac: " << corr_jer << std::endl;
-    if(!isData_ && i_ == 45) cout << setprecision(6) << "\t\t jet " << i << ", pt " << newJets[i].Pt() <<", eta " << newJets[i].Eta() << ", phi " << newJets[i].Phi() << endl;
-    
-  } 
-  oldJetsForMet=jets;
-  if(!isData_) jets=newJets;
+    cout<<endl<< "PROPAGATED MET: pt " << met.Pt() << ", eta " << met.Eta() << ", phi " << met.Phi() << endl;
+  }
 
-  // DEBUG (successful)
-  //    if(isData_) for(size_t i=0; i<jerFactors.size(); i++)
-  //      std::cout << "factor " << jerFactors[i] << std::endl;
-
-
-  // Test new MET all-in-one propagation
-  //   jets
-  // met = mets[0] (defined later)
-
+  //double metValue = met.Pt();
+  mets[0] = met;
+/// test ///   //jet energy corrections ////////////////////////////////////////////////////////////////////////////////
+/// test ///   vector<double> jerFactors;
+/// test ///   vector<double> oldJerFactorsForMet;
+/// test ///   vector<PhysicsObject> newJets;
+/// test ///   vector<PhysicsObject> oldJetsForMet;
+/// test /// ///  // Old jet energy resolution factors
+/// test /// ///  if(jerc){ // Split condition for optimizazion
+/// test /// ///    fast_=false;
+/// test /// ///    if(!fast_ ) {
+/// test /// ///      for(unsigned int i=0;i<jets.size();i++){ 
+/// test /// ///  	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
+/// test /// ///  	double scaleFactor(0.1);  //bias correction
+/// test /// ///  	double corr_jer(1);
+/// test /// ///  	if( jer < 0 ){ scaleFactor = 0.;  }
+/// test /// ///  	if( jer > 0 ){ scaleFactor = 0.2; }
+/// test /// ///  	
+/// test /// ///  	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
+/// test /// ///  	
+/// test /// ///  	if( corr_jer < 0 ){ corr_jer = 1; }
+/// test /// ///  	jerFactors.push_back(corr_jer);
+/// test /// ///      }
+/// test /// ///    }  
+/// test /// ///    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
+/// test /// ///  }
+/// test ///   // Base scale factors must be applied in any case (modify code above then)
+/// test /// 
+/// test /// 
+/// test ///   jerFactors.clear();
+/// test ///   oldJerFactorsForMet.clear();
+/// test ///   newJets.clear();
+/// test ///   oldJetsForMet.clear();
+/// test ///   if(i_ == 45) cout<<endl<< "CORR JETS IN EVENT " << i_ << endl;
+/// test ///   for(unsigned int i=0;i<jets.size();++i){ 
+/// test ///     double corr_jer(1.);
+/// test ///     if(!isData_){
+/// test ///       if(jer_== 0) newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+/// test ///       if(jer_> 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+/// test ///       if(jer_< 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+/// test ///     }
+/// test ///     jerFactors.push_back(1.);
+/// test ///     oldJerFactorsForMet.push_back(corr_jer);
+/// test ///     //    std::cout << " jerfac: " << corr_jer << std::endl;
+/// test ///     if(!isData_ && i_ == 45) cout << setprecision(6) << "\t\t jet " << i << ", pt " << newJets[i].Pt() <<", eta " << newJets[i].Eta() << ", phi " << newJets[i].Phi() << endl;
+/// test ///     
+/// test ///   } 
+/// test ///   oldJetsForMet=jets;
+/// test ///   if(!isData_) jets=newJets;
+/// test /// 
+/// test ///   // DEBUG (successful)
+/// test ///   //    if(isData_) for(size_t i=0; i<jerFactors.size(); i++)
+/// test ///   //      std::cout << "factor " << jerFactors[i] << std::endl;
+/// test /// 
+/// test /// 
+/// test ///   // Test new MET all-in-one propagation
+/// test ///   //   jets
+/// test ///   // met = mets[0] (defined later)
+/// test /// 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   
@@ -996,7 +1027,7 @@ void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::Mi
 
   if(newPhys){ newPhysics(vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey);}
   
-  tauDileptonEventAnalysis(lepReq, vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey,ev, oldJetsForMet, oldJerFactorsForMet);
+  tauDileptonEventAnalysis(lepReq, vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey,ev, mets);
 
 }
 
@@ -2066,8 +2097,7 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
   std::vector<PhysicsObject> & jets,      vector<int>  & j_final, 
   int totalJets, JetCorrectionUncertainty* junc, vector<double> & jerFactors, 
   TString myKey, event::MiniEvent_t *ev,
-  std::vector<PhysicsObject> & oldJetsForMet,
-  vector<double> & oldJerFactorsForMet
+  PhysicsObjectCollection& mets
 ) {
 
 
@@ -2126,6 +2156,11 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
   mon.fillHisto(evYields, myKey+TString(" lep_tau yields"),MINITREE_STEP2,w_);
   mon.fillHisto(evYields, myKey+TString(" e_tau yields"),  MINITREE_STEP2,w_); 
   mon.fillHisto(evYields, myKey+TString(" m_tau yields"),  MINITREE_STEP2,w_);
+  //  mon.fillHisto(evYields, myKey+TString(" m_m yields"),  MINITREE_STEP2,w_);  // dilepton yields (preparation)
+  //  mon.fillHisto(evYields, myKey+TString(" m_e yields"),  MINITREE_STEP2,w_);  // dilepton yields (preparation)
+  //  mon.fillHisto(evYields, myKey+TString(" e_e yields"),  MINITREE_STEP2,w_);  // dilepton yields (preparation)
+  
+
   ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -2176,14 +2211,14 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
   //////////////////////////////////////////////////////////////////////
 
 
-  uint metAlgo;
-       if( myKey=="PF"               ) { metAlgo=event::PF;        }
-  else if( myKey.Contains("TaNC")    ) { metAlgo=event::PF;        }
-  else if( myKey.Contains("HPS")     ) { metAlgo=event::PF;        } 
-  else if( myKey.Contains("PFlow")   ) { metAlgo=event::PFLOWMET;  } 
-
-  PhysicsObjectCollection mets = evR_->GetPhysicsObjectsFrom(ev,event::MET,metAlgo);           
-  if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
+/// test ///  uint metAlgo;
+/// test ///       if( myKey=="PF"               ) { metAlgo=event::PF;        }
+/// test ///  else if( myKey.Contains("TaNC")    ) { metAlgo=event::PF;        }
+/// test ///  else if( myKey.Contains("HPS")     ) { metAlgo=event::PF;        } 
+/// test ///  else if( myKey.Contains("PFlow")   ) { metAlgo=event::PFLOWMET;  } 
+/// test ///
+/// test ///  PhysicsObjectCollection mets = evR_->GetPhysicsObjectsFrom(ev,event::MET,metAlgo);           
+/// test ///  if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
   PhysicsObject met = mets[0]; 
 
   // finding leading lepton and qualify tag ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2204,7 +2239,7 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
  
   // WORKING HERE
   //  double metValue = jetMETScaling( jerFactors, jes_, junc , jets ,met.Px(), met.Py());
-  double metValue = jetMETScalingTest( oldJerFactorsForMet, jes_, junc, oldJetsForMet  , met);
+  double metValue = met.Pt(); /// test /// jetMETScalingTest( oldJerFactorsForMet, jes_, junc, oldJetsForMet  , met);
   // rescaling of met based on unclustered energy ////////////////////////////////////////////////
 //  if( unc_ ){ metValue = jetMETUnclustered( jerFactors, lep_obj, unc_, jets, met.Px(), met.Py());}
 //  if( jer_ ){ metValue = jetMETResolution( jerFactors, jets, met.Px(), met.Py());}
