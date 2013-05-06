@@ -1981,7 +1981,7 @@ void CutflowAnalyzer::tauDileptonSelection(
       tauJet.SetPtEtaPhiE(tauJetPt,tauJetEta,tauJetPhi,tauJetPt);
       double tauJetRadius(0); //Warning this needs to be changed (not needed)
       TString treeOption("Selected"); treeOption += add;
-      fillTauDileptonObjTree(ev_,treeOption,evTags[itag],junc_,mets_[0],tauDilCh,TString("1 Tau"),lep_obj,tauJetRadius, tau_obj, j_final_, jets_, jerFactors_, metValue_,nbtags_taus);
+      fillTauDileptonObjTree(ev_,treeOption,evTags[itag],junc_,mets_[0],tauDilCh,TString("1 Tau"),lep_obj,tauJetRadius, tau_obj, &(taus_[tau_i]), j_final_, jets_, jerFactors_, metValue_,nbtags_taus);
     }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2743,7 +2743,7 @@ void CutflowAnalyzer::tauDileptonEventAnalysis(
       tauJet.SetPtEtaPhiE(tauJetPt,tauJetEta,tauJetPhi,tauJetPt);
       double tauJetRadius(0); //Warning this needs to be changed (not needed)
       TString treeOption("Selected"); treeOption += add;
-      fillTauDileptonObjTree(ev,treeOption,evTags[itag],junc,mets[0],tauDilCh,TString("1 Tau"),lep_obj,tauJetRadius, tau_obj, j_final, jets, jerFactors, metValue,nbtags_taus);
+      fillTauDileptonObjTree(ev,treeOption,evTags[itag],junc,mets[0],tauDilCh,TString("1 Tau"),lep_obj,tauJetRadius, tau_obj, &(taus[tau_i]), j_final, jets, jerFactors, metValue,nbtags_taus);
     }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3517,7 +3517,7 @@ else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_
       tauJet.SetPtEtaPhiE(tauJetPt,tauJetEta,tauJetPhi,tauJetPt);
       double tauJetRadius(0); //Warning this needs to be changed (not needed)
       TString treeOption("Selected"); treeOption += add;
-      fillTauDileptonObjTree(ev,treeOption,evTags[itag],junc,mets[0],tauDilCh,TString("1 Tau"),lep_obj,tauJetRadius, tau_obj, j_final, jets, jerFactors, metValue,nbtags_taus);
+      fillTauDileptonObjTree(ev,treeOption,evTags[itag],junc,mets[0],tauDilCh,TString("1 Tau"),lep_obj,tauJetRadius, tau_obj, &(taus[tau_i]), j_final, jets, jerFactors, metValue,nbtags_taus);
     }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3631,7 +3631,8 @@ void CutflowAnalyzer::fillTauDileptonObjTree(
   TString qualifier, // Selected or DataDriven
   TString tag,
   JetCorrectionUncertainty * junc,
-  PhysicsObject & metObj ,TString key, TString step , PhysicsObject * lepton, double tauJetRadius, PhysicsObject * tauJet,
+  PhysicsObject & metObj ,TString key, TString step , PhysicsObject * lepton, double tauJetRadius, PhysicsObject * tauJet, 
+  PhysicsObject* theTau,
   vector<int> & j_v, vector<PhysicsObject> & jets, vector<double> & jerFactors, double met, int nbtags_taus
 ){
 
@@ -3677,6 +3678,23 @@ void CutflowAnalyzer::fillTauDileptonObjTree(
   double deltaPhiTauJetMET     = TMath::Abs( tauJet->DeltaPhi( metObj ));
   //////////////////////////////////////////////////////////////////////
   
+  // theTau info ///////////////////////////////////////////////////////
+  double tauR(-1), mT(-1), mt_max(-1), mt_min(-1); // Default values
+  
+  if( !(theTau==NULL)){
+    if(theTau->E())
+      tauR =  (*theTau)[16] / theTau->E();
+    
+    // DEBUG:    if(tauR != tauR_) cout << "WARNING: local rTau = " << tauR << ", global rTau = " << tauR_ << endl;
+    
+    double mTl = sqrt( 2* lepton->Pt() * met * (1- cos( lepton->DeltaPhi(metObj) ) ) );
+    double mTt = sqrt( 2* theTau->Pt() * met * (1- cos( theTau->DeltaPhi(metObj) ) ) );
+  
+    if(mTt>=mTl){ mt_max=mTt;mt_min=mTl; }
+    else {        mt_max= mTl; mt_min = mTt;}
+  }
+  //////////////////////////////////////////////////////////////////////
+
   // lepton info ////////////////////////////////////////////////////
   double leptonPt  = TMath::Abs( lepton->Pt()); 
   double leptonEta = TMath::Abs( lepton->Eta());
@@ -3706,6 +3724,11 @@ void CutflowAnalyzer::fillTauDileptonObjTree(
   //deal with tauR
   TBranch * tRB = t->GetBranch("rc_t");  Double_t * tR = (Double_t *) tRB->GetAddress();  *tR  = tauR_;
   
+  // deal with transverse mass
+  TBranch* tMtMinB = t->GetBranch("mt_min"); Double_t* tMtMin = (Double_t*) tMtMinB->GetAddress(); *tMtMin = mt_min;
+  TBranch* tMtMaxB = t->GetBranch("mt_max"); Double_t* tMtMax = (Double_t*) tMtMaxB->GetAddress(); *tMtMax = mt_max;
+
+
   //deal with leptonPt
   TBranch * lPtB = t->GetBranch("pt_l");        Double_t * lPt = (Double_t *) lPtB->GetAddress();         *lPt   = leptonPt;
 
@@ -4627,21 +4650,10 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
 
   //double metValue = met.Pt();
   mets[0] = met;
-
-
-
-
-
-
-
-
-
   ///////////////////////////////////////////////////
 
   if(vertices.size()==0){ cout<<endl<<" Vertex was zero ???????"<<endl; return; }
   PhysicsObject & primaryVertex = vertices[0];
-
-
  
   TVectorD *classif = (TVectorD *)ev->eventClassif->At(0);
   if(! isData_ ) if(classif==0) return;
@@ -4694,9 +4706,6 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   vector<int> hardJets;     GetObjectsBasedOnPt( isData_, jerFactors,jes,junc,ObjectSelector::JETS_TYPE, hardJets, j_afterLeptonRemoval, jets, JET_PT_CUT_, 0);
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
   // This processing is applied to extract the taus from the list of hard jets ///////////////////////////////////
   // only accept taus if dr > drmin in respect to electrons and muons 
   vector<int> t_toRemove; vector<int> t_afterLeptonRemoval; 
@@ -4710,6 +4719,11 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   ApplyCleaning(&hardJets, &j_toRemove, &j_final);
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  int tau_i;
+  PhysicsObject* theTau = NULL;
+  if(t_afterLeptonRemoval.size() == 1){ tau_i = t_afterLeptonRemoval[0];
+    // tau_pt = taus[tau_i].Pt(); // unused
+    theTau = &(taus[tau_i]); }
 
 
 
@@ -4897,7 +4911,7 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
           mon_.fillHisto(wplusjets_ptR,evTags[itag],pt,R,w_); mon_.fillHisto(wplusjets_etaR,evTags[itag],eta,R,w_);
 
           PhysicsObject tau_obj;  tau_obj.SetPtEtaPhiE(pt,eta,phi,pt); 
-          fillTauDileptonObjTree(ev,"DataDriven",evTags[itag],junc,mets[0],myKey,"",lep_obj, R, &tau_obj, hardJets, jets, jerFactors, metWithJES);
+          fillTauDileptonObjTree(ev,"DataDriven",evTags[itag],junc,mets[0],myKey,"",lep_obj, R, &tau_obj, theTau, hardJets, jets, jerFactors, metWithJES);
         }       
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
      
@@ -4952,7 +4966,7 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
             PhysicsObject tau_obj;  tau_obj.SetPtEtaPhiE(pt,eta,phi,pt); 
             vector<int> hardJets_without_taus;
             for( size_t hj=0; hj<hardJets.size(); ++hj ){  if( hardJets[hj] != ind ) hardJets_without_taus.push_back( hardJets[hj] );   }
-            fillTauDileptonObjTree(ev,"DataDriven",evTags[itag],junc,mets[0],myKey,"",lep_obj, R, &tau_obj, hardJets_without_taus, jets, jerFactors, metWithJES);
+            fillTauDileptonObjTree(ev,"DataDriven",evTags[itag],junc,mets[0],myKey,"",lep_obj, R, &tau_obj, theTau, hardJets_without_taus, jets, jerFactors, metWithJES);
  
             
           }       

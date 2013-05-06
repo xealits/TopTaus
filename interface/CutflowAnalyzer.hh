@@ -157,6 +157,7 @@ void dileptonEventAnalysis(
 			      PhysicsObject*,
 			      double,
 			      PhysicsObject*,
+			      PhysicsObject*,
 			      vector<int>&, vector<PhysicsObject>&, vector<double>&, double,
 			      int nbtags_taus = 0     
 			      );
