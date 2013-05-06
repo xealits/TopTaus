@@ -122,11 +122,11 @@ void UncertaintyCalculator::doPropagations( vector<double> & jerFactors, const d
 
   bool noCorrection(true);
 
-  double corr_jer(1.);
+
   for(size_t ijet=0; ijet<vJ.size(); ++ijet)
     {
       PhysicsObject origJet = vJ[ijet];
-      corr_jer = 1.;
+      double corr_jer(1.);
       if(jer== 0) newJets.push_back( smearedJet(origJet, origJet[34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
       if(jer> 0)  newJets.push_back( smearedJet(origJet, origJet[34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
       if(jer< 0)  newJets.push_back( smearedJet(origJet, origJet[34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
