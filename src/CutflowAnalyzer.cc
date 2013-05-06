@@ -4560,15 +4560,13 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   unsigned int jetAlgo, metAlgo, leptonAlgo, tauType;
   JetCorrectionUncertainty * junc(0); JetResolution * jerc(0);
 
-
-
-  if(myKey=="TC")         { 
-    jetAlgo=event::AK5JPT;   leptonAlgo=event::STDLEPTON;   metAlgo=event::TC; tauType = CALOTAU; 
-    if(!isData_){junc=jecUnc_ak5_jpt_; jerc = jerUnc_ak5_jpt_pt_; } else{ junc = jecUnc_data_ak5_jpt_ ;} 
-  }
-  else if(myKey.Contains("PFlow")) { 
+  if(myKey.Contains("PFlow")) { 
     jetAlgo=event::AK5PFLOW; leptonAlgo=event::PFLOWLEPTON; metAlgo=event::PFLOWMET; tauType = PFLOWTAU; 
     if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{ junc=jecUnc_data_ak5_pf_ ;   }     
+  }
+  else if(myKey=="TC")         { 
+    jetAlgo=event::AK5JPT;   leptonAlgo=event::STDLEPTON;   metAlgo=event::TC; tauType = CALOTAU; 
+    if(!isData_){junc=jecUnc_ak5_jpt_; jerc = jerUnc_ak5_jpt_pt_; } else{ junc = jecUnc_data_ak5_jpt_ ;} 
   }
   else                    { 
     jetAlgo=event::AK5PF; leptonAlgo=event::STDLEPTON;  metAlgo=event::PF;    
@@ -4610,11 +4608,35 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   } 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  //jet resolution corrections ////////////////////////////////////////////////////////////////////////////////
 
-
+  // Add here allinone met propagation and do stuff here for that yaya.
   if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
   PhysicsObject met = mets[0]; 
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  vector<double> jerFactors;
+  doPropagations( jerFactors, jes, jer, junc, jets , met, isData_);
+  if(i_ == 45){
+    cout<<endl<< "RESCALED JETS IN EVENT " << i_ << endl;
+    for(size_t ijet=0; ijet<jets.size(); ++ijet){
+      cout << setprecision(6) << "\t\t jet " << ijet << ", pt " << jets[ijet].Pt() <<", eta " << jets[ijet].Eta() << ", phi " << jets[ijet].Phi() << endl;
+      
+    }
+    cout<<endl<< "PROPAGATED MET: pt " << met.Pt() << ", eta " << met.Eta() << ", phi " << met.Phi() << endl;
+  }
+
+  //double metValue = met.Pt();
+  mets[0] = met;
+
+
+
+
+
+
+
+
+
+  ///////////////////////////////////////////////////
 
   if(vertices.size()==0){ cout<<endl<<" Vertex was zero ???????"<<endl; return; }
   PhysicsObject & primaryVertex = vertices[0];
@@ -4636,50 +4658,11 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
 
   //cout<<"\n deb1 "<<"intime pu = "<<std::setprecision(10)<<intimepuWeight_<<endl; 
 
-  //jet energy corrections /////////////////////////////////////////////////////////////////////////////
-  vector<double> jerFactors;
-  vector<PhysicsObject> newJets;
-  ///  // Old jet energy resolution factors
-  ///  if(jerc){ // Split condition for optimizazion
-  ///    fast_=false;
-  ///    if(!fast_ ) {
-  ///      for(unsigned int i=0;i<jets.size();i++){ 
-  ///  	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
-  ///  	double scaleFactor(0.1);  //bias correction
-  ///  	double corr_jer(1);
-  ///  	if( jer < 0 ){ scaleFactor = 0.;  }
-  ///  	if( jer > 0 ){ scaleFactor = 0.2; }
-  ///  	
-  ///  	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
-  ///  	
-  ///  	if( corr_jer < 0 ){ corr_jer = 1; }
-  ///  	jerFactors.push_back(corr_jer);
-  ///      }
-  ///    }  
-  ///    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
-  ///  }
-  // Base scale factors must be applied in any case (modify code above then)
-  
-  
-  jerFactors.clear();
-  newJets.clear();
-  for(unsigned int i=0;i<jets.size();++i){ 
-    double corr_jer(1.);
-    if(!isData_){
-      if(jer_== 0) newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-      if(jer_> 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-      if(jer_< 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-    }
-    //    jerFactors.push_back(corr_jer);
-    jerFactors.push_back(1.);
-    //    std::cout << " jerfac: " << corr_jer << std::endl;
-  }
-  if(!isData_) jets=newJets;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
   //  double metWithJES = jetMETScaling(jerFactors, jes_,junc, jets , met.Px(), met.Py()); 
-  double metWithJES = jetMETScalingTest( jerFactors, jes_, junc, jets  , met);
+  double metWithJES = met.Pt();  // FIXME: check the jes
   //cout<<"deb 2 met : "<<std::setprecision(10)<<metWithJES<<endl;
   if( metWithJES < MET_CUT_ ) return;
 
