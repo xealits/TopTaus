@@ -184,14 +184,15 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[WH160_URL]              = 234;                                           
       defaultXSections_[HH160_URL]              = 234;                                                                                 
       
-      defaultXSections_[TBH180_URL]             = 1.1; //234;  
-      defaultXSections_[TBH190_URL]             = 1.1; //234;  
-      defaultXSections_[TBH200_URL]             = 1.1; //234;  
-      defaultXSections_[TBH220_URL]             = 1.1; //234; 
-      defaultXSections_[TBH250_URL]             = 1.1; //234;
-      defaultXSections_[TBH300_URL]             = 1.1; //234;
-
-      
+      // 1.1 is for plots, 234 is for tables
+      defaultXSections_[TBH180_URL]             = 234. * 0.831852  ; //1.1; //234;
+      defaultXSections_[TBH190_URL]             = 234. * 0.407966  ; //1.1; //234;  
+      defaultXSections_[TBH200_URL]             = 234. * 0.228564  ; //1.1; //234;  
+      defaultXSections_[TBH220_URL]             = 234. * 0.106446  ; //1.1; //234; 
+      defaultXSections_[TBH250_URL]             = 234. * 0.04129783; //1.1; //234;
+      defaultXSections_[TBH300_URL]             = 234. * 0.02514242; //1.1; //234;
+    
+	
     } else {
       
       defaultXSections_[DATA_URL]      = 0.;         

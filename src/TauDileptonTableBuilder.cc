@@ -95,14 +95,6 @@ namespace tableutils{
     hwEffHitoNames.push_back("TBH250");
     hwEffHitoNames.push_back("TBH300");
 
-    vector<double> ftbh; // Selection  mu==200&&Xt==2000&&m2==200&&tanb==5
-    ftbh.push_back(0.831852  );
-    ftbh.push_back(0.407966	 );
-    ftbh.push_back(0.228564	 );
-    ftbh.push_back(0.106446	 );
-    ftbh.push_back(0.04129783);
-    ftbh.push_back(0.02514242);
-    
 
     vector<TString> hhFiles; vector<TString> hwFiles;
     vector<TString> tbhFiles; 
@@ -2285,6 +2277,8 @@ namespace tableutils{
 	// WORKING HERE
 	
 	if(x==11){ // OS
+
+	  cout << "=========================== DEBUG: samp: " << samp << ", FTBH[samp]: " << ftbh[samp] << endl;
 	  vector<double> temp_tbh_datacards;
 	  temp_tbh_datacards.push_back(data_tbh[x] );
 	  temp_tbh_datacards.push_back( data_tbh_err[x]  );

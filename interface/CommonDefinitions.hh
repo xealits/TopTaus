@@ -94,6 +94,7 @@ namespace commondefinitions{
   
   */
   
+  extern double ftbh[]; // BR(H->taunu)
   
   enum puconditions{ NOPU, PUPLUS, PUMINUS };
   
