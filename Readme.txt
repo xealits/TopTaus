@@ -121,6 +121,10 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-05-07: Reworked table builder for not having to run twice (tables, datacards)
+	    Almost implemented decoupling of event analysis and application of a selection
+	    Switched to text names for nuisance parameters (since february combine likes no numbers - for event counting this is not a problem, but for consistency I switched)
+	    Removed unused nuisance parameters (full-hadronic ones)
 2013-05-06: Fixed jer smearing/met propagation (condensed in single loop)
 	    Fixed normalization for datacards and shapes
 	    committed revision 716 for chiggs datacards - supersedes all previous revisions
