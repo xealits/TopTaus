@@ -43,27 +43,29 @@ int main(int argc, char* argv[])
   
   //check arguments
   if ( argc < 3 ) {
-    std::cout << "Usage : " << argv[0] << " parameters_cfg.py action --doDatacards [bool]" << std::endl;
+    std::cout << "Usage : " << argv[0] << " parameters_cfg.py action" << std::endl;
     return 0;
   }
   
-  string sDoDatacards("");
-  bool doDatacards(false);
-  // Get input arguments                                                                                                                                                                                           
-  for(int i=3;i<argc;i++){
-    string arg(argv[i]);
-    //    if(arg.find("--help")        !=string::npos) { printHelp(); return -1;}                                                                                                                                  
-    if(arg.find("--doDatacards") !=string::npos) { sDoDatacards = argv[i+1];}
-    //check arguments // FIXME: implement --blah bih                             
-  }
-  if(sDoDatacards == "true")
-    doDatacards=true;
-  else if(sDoDatacards == "false")
-    doDatacards=false;
-  else{
-    cout << "Error. DoDatacards value not defined. Defaulting to false (tables mode)" << endl;
-    doDatacards=false;
-  }
+  
+  //  // Get input arguments
+  //  string sDoDatacards("");
+  //  bool doDatacards(false);
+  
+  //  for(int i=3;i<argc;i++){
+  //    string arg(argv[i]);
+  //    //    if(arg.find("--help")        !=string::npos) { printHelp(); return -1;}                                                                                                                                  
+  //    if(arg.find("--doDatacards") !=string::npos) { sDoDatacards = argv[i+1];}
+  //    //check arguments // FIXME: implement --blah bih                             
+  //  }
+  //  if(sDoDatacards == "true")
+  //    doDatacards=true;
+  //  else if(sDoDatacards == "false")
+  //    doDatacards=false;
+  //  else{
+  //    cout << "Error. DoDatacards value not defined. Defaulting to false (tables mode)" << endl;
+  //    doDatacards=false;
+  //  }
   
   
   
@@ -160,7 +162,7 @@ int main(int argc, char* argv[])
     cout << "Done SM table" << endl;
     analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false); 
     cout << "Done TBH table" << endl;
-    analyzer->summaryTable( notDetailed, true, false, false, false, withShapes, withStatShapes, doDatacards);
+    analyzer->summaryTable( notDetailed, true, false, false, false, withShapes, withStatShapes);
     cout << "Done summary table" << endl;
   }
   else if(runOn == "doPlots"){

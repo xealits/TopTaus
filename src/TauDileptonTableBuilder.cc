@@ -26,6 +26,11 @@ namespace tableutils{
   // systset1 -> if enabled include only JES + MET +JER ,  systset2 -> if enabled include only btag unc ,  systset3 -> if enabled only trigger
   // detailed -> select between 1 or 2 floating points
   void TauDileptonTableBuilder::mcTable( int detailed, bool includeSoverB , bool printAllErrors, bool higgs, TString key, TString name, bool systset1, bool systset2, bool systset3){ 
+
+
+    //    if(!doTheDatacards) // For datacards we want 234., for tables we want 1.1 // This does not need conditional, because of the default values
+      for(size_t i=0; i<brHtaunu_.size(); ++i)
+	brHtaunu_[i] = 5./234.;
     
     /*
       cout<<endl;
@@ -1723,13 +1728,12 @@ namespace tableutils{
 // systset1 -> if enabled include only JES + MET +JER
 // systset2 -> if enabled include only btag unc
 // systset3 -> if enabled include only trigger
-  void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool systset1, bool systset2, bool systset3, bool withShapes, bool withStatShapes, bool doTheDatacards){ 
+  void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool systset1, bool systset2, bool systset3, bool withShapes, bool withStatShapes){ 
 
-    if(!doTheDatacards) // For datacards we want 234., for tables we want 1.1
+    //    if(!doTheDatacards) // For datacards we want 234., for tables we want 1.1 // This does not need conditional, because of the default values
       for(size_t i=0; i<brHtaunu_.size(); ++i)
-	brHtaunu_[i] = brHtaunu_[i]*1./234.;
-    
-    
+	brHtaunu_[i] = 5./234.;
+       
   //  double ttbar_init(20416081); //SIMPLE evt processed
   double ttbar_init(8228517); // evt processed from debug.txt
    
@@ -1777,9 +1781,10 @@ namespace tableutils{
   //  sqrt( (eA.B)^2 + (A.eB)^2 ), /B^2
 
   //  double tau_fakes(2939.9*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(261.6*261.6*0.699*0.699 + 0.02*0.02*2939.9*2939.9); // Preliminar from kNN
-  double tau_fakes(4021.3*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(309.6*309.6*0.699*0.699 + 0.02*0.02*4021.3*4021.3); // Preliminar from kNN
 
-  //  4021.3$\pm$7.7\%  --> 309.6401
+  //  $\pm$8.55099\% 
+  double tau_fakes(2925.76*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(250.15*250.15*0.699*0.699 + 0.02*0.02*2925.76*2925.76); // Preliminar from kNN
+
   taufakes_datacards.push_back(tau_fakes);
   taufakes_datacards.push_back(tau_fakes_stat2);
   taufakes_datacards.push_back(sqrt(tau_fakes_syst2));
@@ -2286,9 +2291,8 @@ namespace tableutils{
 
 	  cout << "=========================== DEBUG: samp: " << samp << ", BRHTAUNU[samp]: " << brHtaunu_[samp] << endl;
 	  vector<double> temp_tbh_datacards;
-	  temp_tbh_datacards.push_back(data_tbh[x] );
+	  temp_tbh_datacards.push_back( data_tbh[x] );
 	  temp_tbh_datacards.push_back( data_tbh_err[x]  );
-	  
 	  temp_tbh_datacards.push_back( syst_plus     );
 	  temp_tbh_datacards.push_back( syst_minus    );
 	  temp_tbh_datacards.push_back( syst_uncplus  );
@@ -2520,7 +2524,7 @@ namespace tableutils{
     const char * data = line.Data();
     double systerr0(tbh_syst_plus[k0][STEP]); if( tbh_syst_minus[k0][STEP] > tbh_syst_plus[k0][STEP] ) systerr0 = tbh_syst_minus[k0][STEP];
    
-    fprintf(f, data, tbh[k0][STEP], tbh_err[k0][STEP], systerr0 );
+    fprintf(f, data, brHtaunu_[l]*tbh[k0][STEP], brHtaunu_[l]*tbh_err[k0][STEP], brHtaunu_[l]*systerr0 );
    
     
   }
@@ -2830,7 +2834,7 @@ namespace tableutils{
     //    data_yields=176;
     //    data_yields=369;
     //    data_yields=434;
-    data_yields=625;
+    //    data_yields=625;
     double bkg       = tau_fakes       + other_bkg*lumFactor;
     double bkg_stat2 = tau_fakes_stat2 + other_bkg_stat2*pow(lumFactor,2);
     double bkg_syst2 = tau_fakes_syst2 + other_bkg_syst2*pow(lumFactor,2);
@@ -2887,7 +2891,7 @@ namespace tableutils{
   if(incDocument) fprintf(f,"\\end{document} \n"); //COMMENT
   fclose(f);
 
-  if(higgs && doTheDatacards) doDatacards(data_datacards, tbh_datacards, sm_datacards, taufakes_datacards, withShapes, withStatShapes, string("PFlow"));
+  if(higgs) doDatacards(data_datacards, tbh_datacards, sm_datacards, taufakes_datacards, withShapes, withStatShapes, string("PFlow"));
 
 
   processedMCFile->Close();
@@ -3075,7 +3079,7 @@ namespace tableutils{
     outfile<<"kmax   *  number of nuisance parameters"<<endl;
     if(withShapes){
       outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-      outfile<<"shapes * * shapes_m"<<HMass[im]<<"_pt_t.root $PROCESS $PROCESS_$SYSTEMATIC"<<endl;
+      outfile<<"shapes * * shapes_m"<<HMass[im]<<"_rc_t.root $PROCESS $PROCESS_$SYSTEMATIC"<<endl;
 	}
     outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
     outfile<<"Observation    "<<nobs<<endl;
