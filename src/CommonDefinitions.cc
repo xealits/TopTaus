@@ -103,6 +103,7 @@ namespace commondefinitions{
 
   // BR(H->tauNu) for the heavy tbh samples (from 180 to 300 GeV/c^2)
   std::vector<double> brHtaunu_; 
+  std::vector<double> brHtb_;
   
 //  double ftbh[] ={ // Selection  mu==200&&Xt==2000&&m2==200&&tanb==5
 //    0.831852,

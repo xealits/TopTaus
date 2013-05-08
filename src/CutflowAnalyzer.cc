@@ -11,7 +11,7 @@
 
 using namespace std;
 
-CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis, TString inputArea, TString outputArea, TString puFileName, TString runRange, vector<double> brHtaunu) :
+CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis, TString inputArea, TString outputArea, TString puFileName, TString runRange, vector<double> brHtaunu, vector<double> brHtb) :
   UncertaintyCalculator(),  
   AnalysisMonitoring(tauPtCut, inputArea, outputArea), 
   ObjectSelector(tauPtCut),
@@ -22,7 +22,17 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
 
 {    
   brHtaunu_ = brHtaunu;
-  
+  brHtb_    = brHtb;
+
+  cout << "------- BR(H+->taunu) -------" << endl;
+  for(size_t i=0; i<brHtaunu_.size(); ++i)
+    cout<< brHtaunu_[i] << endl;
+
+  cout << "------- BR(H+->tb) -------" << endl;
+  for(size_t i=0; i<brHtb_.size(); ++i)
+    cout<< brHtb_[i] << endl;
+
+
   //  inputArea_  = inputArea; // Moved to AnalysisMonitoring -> SampleProcessor // FIXME: check if it is possible to initialize them in the constructor init list
   //  outputArea_ = outputArea;
   puFileName_ = puFileName ;

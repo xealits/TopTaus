@@ -82,8 +82,9 @@ int main(int argc, char* argv[])
   TString puFileName = TString(pSet.getParameter<string>("puFileName"));
   TString runRange   = TString(pSet.getParameter<string>("runRange"));
   std::vector<double> brHtaunu = pSet.getParameter<std::vector<double> >("brHtaunu");
+  std::vector<double> brHtb    = pSet.getParameter<std::vector<double> >("brHtb");
   
-  CutflowAnalyzer* analyzer = new CutflowAnalyzer( tauPtCut, noUncertainties, doWPlusJetsAnalysis, inputArea, outputArea, puFileName, runRange, brHtaunu /*parSet*/ );
+  CutflowAnalyzer* analyzer = new CutflowAnalyzer( tauPtCut, noUncertainties, doWPlusJetsAnalysis, inputArea, outputArea, puFileName, runRange, brHtaunu, brHtb /*parSet*/ );
   
   std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;
   
