@@ -204,7 +204,7 @@ void LandSShapesProducer::InitMassPoint(size_t s){
   for(size_t f=0; f<nSamples_; f++){
     TString myTempFileName = inputFileName_[f];
     //    if( f==1 || f == 2) myTempFileName = inputFileName_[f] + massPointName_[s] + TString(".root"); // Signals name manipulation // WH HH
-    if( f==1 ) myTempFileName = inputFileName_[f] + massPointName_[s] + TString(".root"); // Signals name manipulation // TBH
+    if( isSignal_[f] ) myTempFileName = inputFileName_[f] + massPointName_[s] + TString(".root"); // Signals name manipulation // TBH
     //cout << "Opening file " << baseDir_[f]   + myTempFileName << " opened." << endl;
     inputFile_.push_back( TFile::Open(baseDir_[f]   + myTempFileName  ) );
     //cout << "File " << baseDir_[f]   + myTempFileName << " opened." << endl;

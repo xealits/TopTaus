@@ -3057,7 +3057,7 @@ namespace tableutils{
   if(incDocument) fprintf(f,"\\end{document} \n"); //COMMENT
   fclose(f);
 
-  if(higgs) doDatacards(data_datacards, tbh_datacards, sm_datacards, taufakes_datacards, withShapes, withStatShapes, string("PFlow"));
+  if(higgs) doDatacards(data_datacards, tbh_datacards, htb_datacards, sm_datacards, taufakes_datacards, withShapes, withStatShapes, string("PFlow"));
 
 
   processedMCFile->Close();
@@ -3065,10 +3065,10 @@ namespace tableutils{
 
  
 
-}
+  }
+  
 
-
-  void TauDileptonTableBuilder::doDatacards(vector<double> data, vector<vector<double> > tbh, vector<vector<double> > sm, vector<double> fakes, bool withShapes, bool withStatShapes, string tauType){
+  void TauDileptonTableBuilder::doDatacards(vector<double> data, vector<vector<double> > tbh, vector<vector<double> > htb, vector<vector<double> > sm, vector<double> fakes, bool withShapes, bool withStatShapes, string tauType){
     
     
     
@@ -3088,6 +3088,8 @@ namespace tableutils{
     /// light charged ///     double vWHm155, sErWHm155, jesPWHm155, jesNWHm155, buPWHm155, buNWHm155, trPWHm155, trNWHm155, puWHm155;
     /// light charged ///     double vWHm160, sErWHm160, jesPWHm160, jesNWHm160, buPWHm160, buNWHm160, trPWHm160, trNWHm160, puWHm160;
     
+
+    // TBH
     //yield, stat error, jer uncert. 
     double vTBHm180(tbh[0][0]); double sErTBHm180(tbh[0][1]); double jesPTBHm180(sqrt(tbh[0][2]*tbh[0][2] + tbh[0][4]*tbh[0][4] + tbh[0][6]*tbh[0][6])); double jesNTBHm180(sqrt(tbh[0][3]*tbh[0][3] + tbh[0][5]*tbh[0][5] + tbh[0][7]*tbh[0][7])); double buPTBHm180(tbh[0][8]); double buNTBHm180(tbh[0][9]); double trPTBHm180(tbh[0][13]); double trNTBHm180(tbh[0][13]); double puTBHm180(0); 
     double vTBHm190(tbh[1][0]); double sErTBHm190(tbh[1][1]); double jesPTBHm190(sqrt(tbh[1][2]*tbh[1][2] + tbh[1][4]*tbh[1][4] + tbh[1][6]*tbh[1][6])); double jesNTBHm190(sqrt(tbh[1][3]*tbh[1][3] + tbh[1][5]*tbh[1][5] + tbh[1][7]*tbh[1][7])); double buPTBHm190(tbh[1][8]); double buNTBHm190(tbh[1][9]); double trPTBHm190(tbh[1][13]); double trNTBHm190(tbh[1][13]); double puTBHm190(0);
@@ -3095,6 +3097,18 @@ namespace tableutils{
     double vTBHm220(tbh[3][0]); double sErTBHm220(tbh[3][1]); double jesPTBHm220(sqrt(tbh[3][2]*tbh[3][2] + tbh[3][4]*tbh[3][4] + tbh[3][6]*tbh[3][6])); double jesNTBHm220(sqrt(tbh[3][3]*tbh[3][3] + tbh[3][5]*tbh[3][5] + tbh[3][7]*tbh[3][7])); double buPTBHm220(tbh[3][8]); double buNTBHm220(tbh[3][9]); double trPTBHm220(tbh[3][13]); double trNTBHm220(tbh[3][13]); double puTBHm220(0);
     double vTBHm250(tbh[4][0]); double sErTBHm250(tbh[4][1]); double jesPTBHm250(sqrt(tbh[4][2]*tbh[4][2] + tbh[4][4]*tbh[4][4] + tbh[4][6]*tbh[4][6])); double jesNTBHm250(sqrt(tbh[4][3]*tbh[4][3] + tbh[4][5]*tbh[4][5] + tbh[4][7]*tbh[4][7])); double buPTBHm250(tbh[4][8]); double buNTBHm250(tbh[4][9]); double trPTBHm250(tbh[4][13]); double trNTBHm250(tbh[4][13]); double puTBHm250(0);
     double vTBHm300(tbh[5][0]); double sErTBHm300(tbh[5][1]); double jesPTBHm300(sqrt(tbh[5][2]*tbh[5][2] + tbh[5][4]*tbh[5][4] + tbh[5][6]*tbh[5][6])); double jesNTBHm300(sqrt(tbh[5][3]*tbh[5][3] + tbh[5][5]*tbh[5][5] + tbh[5][7]*tbh[5][7])); double buPTBHm300(tbh[5][8]); double buNTBHm300(tbh[5][9]); double trPTBHm300(tbh[5][13]); double trNTBHm300(tbh[5][13]); double puTBHm300(0);
+
+
+    // HTB
+    //yield, stat error, jer uncert. 
+    double vHTBm180(htb[0][0]); double sErHTBm180(htb[0][1]); double jesPHTBm180(sqrt(htb[0][2]*htb[0][2] + htb[0][4]*htb[0][4] + htb[0][6]*htb[0][6])); double jesNHTBm180(sqrt(htb[0][3]*htb[0][3] + htb[0][5]*htb[0][5] + htb[0][7]*htb[0][7])); double buPHTBm180(htb[0][8]); double buNHTBm180(htb[0][9]); double trPHTBm180(htb[0][13]); double trNHTBm180(htb[0][13]); double puHTBm180(0); 
+    double vHTBm190(htb[1][0]); double sErHTBm190(htb[1][1]); double jesPHTBm190(sqrt(htb[1][2]*htb[1][2] + htb[1][4]*htb[1][4] + htb[1][6]*htb[1][6])); double jesNHTBm190(sqrt(htb[1][3]*htb[1][3] + htb[1][5]*htb[1][5] + htb[1][7]*htb[1][7])); double buPHTBm190(htb[1][8]); double buNHTBm190(htb[1][9]); double trPHTBm190(htb[1][13]); double trNHTBm190(htb[1][13]); double puHTBm190(0);
+    double vHTBm200(htb[2][0]); double sErHTBm200(htb[2][1]); double jesPHTBm200(sqrt(htb[2][2]*htb[2][2] + htb[2][4]*htb[2][4] + htb[2][6]*htb[2][6])); double jesNHTBm200(sqrt(htb[2][3]*htb[2][3] + htb[2][5]*htb[2][5] + htb[2][7]*htb[2][7])); double buPHTBm200(htb[2][8]); double buNHTBm200(htb[2][9]); double trPHTBm200(htb[2][13]); double trNHTBm200(htb[2][13]); double puHTBm200(0);
+    double vHTBm220(htb[3][0]); double sErHTBm220(htb[3][1]); double jesPHTBm220(sqrt(htb[3][2]*htb[3][2] + htb[3][4]*htb[3][4] + htb[3][6]*htb[3][6])); double jesNHTBm220(sqrt(htb[3][3]*htb[3][3] + htb[3][5]*htb[3][5] + htb[3][7]*htb[3][7])); double buPHTBm220(htb[3][8]); double buNHTBm220(htb[3][9]); double trPHTBm220(htb[3][13]); double trNHTBm220(htb[3][13]); double puHTBm220(0);
+    double vHTBm250(htb[4][0]); double sErHTBm250(htb[4][1]); double jesPHTBm250(sqrt(htb[4][2]*htb[4][2] + htb[4][4]*htb[4][4] + htb[4][6]*htb[4][6])); double jesNHTBm250(sqrt(htb[4][3]*htb[4][3] + htb[4][5]*htb[4][5] + htb[4][7]*htb[4][7])); double buPHTBm250(htb[4][8]); double buNHTBm250(htb[4][9]); double trPHTBm250(htb[4][13]); double trNHTBm250(htb[4][13]); double puHTBm250(0);
+    double vHTBm300(htb[5][0]); double sErHTBm300(htb[5][1]); double jesPHTBm300(sqrt(htb[5][2]*htb[5][2] + htb[5][4]*htb[5][4] + htb[5][6]*htb[5][6])); double jesNHTBm300(sqrt(htb[5][3]*htb[5][3] + htb[5][5]*htb[5][5] + htb[5][7]*htb[5][7])); double buPHTBm300(htb[5][8]); double buNHTBm300(htb[5][9]); double trPHTBm300(htb[5][13]); double trNHTBm300(htb[5][13]); double puHTBm300(0);
+
+
     
     //tau fakes, stat err, sys err
     double tauF    (fakes[0]);
@@ -3168,150 +3182,165 @@ namespace tableutils{
     double ndata(data[0]);
 
   
-  //make for all mass points
-  int HMass[6] = {180,
-		  190,
-		  200,
-		  220,
-		  250,
-		  300};
-  for(int im = 0; im < 6; im++){
-    double vTBH, sErTBH, jesPTBH, jesNTBH, buTBH, trTBH, puTBH;
-    if(im == 0)     {vTBH = vTBHm180; sErTBH = sErTBHm180; jesPTBH = jesPTBHm180; jesNTBH = jesNTBHm180; buTBH = buPTBHm180; trTBH = trPTBHm180; puTBH = puTBHm180;}
-    else if(im == 1){vTBH = vTBHm190; sErTBH = sErTBHm190; jesPTBH = jesPTBHm190; jesNTBH = jesNTBHm190; buTBH = buPTBHm190; trTBH = trPTBHm190; puTBH = puTBHm190;}
-    else if(im == 2){vTBH = vTBHm200; sErTBH = sErTBHm200; jesPTBH = jesPTBHm200; jesNTBH = jesNTBHm200; buTBH = buPTBHm200; trTBH = trPTBHm200; puTBH = puTBHm200;}
-    else if(im == 3){vTBH = vTBHm220; sErTBH = sErTBHm220; jesPTBH = jesPTBHm220; jesNTBH = jesNTBHm220; buTBH = buPTBHm220; trTBH = trPTBHm220; puTBH = puTBHm220;}
-    else if(im == 4){vTBH = vTBHm250; sErTBH = sErTBHm250; jesPTBH = jesPTBHm250; jesNTBH = jesNTBHm250; buTBH = buPTBHm250; trTBH = trPTBHm250; puTBH = puTBHm250;}
-    else if(im == 5){vTBH = vTBHm300; sErTBH = sErTBHm300; jesPTBH = jesPTBHm300; jesNTBH = jesNTBHm300; buTBH = buPTBHm300; trTBH = trPTBHm300; puTBH = puTBHm300;}
-    
-    int iw = 0;
-    string filename("datacard_m");
-    if(im == 0)filename = filename+"180_";
-    else if(im == 1)filename = filename+"190_";
-    else if(im == 2)filename = filename+"200_";
-    else if(im == 3)filename = filename+"220_";
-    else if(im == 4)filename = filename+"250_";
-    else if(im == 5)filename = filename+"300_";
-
-//  int HMass[7] = {80, 100, 120, 140, 150, 155, 160};
-//  for(int im = 0; im < 7; im++){
-//    double vHH, sErHH, jesPHH, jesNHH, buHH, trHH, puHH;
-//    if(im == 0){vHH = vHHm80; sErHH = sErHHm80; jesPHH = jesPHHm80; jesNHH = jesNHHm80; buHH = buPHHm80; trHH = trPHHm80; puHH = puHHm80;}
-//    else if(im == 1){vHH = vHHm100; sErHH = sErHHm100; jesPHH = jesPHHm100; jesNHH = jesNHHm100; buHH = buPHHm100; trHH = trPHHm100; puHH = puHHm100;}
-//    else if(im == 2){vHH = vHHm120; sErHH = sErHHm120; jesPHH = jesPHHm120; jesNHH = jesNHHm120; buHH = buPHHm120; trHH = trPHHm120; puHH = puHHm120;}
-//    else if(im == 3){vHH = vHHm140; sErHH = sErHHm140; jesPHH = jesPHHm140; jesNHH = jesNHHm140; buHH = buPHHm140; trHH = trPHHm140; puHH = puHHm140;}
-//    else if(im == 4){vHH = vHHm150; sErHH = sErHHm150; jesPHH = jesPHHm150; jesNHH = jesNHHm150; buHH = buPHHm150; trHH = trPHHm150; puHH = puHHm150;}
-//    else if(im == 5){vHH = vHHm155; sErHH = sErHHm155; jesPHH = jesPHHm155; jesNHH = jesNHHm155; buHH = buPHHm155; trHH = trPHHm155; puHH = puHHm155;}
-//    else if(im == 6){vHH = vHHm160; sErHH = sErHHm160; jesPHH = jesPHHm160; jesNHH = jesNHHm160; buHH = buPHHm160; trHH = trPHHm160; puHH = puHHm160;}
-//
-//    double vWH, sErWH, jesPWH, jesNWH, buWH, trWH, puWH;
-//    if(im == 0){vWH = vWHm80; sErWH = sErWHm80; jesPWH = jesPWHm80; jesNWH = jesNWHm80; buWH = buPWHm80; trWH = trPWHm80; puWH = puWHm80;}
-//    else if(im == 1){vWH = vWHm100; sErWH = sErWHm100; jesPWH = jesPWHm100; jesNWH = jesNWHm100; buWH = buPWHm100; trWH = trPWHm100; puWH = puWHm100;}
-//    else if(im == 2){vWH = vWHm120; sErWH = sErWHm120; jesPWH = jesPWHm120; jesNWH = jesNWHm120; buWH = buPWHm120; trWH = trPWHm120; puWH = puWHm120;}
-//    else if(im == 3){vWH = vWHm140; sErWH = sErWHm140; jesPWH = jesPWHm140; jesNWH = jesNWHm140; buWH = buPWHm140; trWH = trPWHm140; puWH = puWHm140;}
-//    else if(im == 4){vWH = vWHm150; sErWH = sErWHm150; jesPWH = jesPWHm150; jesNWH = jesNWHm150; buWH = buPWHm150; trWH = trPWHm150; puWH = puWHm150;}
-//    else if(im == 5){vWH = vWHm155; sErWH = sErWHm155; jesPWH = jesPWHm155; jesNWH = jesNWHm155; buWH = buPWHm155; trWH = trPWHm155; puWH = puWHm155;}
-//    else if(im == 6){vWH = vWHm160; sErWH = sErWHm160; jesPWH = jesPWHm160; jesNWH = jesNWHm160; buWH = buPWHm160; trWH = trPWHm160; puWH = puWHm160;}
-//    
-//    int iw = 0;
-//    string filename("datacard_m");
-//    if(im == 0)filename = filename+"80_";
-//    else if(im == 1)filename = filename+"100_";
-//    else if(im == 2)filename = filename+"120_";
-//    else if(im == 3)filename = filename+"140_";
-//    else if(im == 4)filename = filename+"150_";
-//    else if(im == 5)filename = filename+"155_";
-//    else if(im == 6)filename = filename+"160_";
-    
-    
-    double nobs = ndata;
-    filename = "datacards/"+filename + tauType + ".txt";
-    char * file = new char[filename.size() + 1];
-    strcpy(file, filename.c_str());
+    //make for all mass points
+    int HMass[6] = {180,
+		    190,
+		    200,
+		    220,
+		    250,
+		    300};
+    for(int im = 0; im < 6; im++){
+      double vTBH, sErTBH, jesPTBH, jesNTBH, buTBH, trTBH, puTBH;
+      if(im == 0)     {vTBH = vTBHm180; sErTBH = sErTBHm180; jesPTBH = jesPTBHm180; jesNTBH = jesNTBHm180; buTBH = buPTBHm180; trTBH = trPTBHm180; puTBH = puTBHm180;}
+      else if(im == 1){vTBH = vTBHm190; sErTBH = sErTBHm190; jesPTBH = jesPTBHm190; jesNTBH = jesNTBHm190; buTBH = buPTBHm190; trTBH = trPTBHm190; puTBH = puTBHm190;}
+      else if(im == 2){vTBH = vTBHm200; sErTBH = sErTBHm200; jesPTBH = jesPTBHm200; jesNTBH = jesNTBHm200; buTBH = buPTBHm200; trTBH = trPTBHm200; puTBH = puTBHm200;}
+      else if(im == 3){vTBH = vTBHm220; sErTBH = sErTBHm220; jesPTBH = jesPTBHm220; jesNTBH = jesNTBHm220; buTBH = buPTBHm220; trTBH = trPTBHm220; puTBH = puTBHm220;}
+      else if(im == 4){vTBH = vTBHm250; sErTBH = sErTBHm250; jesPTBH = jesPTBHm250; jesNTBH = jesNTBHm250; buTBH = buPTBHm250; trTBH = trPTBHm250; puTBH = puTBHm250;}
+      else if(im == 5){vTBH = vTBHm300; sErTBH = sErTBHm300; jesPTBH = jesPTBHm300; jesNTBH = jesNTBHm300; buTBH = buPTBHm300; trTBH = trPTBHm300; puTBH = puTBHm300;}
       
-    //cout<< fixed << showpoint <<setprecision(2);
-    time_t secs=time(0);
-    tm *t=localtime(&secs);
+      double vHTB, sErHTB, jesPHTB, jesNHTB, buHTB, trHTB, puHTB;
+      if(im == 0)     {vHTB = vHTBm180; sErHTB = sErHTBm180; jesPHTB = jesPHTBm180; jesNHTB = jesNHTBm180; buHTB = buPHTBm180; trHTB = trPHTBm180; puHTB = puHTBm180;}
+      else if(im == 1){vHTB = vHTBm190; sErHTB = sErHTBm190; jesPHTB = jesPHTBm190; jesNHTB = jesNHTBm190; buHTB = buPHTBm190; trHTB = trPHTBm190; puHTB = puHTBm190;}
+      else if(im == 2){vHTB = vHTBm200; sErHTB = sErHTBm200; jesPHTB = jesPHTBm200; jesNHTB = jesNHTBm200; buHTB = buPHTBm200; trHTB = trPHTBm200; puHTB = puHTBm200;}
+      else if(im == 3){vHTB = vHTBm220; sErHTB = sErHTBm220; jesPHTB = jesPHTBm220; jesNHTB = jesNHTBm220; buHTB = buPHTBm220; trHTB = trPHTBm220; puHTB = puHTBm220;}
+      else if(im == 4){vHTB = vHTBm250; sErHTB = sErHTBm250; jesPHTB = jesPHTBm250; jesNHTB = jesNHTBm250; buHTB = buPHTBm250; trHTB = trPHTBm250; puHTB = puHTBm250;}
+      else if(im == 5){vHTB = vHTBm300; sErHTB = sErHTBm300; jesPHTB = jesPHTBm300; jesNHTB = jesNHTBm300; buHTB = buPHTBm300; trHTB = trPHTBm300; puHTB = puHTBm300;}
+      
+
+      // Full Charged Higgs
+      if(im == 4){vTBH = vHTBm250+vTBHm250; sErTBH = sErHTBm250+sErTBHm250; jesPTBH = jesPHTBm250+jesPTBHm250; jesNTBH = jesNHTBm250+jesNTBHm250; buTBH = buPHTBm250+buPTBHm250; trTBH = trPHTBm250+trPTBHm250; puTBH = puHTBm250+puTBHm250;}
+
+
+      int iw = 0;
+      string filename("datacard_m");
+      if(im == 0)filename = filename+"180_";
+      else if(im == 1)filename = filename+"190_";
+      else if(im == 2)filename = filename+"200_";
+      else if(im == 3)filename = filename+"220_";
+      else if(im == 4)filename = filename+"250_";
+      else if(im == 5)filename = filename+"300_";
+      
+      //  int HMass[7] = {80, 100, 120, 140, 150, 155, 160};
+      //  for(int im = 0; im < 7; im++){
+      //    double vHH, sErHH, jesPHH, jesNHH, buHH, trHH, puHH;
+      //    if(im == 0){vHH = vHHm80; sErHH = sErHHm80; jesPHH = jesPHHm80; jesNHH = jesNHHm80; buHH = buPHHm80; trHH = trPHHm80; puHH = puHHm80;}
+      //    else if(im == 1){vHH = vHHm100; sErHH = sErHHm100; jesPHH = jesPHHm100; jesNHH = jesNHHm100; buHH = buPHHm100; trHH = trPHHm100; puHH = puHHm100;}
+      //    else if(im == 2){vHH = vHHm120; sErHH = sErHHm120; jesPHH = jesPHHm120; jesNHH = jesNHHm120; buHH = buPHHm120; trHH = trPHHm120; puHH = puHHm120;}
+      //    else if(im == 3){vHH = vHHm140; sErHH = sErHHm140; jesPHH = jesPHHm140; jesNHH = jesNHHm140; buHH = buPHHm140; trHH = trPHHm140; puHH = puHHm140;}
+      //    else if(im == 4){vHH = vHHm150; sErHH = sErHHm150; jesPHH = jesPHHm150; jesNHH = jesNHHm150; buHH = buPHHm150; trHH = trPHHm150; puHH = puHHm150;}
+      //    else if(im == 5){vHH = vHHm155; sErHH = sErHHm155; jesPHH = jesPHHm155; jesNHH = jesNHHm155; buHH = buPHHm155; trHH = trPHHm155; puHH = puHHm155;}
+      //    else if(im == 6){vHH = vHHm160; sErHH = sErHHm160; jesPHH = jesPHHm160; jesNHH = jesNHHm160; buHH = buPHHm160; trHH = trPHHm160; puHH = puHHm160;}
+      //
+      //    double vWH, sErWH, jesPWH, jesNWH, buWH, trWH, puWH;
+      //    if(im == 0){vWH = vWHm80; sErWH = sErWHm80; jesPWH = jesPWHm80; jesNWH = jesNWHm80; buWH = buPWHm80; trWH = trPWHm80; puWH = puWHm80;}
+      //    else if(im == 1){vWH = vWHm100; sErWH = sErWHm100; jesPWH = jesPWHm100; jesNWH = jesNWHm100; buWH = buPWHm100; trWH = trPWHm100; puWH = puWHm100;}
+      //    else if(im == 2){vWH = vWHm120; sErWH = sErWHm120; jesPWH = jesPWHm120; jesNWH = jesNWHm120; buWH = buPWHm120; trWH = trPWHm120; puWH = puWHm120;}
+      //    else if(im == 3){vWH = vWHm140; sErWH = sErWHm140; jesPWH = jesPWHm140; jesNWH = jesNWHm140; buWH = buPWHm140; trWH = trPWHm140; puWH = puWHm140;}
+      //    else if(im == 4){vWH = vWHm150; sErWH = sErWHm150; jesPWH = jesPWHm150; jesNWH = jesNWHm150; buWH = buPWHm150; trWH = trPWHm150; puWH = puWHm150;}
+      //    else if(im == 5){vWH = vWHm155; sErWH = sErWHm155; jesPWH = jesPWHm155; jesNWH = jesNWHm155; buWH = buPWHm155; trWH = trPWHm155; puWH = puWHm155;}
+      //    else if(im == 6){vWH = vWHm160; sErWH = sErWHm160; jesPWH = jesPWHm160; jesNWH = jesNWHm160; buWH = buPWHm160; trWH = trPWHm160; puWH = puWHm160;}
+      //    
+      //    int iw = 0;
+      //    string filename("datacard_m");
+      //    if(im == 0)filename = filename+"80_";
+      //    else if(im == 1)filename = filename+"100_";
+      //    else if(im == 2)filename = filename+"120_";
+      //    else if(im == 3)filename = filename+"140_";
+      //    else if(im == 4)filename = filename+"150_";
+      //    else if(im == 5)filename = filename+"155_";
+      //    else if(im == 6)filename = filename+"160_";
     
-    ofstream outfile;
-    outfile.open(file);
-    outfile<< fixed << showpoint <<setprecision(3);
-    outfile<<"Data: "<<t->tm_mday<<"/"<<t->tm_mon+1<<"/"<<t->tm_year+1900<<endl;
-    //outfile<<"Description: H+, mu-tau, mass "<<HMass[im]<<" GeV, lumi=2140 pb-1"<<endl;
-    outfile<<"Description: H+, e-tau, mass "<<HMass[im]<<" GeV, lumi=" << commondefinitions::LUM_<<" pb-1"<<endl;
-    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-    outfile<<"imax   1  number of channels"<<endl;
-    outfile<<"jmax   *  number of backgrounds"<<endl;
-    outfile<<"kmax   *  number of nuisance parameters"<<endl;
-    if(withShapes){
+      
+      double nobs = ndata;
+      filename = "datacards/"+filename + tauType + ".txt";
+      char * file = new char[filename.size() + 1];
+      strcpy(file, filename.c_str());
+      
+      //cout<< fixed << showpoint <<setprecision(2);
+      time_t secs=time(0);
+      tm *t=localtime(&secs);
+      
+      ofstream outfile;
+      outfile.open(file);
+      outfile<< fixed << showpoint <<setprecision(3);
+      outfile<<"Data: "<<t->tm_mday<<"/"<<t->tm_mon+1<<"/"<<t->tm_year+1900<<endl;
+      //outfile<<"Description: H+, mu-tau, mass "<<HMass[im]<<" GeV, lumi=2140 pb-1"<<endl;
+      outfile<<"Description: H+, e-tau, mass "<<HMass[im]<<" GeV, lumi=" << commondefinitions::LUM_<<" pb-1"<<endl;
       outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-      outfile<<"shapes * * shapes_m"<<HMass[im]<<"_rc_t.root $PROCESS $PROCESS_$SYSTEMATIC"<<endl;
-	}
-    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-    outfile<<"bin a"<<endl;
-    outfile<<"observation    "<<nobs<<endl;
-    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-    outfile<<"bin              a          a          a           a           a           a           a         a         "<<endl;
-    outfile<<"process         TBH    tt_ltau    tt_ll     tau_fake    Z_eemumu   Z_tautau   singleTop  di_boson"<<endl;
-    outfile<<"process          0          1          2           3           4           5           6         7         "<<endl;
-    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-    outfile<<"rate      "<<vTBH<<setw(10)<<tt<<setw(10)<<ttll<<setw(10)<<tauF<<setw(10)<<Zll<<setw(10)<<Ztau<<setw(10)<<sTop<<setw(10)<<VV<<endl;//"       Projected event rates"<<endl; 
-    outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-    outfile<<endl;
-    outfile<<" tauMetTrg      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tau+MET trg"<<endl;
-    outfile<<" eJetMHTTrg     lnN"<<setw(7)<<1+trTBH/vTBH<<setw(10)<<1+trPtt/tt<<setw(10)<<1+trPttll/ttll<<setw(10)<<1.00<<setw(10)<<1+trPZll/Zll<<setw(10)<<1+trPZtau/Ztau<<setw(10)<<1+trPsTop/sTop<<setw(10)<<1+trPVV/VV<<endl;//"    e+jet+MHT trig"<<endl;
-    outfile<<" tauId  lnN"<<setw(7)<<1.06<<setw(10)<<1.06<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<endl;//"    tau ID"<<endl;
-    outfile<<" jetTauMisId    lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    jet-> tau miss ID"<<endl;
-    outfile<<" fakesSyst      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sytauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tau-fakes syst"<<endl;
-    outfile<<" fakesStat      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErtauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tau-fakes stat"<<endl;
-    outfile<<" jesJerMet      lnN"<<setw(7)<<1-jesNTBH/vTBH<<"/"<<1+jesPTBH/vTBH<<setw(7)<<1-jesNtt/tt<<"/"<<1+jesPtt/tt<<setw(7)<<1-jesNttll/ttll<<"/"<<1+jesPttll/ttll<<setw(7)<<1.00<<setw(10)<<1-jesNZll/Zll<<"/"<<1+jesPZll/Zll<<setw(7)<<1-jesNZtau/Ztau<<"/"<<1+jesPZtau/Ztau<<setw(7)<<1-jesNsTop/sTop<<"/"<<1+jesPsTop/sTop<<setw(7)<<1-jesNVV/VV<<"/"<<1+jesPVV/VV<<endl;//"    JES/JER/MET scale"<<endl;
-    outfile<<" leptEff        lnN"<<setw(7)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.00<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<endl;//"    Lepton Efficiency"<<endl;
-    //    outfile<<" leptonVeto     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Lepton Veto"<<endl;
-    outfile<<" btagging       lnN"<<setw(7)<<1+buTBH/vTBH<<setw(10)<<1+buPtt/tt<<setw(10)<<1+buPttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPsTop/sTop<<setw(10)<<1.00<<endl;//"    b-tagging"<<endl;
-    outfile<<"bmistagging     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPZll/Zll<<setw(10)<<1+buPZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1+buPVV/VV<<endl;//"    b-mis-tagging"<<endl;
-    //    outfile<<17<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    HH     MC stat"<<endl;
-    //    outfile<<17<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    HW     MC stat"<<endl;
-    outfile<<" tbhStatistics     lnN"<<setw(7)<<1+sErTBH/vTBH<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    TBH     MC stat"<<endl;
-    // outfile<<19<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    embedding MC stat"<<endl;
-    outfile<<" ttltauStatistics  lnN"<<setw(7)<<1.00<<setw(10)<<1+sErtt/tt<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tt->ltau MC stat "<<endl;
-    outfile<<" ttllStatistics    lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tt->ll  MC stat"<<endl;
-    //    outfile<<22<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tt->jjtau MC stat"<<endl;
-    outfile<<" zeemumuStatistics     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZll/Zll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<endl;//"    Z->ee,mumu MC stat"<<endl;
-    outfile<<" ztautauStatistics     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Z->tautau  MC stat"<<endl;
-    outfile<<" wjetsStatistics       lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    W+jets MC stat"<<endl;
-    outfile<<" singleTopStatistics   lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErsTop/sTop<<setw(10)<<1.00<<endl;//"    single top MC stat"<<endl;
-    outfile<<" dibosonStatistics     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErVV/VV<<endl;//"    diboson MC stat"<<endl;
-    outfile<<" ttbarCrossSection     lnN"<<setw(7)<<0.90<<"/"<<1.07<<setw(10)<<0.90<<"/"<<1.07<<setw(7)<<0.90<<"/"<<1.07<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    ttbar cross-section"<<endl;
-    outfile<<" wjetsCrossSection     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    W+jets cross section"<<endl;
-    outfile<<" singletopCrossSection lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.08<<setw(10)<<1.00<<setw(10)<<endl;//"    singleTop cross-section"<<endl; 
-    outfile<<" zllCrossSection       lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<setw(10)<<1.04<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Z->ll cross section"<<endl;
-    outfile<<" dibosonCrossSection   lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<endl;//"    diboson cross-section"<<endl;
-    outfile<<" lumiErr                lnN"<<setw(7)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.00<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<endl;//"    Luminosity Error"<<endl;
-    outfile<<" pileupErr               lnN"<<setw(7)<<1+puTBH/vTBH<<setw(10)<<1+putt/tt<<setw(10)<<1+puttll/ttll<<setw(10)<<1.00<<setw(10)<<1+puZll/Zll<<setw(10)<<1+puZtau/Ztau<<setw(10)<<1+pusTop/sTop<<setw(10)<<1+puVV/VV<<endl;//"    pileup"<<endl;
-    if(withShapes){
-      outfile<<"jes           "<<"  shape        1        1        1           1           1           1           1           1            1     "<<endl;  //        JES_effect_on_shape                             
-      outfile<<"met           "<<"  shape        1        1        1           1           1           1           1           1            1     "<<endl; //        MET_effect_on_shape                             
-      outfile<<"jer           "<<"  shape        1        1        1           1           1           1           1           1            1     "<<endl;  //       JER_effect_on_shape                
-      if(!withStatShapes) outfile<<"#";outfile<<"TBH_Stat      "<<"  shape        1        -        -           -           -           -           -           -            -     "<<endl;
-      if(!withStatShapes) outfile<<"#";outfile<<"tt_ltau_Stat  "<<"  shape        -        -        1           -           -           -           -           -            -     "<<endl;
-      if(!withStatShapes) outfile<<"#";outfile<<"tt_ll_Stat    "<<"  shape        -        -        -           1           -           -           -           -            -     "<<endl;
-      if(!withStatShapes) outfile<<"#";outfile<<"tau_fake_Stat "<<"  shape        -        -        -           -           1           -           -           -            -     "<<endl;
-      if(!withStatShapes) outfile<<"#";outfile<<"Z_eemumu_Stat "<<"  shape        -        -        -           -           -           1           -           -            -     "<<endl;
-      if(!withStatShapes) outfile<<"#";outfile<<"Z_tautau_Stat "<<"  shape        -        -        -           -           -           -           1           -            -     "<<endl;
-      if(!withStatShapes) outfile<<"#";outfile<<"singleTop_Stat"<<"  shape        -        -        -           -           -           -           -           1            -     "<<endl;
-      if(!withStatShapes) outfile<<"#";outfile<<"di_boson_Stat "<<"  shape        -        -        -           -           -           -           -           -            1     "<<endl;
-      //             
-      //outfile<< HH3_Stat        shape  1         -        -           -           -           -           -           -            -
-      //outfile<< WH3_Stat        shape  -         1        -           -           -           -           -           -            -
+      outfile<<"imax   1  number of channels"<<endl;
+      outfile<<"jmax   *  number of backgrounds"<<endl;
+      outfile<<"kmax   *  number of nuisance parameters"<<endl;
+      if(withShapes){
+	outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+	outfile<<"shapes * * shapes_m"<<HMass[im]<<"_rc_t.root $PROCESS $PROCESS_$SYSTEMATIC"<<endl;
+      }
+      outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+      outfile<<"bin a"<<endl;
+      outfile<<"observation    "<<nobs<<endl;
+      outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+      
+      
+      outfile<<"bin              a          a          a           a           a           a           a         a         "<<endl;
+      outfile<<"process         TBH    tt_ltau    tt_ll     tau_fake    Z_eemumu   Z_tautau   singleTop  di_boson"<<endl;
+      outfile<<"process          0          1          2           3           4           5           6         7         "<<endl;
+      outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+      outfile<<"rate      "<<vTBH<<setw(10)<<tt<<setw(10)<<ttll<<setw(10)<<tauF<<setw(10)<<Zll<<setw(10)<<Ztau<<setw(10)<<sTop<<setw(10)<<VV<<endl;//"       Projected event rates"<<endl; 
+      outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+      outfile<<endl;
+      outfile<<" tauMetTrg      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tau+MET trg"<<endl;
+      outfile<<" eJetMHTTrg     lnN"<<setw(7)<<1+trTBH/vTBH<<setw(10)<<1+trPtt/tt<<setw(10)<<1+trPttll/ttll<<setw(10)<<1.00<<setw(10)<<1+trPZll/Zll<<setw(10)<<1+trPZtau/Ztau<<setw(10)<<1+trPsTop/sTop<<setw(10)<<1+trPVV/VV<<endl;//"    e+jet+MHT trig"<<endl;
+      outfile<<" tauId  lnN"<<setw(7)<<1.06<<setw(10)<<1.06<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<endl;//"    tau ID"<<endl;
+      outfile<<" jetTauMisId    lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    jet-> tau miss ID"<<endl;
+      outfile<<" fakesSyst      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sytauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tau-fakes syst"<<endl;
+      outfile<<" fakesStat      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErtauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tau-fakes stat"<<endl;
+      outfile<<" jesJerMet      lnN"<<setw(7)<<1-jesNTBH/vTBH<<"/"<<1+jesPTBH/vTBH<<setw(7)<<1-jesNtt/tt<<"/"<<1+jesPtt/tt<<setw(7)<<1-jesNttll/ttll<<"/"<<1+jesPttll/ttll<<setw(7)<<1.00<<setw(10)<<1-jesNZll/Zll<<"/"<<1+jesPZll/Zll<<setw(7)<<1-jesNZtau/Ztau<<"/"<<1+jesPZtau/Ztau<<setw(7)<<1-jesNsTop/sTop<<"/"<<1+jesPsTop/sTop<<setw(7)<<1-jesNVV/VV<<"/"<<1+jesPVV/VV<<endl;//"    JES/JER/MET scale"<<endl;
+      outfile<<" leptEff        lnN"<<setw(7)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.00<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<endl;//"    Lepton Efficiency"<<endl;
+      //    outfile<<" leptonVeto     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Lepton Veto"<<endl;
+      outfile<<" btagging       lnN"<<setw(7)<<1+buTBH/vTBH<<setw(10)<<1+buPtt/tt<<setw(10)<<1+buPttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPsTop/sTop<<setw(10)<<1.00<<endl;//"    b-tagging"<<endl;
+      outfile<<"bmistagging     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPZll/Zll<<setw(10)<<1+buPZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1+buPVV/VV<<endl;//"    b-mis-tagging"<<endl;
+      //    outfile<<17<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    HH     MC stat"<<endl;
+      //    outfile<<17<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    HW     MC stat"<<endl;
+      outfile<<" tbhStatistics     lnN"<<setw(7)<<1+sErTBH/vTBH<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    TBH     MC stat"<<endl;
+      // outfile<<19<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    embedding MC stat"<<endl;
+      outfile<<" ttltauStatistics  lnN"<<setw(7)<<1.00<<setw(10)<<1+sErtt/tt<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tt->ltau MC stat "<<endl;
+      outfile<<" ttllStatistics    lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tt->ll  MC stat"<<endl;
+      //    outfile<<22<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tt->jjtau MC stat"<<endl;
+      outfile<<" zeemumuStatistics     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZll/Zll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<endl;//"    Z->ee,mumu MC stat"<<endl;
+      outfile<<" ztautauStatistics     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Z->tautau  MC stat"<<endl;
+      outfile<<" wjetsStatistics       lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    W+jets MC stat"<<endl;
+      outfile<<" singleTopStatistics   lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErsTop/sTop<<setw(10)<<1.00<<endl;//"    single top MC stat"<<endl;
+      outfile<<" dibosonStatistics     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErVV/VV<<endl;//"    diboson MC stat"<<endl;
+      outfile<<" ttbarCrossSection     lnN"<<setw(7)<<0.90<<"/"<<1.07<<setw(10)<<0.90<<"/"<<1.07<<setw(7)<<0.90<<"/"<<1.07<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    ttbar cross-section"<<endl;
+      outfile<<" wjetsCrossSection     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    W+jets cross section"<<endl;
+      outfile<<" singletopCrossSection lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.08<<setw(10)<<1.00<<setw(10)<<endl;//"    singleTop cross-section"<<endl; 
+      outfile<<" zllCrossSection       lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<setw(10)<<1.04<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Z->ll cross section"<<endl;
+      outfile<<" dibosonCrossSection   lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<endl;//"    diboson cross-section"<<endl;
+      outfile<<" lumiErr                lnN"<<setw(7)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.00<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<endl;//"    Luminosity Error"<<endl;
+      outfile<<" pileupErr               lnN"<<setw(7)<<1+puTBH/vTBH<<setw(10)<<1+putt/tt<<setw(10)<<1+puttll/ttll<<setw(10)<<1.00<<setw(10)<<1+puZll/Zll<<setw(10)<<1+puZtau/Ztau<<setw(10)<<1+pusTop/sTop<<setw(10)<<1+puVV/VV<<endl;//"    pileup"<<endl;
+      if(withShapes){
+	outfile<<"jes           "<<"  shape        1        1        1           1           1           1           1           1            1     "<<endl;  //        JES_effect_on_shape                             
+	outfile<<"met           "<<"  shape        1        1        1           1           1           1           1           1            1     "<<endl; //        MET_effect_on_shape                             
+	outfile<<"jer           "<<"  shape        1        1        1           1           1           1           1           1            1     "<<endl;  //       JER_effect_on_shape                
+	if(!withStatShapes) outfile<<"#";outfile<<"TBH_Stat      "<<"  shape        1        -        -           -           -           -           -           -            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"tt_ltau_Stat  "<<"  shape        -        -        1           -           -           -           -           -            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"tt_ll_Stat    "<<"  shape        -        -        -           1           -           -           -           -            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"tau_fake_Stat "<<"  shape        -        -        -           -           1           -           -           -            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"Z_eemumu_Stat "<<"  shape        -        -        -           -           -           1           -           -            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"Z_tautau_Stat "<<"  shape        -        -        -           -           -           -           1           -            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"singleTop_Stat"<<"  shape        -        -        -           -           -           -           -           1            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"di_boson_Stat "<<"  shape        -        -        -           -           -           -           -           -            1     "<<endl;
+	//             
+	//outfile<< HH3_Stat        shape  1         -        -           -           -           -           -           -            -
+	//outfile<< WH3_Stat        shape  -         1        -           -           -           -           -           -            -
+      }
+      outfile.close();
+      
+      //}
     }
-    outfile.close();
+    return ;
     
-    //}
   }
-  return ;
-
-  }
-
+  
   /*
 
   // NOTE : THIS PEACE OF CODE CAN BE USED FOR

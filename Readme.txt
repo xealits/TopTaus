@@ -123,6 +123,8 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 CHANGELOG for major updates:
 2013-05-08: Added H+->tb yields to summary table, and fixed in a consistent way its xsec*BR
 	    H+->taunu and H+->tb are now stacked in plots
+	    Added H+->tb decay to datacards for mH+ = 250GeV/c^2
+	    Committed revision 718 for chiggs datacards
 2013-05-07: Reworked table builder for not having to run twice (tables, datacards)
 	    Almost implemented decoupling of event analysis and application of a selection
 	    Switched to text names for nuisance parameters (since february combine likes no numbers - for event counting this is not a problem, but for consistency I switched)
@@ -206,6 +208,7 @@ FIXED TAGS:
 - V12-12-21 / V12-12-17: 2011 code.
 
 CHANGELOG for datacards:
+rev 718 (2013-05-08): cHiggs: H+->tb decay added to mH+=250GeV/c^2 datacard
 rev 716 (2013-05-06): cHiggs: fixed yields and shapes. This version supersedes all the previous.
 rev 715 (2012-04-29): cHiggs: moved to use pt_tau shapes. Fixed datacards with values after met correction.
 rev 714 (2012-04-19): fixed first shapes files and datacards with support for shapes (R_tau) for heavy charged higgs		
