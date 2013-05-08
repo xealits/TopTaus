@@ -121,6 +121,7 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-05-08: Added H+->tb yields to summary table, and fixed in a consistent way its xsec*BR
 2013-05-06: Fixed jer smearing/met propagation (condensed in single loop)
 	    Fixed normalization for datacards and shapes
 	    committed revision 716 for chiggs datacards - supersedes all previous revisions

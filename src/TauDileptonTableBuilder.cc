@@ -1733,6 +1733,9 @@ namespace tableutils{
     //    if(!doTheDatacards) // For datacards we want 234., for tables we want 1.1 // This does not need conditional, because of the default values
       for(size_t i=0; i<brHtaunu_.size(); ++i)
 	brHtaunu_[i] = 5./234.;
+      for(size_t i=0; i<brHtb_.size(); ++i)
+	brHtb_[i] = 5./234.;
+      
        
   //  double ttbar_init(20416081); //SIMPLE evt processed
   double ttbar_init(8228517); // evt processed from debug.txt
@@ -1740,6 +1743,7 @@ namespace tableutils{
   
   // For datacards
   vector<vector<double> > tbh_datacards;
+  vector<vector<double> > htb_datacards;
   vector<vector<double> > sm_datacards;
   vector<double>          data_datacards;
   vector<double>          taufakes_datacards;
@@ -1825,8 +1829,8 @@ namespace tableutils{
 
   // table options /////////////////////////////////////////////////////////////////
   bool incDocument(true);
-  bool showAllHiggs(true), processHH(false),processHW(false),processTBH(true);
-  if(!higgs){ showAllHiggs=false; processTBH=false;}
+  bool showAllHiggs(true), processHH(false),processHW(false),processTBH(true),processHTB(true);
+  if(!higgs){ showAllHiggs=false; processTBH=false; processHTB=false;}
   bool addXsection; if(XSECMEASUREMENT){ addXsection=true; } else addXsection=false;
   //////////////////////////////////////////////////////////////////////////////////
   
@@ -1913,6 +1917,7 @@ namespace tableutils{
   map< TString, vector< TH1D * > > h_hh, h_hh_plus, h_hh_minus, h_hh_uncplus, h_hh_uncminus, h_hh_jerplus, h_hh_jerminus, h_hh_bplus, h_hh_bminus, h_hh_trigger;
   map< TString, vector< TH1D * > > h_hw, h_hw_plus, h_hw_minus, h_hw_uncplus, h_hw_uncminus, h_hw_jerplus, h_hw_jerminus, h_hw_bplus, h_hw_bminus, h_hw_trigger;
   map< TString, vector< TH1D * > > h_tbh, h_tbh_plus, h_tbh_minus, h_tbh_uncplus, h_tbh_uncminus, h_tbh_jerplus, h_tbh_jerminus, h_tbh_bplus, h_tbh_bminus, h_tbh_trigger;
+  map< TString, vector< TH1D * > > h_htb, h_htb_plus, h_htb_minus, h_htb_uncplus, h_htb_uncminus, h_htb_jerplus, h_htb_jerminus, h_htb_bplus, h_htb_bminus, h_htb_trigger;
   
 
   // Get Data Histogram //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1941,7 +1946,7 @@ namespace tableutils{
 
 
   //get Higgs histograms////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  vector<TString> hhFiles; vector<TString> hwFiles; vector<TString> tbhFiles;
+  vector<TString> hhFiles, hwFiles, tbhFiles, htbFiles;
   if( processHH ){
     hhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m80.root"));
     hhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-hh-pythia-m100.root"));
@@ -1968,13 +1973,22 @@ namespace tableutils{
     tbhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m250.root"));
     tbhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m300.root"));
   }
+  if( processHTB ){
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m180.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m190.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m200.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m220.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m250.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m300.root"));
+  }
   
  
-  vector<TFile *> processedHWFiles; vector<TFile *> processedHHFiles; vector<TFile*> processedTBHFiles;
+  vector<TFile *> processedHWFiles, processedHHFiles, processedTBHFiles, processedHTBFiles;
   for(uint i = 0; i<hhFiles.size(); i++ ){  processedHHFiles.push_back( TFile::Open( hhFiles[i] ) ); }
   for(uint i = 0; i<hwFiles.size(); i++ ){  processedHWFiles.push_back( TFile::Open( hwFiles[i] ) ); }
   for(uint i = 0; i<tbhFiles.size(); i++ ){  processedTBHFiles.push_back( TFile::Open( tbhFiles[i] ) ); }
-  cout << "Open hh and wh and tbh files if any" << endl;
+  for(uint i = 0; i<htbFiles.size(); i++ ){  processedHTBFiles.push_back( TFile::Open( htbFiles[i] ) ); }
+  cout << "Open hh and wh and tbh and htb files if any" << endl;
   for(uint j=0; j<keys.size(); j++){
     vector<TH1D * > v_hh, v_hh_plus, v_hh_minus, v_hh_uncplus, v_hh_uncminus, v_hh_jerplus, v_hh_jerminus, v_hh_bplus, v_hh_bminus, v_hh_trigger;
     TString algo = keys[j];
@@ -2090,6 +2104,46 @@ namespace tableutils{
   }
   cout << "got TBH histograms, if any" << endl;
 
+  for(uint j=0; j<keys.size(); j++){
+    vector<TH1D * > v_htb, v_htb_plus, v_htb_minus, v_htb_uncplus, v_htb_uncminus, v_htb_jerplus, v_htb_jerminus, v_htb_bplus, v_htb_bminus, v_htb_trigger;
+    TString algo = keys[j];
+    for(uint i = 0; i< htbFiles.size(); i++ ){ 
+      if(processedHTBFiles[i]){ 
+        TH1D *h;     
+	cout << "Now opening histo" << endl;
+        h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_m[algo]);          h->Scale(scalefactor); v_htb.push_back(h); 
+	cout << "open first histo" << endl;
+        h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_plus_m[algo]);     h->Scale(scalefactor); v_htb_plus.push_back(h);
+	cout << "open second histo" << endl;
+        h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_minus_m[algo]);    h->Scale(scalefactor); v_htb_minus.push_back(h);
+        h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_uncplus_m[algo]);  h->Scale(scalefactor); v_htb_uncplus.push_back(h);
+        h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_uncminus_m[algo]); h->Scale(scalefactor); v_htb_uncminus.push_back(h);
+	cout << "open fifth histo" << endl;
+        h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_jerplus_m[algo]);  h->Scale(scalefactor); v_htb_jerplus.push_back(h);
+        h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_jerminus_m[algo]); h->Scale(scalefactor); v_htb_jerminus.push_back(h);
+        h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_bplus_m[algo]);    h->Scale(scalefactor); v_htb_bplus.push_back(h);
+	cout << "open ninth histo" << endl;
+        h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_bminus_m[algo]);   h->Scale(scalefactor); v_htb_bminus.push_back(h);
+	cout << "open tenth histo" << endl;
+        h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_trigger_m[algo]);  h->Scale(scalefactor); v_htb_trigger.push_back(h);
+	cout << "open last histo" << endl;
+      }
+      else { 
+        v_htb.push_back(0);         v_htb_plus.push_back(0);       v_htb_minus.push_back(0); 
+        v_htb_uncplus.push_back(0); v_htb_uncminus.push_back(0); 
+        v_htb_jerplus.push_back(0); v_htb_jerminus.push_back(0);
+        v_htb_bplus.push_back(0);   v_htb_bminus.push_back(0);
+        v_htb_trigger.push_back(0);
+      }
+    }
+    h_htb[algo] = v_htb;  h_htb_plus[algo] = v_htb_plus;  h_htb_minus[algo] = v_htb_minus;
+    h_htb_uncplus[algo] = v_htb_uncplus;  h_htb_uncminus[algo] = v_htb_uncminus;
+    h_htb_jerplus[algo] = v_htb_jerplus;  h_htb_jerminus[algo] = v_htb_jerminus;
+    h_htb_bplus[algo]   = v_htb_bplus;    h_htb_bminus[algo] = v_htb_bminus;
+    h_htb_trigger[algo] = v_htb_trigger;
+  }
+  cout << "got HTB histograms, if any" << endl;
+
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2103,6 +2157,9 @@ namespace tableutils{
 
   map< pair< TString, int > , vector<double> > tbh, tbh_err;
   map< pair< TString, int > , vector<double> > tbh_syst_plus, tbh_syst_minus;
+
+  map< pair< TString, int > , vector<double> > htb, htb_err;
+  map< pair< TString, int > , vector<double> > htb_syst_plus, htb_syst_minus;
 
   // SM MC data/errors holders
   map< pair< TString, pair<int,int> > , double > dMC, dMC_err, dMC_plus, dMC_minus, dMC_uncplus, dMC_uncminus, dMC_trigger,
@@ -2235,6 +2292,7 @@ namespace tableutils{
  
  
     }
+
     // tbh samples //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     for(uint samp=0; samp < h_tbh[algo].size(); samp++){
       pair< TString, int> key(algo,samp);      
@@ -2319,10 +2377,94 @@ namespace tableutils{
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+    // htb samples //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    for(uint samp=0; samp < h_htb[algo].size(); samp++){
+      pair< TString, int> key(algo,samp);      
+      vector<double> data_htb, data_htb_err, data_syst_plus, data_syst_minus; 
+      for(int x=0; x<12;x++){
+        // get data and stats errors //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        double data_htb_plus, data_htb_minus;
+        double data_htb_uncplus, data_htb_uncminus, data_htb_jerplus, data_htb_jerminus, data_htb_bplus, data_htb_bminus, data_htb_trigger;
+        if( h_htb[algo][samp]          != 0 ){ data_htb.push_back(      h_htb[algo][samp]->GetBinContent(x+1) );  } else { data_htb.push_back( 0 );   }
+        if( h_htb[algo][samp]          != 0 ){ data_htb_err.push_back(  h_htb[algo][samp]->GetBinError(x+1)   );  } else { data_htb_err.push_back(0); }
+        if( h_htb_plus[algo][samp]     != 0 ){ data_htb_plus  =    h_htb_plus[algo][samp]->GetBinContent(x+1);    } else { data_htb_plus       = 0 ;  }
+        if( h_htb_minus[algo][samp]    != 0 ){ data_htb_minus =    h_htb_minus[algo][samp]->GetBinContent(x+1);   } else { data_htb_minus      = 0 ;  }  
+        if( h_htb_uncplus[algo][samp]  != 0 ){ data_htb_uncplus  = h_htb_uncplus[algo][samp]->GetBinContent(x+1); } else { data_htb_uncplus    = 0 ;  }
+        if( h_htb_uncminus[algo][samp] != 0 ){ data_htb_uncminus = h_htb_uncminus[algo][samp]->GetBinContent(x+1);} else { data_htb_uncminus   = 0 ;  }  
+        if( h_htb_jerplus[algo][samp]  != 0 ){ data_htb_jerplus  = h_htb_jerplus[algo][samp]->GetBinContent(x+1); } else { data_htb_jerplus    = 0 ;  }
+        if( h_htb_jerminus[algo][samp] != 0 ){ data_htb_jerminus = h_htb_jerminus[algo][samp]->GetBinContent(x+1);} else { data_htb_jerminus   = 0 ;  }  
+        if( h_htb_bplus[algo][samp]    != 0 ){ data_htb_bplus    = h_htb_bplus[algo][samp]->GetBinContent(x+1); }   else { data_htb_bplus      = 0 ;  }
+        if( h_htb_bminus[algo][samp]   != 0 ){ data_htb_bminus   = h_htb_bminus[algo][samp]->GetBinContent(x+1);}   else { data_htb_bminus     = 0 ;  }
+        if( h_htb_trigger[algo][samp]  != 0 ){ data_htb_trigger  = h_htb_trigger[algo][samp]->GetBinContent(x+1);}  else { data_htb_trigger    = 0 ;  }  
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        //compute systematics //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        double syst_plus     = fabs( data_htb[x]-data_htb_plus );         double syst_minus    = fabs( data_htb[x]-data_htb_minus );   
+        double syst_uncplus  = fabs( data_htb[x]-data_htb_uncplus );      double syst_uncminus = fabs( data_htb[x]-data_htb_uncminus );   
+        double syst_jerplus  = fabs( data_htb[x]-data_htb_jerplus );      double syst_jerminus = fabs( data_htb[x]-data_htb_jerminus );
+        double syst_bplus    = fabs( data_htb[x]-data_htb_bplus );        double syst_bminus   = fabs( data_htb[x]-data_htb_bminus );      
+
+        double syst_lum      = LUM_ERR*data_htb[x];         
+        double syst_eff_lep  = LEP_EFF_ERR*data_htb[x];             
+        double syst_ttbar_cs = TTBAR_CS_ERR*data_htb[x];
+        
+        double syst_tauid(0);  if( x >= TAUSTEP) { syst_tauid = TAU_ID_ERR*data_htb[x];   }  
+        double syst_trigger = data_htb_trigger;
+        
+        if(systset1){ syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_trigger=0; } 
+        if(systset2){ 
+          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_trigger=0;
+        } 
+        if(systset3){ 
+          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; 
+        } 
+     
+        double temp =  pow(syst_lum,2) + pow(syst_eff_lep,2) + pow(syst_ttbar_cs,2) + pow(syst_tauid,2) + pow(syst_trigger,2);
+
+        data_syst_plus.push_back(  sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2)  + pow(syst_bplus,2)  + temp) );   
+        data_syst_minus.push_back( sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_bminus,2) + temp) ); 
+  
+        //cout<<endl<<" HTB algo : "<<algo<<" data syst plus "<<(data_syst_plus[x])<<" data syst minus "<<(data_syst_minus[x])<<" temp "<<temp<<endl;
+
+	// WORKING HERE
+	
+	if(x==11){ // OS
+
+	  cout << "=========================== DEBUG: samp: " << samp << ", BRHTAUNU[samp]: " << brHtaunu_[samp] << endl;
+	  vector<double> temp_htb_datacards;
+	  temp_htb_datacards.push_back( data_htb[x] );
+	  temp_htb_datacards.push_back( data_htb_err[x]  );
+	  temp_htb_datacards.push_back( syst_plus     );
+	  temp_htb_datacards.push_back( syst_minus    );
+	  temp_htb_datacards.push_back( syst_uncplus  );
+	  temp_htb_datacards.push_back( syst_uncminus );
+	  temp_htb_datacards.push_back( syst_jerplus  );
+	  temp_htb_datacards.push_back( syst_jerminus );
+	  temp_htb_datacards.push_back( syst_bplus    );
+	  temp_htb_datacards.push_back( syst_bminus   );
+	  temp_htb_datacards.push_back( syst_lum      );
+	  temp_htb_datacards.push_back( syst_eff_lep  );
+	  //        temp_htb_datacards.push_back( syst_ttbar_cs );
+	  temp_htb_datacards.push_back( syst_tauid    );
+	  temp_htb_datacards.push_back( syst_trigger  );
+
+	  
+	  htb_datacards.push_back(temp_htb_datacards);
+	}
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+      }
+      
+
+      htb[key] = data_htb; htb_err[key] = data_htb_err;  htb_syst_minus[key] = data_syst_minus; htb_syst_plus[key] = data_syst_plus; 
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    cout << "Processed hw and hh histos, if any" << endl;
+    cout << "Processed hw, hh, tbh, htb histos, if any" << endl;
 
 
 
@@ -2463,6 +2605,11 @@ namespace tableutils{
     "TBH, $M_{H^{+}}=220GeV/c^{2}$ &", "TBH, $M_{H^{+}}=250GeV/c^{2}$ &", "TBH, $M_{H^{+}}=300GeV/c^{2}$ &"
   };
 
+  TString  T_HTB_mc[] = {
+    "HTB, $M_{H^{+}}=180GeV/c^{2}$ &", "HTB, $M_{H^{+}}=190GeV/c^{2}$ &", "HTB, $M_{H^{+}}=200GeV/c^{2}$ &",
+    "HTB, $M_{H^{+}}=220GeV/c^{2}$ &", "HTB, $M_{H^{+}}=250GeV/c^{2}$ &", "HTB, $M_{H^{+}}=300GeV/c^{2}$ &"
+  };
+
   TString    other[] = {
     "$t\\bar{t}$ tau-dilepton &","$\\tau$ fakes &", "$t\\bar{t}\\to\\ell\\ell$ &", "$Z/\\gamma\\rightarrow ee,\\mu\\mu$ &", "$Z/\\gamma\\rightarrow \\tau\\tau$ &",
     "single top &","WW,WZ,ZZ &"
@@ -2525,6 +2672,25 @@ namespace tableutils{
     double systerr0(tbh_syst_plus[k0][STEP]); if( tbh_syst_minus[k0][STEP] > tbh_syst_plus[k0][STEP] ) systerr0 = tbh_syst_minus[k0][STEP];
    
     fprintf(f, data, brHtaunu_[l]*tbh[k0][STEP], brHtaunu_[l]*tbh_err[k0][STEP], brHtaunu_[l]*systerr0 );
+   
+    
+  }
+
+  // HTB contribution
+  for(uint l=0; l<htbFiles.size(); l++){
+    if( !showAllHiggs && l!= 2  ){ continue;}
+    
+    TString line(""); line.Append(T_HTB_mc[l]); 
+    
+    if(detailed){ TString d(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); line.Append(d);}
+    else        { TString d(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); line.Append(d);}                                    
+    
+    int massPoint(l);
+    pair<TString, int> k0(algo0,massPoint); 
+    const char * data = line.Data();
+    double systerr0(tbh_syst_plus[k0][STEP]); if( htb_syst_minus[k0][STEP] > htb_syst_plus[k0][STEP] ) systerr0 = htb_syst_minus[k0][STEP];
+   
+    fprintf(f, data, brHtb_[l]*htb[k0][STEP], brHtb_[l]*htb_err[k0][STEP], brHtb_[l]*systerr0 );
    
     
   }
