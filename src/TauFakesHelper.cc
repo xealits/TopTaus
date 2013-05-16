@@ -237,6 +237,13 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
       TFile *outFile_ = TFile::Open( Filename_, "RECREATE" );
       //////////////////////////////////////////////////
       
+      TH1D* wplusjets_pt          = new TH1D("wplusjets_pt"         ,TString("j;jet p_{T} [GeV/c]; Entries"),25,0,250); 
+      TH1D* wplusjets_pt_unknown  = new TH1D("wplusjets_pt_unknown" ,TString("j;jet p_{T} [GeV/c]; Entries"),25,0,250); 
+      TH1D* wplusjets_pt_quark    = new TH1D("wplusjets_pt_quark"   ,TString("j;jet p_{T} [GeV/c]; Entries"),25,0,250); 
+      TH1D* wplusjets_pt_bquark   = new TH1D("wplusjets_pt_bquark"  ,TString("j;jet p_{T} [GeV/c]; Entries"),25,0,250); 
+      TH1D* wplusjets_pt_gluon    = new TH1D("wplusjets_pt_gluon"   ,TString("j;jet p_{T} [GeV/c]; Entries"),25,0,250); 
+      TH1D* wplusjets_pt_allquark = new TH1D("wplusjets_pt_allquark",TString("j;jet p_{T} [GeV/c]; Entries"),25,0,250); 
+      
       TTree *tree = new TTree("tree", "tree");
       tree->Branch("JetPt", &JetPt, "JetPt/D");
       tree->Branch("AbsJetEta", &AbsJetEta, "AbsJetEta/D");
@@ -397,10 +404,29 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	    for(size_t ijet = 0; ijet < j_final.size(); ijet++){
 	      int ind_jet = j_final[ijet];
 	      
+	      
+
+	      
+
 	      if(isAntiBTag && (jets[ind_jet][33] > 0.679)) continue; //anti-btag CSVM
 	      
 	      double Rjet = ((jets[ind_jet][29]+jets[ind_jet][30]) > 0) ? sqrt(jets[ind_jet][29]+jets[ind_jet][30]) : 0.;
 	      
+	      int pgid(commondefinitions::PGID_UNKNOWN); if(!isDATA) pgid = TMath::Abs(jets[ind_jet][commondefinitions::JETPGID_OLD]); 	      
+	      if( ! isDATA  ){       
+		wplusjets_pt->Fill(jets[ind_jet].Pt(),evtWeight);
+		// if we have at least one btag add also soft jet contribution to the collection of fakable taus   /////////////////////////////////////////////////////////
+		if     ( pgid==commondefinitions::PGID_UNKNOWN )                                                               { wplusjets_pt_unknown ->Fill(jets[ind_jet].Pt(),evtWeight);}
+		else if( pgid == commondefinitions::PGID_D || pgid == commondefinitions::PGID_U || pgid == commondefinitions::PGID_S || pgid == commondefinitions::PGID_C )             { wplusjets_pt_quark   ->Fill(jets[ind_jet].Pt(),evtWeight);}
+		else if( pgid == commondefinitions::PGID_B     )                                                               { wplusjets_pt_bquark  ->Fill(jets[ind_jet].Pt(),evtWeight);}
+		else if( pgid == commondefinitions::PGID_G     )                                                               { wplusjets_pt_gluon   ->Fill(jets[ind_jet].Pt(),evtWeight);}
+		if( pgid == commondefinitions::PGID_D || pgid == commondefinitions::PGID_U || pgid == commondefinitions::PGID_S || pgid == commondefinitions::PGID_C || pgid == commondefinitions::PGID_B ){ wplusjets_pt_allquark->Fill(jets[ind_jet].Pt(),evtWeight);}
+		
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	      }
+	      
+	      
+
 	      //fill for selected taus
 	      double mindr = 0.5; int jtau = -1;
 	      for(size_t itau = 0; itau < t_final.size(); itau++){
@@ -456,6 +482,12 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
       TString Filename_ = histoFiles_ +"_"+myKey+".root";
       TFile *outFile_ = TFile::Open( Filename_, "RECREATE" );
       //////////////////////////////////////////////////
+      TH1D* wplusjets_pt          = new TH1D("wplusjets_pt"         ,TString("j;jet p_{T} [GeV/c]; Entries"),25,0,250); 
+      TH1D* wplusjets_pt_unknown  = new TH1D("wplusjets_pt_unknown" ,TString("j;jet p_{T} [GeV/c]; Entries"),25,0,250); 
+      TH1D* wplusjets_pt_quark    = new TH1D("wplusjets_pt_quark"   ,TString("j;jet p_{T} [GeV/c]; Entries"),25,0,250); 
+      TH1D* wplusjets_pt_bquark   = new TH1D("wplusjets_pt_bquark"  ,TString("j;jet p_{T} [GeV/c]; Entries"),25,0,250); 
+      TH1D* wplusjets_pt_gluon    = new TH1D("wplusjets_pt_gluon"   ,TString("j;jet p_{T} [GeV/c]; Entries"),25,0,250); 
+      TH1D* wplusjets_pt_allquark = new TH1D("wplusjets_pt_allquark",TString("j;jet p_{T} [GeV/c]; Entries"),25,0,250); 
       
       TTree *tree = new TTree("tree", "tree");
       tree->Branch("JetPt", &JetPt, "JetPt/D");
@@ -621,6 +653,23 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	    double jetPt = jets[ind_jet].Pt();
 	    if(isDATA)jetPt = GetJetResidualPt(jets[ind_jet]);
 	    double Rjet = ((jets[ind_jet][29]+jets[ind_jet][30]) > 0) ? sqrt(jets[ind_jet][29]+jets[ind_jet][30]) : 0.;
+	    
+	    
+	    int pgid(commondefinitions::PGID_UNKNOWN); if(!isDATA) pgid = TMath::Abs(jets[ind_jet][commondefinitions::JETPGID_OLD]); 	      
+	    if( ! isDATA  ){       
+	      wplusjets_pt->Fill(jets[ind_jet].Pt(),evtWeight);
+	      // if we have at least one btag add also soft jet contribution to the collection of fakable taus   /////////////////////////////////////////////////////////
+	      if     ( pgid==commondefinitions::PGID_UNKNOWN )                                                               { wplusjets_pt_unknown ->Fill(jets[ind_jet].Pt(),evtWeight);}
+	      else if( pgid == commondefinitions::PGID_D || pgid == commondefinitions::PGID_U || pgid == commondefinitions::PGID_S || pgid == commondefinitions::PGID_C )             { wplusjets_pt_quark   ->Fill(jets[ind_jet].Pt(),evtWeight);}
+	      else if( pgid == commondefinitions::PGID_B     )                                                               { wplusjets_pt_bquark  ->Fill(jets[ind_jet].Pt(),evtWeight);}
+	      else if( pgid == commondefinitions::PGID_G     )                                                               { wplusjets_pt_gluon   ->Fill(jets[ind_jet].Pt(),evtWeight);}
+	      if( pgid == commondefinitions::PGID_D || pgid == commondefinitions::PGID_U || pgid == commondefinitions::PGID_S || pgid == commondefinitions::PGID_C || pgid == commondefinitions::PGID_B ){ wplusjets_pt_allquark->Fill(jets[ind_jet].Pt(),evtWeight);}
+	      
+	      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	      }
+	      
+	    
+	    
 	    
 	    //fill for selected taus
 	    double mindr = 0.5; int jtau = -1;
