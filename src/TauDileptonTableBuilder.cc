@@ -2601,13 +2601,21 @@ namespace tableutils{
   }; 
 
   TString  T_TBH_mc[] = {
-    "TBH, $M_{H^{+}}=180GeV/c^{2}$ &",  "TBH, $M_{H^{+}}=190GeV/c^{2}$ &", "TBH, $M_{H^{+}}=200GeV/c^{2}$ &",
-    "TBH, $M_{H^{+}}=220GeV/c^{2}$ &", "TBH, $M_{H^{+}}=250GeV/c^{2}$ &", "TBH, $M_{H^{+}}=300GeV/c^{2}$ &"
+    "H^{+}#rightarrow#tau_{#mathrm{h}}#nu, $M_{H^{+}}=180GeV/c^{2}$ &",
+    "H^{+}#rightarrow#tau_{#mathrm{h}}#nu, $M_{H^{+}}=190GeV/c^{2}$ &",
+    "H^{+}#rightarrow#tau_{#mathrm{h}}#nu, $M_{H^{+}}=200GeV/c^{2}$ &",
+    "H^{+}#rightarrow#tau_{#mathrm{h}}#nu, $M_{H^{+}}=220GeV/c^{2}$ &",
+    "H^{+}#rightarrow#tau_{#mathrm{h}}#nu, $M_{H^{+}}=250GeV/c^{2}$ &",
+    "H^{+}#rightarrow#tau_{#mathrm{h}}#nu, $M_{H^{+}}=300GeV/c^{2}$ &"
   };
 
   TString  T_HTB_mc[] = {
-    "HTB, $M_{H^{+}}=180GeV/c^{2}$ &", "HTB, $M_{H^{+}}=190GeV/c^{2}$ &", "HTB, $M_{H^{+}}=200GeV/c^{2}$ &",
-    "HTB, $M_{H^{+}}=220GeV/c^{2}$ &", "HTB, $M_{H^{+}}=250GeV/c^{2}$ &", "HTB, $M_{H^{+}}=300GeV/c^{2}$ &"
+    "H^{+}#rightarrow tb, $M_{H^{+}}=180GeV/c^{2}$ &",
+    "H^{+}#rightarrow tb, $M_{H^{+}}=190GeV/c^{2}$ &",
+    "H^{+}#rightarrow tb, $M_{H^{+}}=200GeV/c^{2}$ &",
+    "H^{+}#rightarrow tb, $M_{H^{+}}=220GeV/c^{2}$ &",
+    "H^{+}#rightarrow tb, $M_{H^{+}}=250GeV/c^{2}$ &",
+    "H^{+}#rightarrow tb, $M_{H^{+}}=300GeV/c^{2}$ &"
   };
 
   TString    other[] = {
