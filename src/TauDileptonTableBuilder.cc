@@ -1787,7 +1787,11 @@ namespace tableutils{
   //  double tau_fakes(2939.9*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(261.6*261.6*0.699*0.699 + 0.02*0.02*2939.9*2939.9); // Preliminar from kNN
 
   //  $\pm$8.55099\% 
-  double tau_fakes(2925.76*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(250.15*250.15*0.699*0.699 + 0.02*0.02*2925.76*2925.76); // Preliminar from kNN
+
+  double f_1tau(2762.19);
+  double fe_1tau(263.891);
+
+  double tau_fakes(f_1tau*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(fe_1tau*fe_1tau*0.699*0.699 + 0.02*0.02*f_1tau*f_1tau); // Preliminar from kNN
 
   taufakes_datacards.push_back(tau_fakes);
   taufakes_datacards.push_back(tau_fakes_stat2);
