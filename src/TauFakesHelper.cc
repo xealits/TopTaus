@@ -214,7 +214,12 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
     break;
   }
   
+  // Output txt file
+  ofstream txtFile;
+  txtFile.open(histoFiles_+".txt");
   
+  
+
   // Analysis
   //objects to use
   unsigned int jetAlgo(event::AK5),metAlgo(event::CALOAK5), tauType(CALOTAU), leptonType(event::STDLEPTON);
@@ -233,7 +238,7 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
   case QCDMC:
     {
       //create the file ////////////////////////////////
-      TString Filename_ = outputArea_ + histoFiles_ +"_"+myKey+".root";
+      TString Filename_ = histoFiles_ +"_"+myKey+".root";
       TFile *outFile_ = TFile::Open( Filename_, "RECREATE" );
       //////////////////////////////////////////////////
       
@@ -416,6 +421,7 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	      if( ! isDATA  ){       
 		wplusjets_pt->Fill(jets[ind_jet].Pt(),evtWeight);
 		// if we have at least one btag add also soft jet contribution to the collection of fakable taus   /////////////////////////////////////////////////////////
+		
 		if     ( pgid==commondefinitions::PGID_UNKNOWN )                                                               { wplusjets_pt_unknown ->Fill(jets[ind_jet].Pt(),evtWeight);}
 		else if( pgid == commondefinitions::PGID_D || pgid == commondefinitions::PGID_U || pgid == commondefinitions::PGID_S || pgid == commondefinitions::PGID_C )             { wplusjets_pt_quark   ->Fill(jets[ind_jet].Pt(),evtWeight);}
 		else if( pgid == commondefinitions::PGID_B     )                                                               { wplusjets_pt_bquark  ->Fill(jets[ind_jet].Pt(),evtWeight);}
@@ -444,6 +450,7 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 		__WEIGHT__ = evtWeight;
 		__TARGET__ = 1;
 		
+		txtFile<< JetPt << " " << AbsJetEta << " " << JetWidth << " " << __WEIGHT__ << endl;
 		tree->Fill();
 	      }
 	      else if(!passing && mindr >  DRMIN_T_J_ ){
@@ -452,14 +459,14 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 		JetWidth = Rjet;
 		__WEIGHT__ = evtWeight;
 		__TARGET__ = 0;
-		
+		txtFile<< JetPt << " " << AbsJetEta << " " << JetWidth << " " << __WEIGHT__ << endl;
 		tree->Fill();
 	      }
 	    }
 	    
 	  } //end of each file
 	cout<<" no. of triggered Events "<<nTriggEvent<<endl;
-	
+	txtFile.close();
 	f->Close();
       } //end of all files
       outFile_->Write();
@@ -688,6 +695,7 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	      __WEIGHT__ = evtWeight;
 	      __TARGET__ = 1;
 	      
+	      txtFile<< JetPt << " " << AbsJetEta << " " << JetWidth << " " << __WEIGHT__ << endl;
 	      tree->Fill();
 	    }
 	    else if(!passing && mindr > DRMIN_T_J_){
@@ -697,6 +705,7 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	      __WEIGHT__ = evtWeight;
 	      __TARGET__ = 0;
 	      
+	      txtFile<< JetPt << " " << AbsJetEta << " " << JetWidth << " " << __WEIGHT__ << endl;
 	      tree->Fill();
 	    }
 	    
@@ -706,7 +715,7 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
       cout<<" no. of triggered Events "<<nTriggEvent<<endl;
       if(qualifier_ != QCDDATA) cout<<" no. of selected Events "<<nSelEvents<<endl;
       
-      
+      txtFile.close();
       f->Close();
       outFile_->Write();
       outFile_->Close();
@@ -1376,15 +1385,12 @@ void TauFakesHelper::ComputeTauFake(string type, vector<double>& finalValues, do
   string frFileNameData_, frFileNameMC_;
   string frHistoName_ = "ptJetFR";
   
-        
-  
   if(type == "DiJet"){
     kNNfileData_ = trainingOutputArea_+"/Trained_QCDData_PFlow.mva";
     //kNNfileMC_   = trainingOutputArea_+"/Trained_QCDMC_PFlow.mva";
     kNNfileMC_   = trainingOutputArea_+"/Trained_QCDData_PFlow.mva";
     frFileNameData_ = outputArea_+"/histosQCDData.root";
     frFileNameMC_   = outputArea_+"/histosQCDMC.root";
-    
   }
   if(type == "WMu"){
     kNNfileData_ = trainingOutputArea_+"/Trained_WMuData_PFlow.mva";
@@ -1393,7 +1399,8 @@ void TauFakesHelper::ComputeTauFake(string type, vector<double>& finalValues, do
     frFileNameData_ = outputArea_+"/histosWMuData.root";
     frFileNameMC_   = outputArea_+"/histosWMuMC.root";
   }
-  
+
+
   string DataMVA_(kNNfileData_);
   string mcMVA_(kNNfileMC_);
   
