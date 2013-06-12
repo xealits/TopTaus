@@ -1788,8 +1788,8 @@ namespace tableutils{
 
   //  $\pm$8.55099\% 
 
-  double f_1tau(2762.19);
-  double fe_1tau(263.891);
+  double f_1tau(2771);
+  double fe_1tau(249.39);
 
   double tau_fakes(f_1tau*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(fe_1tau*fe_1tau*0.699*0.699 + 0.02*0.02*f_1tau*f_1tau); // Preliminar from kNN
 
