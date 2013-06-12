@@ -1,0 +1,325 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Toptaus</title>
+  <meta name="description" content="Port of my repository http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/LIP/TopTaus/ for Charged Higgs and ttbar xsec analyses to git.">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Toptaus</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">Port of my repository http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/LIP/TopTaus/ for Charged Higgs and ttbar xsec analyses to git.</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/vischia/TopTaus/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/vischia/TopTaus/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/vischia/TopTaus" class="code">View Toptaus on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <hr><h2>
+<a name="repository-for-taudilepton-analysis" class="anchor" href="#repository-for-taudilepton-analysis"><span class="octicon octicon-link"></span></a>Repository for tauDilepton analysis</h2>
+
+<ul>
+<li><p>This is the manual. Read the fucking manual +BEFORE+ running the code.</p></li>
+<li><p>For help: pietro.vischia atPlzNoSpam gmail.com / pietro.vischia atPlzNoSpam cern.ch</p></li>
+<li><p>Will work for ttbar cross section measurement as well as charged higgs search/tau polarization</p></li>
+<li><p>This started as a porting to a compiled binary approach like LIP/Top, in order
+to remove levels of messiness in the original code to be compiled every time together with
+its libraries - whoah running time is already 1/2 than before, LoL</p></li>
+<li><p>MOVED TO GITHUB.COM ON APRIL 30th, 2013 because of CERN CVS service shutdown</p></li>
+</ul><hr><h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<h1>
+<a name="537" class="anchor" href="#537"><span class="octicon octicon-link"></span></a>537</h1>
+
+<p>setenv SCRAM_ARCH slc5_amd64_gcc462
+scramv1 project CMSSW CMSSW_5_3_7_patch4
+cd CMSSW_5_3_7_patch4/src/
+cmsenv
+cvs co -p UserCode/LIP/TopTaus/TAGS_2012.txt | sh
+scram b -j8</p>
+
+<h1>
+<a name="production-version-for-higgs-combination-tool" class="anchor" href="#production-version-for-higgs-combination-tool"><span class="octicon octicon-link"></span></a>Production version for Higgs Combination Tool</h1>
+
+<p>setenv SCRAM_ARCH slc5_amd64_gcc472 
+cmsrel CMSSW_6_1_1 ### must be &gt;= 6.1.1, as older versions have bugs
+cd CMSSW_6_1_1/src 
+cmsenv
+addpkg HiggsAnalysis/CombinedLimit V03-01-08
+scramv1 b</p>
+
+<h1>
+<a name="444" class="anchor" href="#444"><span class="octicon octicon-link"></span></a>444</h1>
+
+<p>setenv SCRAM_ARCH slc5_amd64_gcc434
+scramv1 project CMSSW CMSSW_4_4_4
+cd CMSSW_4_4_4/src
+cvs co -p UserCode/LIP/TopTaus/TAGS_2011.txt | sh</p>
+
+<hr><h2>
+<a name="instructions-for-running-analysis" class="anchor" href="#instructions-for-running-analysis"><span class="octicon octicon-link"></span></a>Instructions for running analysis</h2>
+
+<h1>
+<a name="local-pattuple-test-run-local-data-file-at-lip" class="anchor" href="#local-pattuple-test-run-local-data-file-at-lip"><span class="octicon octicon-link"></span></a>Local pattuple test run (local data file at LIP)</h1>
+
+<h1>
+<a name="obsolete-must-update-cmsrun-liptoptaustestcreatedatapattuple_cfgpy-lustredata3cmslocalsamplescmssw_5_2_5testrun2012b_singlemu_aod_promptreco-v1_000_193_998_0c7dcc80-4e9d-e111-b22a-001d09f25267root-pattupleroot-inclusive_mu" class="anchor" href="#obsolete-must-update-cmsrun-liptoptaustestcreatedatapattuple_cfgpy-lustredata3cmslocalsamplescmssw_5_2_5testrun2012b_singlemu_aod_promptreco-v1_000_193_998_0c7dcc80-4e9d-e111-b22a-001d09f25267root-pattupleroot-inclusive_mu"><span class="octicon octicon-link"></span></a>obsolete, must update: cmsRun LIP/TopTaus/test/createDataPattuple_cfg.py /lustre/data3/cmslocal/samples/CMSSW_5_2_5/test/Run2012B_SingleMu_AOD_PromptReco-v1_000_193_998_0C7DCC80-4E9D-E111-B22A-001D09F25267.root pattuple.root inclusive_mu</h1>
+
+<h2>
+<a name="finding-hlt-trigger-on-a-per-run-range-basis-together-with-the-prescale" class="anchor" href="#finding-hlt-trigger-on-a-per-run-range-basis-together-with-the-prescale"><span class="octicon octicon-link"></span></a>Finding HLT trigger on a per-run-range basis, together with the prescale</h2>
+
+<p>ssh lxplus.cern.ch # needed for access to database
+cvs co HLTrigger/Tools/python
+scram b
+cd HLTrigger/Tools/python
+source $CMSSW_BASE/LIP/TopTaus/scripts/getTriggers.sh
+This will fetch the list of triggers, and depending on what you comment will print or not the prescales table. (see TODO list)</p>
+
+<h2>
+<a name="multiple-likelihood-fit-for-improving-tau-fakes-uncertainty" class="anchor" href="#multiple-likelihood-fit-for-improving-tau-fakes-uncertainty"><span class="octicon octicon-link"></span></a>Multiple likelihood fit for improving tau fakes uncertainty</h2>
+
+<p>runTauDileptonPDFBuilderFitter tauDileptonAnalysisParSets_cfg.py</p>
+
+<p>Relevant parameters: straightforward cfg file. Must write doc here, though</p>
+
+<h2>
+<a name="produce-shapes" class="anchor" href="#produce-shapes"><span class="octicon octicon-link"></span></a>Produce shapes:</h2>
+
+<p>produceLandSShapes tauDileptonAnalysisParSets_cfg.py --produceOnly (true|false [false])</p>
+
+<p>Relevant parameters: straightforward cfg file.
+Command options: </p>
+
+<ul>
+<li>produceOnly: (necessary because in plots HH and WH are rescaled, in rootfile not)
+           in TBH won't be necessary,  so fuck it.
+       -True: just produces rootfile with all the shapes, no plot.
+       -False: [default] just produces plots, no rootfile.</li>
+</ul><h2>
+<a name="run-physicsanalysis---this-corresponds-to-the-obsolete-physicsanalyzer-code" class="anchor" href="#run-physicsanalysis---this-corresponds-to-the-obsolete-physicsanalyzer-code"><span class="octicon octicon-link"></span></a>Run physicsAnalysis - this corresponds to the obsolete PhysicsAnalyzer code</h2>
+
+<ul>
+<li>interactively:
+physicsAnalysis test/physicsAnalysisParSets_cfg.py sample
+(where "sample" is ttbar, wjets, etc. Strings can be found in bin/physicsAnalysis.cc)</li>
+<li>on the LIP batch:
+cd scripts/lip-batch/
+sh combineResults.sh path/to/dir clean --&gt; this cleans the output directory in which you want to store the outputs<br>
+EDIT submit-jobs.sh in order to change the script path to your local installation.
+EDIT the <em>output</em> paths in test/physicsAnalysisParSets_cfg.py . The input are fixed (53X production)
+sh submit-jobs.sh
+qstat -u username --&gt; this checks whether your jobs are running and if they did already finish
+sh combineResults.sh path/to/dir hadd [AB|ABC|ABCD] --&gt; this hadds the relevant output files
+RUN physicsAnalysis test/physicsAnalysisParSets_cfg.py doPlots   ---&gt; this produces plots
+RUN physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables  ---&gt; this produces tables and datacards (if "higgs" is turned on)</li>
+<li>have fun</li>
+</ul><h2>
+<a name="produce-plots" class="anchor" href="#produce-plots"><span class="octicon octicon-link"></span></a>Produce plots</h2>
+
+<p>cd LIP/TopTaus  # this is necessary, because at the moment bin/physicsAnalysis.cc is configured
+                # in such a way as to fetch plots from "data/plotter/". Must change to configurable paths via cfg file
+mkdir plots
+physicsAnalysis test/physicsAnalysisParSets_cfg.py doPlots</p>
+
+<h2>
+<a name="produce-tables" class="anchor" href="#produce-tables"><span class="octicon octicon-link"></span></a>Produce tables</h2>
+
+<p>physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables --doDatacards [true|false]
+        --doDatacards: true means datacards are produced, and tbh yields are rescaled to the ttbar production cross-section
+                   false means datacards are not produced, and tbh yields are rescaled to the production cross section of the tbh samples (1.1pb)</p>
+
+<h2>
+<a name="produce-fakerate" class="anchor" href="#produce-fakerate"><span class="octicon octicon-link"></span></a>Produce fakerate</h2>
+
+<p>for a list of all the options:
+    doTauFakesStudy test/physicsAnalysisParSets_cfg.py --help 
+for running everything:
+    doTauFakesStudy test/physicsAnalysisParSets_cfg.py --do all</p>
+
+<h2>
+<a name="datacards" class="anchor" href="#datacards"><span class="octicon octicon-link"></span></a>Datacards</h2>
+
+<p>Install repository (CMS members only):
+svn co svn+ssh://<a href="mailto:vischia@svn.cern.ch">vischia@svn.cern.ch</a>/reps/lipcms/Physics/datacards lipcms/Physics/datacards
+chiggs datacards are in lipcms/Physics/datacards/chiggs/
+xsec datacards are in lipcms/Physics/datacards/xsec/
+See lipcms/Physics/datacards/Readme.txt for additional info</p>
+
+<p>CHANGELOG for major updates:
+2013-05-08: Added H+-&gt;tb yields to summary table, and fixed in a consistent way its xsec*BR
+        H+-&gt;taunu and H+-&gt;tb are now stacked in plots
+        Added H+-&gt;tb decay to datacards for mH+ = 250GeV/c^2
+        Committed revision 718 for chiggs datacards
+2013-05-07: Reworked table builder for not having to run twice (tables, datacards)
+        Almost implemented decoupling of event analysis and application of a selection
+        Switched to text names for nuisance parameters (since february combine likes no numbers - for event counting this is not a problem, but for consistency I switched)
+        Removed unused nuisance parameters (full-hadronic ones)
+2013-05-06: Fixed jer smearing/met propagation (condensed in single loop)
+        Fixed normalization for datacards and shapes
+        committed revision 716 for chiggs datacards - supersedes all previous revisions
+2013-05-03: Enabled TDRStyle for kNN monitoring plots
+        Not show anymore ratio in R plot
+2013-05-02: Enabled analsis of the new H+-&gt;tb (noH+-&gt;\tau\nu) samples
+2013-05-01: Fixed bug in jer smearing propagation to met
+2013-04-30: REPOSITORY MOVED TO <a href="https://github.com/vischia/TopTaus.git">https://github.com/vischia/TopTaus.git</a>. No more updates will be committed to CERN CVS. After a week of testing at github, LIP/TopTaus/ files will be zeroed with the exception of the Readme.txt
+        plot fixes
+        jer smearing to tf
+2013-04-29: committed revision 715 for chiggs datacards
+        cleanup and fix of shapes producer
+        jer and propagation to met fix
+        updated fakes values in summary table
+2013-04-27: new kinematic variables added
+        plots ranges for eta tuned
+        some prefixes for optimization
+        metscaling testing
+        cleanup in plots
+        cleanup in todolist
+2013-04-24: 2.41AM: added stat+syst bands in ratio plots
+        wJetsAnalysis was not using jerc (bugfix)
+        fixed btag bug for wJetsAnalysis
+        updated btag scale factors
+2013-04-22: fixed bug in variables for OS shapes (it was fixed in 2011 and was never committed to the 2012 branch
+        added automatic calculation and table of fakes
+2013-04-19: added index.html automatically put inside plots directory for easy and fancy propagation of the plots
+        configured LandsShapesProducer class for heavyChiggs
+        configured TauDileptonTableBuilder for producing datacards with shapes
+        committed revision 714 for chiggs datacards
+2013-04-18: added mjj vs mjjb study (discrimination sig/ttbarbkg)
+        added residual mc shape subtraction from dd shape K-S test
+        added combine installation instructions and datacard automatic maker<br>
+        committed revision 702 for chiggs datacards
+        added doTauFakesStudy (complete tau fakes study)
+2013-04-15: added chiggs BRs to TauDileptonTableBuilder, almost finished tau fakes software
+2013-04-08: configured combineResults.sh script for different data hadding schemes 
+2013-03-27: fixed jet smearing factors
+        fixed index of muon trigger eff muon, just for completeness
+        (it was already correct since the collection is already pt-ordered)
+2013-03-22: muon trigger efficiencies scale factors added
+        pileup files splitted per run (data/pileup)
+        lumi per run added to CommonDefinitions.cc
+2013-03-21: lepton-jet masses plots added
+2013-03-20: fixed pileup reweighting
+        added table with the codes for antiLepton discriminators for taus
+        chosen for chiggs: antiMuonTight for highPt, againstElectronMVA3Medium
+        added class and executable for training distributions for fakes
+2013-03-19: fixed tables for SM ttbar
+        added table for heavy charged higgs samples
+2013-03-18: new data ntuples with improved splitting.
+        Modified combineResults.sh in order to support directory cleaning
+        New pileup files, and chosen value: 70300
+        data/plotter/samples.xml now has just final name path. Full path is read from cfg file (outputArea parameter)
+2013-03-05: ported to NCG
+        improved lip-batch scripting system: now the user path is set once only in submit-jobs.sh
+        I/O and PU filenames moved to cfg files
+2013-02-24: fixes: plotter perfectly working
+2013-02-22: plotter and table added and integrated into physicsAnalysis.
+2013-02-13: updated with 2012 cross sections - must check sample-specific ones
+        jet pt, btag, mlj added for leadingjet/nlj/nnlj
+2013-02-11: updated JEC uncertainty sources
+        code is running on samples
+        lip-batch submission implemented
+2013-02-08: ended base porting of the code. Now must move stuff to config file.
+2013-02-07: added scripts/getTriggers.sh for easy trigger and prescales fetching
+        (will be crucial in particular for etau channel, later on)
+2013-01-23: Likelihood fitter for tau fakes has RooDataset which will take into account correlations
+            when performing the combined fit. Must just switch likelihoods to use it and to
+        product of likelihoods
+2012-12-17: 2011 tagged (V12-12-17), start 2012 heavy developing and code porting
+2012-09-23: memory problem solved. Now both lands and mlf are usable with multiple variables
+2012-09-21: shapes producer for lands and multiple likelihood fit for fake rates are ready to use.</p>
+
+<p>FIXED TAGS:</p>
+
+<ul>
+<li>V13-03-07: full working heavy charged higgs tag</li>
+<li>V12-12-21 / V12-12-17: 2011 code.</li>
+</ul><p>CHANGELOG for datacards:
+rev 718 (2013-05-08): cHiggs: H+-&gt;tb decay added to mH+=250GeV/c^2 datacard
+rev 716 (2013-05-06): cHiggs: fixed yields and shapes. This version supersedes all the previous.
+rev 715 (2012-04-29): cHiggs: moved to use pt_tau shapes. Fixed datacards with values after met correction.
+rev 714 (2012-04-19): fixed first shapes files and datacards with support for shapes (R_tau) for heavy charged higgs<br>
+rev 713 (2012-04-19): first shapes files and datacards with support for shapes (R_tau) for heavy charged higgs<br>
+rev 702 (2012-04-18): first counting-only chiggs datacards for heavy charged higgs</p>
+
+<p>TODO:</p>
+
+<ul>
+<li>fix uncertainty band plotting in case the plot is normalized to 1 (Rtau)</li>
+<li>update tau ID uncertainties</li>
+<li>update uncertainties in HistogramPlotter</li>
+<li>move to txt file the cout of the fakes computation in TauFakesHelper.cc (latex table and everything)</li>
+<li>reweight MC distros con q/g fraction evaluated from MC</li>
+<li>From my 2013-04-22 presentation at TauPOG: recalculate fakes feeding the wmu sample the qcd mva and vice versa, try training with more kinematical variables</li>
+<li>move all 234.s in the code (TauDileptonTableBuilder in particular) to the value from SampleProcessor (or move the xsecs to CommonDefinitions, better) </li>
+<li>vstrings in physicsAnalysisParSets_cfg.py for pileup syst</li>
+<li>move path of plots output directory to command line or cfg file.</li>
+<li>split JEC uncertainty sources into the 16 components.</li>
+<li><p>scripts/getTriggers.hs: implement running through sh getTriggers.sh PARS, in order to allow to choose
+at runtime whether to print the prescales table or just the triggers</p></li>
+<li><p>Make the unbinned fit work, caralho</p></li>
+<li><p>Apply single RooDataset per sample to LandSShapesProducer too</p></li>
+<li><p>Rework of LandSShapesProducer and PDFBuilderFitter
+--&gt; New structure: -&gt; single class for building datasets and models
+                 -&gt; one inheriting class for shapes production, storing and plotting (LandSShapesProducer)
+         -&gt; one inheriting class for fitting, saving and plotting (PDFBuilderFitter)
+         -&gt; perhaps one single executable with switch via ParSet in config file</p></li>
+<li><p>Pattuple producer 
+--&gt; Acquire and improve version from 2013-01-23 - must upload from lipcms svn - in order to use
+  multicrab in the future</p></li>
+<li><p>Ntuples producer --&gt; Convert plugin</p></li>
+<li><p>Analysis code:
+             --&gt; move hardcoded parameters to configuration file via edm::ParameterSet (minimize the need for recompiling)
+     --&gt; import batch submission and modify process in order to run on a given subset of events.
+         (add s.th like void processEvents(uint firstEv, uint lastEv, string dataset){ if(string...) CutflowAnalyzer::process_ttbar(.. process(firstEv, lastEv) ..)  }
+         Doing that needs to redefine the total number of events in the event reweighting according to xsec and N_mc_evts</p></li>
+<li><p>Tau energy scale for main analysis code. </p></li>
+<li><p>Split fake contribution into e and mu
+--&gt; Evan/Monica 2013-01-23: "there are different scale factors for e and mu fakes to be applied,
+  so you better split the two components in the cutflow yields table"</p></li>
+<li><p>Fix crash after natural end when running interactively (low priority)      </p></li>
+</ul>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/vischia" class="avatar"><img src="https://secure.gravatar.com/avatar/7dad0dd09db83f2394fc4677a51a785e?s=30&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="48" height="48"/></a> <a href="https://github.com/vischia">vischia</a> maintains <a href="https://github.com/vischia/TopTaus">Toptaus</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="http://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/vischia/TopTaus/tarball/master" class="tar">tar</a><a href="https://github.com/vischia/TopTaus/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
