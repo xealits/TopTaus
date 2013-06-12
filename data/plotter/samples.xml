@@ -75,7 +75,7 @@
      <file weight="0.004273">nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m250.root</file>
    </process>
 
-   <process isstack="0" isdata="0"  opt="same histo" name="H^{+}#rightarrow tb [m_{H^{#pm}} = 250 GeV/c^{2}]" color="004" width="3" fill="0" fillcolor="004" markercolor="004" line="1"  linecolor="004" linestyle="7" marker="1" >
+   <process isstack="0" isdata="0"  opt="same histo" name="H^{+}#rightarrow tb [m_{H^{#pm}} = 250 GeV/c^{2}]" color="002" width="3" fill="0" fillcolor="002" markercolor="002" line="1"  linecolor="002" linestyle="7" marker="1" >
      <file weight="0.004273">nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m250.root</file>
    </process>
 <!--

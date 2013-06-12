@@ -23,7 +23,7 @@
 
 
   <id tag="muCh_pt_t_OS" doratio="0" logy="1" cmspublic="y" opt="e1" oflow="1" uflow="0" xbin="4" title="" ytitle="Events / 5 GeV"
-  xtitle="p^{#tau}_{T} [GeV]" yrange="0.1,10000" xrange="20,500">
+  xtitle="p^{#tau}_{T} [GeV]" yrange="0.1,10000" xrange="20,350">
     <item dir="PFlow/RecoSteps/lep_tau/OS">pt_t_8</item>
   </id> 
 
