@@ -111,6 +111,11 @@ for a list of all the options:
 for running everything:
     doTauFakesStudy test/physicsAnalysisParSets_cfg.py --do all
 
+Plot signal cut efficiencies
+----------------------------
+root -l -b bin/macros/teenyWeenyHeavyChHiggsSignalCutsComparison.C
+
+
 Datacards
 ---------
 Install repository (CMS members only):
@@ -121,6 +126,7 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-06-17: Added plotting of signal cut efficiencies
 2013-05-08: Added H+->tb yields to summary table, and fixed in a consistent way its xsec*BR
 	    H+->taunu and H+->tb are now stacked in plots
 	    Added H+->tb decay to datacards for mH+ = 250GeV/c^2
