@@ -30,8 +30,10 @@ void teenyWeenyCalcNewFakes(){
   
 
   double
-    i1(3197.9), 
-    i2(2682.0); 
+// data    i1(3197.9), 
+// data    i2(2682.0); 
+    i1(3650.0), 
+    i2(2538.0); 
 
   double
     oldEst( (i1+i2)/2. ),
