@@ -1,4 +1,4 @@
------------------------------------
+----------------------------------
 Repository for tauDilepton analysis
 -----------------------------------
 * This is the manual. Read the fucking manual +BEFORE+ running the code.
@@ -223,6 +223,7 @@ rev 702 (2012-04-18): first counting-only chiggs datacards for heavy charged hig
 
 
 TODO:
+- add comp plots for fakes
 - fix uncertainty band plotting in case the plot is normalized to 1 (Rtau)
 - update tau ID uncertainties
 - update uncertainties in HistogramPlotter
