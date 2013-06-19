@@ -260,7 +260,10 @@ namespace commondefinitions{
    HTB190_URL,  
    HTB200_URL,  
    HTB220_URL, 
+   HTB240_URL, 
    HTB250_URL,
+   HTB260_URL, 
+   HTB280_URL, 
    HTB300_URL
   };
 

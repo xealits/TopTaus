@@ -163,7 +163,7 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[QCD_PHOTON80TO120_URL]  = 558.2865;        
       defaultXSections_[QCD_PHOTON120TO170_URL] = 108.0068;
       
-      //fn xsections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat8TeV
+      // xsections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat8TeV
       defaultXSections_[WW_URL]                 = 54.838;
       defaultXSections_[WZ_URL]                 = 33.72;
       defaultXSections_[ZZ_URL]                 = 17.627;
@@ -186,20 +186,23 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       
       // 1.1 is for plots and tables: for plots it's already implemented in the data/plotter/samples.xml. For tables must be implemented via switchable parameter in cfg file. 
       // 234 is for datacards.
-      defaultXSections_[TBH180_URL]             = 234. * 0.831852  ; //1.1; //234;
-      defaultXSections_[TBH190_URL]             = 234. * 0.407966  ; //1.1; //234;  
-      defaultXSections_[TBH200_URL]             = 234. * 0.228564  ; //1.1; //234;  
-      defaultXSections_[TBH220_URL]             = 234. * 0.106446  ; //1.1; //234; 
-      defaultXSections_[TBH250_URL]             = 234. * 0.04129783; //1.1; //234;
-      defaultXSections_[TBH300_URL]             = 234. * 0.02514242; //1.1; //234;
+      defaultXSections_[TBH180_URL]             = 234. * 0.831852  ; 
+      defaultXSections_[TBH190_URL]             = 234. * 0.407966  ;   
+      defaultXSections_[TBH200_URL]             = 234. * 0.228564  ;   
+      defaultXSections_[TBH220_URL]             = 234. * 0.106446  ;  
+      defaultXSections_[TBH250_URL]             = 234. * 0.04129783; 
+      defaultXSections_[TBH300_URL]             = 234. * 0.02514242; 
     
-      defaultXSections_[HTB180_URL]             = 234. * (1 - 0.831852  ); //1.1; //234;
-      defaultXSections_[HTB190_URL]             = 234. * (1 - 0.407966  ); //1.1; //234;  
-      defaultXSections_[HTB200_URL]             = 234. * (1 - 0.228564  ); //1.1; //234;  
-      defaultXSections_[HTB220_URL]             = 234. * (1 - 0.106446  ); //1.1; //234; 
-      defaultXSections_[HTB250_URL]             = 234. * (1 - 0.04129783); //1.1; //234;
-      defaultXSections_[HTB300_URL]             = 234. * (1 - 0.02514242); //1.1; //234;
-    
+      defaultXSections_[HTB180_URL]             = 234. * (1 - 0.831852   ); 
+      defaultXSections_[HTB190_URL]             = 234. * (1 - 0.407966   );   
+      defaultXSections_[HTB200_URL]             = 234. * (1 - 0.228564   );   
+      defaultXSections_[HTB220_URL]             = 234. * (1 - 0.106446   );  
+      defaultXSections_[HTB240_URL]             = 234. * (1 - 0.04902523 ); 
+      defaultXSections_[HTB250_URL]             = 234. * (1 - 0.04129783 ); 
+      defaultXSections_[HTB260_URL]             = 234. * (1 - 0.0361988  );  
+      defaultXSections_[HTB280_URL]             = 234. * (1 - 0.02984434 ); 
+      defaultXSections_[HTB300_URL]             = 234. * (1 - 0.02514242 ); 
+   
 	
     } else {
       
@@ -548,7 +551,10 @@ int SampleProcessor::codeChannel(int i, int urlCode){
 	  urlCode == TBH190_URL || urlCode == HTB190_URL || 
 	  urlCode == TBH200_URL || urlCode == HTB200_URL || 
 	  urlCode == TBH220_URL || urlCode == HTB220_URL || 
+	  urlCode == HTB240_URL || 
 	  urlCode == TBH250_URL || urlCode == HTB250_URL || 
+	  urlCode == HTB260_URL || 
+	  urlCode == HTB280_URL || 
 	  urlCode == TBH300_URL	|| urlCode == HTB300_URL
 	  ){  ret = TBH_CH;       }                   
   else if( i == ETAU                        ){  ret = ETAU_CH;      } 
@@ -917,24 +923,30 @@ void SampleProcessor::process_tbh_higgs(){
 
 
 void SampleProcessor::process_htb_higgs_bychannel(){
-  //  url_ = HTB180_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m180.root"), oFolder_+TString("out-htb-pythia-m180_mutau.root"),keys_, MUTAU_); 
-  //  url_ = HTB190_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m190.root"), oFolder_+TString("out-htb-pythia-m190_mutau.root"),keys_, MUTAU_); 
+  url_ = HTB180_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m180.root"), oFolder_+TString("out-htb-pythia-m180_mutau.root"),keys_, MUTAU_); 
+  //url_ = HTB190_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m190.root"), oFolder_+TString("out-htb-pythia-m190_mutau.root"),keys_, MUTAU_); 
   //  url_ = HTB200_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m200.root"), oFolder_+TString("out-htb-pythia-m200_mutau.root"),keys_, MUTAU_); 
-  //  url_ = HTB220_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m220.root"), oFolder_+TString("out-htb-pythia-m220_mutau.root"),keys_, MUTAU_); 
+  url_ = HTB220_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m220.root"), oFolder_+TString("out-htb-pythia-m220_mutau.root"),keys_, MUTAU_); 
+  url_ = HTB240_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m240.root"), oFolder_+TString("out-htb-pythia-m240_mutau.root"),keys_, MUTAU_); 
   url_ = HTB250_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m250.root"), oFolder_+TString("out-htb-pythia-m250_mutau.root"),keys_, MUTAU_); 
-  //  url_ = HTB300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m300.root"), oFolder_+TString("out-htb-pythia-m300_mutau.root"),keys_, MUTAU_); 
+  url_ = HTB260_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m260.root"), oFolder_+TString("out-htb-pythia-m260_mutau.root"),keys_, MUTAU_); 
+  url_ = HTB280_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m280.root"), oFolder_+TString("out-htb-pythia-m280_mutau.root"),keys_, MUTAU_); 
+  url_ = HTB300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m300.root"), oFolder_+TString("out-htb-pythia-m300_mutau.root"),keys_, MUTAU_); 
   
 }
 
 
 void SampleProcessor::process_htb_higgs(){
-  //  url_ = HTB180_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m180.root"), oFolder_+TString("out-htb-pythia-m180.root"),keys_); 
+  url_ = HTB180_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m180.root"), oFolder_+TString("out-htb-pythia-m180.root"),keys_); 
   //  url_ = HTB190_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m190.root"), oFolder_+TString("out-htb-pythia-m190.root"),keys_); 
   //  url_ = HTB200_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m200.root"), oFolder_+TString("out-htb-pythia-m200.root"),keys_); 
-  //  url_ = HTB220_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m220.root"), oFolder_+TString("out-htb-pythia-m220.root"),keys_); 
-  url_ = HTB250_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m250.root"), oFolder_+TString("out-htb-pythia-m250.root"),keys_); 
-  //  url_ = HTB300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m300.root"), oFolder_+TString("out-htb-pythia-m300.root"),keys_); 
-
+  url_ = HTB220_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m220.root"), oFolder_+TString("out-htb-pythia-m220.root"),keys_); 
+  url_ = HTB240_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m240.root"), oFolder_+TString("out-htb-pythia-m240.root"),keys_); 
+  url_ = HTB250_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m250.root"), oFolder_+TString("out-htb-pythia-m250.root"),keys_);
+  url_ = HTB260_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m260.root"), oFolder_+TString("out-htb-pythia-m260.root"),keys_); 
+  url_ = HTB280_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m280.root"), oFolder_+TString("out-htb-pythia-m280.root"),keys_);  
+  url_ = HTB300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m300.root"), oFolder_+TString("out-htb-pythia-m300.root"),keys_); 
+  
 
 }
 
