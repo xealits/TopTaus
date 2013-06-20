@@ -595,7 +595,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     cout << "DEBUG: Drawing templates." << endl;
     cout << "Sample " << sampleName_[f] << ", integral " << hist_[f]->Integral() << endl;
     if(isDDbkg_[f]){
-      hist_[f]->Scale(2045.11/hist_[f]->Integral());
+      hist_[f]->Scale(1936.93/hist_[f]->Integral());
       ddbkgHistUp_ =   (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Up") );
       ddbkgHistDown_ = (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Down") );
       
