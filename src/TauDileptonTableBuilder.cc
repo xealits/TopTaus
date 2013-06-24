@@ -3235,11 +3235,11 @@ namespace tableutils{
       
 
       // Full Charged Higgs
-      if(im == 0){vTBH = vHTBm180+vTBHm180; sErTBH = sErHTBm180+sErTBHm180; jesPTBH = jesPHTBm180+jesPTBHm180; jesNTBH = jesNHTBm180+jesNTBHm180; buTBH = buPHTBm180+buPTBHm180; trTBH = trPHTBm180+trPTBHm180; puTBH = puHTBm180+puTBHm180;}
-      if(im == 2){vTBH = vHTBm200+vTBHm200; sErTBH = sErHTBm200+sErTBHm200; jesPTBH = jesPHTBm200+jesPTBHm200; jesNTBH = jesNHTBm200+jesNTBHm200; buTBH = buPHTBm200+buPTBHm200; trTBH = trPHTBm200+trPTBHm200; puTBH = puHTBm200+puTBHm200;}
-      if(im == 3){vTBH = vHTBm220+vTBHm220; sErTBH = sErHTBm220+sErTBHm220; jesPTBH = jesPHTBm220+jesPTBHm220; jesNTBH = jesNHTBm220+jesNTBHm220; buTBH = buPHTBm220+buPTBHm220; trTBH = trPHTBm220+trPTBHm220; puTBH = puHTBm220+puTBHm220;}
-      if(im == 5){vTBH = vHTBm250+vTBHm250; sErTBH = sErHTBm250+sErTBHm250; jesPTBH = jesPHTBm250+jesPTBHm250; jesNTBH = jesNHTBm250+jesNTBHm250; buTBH = buPHTBm250+buPTBHm250; trTBH = trPHTBm250+trPTBHm250; puTBH = puHTBm250+puTBHm250;}
-      if(im == 8){vTBH = vHTBm300+vTBHm300; sErTBH = sErHTBm300+sErTBHm300; jesPTBH = jesPHTBm300+jesPTBHm300; jesNTBH = jesNHTBm300+jesNTBHm300; buTBH = buPHTBm300+buPTBHm300; trTBH = trPHTBm300+trPTBHm300; puTBH = puHTBm300+puTBHm300;}
+      if(im == 0){vHTB = vHTBm180+vTBHm180; sErHTB = sErHTBm180+sErTBHm180; jesPHTB = jesPHTBm180+jesPTBHm180; jesNHTB = jesNHTBm180+jesNTBHm180; buHTB = buPHTBm180+buPTBHm180; trHTB = trPHTBm180+trPTBHm180; puHTB = puHTBm180+puTBHm180;}
+      if(im == 2){vHTB = vHTBm200+vTBHm200; sErHTB = sErHTBm200+sErTBHm200; jesPHTB = jesPHTBm200+jesPTBHm200; jesNHTB = jesNHTBm200+jesNTBHm200; buHTB = buPHTBm200+buPTBHm200; trHTB = trPHTBm200+trPTBHm200; puHTB = puHTBm200+puTBHm200;}
+      if(im == 3){vHTB = vHTBm220+vTBHm220; sErHTB = sErHTBm220+sErTBHm220; jesPHTB = jesPHTBm220+jesPTBHm220; jesNHTB = jesNHTBm220+jesNTBHm220; buHTB = buPHTBm220+buPTBHm220; trHTB = trPHTBm220+trPTBHm220; puHTB = puHTBm220+puTBHm220;}
+      if(im == 5){vHTB = vHTBm250+vTBHm250; sErHTB = sErHTBm250+sErTBHm250; jesPHTB = jesPHTBm250+jesPTBHm250; jesNHTB = jesNHTBm250+jesNTBHm250; buHTB = buPHTBm250+buPTBHm250; trHTB = trPHTBm250+trPTBHm250; puHTB = puHTBm250+puTBHm250;}
+      if(im == 8){vHTB = vHTBm300+vTBHm300; sErHTB = sErHTBm300+sErTBHm300; jesPHTB = jesPHTBm300+jesPTBHm300; jesNHTB = jesNHTBm300+jesNTBHm300; buHTB = buPHTBm300+buPTBHm300; trHTB = trPHTBm300+trPTBHm300; puHTB = puHTBm300+puTBHm300;}
 
 
 

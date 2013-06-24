@@ -38,40 +38,15 @@ if [ "${2}" = "hadd" ]; then
 
 
     # higgs  mass points
-    #hadd -f $DATAPLACE/out-higgs-pythia-m80.root $DATAPLACE/out-hh-pythia-m80.root $DATAPLACE/out-wh-pythia-m80.root
-    #hadd -f $DATAPLACE/out-higgs-pythia-m80_mutau.root $DATAPLACE/out-hh-pythia-m80_mutau.root $DATAPLACE/out-wh-pythia-m80_mutau.root
-    
-    #hadd -f $DATAPLACE/out-higgs-pythia-m100.root $DATAPLACE/out-hh-pythia-m100.root $DATAPLACE/out-wh-pythia-m100.root
-    #hadd -f $DATAPLACE/out-higgs-pythia-m100_mutau.root $DATAPLACE/out-hh-pythia-m100_mutau.root $DATAPLACE/out-wh-pythia-m100_mutau.root
-    
-    # hadd -f $DATAPLACE/out-higgs-pythia-m120.root $DATAPLACE/out-hh-pythia-m120.root $DATAPLACE/out-wh-pythia-m120.root &
-    # hadd -f $DATAPLACE/out-higgs-pythia-m120_mutau.root $DATAPLACE/out-hh-pythia-m120_mutau.root $DATAPLACE/out-wh-pythia-m120_mutau.root &
-    
-    #hadd -f $DATAPLACE/out-higgs-pythia-m140.root $DATAPLACE/out-hh-pythia-m140.root $DATAPLACE/out-wh-pythia-m140.root
-    #hadd -f $DATAPLACE/out-higgs-pythia-m140_mutau.root $DATAPLACE/out-hh-pythia-m140_mutau.root $DATAPLACE/out-wh-pythia-m140_mutau.root
-    
-    #hadd -f $DATAPLACE/out-higgs-pythia-m150.root $DATAPLACE/out-hh-pythia-m150.root $DATAPLACE/out-wh-pythia-m150.root
-    #hadd -f $DATAPLACE/out-higgs-pythia-m150_mutau.root $DATAPLACE/out-hh-pythia-m150_mutau.root $DATAPLACE/out-wh-pythia-m150_mutau.root
-    
-    #hadd -f $DATAPLACE/out-higgs-pythia-m155.root $DATAPLACE/out-hh-pythia-m155.root $DATAPLACE/out-wh-pythia-m155.root
-    #hadd -f $DATAPLACE/out-higgs-pythia-m155_mutau.root $DATAPLACE/out-hh-pythia-m155_mutau.root $DATAPLACE/out-wh-pythia-m155_mutau.root
-    
-    #hadd -f $DATAPLACE/out-higgs-pythia-m160.root $DATAPLACE/out-hh-pythia-m160.root $DATAPLACE/out-wh-pythia-m160.root
-    #hadd -f $DATAPLACE/out-higgs-pythia-m160_mutau.root $DATAPLACE/out-hh-pythia-m160_mutau.root $DATAPLACE/out-wh-pythia-m160_mutau.root
-
-    #hadd -f $DATAPLACE/out-heavyHiggs-pythia-m180.root $DATAPLACE/out-tbh-pythia-m180.root $DATAPLACE/out-htb-pythia-m180.root
-    #hadd -f $DATAPLACE/out-heavyHiggs-pythia-m190.root $DATAPLACE/out-tbh-pythia-m190.root $DATAPLACE/out-htb-pythia-m190.root
-    #hadd -f $DATAPLACE/out-heavyHiggs-pythia-m200.root $DATAPLACE/out-tbh-pythia-m200.root $DATAPLACE/out-htb-pythia-m200.root
-    #hadd -f $DATAPLACE/out-heavyHiggs-pythia-m220.root $DATAPLACE/out-tbh-pythia-m220.root $DATAPLACE/out-htb-pythia-m220.root
-    #hadd -f $DATAPLACE/out-heavyHiggs-pythia-m250.root $DATAPLACE/out-tbh-pythia-m250.root $DATAPLACE/out-htb-pythia-m250.root
-    #hadd -f $DATAPLACE/out-heavyHiggs-pythia-m300.root $DATAPLACE/out-tbh-pythia-m300.root $DATAPLACE/out-htb-pythia-m300.root
-
-    cp  $DATAPLACE/out-tbh-pythia-m180.root $DATAPLACE/out-heavyHiggs-pythia-m180.root
+    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m180.root $DATAPLACE/out-tbh-pythia-m180.root $DATAPLACE/out-htb-pythia-m180.root
     cp  $DATAPLACE/out-tbh-pythia-m190.root $DATAPLACE/out-heavyHiggs-pythia-m190.root
-    cp  $DATAPLACE/out-tbh-pythia-m200.root $DATAPLACE/out-heavyHiggs-pythia-m200.root
-    cp  $DATAPLACE/out-tbh-pythia-m220.root $DATAPLACE/out-heavyHiggs-pythia-m220.root
+    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m200.root $DATAPLACE/out-tbh-pythia-m200.root $DATAPLACE/out-htb-pythia-m200.root
+    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m220.root $DATAPLACE/out-tbh-pythia-m220.root $DATAPLACE/out-htb-pythia-m220.root
+    cp  $DATAPLACE/out-htb-pythia-m240.root $DATAPLACE/out-heavyHiggs-pythia-m240.root
     hadd -f $DATAPLACE/out-heavyHiggs-pythia-m250.root $DATAPLACE/out-tbh-pythia-m250.root $DATAPLACE/out-htb-pythia-m250.root
-    cp  $DATAPLACE/out-tbh-pythia-m300.root $DATAPLACE/out-heavyHiggs-pythia-m300.root 
+    cp  $DATAPLACE/out-htb-pythia-m260.root $DATAPLACE/out-heavyHiggs-pythia-m260.root
+    cp  $DATAPLACE/out-htb-pythia-m280.root $DATAPLACE/out-heavyHiggs-pythia-m280.root
+    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m300.root $DATAPLACE/out-tbh-pythia-m300.root $DATAPLACE/out-htb-pythia-m300.root
     
     DATAPLACE="${1}/nomt-2012-V1-data-MU-20GeV/"
     
