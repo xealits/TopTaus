@@ -1978,14 +1978,24 @@ namespace tableutils{
     tbhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m300.root"));
   }
   if( processHTB ){
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m180.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m200.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m220.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m240.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m250.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m260.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m280.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m300.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m180.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m200.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m220.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m240.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m250.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m260.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m280.root"));
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m300.root"));
+
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m180.root"));
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m200.root"));
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m220.root"));
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m240.root"));
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m250.root"));
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m260.root"));
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m280.root"));
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m300.root"));
+
   }
   
  
@@ -2115,6 +2125,7 @@ namespace tableutils{
     TString algo = keys[j];
     for(uint i = 0; i< htbFiles.size(); i++ ){ 
       if(processedHTBFiles[i]){ 
+	cout << "processing TBH file " << htbFiles[i] << endl;
         TH1D *h;     
 	cout << "Now opening histo" << endl;
         h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_m[algo]);          h->Scale(scalefactor); v_htb.push_back(h); 
@@ -3234,13 +3245,13 @@ namespace tableutils{
       else if(im == 8){vHTB = vHTBm300; sErHTB = sErHTBm300; jesPHTB = jesPHTBm300; jesNHTB = jesNHTBm300; buHTB = buPHTBm300; trHTB = trPHTBm300; puHTB = puHTBm300;}
       
 
-      // Full Charged Higgs
-      if(im == 0){vHTB = vHTBm180+vTBHm180; sErHTB = sErHTBm180+sErTBHm180; jesPHTB = jesPHTBm180+jesPTBHm180; jesNHTB = jesNHTBm180+jesNTBHm180; buHTB = buPHTBm180+buPTBHm180; trHTB = trPHTBm180+trPTBHm180; puHTB = puHTBm180+puTBHm180;}
-      if(im == 2){vHTB = vHTBm200+vTBHm200; sErHTB = sErHTBm200+sErTBHm200; jesPHTB = jesPHTBm200+jesPTBHm200; jesNHTB = jesNHTBm200+jesNTBHm200; buHTB = buPHTBm200+buPTBHm200; trHTB = trPHTBm200+trPTBHm200; puHTB = puHTBm200+puTBHm200;}
-      if(im == 3){vHTB = vHTBm220+vTBHm220; sErHTB = sErHTBm220+sErTBHm220; jesPHTB = jesPHTBm220+jesPTBHm220; jesNHTB = jesNHTBm220+jesNTBHm220; buHTB = buPHTBm220+buPTBHm220; trHTB = trPHTBm220+trPTBHm220; puHTB = puHTBm220+puTBHm220;}
-      if(im == 5){vHTB = vHTBm250+vTBHm250; sErHTB = sErHTBm250+sErTBHm250; jesPHTB = jesPHTBm250+jesPTBHm250; jesNHTB = jesNHTBm250+jesNTBHm250; buHTB = buPHTBm250+buPTBHm250; trHTB = trPHTBm250+trPTBHm250; puHTB = puHTBm250+puTBHm250;}
-      if(im == 8){vHTB = vHTBm300+vTBHm300; sErHTB = sErHTBm300+sErTBHm300; jesPHTB = jesPHTBm300+jesPTBHm300; jesNHTB = jesNHTBm300+jesNTBHm300; buHTB = buPHTBm300+buPTBHm300; trHTB = trPHTBm300+trPTBHm300; puHTB = puHTBm300+puTBHm300;}
-
+// accounted for in input files //       // Full Charged Higgs
+// accounted for in input files //       if(im == 0){vHTB = vHTBm180+vTBHm180; sErHTB = sErHTBm180+sErTBHm180; jesPHTB = jesPHTBm180+jesPTBHm180; jesNHTB = jesNHTBm180+jesNTBHm180; buHTB = buPHTBm180+buPTBHm180; trHTB = trPHTBm180+trPTBHm180; puHTB = puHTBm180+puTBHm180;}
+// accounted for in input files //       if(im == 2){vHTB = vHTBm200+vTBHm200; sErHTB = sErHTBm200+sErTBHm200; jesPHTB = jesPHTBm200+jesPTBHm200; jesNHTB = jesNHTBm200+jesNTBHm200; buHTB = buPHTBm200+buPTBHm200; trHTB = trPHTBm200+trPTBHm200; puHTB = puHTBm200+puTBHm200;}
+// accounted for in input files //       if(im == 3){vHTB = vHTBm220+vTBHm220; sErHTB = sErHTBm220+sErTBHm220; jesPHTB = jesPHTBm220+jesPTBHm220; jesNHTB = jesNHTBm220+jesNTBHm220; buHTB = buPHTBm220+buPTBHm220; trHTB = trPHTBm220+trPTBHm220; puHTB = puHTBm220+puTBHm220;}
+// accounted for in input files //       if(im == 5){vHTB = vHTBm250+vTBHm250; sErHTB = sErHTBm250+sErTBHm250; jesPHTB = jesPHTBm250+jesPTBHm250; jesNHTB = jesNHTBm250+jesNTBHm250; buHTB = buPHTBm250+buPTBHm250; trHTB = trPHTBm250+trPTBHm250; puHTB = puHTBm250+puTBHm250;}
+// accounted for in input files //       if(im == 8){vHTB = vHTBm300+vTBHm300; sErHTB = sErHTBm300+sErTBHm300; jesPHTB = jesPHTBm300+jesPTBHm300; jesNHTB = jesNHTBm300+jesNTBHm300; buHTB = buPHTBm300+buPTBHm300; trHTB = trPHTBm300+trPTBHm300; puHTB = puHTBm300+puTBHm300;}
+// accounted for in input files // 
 
 
       int iw = 0;

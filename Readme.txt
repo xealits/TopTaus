@@ -126,6 +126,9 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-06-24: Fixed datacard production
+	    Added both channels for mass points in which they are both available
+	    Weighted MVA for data_rescaled
 2013-06-17: Added plotting of signal cut efficiencies
 2013-05-08: Added H+->tb yields to summary table, and fixed in a consistent way its xsec*BR
 	    H+->taunu and H+->tb are now stacked in plots
