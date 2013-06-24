@@ -5,6 +5,12 @@
 *.aux
 *.log
 *.pdf
+# no plots
+*.png
+# no transient compressed archives
+*.tar.gz
+# No autodict files
+AutoDict*
 # no python compiled files:
 *pyc
 # no python init file
