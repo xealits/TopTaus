@@ -1786,8 +1786,9 @@ void TauFakesHelper::ProduceDataDrivenDistributions(){
 	double wmuValue =mvaWMu.eval(vars);
 	double qcdValue =mvaQCD.eval(vars);
 	
-	double value = (wmuValue + qcdValue )/2.;
-	
+	// unweighted method:	double value = (wmuValue + qcdValue )/2.;
+	double value = ( 0.17*wmuValue + 0.83*qcdValue )/2.;
+
 	//JetPt       *=value;
 	//AbsJetEta   *=value;
 	//JetWidth    *=value;
