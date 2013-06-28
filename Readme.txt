@@ -126,6 +126,9 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-06-28: Added H+->tb M_H+ = 200 GeV processing
+	    Fixed tables for AN
+	    Switched to btagsmultiplicity shape for limits computation
 2013-06-24: Fixed datacard production
 	    Added both channels for mass points in which they are both available
 	    Weighted MVA for data_rescaled

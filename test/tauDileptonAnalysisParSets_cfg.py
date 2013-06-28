@@ -91,14 +91,14 @@ LandSShapesProducerParSet = cms.PSet(
 
 
 
-    vars        = cms.vstring( "rc_t"    ),
-    mins        = cms.vdouble(   -0.099  ),
-    maxs        = cms.vdouble(    1.001  ),
-    bins        = cms.vint32(      11    ),
-    hmin        = cms.vdouble(      0    ),
-    hmax        = cms.vdouble(    200    ),
-    unbinned    = cms.vint32(       0    ),
-    smoothOrder = cms.vint32(       3    ),   
+#    vars        = cms.vstring( "rc_t"    ),
+#    mins        = cms.vdouble(   -0.099  ),
+#    maxs        = cms.vdouble(    1.001  ),
+#    bins        = cms.vint32(      11    ),
+#    hmin        = cms.vdouble(      0    ),
+#    hmax        = cms.vdouble(    200    ),
+#    unbinned    = cms.vint32(       0    ),
+#    smoothOrder = cms.vint32(       3    ),   
 
 
 #    vars        = cms.vstring( "Dphi_tau_met"   ),
@@ -109,6 +109,17 @@ LandSShapesProducerParSet = cms.PSet(
 #    hmax        = cms.vdouble(    200          ),
 #    unbinned    = cms.vint32(       0          ),
 #    smoothOrder = cms.vint32(       3          ),   
+
+
+
+vars        = cms.vstring("btagmultiplicity_j" ),
+mins        = cms.vdouble(     0               ),
+maxs        = cms.vdouble(   4                 ),
+bins        = cms.vint32(     4                ),
+hmin        = cms.vdouble(     0               ),
+hmax        = cms.vdouble(   600               ),
+unbinned    = cms.vint32(      0               ),
+smoothOrder = cms.vint32(      0               ),                
 
 # vars        = cms.vstring(    "pt_t"  ),
 # mins        = cms.vdouble(         0  ),
