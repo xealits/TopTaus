@@ -1269,23 +1269,23 @@ namespace tableutils{
   }; 
 
   TString T_TBH_mc[]      = {
-   "$H^{+}\rightarrow\tau\nu, M_{H}=180 GeV/c^{2}$ & ",
-   "$H^{+}\rightarrow\tau\nu, M_{H}=190 GeV/c^{2}$ & ",
-   "$H^{+}\rightarrow\tau\nu, M_{H}=200 GeV/c^{2}$ & ", 
-   "$H^{+}\rightarrow\tau\nu, M_{H}=220 GeV/c^{2}$ & ",
-   "$H^{+}\rightarrow\tau\nu, M_{H}=250 GeV/c^{2}$ & ", // comment if needed 
-   "$H^{+}\rightarrow\tau\nu, M_{H}=300 GeV/c^{2}$ & ", // comment if needed
+   "$H^{+}\\rightarrow\\tau\\nu, M_{H}=180 GeV/c^{2}$ & ",
+   "$H^{+}\\rightarrow\\tau\\nu, M_{H}=190 GeV/c^{2}$ & ",
+   "$H^{+}\\rightarrow\\tau\\nu, M_{H}=200 GeV/c^{2}$ & ", 
+   "$H^{+}\\rightarrow\\tau\\nu, M_{H}=220 GeV/c^{2}$ & ",
+   "$H^{+}\\rightarrow\\tau\\nu, M_{H}=250 GeV/c^{2}$ & ", // comment if needed 
+   "$H^{+}\\rightarrow\\tau\\nu, M_{H}=300 GeV/c^{2}$ & ", // comment if needed
   }; 
 
   TString T_HTB_mc[]      = {
-   "$H^{+}\rightarrow tb, M_{H}=180 GeV/c^{2}$ & ",
-   "$H^{+}\rightarrow tb, M_{H}=200 GeV/c^{2}$ & ",
-   "$H^{+}\rightarrow tb, M_{H}=220 GeV/c^{2}$ & ", 
-   "$H^{+}\rightarrow tb, M_{H}=240 GeV/c^{2}$ & ",
-   "$H^{+}\rightarrow tb, M_{H}=250 GeV/c^{2}$ & ", // comment if needed 
-   "$H^{+}\rightarrow tb, M_{H}=260 GeV/c^{2}$ & ", // comment if needed
-   "$H^{+}\rightarrow tb, M_{H}=280 GeV/c^{2}$ & ", // comment if needed
-   "$H^{+}\rightarrow tb, M_{H}=300 GeV/c^{2}$ & ", // comment if needed
+   "$H^{+}\\rightarrow tb, M_{H}=180 GeV/c^{2}$ & ",
+   "$H^{+}\\rightarrow tb, M_{H}=200 GeV/c^{2}$ & ",
+   "$H^{+}\\rightarrow tb, M_{H}=220 GeV/c^{2}$ & ", 
+   "$H^{+}\\rightarrow tb, M_{H}=240 GeV/c^{2}$ & ",
+   "$H^{+}\\rightarrow tb, M_{H}=250 GeV/c^{2}$ & ", // comment if needed 
+   "$H^{+}\\rightarrow tb, M_{H}=260 GeV/c^{2}$ & ", // comment if needed
+   "$H^{+}\\rightarrow tb, M_{H}=280 GeV/c^{2}$ & ", // comment if needed
+   "$H^{+}\\rightarrow tb, M_{H}=300 GeV/c^{2}$ & ", // comment if needed
   }; 
 
   fprintf(f,"\\hline \n");
@@ -2981,23 +2981,23 @@ namespace tableutils{
   }; 
 
   TString  T_TBH_mc[] = {
-    "H^{+}#rightarrow#tau_{#mathrm{h}}#nu, $M_{H^{+}}=180GeV/c^{2}$ &",
-    "H^{+}#rightarrow#tau_{#mathrm{h}}#nu, $M_{H^{+}}=190GeV/c^{2}$ &",
-    "H^{+}#rightarrow#tau_{#mathrm{h}}#nu, $M_{H^{+}}=200GeV/c^{2}$ &",
-    "H^{+}#rightarrow#tau_{#mathrm{h}}#nu, $M_{H^{+}}=220GeV/c^{2}$ &",
-    "H^{+}#rightarrow#tau_{#mathrm{h}}#nu, $M_{H^{+}}=250GeV/c^{2}$ &",
-    "H^{+}#rightarrow#tau_{#mathrm{h}}#nu, $M_{H^{+}}=300GeV/c^{2}$ &"
+    "$H^{+}\\rightarrow#tau_{\\mathrm{h}}\\nu, M_{H^{+}}=180GeV$ &",
+    "$H^{+}\\rightarrow#tau_{\\mathrm{h}}\\nu, M_{H^{+}}=190GeV$ &",
+    "$H^{+}\\rightarrow#tau_{\\mathrm{h}}\\nu, M_{H^{+}}=200GeV$ &",
+    "$H^{+}\\rightarrow#tau_{\\mathrm{h}}\\nu, M_{H^{+}}=220GeV$ &",
+    "$H^{+}\\rightarrow#tau_{\\mathrm{h}}\\nu, M_{H^{+}}=250GeV$ &",
+    "$H^{+}\\rightarrow#tau_{\\mathrm{h}}\\nu, M_{H^{+}}=300GeV$ &"
   };
 
   TString  T_HTB_mc[] = {
-    "H^{+}#rightarrow tb, $M_{H^{+}}=180GeV/c^{2}$ &",
-    "H^{+}#rightarrow tb, $M_{H^{+}}=200GeV/c^{2}$ &",
-    "H^{+}#rightarrow tb, $M_{H^{+}}=220GeV/c^{2}$ &",
-    "H^{+}#rightarrow tb, $M_{H^{+}}=240GeV/c^{2}$ &",
-    "H^{+}#rightarrow tb, $M_{H^{+}}=250GeV/c^{2}$ &",
-    "H^{+}#rightarrow tb, $M_{H^{+}}=260GeV/c^{2}$ &",
-    "H^{+}#rightarrow tb, $M_{H^{+}}=280GeV/c^{2}$ &",
-    "H^{+}#rightarrow tb, $M_{H^{+}}=300GeV/c^{2}$ &"
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=180GeV$ &",
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=200GeV$ &",
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=220GeV$ &",
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=240GeV$ &",
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=250GeV$ &",
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=260GeV$ &",
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=280GeV$ &",
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=300GeV$ &"
   };
 
   TString    other[] = {
