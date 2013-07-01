@@ -32,11 +32,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   for(size_t i=0; i<brHtb_.size(); ++i)
     cout<< brHtb_[i] << endl;
 
-
-  //  inputArea_  = inputArea; // Moved to AnalysisMonitoring -> SampleProcessor // FIXME: check if it is possible to initialize them in the constructor init list
-  //  outputArea_ = outputArea;
   puFileName_ = puFileName ;
-  // runRange_ = runRange;    // save time
 
   // Default is ABCD in CommonDefinitions.cc
   if(runRange=="ABCD")     LUM_ = 18072.17; // 2012 ABCD final ntuples
@@ -48,9 +44,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   else if(runRange=="C1")  LUM_ = 482.26; // 2012 C1 final ntuples	
   else if(runRange=="C2")  LUM_ = 5992.; // 2012 C2 final ntuples	
   else if(runRange=="D")   LUM_ = 6558.; // 2012 D final ntuples   
-
-
-
+  
   // Acquire pileup weights
   float dataDist[100] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
 			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
@@ -63,8 +57,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
 			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
 			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.}; 
   TFile* dataWeightsFile =0;
-  if(run2012_) dataWeightsFile = new TFile(puFileName_); //MyDataPileupHistogram_All_70500.root");//MyDataPileupHistogram_All_73500.root");
-  //  else dataWeightsFile = new TFile("");
+  if(run2012_) dataWeightsFile = new TFile(puFileName_);
   if(!dataWeightsFile){ cout<<endl<<"File : " << puFileName_ << " not found or run2012_ not set."<<endl; exit(0);}
   TH1D* hist = (TH1D*) dataWeightsFile->Get("pileup");
   for(int i=0; i<50;++i)
@@ -74,7 +67,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   /////////////////////////  
 
 
-  // lepton efficiencies assumed to be ~100%. FIXME: Must check this
+  // lepton efficiencies assumed to be ~100%.
   electrontriggerefficiency_= 1;
 
   muontriggerefficiency_    = 1;   
@@ -124,27 +117,20 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   jerUnc_ak5_pf_pt_  = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5PF.txt"),true); // Temporarily disabled
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
-  // Poisson shifter for number of vertices /////////
+  // Poisson shifter for number of vertices ///////// Not used anymore. Shifting minbias xsec in the pileup distributions given as an input
   PShiftDown_ = reweight::PoissonMeanShifter(-0.6); // FIXME: remember to recalculate (10% of the mean number of vertices))
   PShiftUp_   = reweight::PoissonMeanShifter(0.6);
   ///////////////////////////////////////////////////
   
   // New BTAG uncertainty method /////////////////////////////////
-  ////////////////////////////////////////  
   // New BTAG: >= Moriond 2013
   BTagSF_     = 0.966; err_BTagSF_     = 0.025;
   LightJetSF_ = 1.16;  err_LightJetSF_ = sqrt(0.02*0.02+0.014*0.014);
-  // Old BTAG: < HCP 2012
-  //  BTagSF_     = 0.95; err_BTagSF_     = 0.03;
-  //  LightJetSF_ = 1.1;  err_LightJetSF_ = sqrt(0.01*0.01+0.011*0.11);
-  /////////////////////////////////////////////////////////////////
-
   
 }
 
 void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TString outhistograms, vector<TString> & keys, uint ttbarLike ){
-  
-  
+
   isData_             = isData;
   ttbarLike_          = ttbarLike;
   outFileName_        = outhistograms;
@@ -172,7 +158,6 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
   
   scale_=listOfScales_[0];
 
-
   // gets the reader for this sample and the number of events to be processed
   evR_   = listOfReaders_[0];   nevents_   = listOfEventsToProcess_[0];
   evRMC_ = listOfReadersMC_[0]; neventsMC_ = listOfEventsToProcessMC_[0];
@@ -182,14 +167,6 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
   // values for mu + tau///
   if( TAU_PT_MIN_== 20 ){
     
-    //Electrons exclusive
-    //BTAG_eff_R_ = 0.820309;
-    //BTAG_eff_F_ = 0.180834;
-    
-    //Electrons exclusive MT
-    //BTAG_eff_R_ = 0.819873;
-    //BTAG_eff_F_ = 0.177778;
-
     //Muon with MT. FIXME: check these values 
     BTAG_eff_R_ = 0.81376;         
     BTAG_eff_F_ = 0.163441;
@@ -221,7 +198,6 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
     weighted2PDFSelectedEvents_.clear();
     weightedPDFEvents_.clear();
     myWeights_.clear();
-    //for(int i=0;i<27;i++){myWeights_.push_back(0);}   
     for(int i=0;i<100;++i){myWeights_.push_back(0);} 
     //if( pdfweights_ && nevents_ != neventsMC_ ){ cout<<endl<<" ERROR :: nevents is : "<<nevents_<<" and in MC is "<<neventsMC_<<endl; return;}
   }
@@ -231,7 +207,6 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
   // Main event loop ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   for(i_=0; i_< nevents_; ++i_){
     
-    //    ev_   = evR_->GetNewMiniEvent(i_,"data");  if( ev_ == 0 ) continue;
     event::MiniEvent_t*  ev   = evR_->GetNewMiniEvent(i_,"data");  if( ev == 0 ) continue;
     is_os_=0.; // Stored in tree for fitters // Reset for each event
     tauR_=-1; // Reset for each event
@@ -458,12 +433,11 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   PreSelectElectrons( evR_, &e_init, electrons, primaryVertex );
   DisableLtkCutOnJets(); 
   Pt_Jet( JET_PT_CUT_ );     
-  //DisableLtkCutOnJets(); Pt_Jet(20); // WARNING pt_jetcut set to 20 for trigger studies
   PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&j_init,jets );
   PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex );
   ////////////////////////////////////////////////////////////////////////
 
-
+  
   // only accept jets if dr > drmin in respect to electrons and muons //////////////////////////////////////////////////
   vector<int> emptyColl, j_toRemove; 
   vector<int> j_afterLeptonRemoval;
@@ -535,10 +509,6 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-
   // DEBUG *****************************************************************************
   /*
   cout<<"\n Physics object debug     : "<<endl; 
@@ -551,9 +521,6 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   cout<<"\n taus                     : "<<taus.size()                             <<" taus after Lepton removal --> "<<t_afterLeptonRemoval.size()<<endl;
   */
   //////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -728,27 +695,6 @@ void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniE
   //jet energy corrections ////////////////////////////////////////////////////////////////////////////////
   vector<double> jerFactors;
   vector<PhysicsObject> newJets;
-   ///  // Old jet energy resolution factors
-  ///  if(jerc){ // Split condition for optimizazion
-  ///    fast_=false;
-  ///    if(!fast_ ) {
-  ///      for(unsigned int i=0;i<jets.size();i++){ 
-  ///  	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
-  ///  	double scaleFactor(0.1);  //bias correction
-  ///  	double corr_jer(1);
-  ///  	if( jer < 0 ){ scaleFactor = 0.;  }
-  ///  	if( jer > 0 ){ scaleFactor = 0.2; }
-  ///  	
-  ///  	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
-  ///  	
-  ///  	if( corr_jer < 0 ){ corr_jer = 1; }
-  ///  	jerFactors.push_back(corr_jer);
-  ///      }
-  ///    }  
-  ///    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
-  ///  }
-  // Base scale factors must be applied in any case (modify code above then)
-  
   
   jerFactors.clear();
   newJets.clear();
@@ -759,9 +705,7 @@ void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniE
       if(jer_> 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
       if(jer_< 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
     }
-    //    jerFactors.push_back(corr_jer);
     jerFactors.push_back(1.);
-    //    std::cout << " jerfac: " << corr_jer << std::endl;
   }
   jets=newJets;
 
@@ -784,7 +728,6 @@ void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniE
   PreSelectElectrons( evR_, &e_init, electrons, primaryVertex );
   DisableLtkCutOnJets(); 
   Pt_Jet( JET_PT_CUT_ );     
-  //DisableLtkCutOnJets(); Pt_Jet(20); // WARNING pt_jetcut set to 20 for trigger studies
   PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&j_init,jets );
   PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex );
   ////////////////////////////////////////////////////////////////////////
@@ -845,11 +788,6 @@ void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniE
   if(TAU_PT_MIN_< JET_PT_CUT_ ) Pt_Jet(JET_PT_CUT_); 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-
   // DEBUG *****************************************************************************
   /*
   cout<<"\n Physics object debug     : "<<endl; 
@@ -863,10 +801,6 @@ void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniE
   */
   //////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   int numb_e(0), numb_m(0);
   bool lepReq(true);
@@ -875,24 +809,9 @@ void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniE
   if(trigEffStudy_ ){ hasEGtrig = true; hasMutrig = true; }
   ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  //cout<<endl<<" Muon trigger is : "<<hasMutrig<<endl;
- 
-  //  cout<<endl<<" Muon trigger is : "<<hasMutrig<<", EG trigger is : "<<hasEGtrig<<endl;
   if( hasEGtrig ){ numb_e = e_init.size(); if(numb_e){ evType_ = ETAU_ ; if(!isData_) w_ = intimepuWeight_*scale_; }}
   if( hasMutrig ){ numb_m = m_init.size(); if(numb_m){ evType_ = MUTAU_; if(!isData_) w_ = intimepuWeight_*scale_; }}
   
-  
-  //  if( hasMutrig ){ 
-  //    numb_m = m_init.size();
-  //    
-  //    if(numb_m){ evType_ = MUTAU_; 
-  //      if(!isData_) w_ = intimepuWeight_*scale_; 
-  //    }
-  //  }
-  
-  
-  //if(hasMuTrig_) cout<<endl<<debug<<" has muon trigger... "<<endl;
-
   
   TVectorD * classifMC(0);
   // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1003,8 +922,6 @@ void CutflowAnalyzer::tauDileptonSelection(
     tauDilCh = tdChannel(channel);  
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //cout<<endl<<" input channel is "<<input_channel<<" out channel is "<<channel<<endl;
-
   
   TString mcTag(""); 
   if( !isData_ ){ mcTag = myKey + TString(" yields mc");  myMCMon = tauDileptonMCYieldsMons_[myKey]; }
@@ -1033,12 +950,7 @@ void CutflowAnalyzer::tauDileptonSelection(
 
 
   //debug
-  //if(evType_ == ETAU_) cout<<endl<<" ETAU input at minitree step "<<endl;   
   if( ! lepReq ){ return; }
-
-  //debug
-  //if(evType_ == ETAU_) cout<<endl<<" pass dilepton and loose veto cuts 2) "<<tauDilCh<<endl;
-
 
   // in case we are processing MC see if we require a specific channel //////////////////////////////
   // TODO INCLUDE TTBAR LIKE EMU_???????
@@ -1059,9 +971,6 @@ void CutflowAnalyzer::tauDileptonSelection(
      for(size_t igtau = 0; igtau < mctausColl.size(); ++igtau){
        if(fabs(mctausColl[igtau][1]) != double(11) && fabs(mctausColl[igtau][1]) != double(13)) continue; // if it is not electron or muon
 	 if(mctausColl[igtau].Pt() < 20 || fabs(mctausColl[igtau].Eta()) > 2.1) continue;
-  
-         //cout<<"\n debug we have found a lepton parent is : "<<(fabs(mctausColl[igtau][2]))<<endl;
-
 	 if(fabs(mctausColl[igtau][2]) != double(15)) continue; // check if lepton is from a tau decay
 	 mcleps.push_back(mctausColl[igtau]);
        }
@@ -1076,15 +985,6 @@ void CutflowAnalyzer::tauDileptonSelection(
   fillDebugHistograms(myKey,m_init,muons,e_init,electrons,j_final,jets); 
   //////////////////////////////////////////////////////////////////////
 
-
-/// test ///  uint metAlgo;
-/// test ///       if( myKey=="PF"               ) { metAlgo=event::PF;        }
-/// test ///  else if( myKey.Contains("TaNC")    ) { metAlgo=event::PF;        }
-/// test ///  else if( myKey.Contains("HPS")     ) { metAlgo=event::PF;        } 
-/// test ///  else if( myKey.Contains("PFlow")   ) { metAlgo=event::PFLOWMET;  } 
-/// test ///
-/// test ///  PhysicsObjectCollection mets = evR_->GetPhysicsObjectsFrom(ev,event::MET,metAlgo);           
-/// test ///  if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
   PhysicsObject met = mets[0]; 
 
   // finding leading lepton and qualify tag ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1104,12 +1004,7 @@ void CutflowAnalyzer::tauDileptonSelection(
   else if(evType_ == MUTAU_ ){ evTags.push_back(myKey+TString(" lep_tau")); evTags.push_back(myKey+TString(" m_tau"));  }
  
   // WORKING HERE
-  //  double metValue = jetMETScaling( jerFactors, jes_, junc , jets ,met.Px(), met.Py());
-  double metValue = met.Pt(); /// test /// jetMETScalingTest( oldJerFactorsForMet, jes_, junc, oldJetsForMet  , met);
-  // rescaling of met based on unclustered energy ////////////////////////////////////////////////
-//  if( unc_ ){ metValue = jetMETUnclustered( jerFactors, lep_obj, unc_, jets, met.Px(), met.Py());}
-//  if( jer_ ){ metValue = jetMETResolution( jerFactors, jets, met.Px(), met.Py());}
-  ////////////////////////////////////////////////////////////////////////////////////////////////
+  double metValue = met.Pt(); 
 
   double tau_charge(0); // , tau_pt(0); // unused 
   int tau_i;

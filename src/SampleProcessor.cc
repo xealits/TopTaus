@@ -17,60 +17,25 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
     
     outFile_=0;
     
-    checkleptonsFromTauDecay_ = false;
-    //checkleptonsFromTauDecay_ = true;  // used to compute tables with leptons from tau decays (tt->WbWb->tauhtaul)
+    checkleptonsFromTauDecay_ = false; // true; // used to compute tables with leptons from tau decays (tt->WbWb->tauhtaul)
 
-    //pdfweights_=true;
     pdfweights_=false; // this should allways be false, it will be overwritten by the process_ttbar
 
     jetpgid_=JETPGID_OLD;
 
     fast_=true;
 
-    //trigEffStudy_= true;
-    trigEffStudy_= false;
+    trigEffStudy_= false; // Trigger efficiency study for electron+jets trigger. Should always be false: obsolete!
    
-    pu_ = NOPU;
+    pu_ = NOPU; // PUPLUS PUMINUS now are dealt with by passing the pileup distributions computed with different minbias xsec
 
-    //pu_ = PUPLUS;
-    //pu_ = PUPLUS;
-
-//    keys_.push_back("TC");
-//    keys_.push_back("PF");  
-//    keys_.push_back("TaNC0");  // tanc FR    1  %
-//    keys_.push_back("TaNC1");  // tanc FR  0.5  %
-//    keys_.push_back("TaNC2");  // tanc FR  0.25 %
-//    keys_.push_back("TaNC3");  // tanc FR  0.1  %
-//    keys_.push_back("HPS0");   // HPS loose iso
-//    keys_.push_back("HPS1");   // HPS medium iso
-//    keys_.push_back("HPS2");   // HPS high iso
-      keys_.push_back("PFlow");  // PF HPS loose iso
- 
+    keys_.push_back("PFlow"); // PF HPS taus 
     char data[10]; sprintf(data,"%dGeV",(int)sampleTauPtCut_);
     
-    // output folder and input folder
-    
-	// Folders at LIP
-	
-    //oFolder_ = TString("/soft/lip-sw/cmssw/users/nalmeida/new/nalmeida/sw424/Physics/UserCode/nalmeida/TopTauDileptons2012/");  
-    //iFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/mc/mTrees-v3-B/");  
-    //    oFolder_ = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/");
-    //    iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/mc/minitrees-muon-Fall11/");
-
-    // Temp 2012
-    //    oFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/");
-    oFolder_ = TString(commondefinitions::outputArea_);
+    // I/O folders
     iFolder_ = TString(commondefinitions::inputArea_);
-    //    iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/mc/minitrees-muon-Fall11/");
-    //    iFolder_ = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/first2011/");
-
-    // Folders at CERN
-    //oFolder_ = TString("/afs/cern.ch/work/n/nalmeida/private/CMSSW_5_2_5/src/lipcms/Physics/TopTauDileptons2012/test/");   
-	
-    //iFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/mc/mTrees-v3-B/");
-    // if( run2012_ ) iFolder_ = TString("/lustre/lip.pt/data/cmslocal/fnguyen/");   
-    // Temp 2012
-   //    if( run2012_ ) iFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/");   
+    oFolder_ = TString(commondefinitions::outputArea_);
+ 
 
     if( pu_ == PUPLUS  ) oFolder_ += TString("puplus-"); else if ( pu_ == PUMINUS ) oFolder_ += TString("puminus-");
 
@@ -82,51 +47,26 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
    
     if( run2012_ ) vers = TString("2012-V1-");
 
-
-    oFolder_ += mtStr+vers+TString("mc-")+lepStr+bwStr+TString(data)+TString("/");
     
-
-    if( eChONmuChOFF_ ) iDFolder_ = TString(commondefinitions::inputArea_);  
-    //else              iDFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/data/mTrees-v3/");  
-    //   else                iDFolder_ = TString("/lustre/data3/cmslocal/samples/CMSSW_4_4_4/data/minitrees-muon-2011/");  
-    // Temp 2012
-    else                iDFolder_ = TString(commondefinitions::inputArea_);  
-
-
-    // LIP
-    //if( run2012_ ) iDFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_8_patch4b/data/minitrees-muon-2011-newTau/");  
-    //oDFolder_  = TString("/afs/cern.ch/work/n/nalmeida/private/CMSSW_5_2_5/src/lipcms/Physics/TopTauDileptons2012/test");
-
-    // Temp 2012
-    if( run2012_ ) iDFolder_ = TString(commondefinitions::inputArea_);  
-    //if( run2012_ ) iDFolder_ = TString("/lip-sw/cmssw/users/nalmeida/new/CMSSW_5_2_5/src/lipcms/Physics/TopTauDileptons2012/mt-2012-V1-data-MU-20GeV/");  
-    //    oDFolder_  = TString("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/");
-    // Temp 2012
-    //   oDFolder_  = TString("/lustre/data3/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/");
+    
+    iDFolder_ = TString(commondefinitions::inputArea_);  
     oDFolder_  = TString(commondefinitions::outputArea_);
-
-
-// Fall 2010 samples   : https://twiki.cern.ch/twiki/bin/viewauth/CMS/ProductionFall2010
-// NLO cross sections  : https://twiki.cern.ch/twiki/bin/view/CMS/CrossSections_3XSeries#crosssections
-// NNLO cross sections : https://twiki.cern.ch/twiki/pub/CMS/GeneratorMain/ShortXsec.pdf
-
-
-// Summer11
-//http://cms.cern.ch/iCMS/prep/requestmanagement?status=Done&pwg=HIG&campid=Summer11_R1&dsn=
-//http://cms.cern.ch/iCMS/prep/requestmanagement?pwg=TOP&campid=Summer11_R1
-//https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSections
-
-
-
-
+    
+    oFolder_ += mtStr+vers+TString("mc-")+lepStr+bwStr+TString(data)+TString("/");
     oDFolder_ += mtStr+vers+TString("data-")+lepStr+TString(data)+TString("/");
     
-    
+    // Summer11
+    //http://cms.cern.ch/iCMS/prep/requestmanagement?status=Done&pwg=HIG&campid=Summer11_R1&dsn=
+    //http://cms.cern.ch/iCMS/prep/requestmanagement?pwg=TOP&campid=Summer11_R1
+    //https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSections
+
     for (int i=0; i<200; i++ ){ defaultXSections_.push_back(0); }
     
     if( run2012_ ) {
+
+      // xsections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat8TeV
       defaultXSections_[DATA_URL]      = 0.;         
-      defaultXSections_[TTBAR_URL]     = 234.;  //Kidonakis - approx. NNLO - Inclusive - 234+10-)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) - Top mass: m(top)=173GeV, Default scales: muF=muR=mt, PDF: MSTW2008 NNLO 
+      defaultXSections_[TTBAR_URL]     = 234.;  //Kidonakis - approx. NNLO - Inclusive - 234+10- - Top mass: m(top)=173GeV, Default scales: muF=muR=mt, PDF: MSTW2008 NNLO 
       
       defaultXSections_[W_ENU_URL]     = 12503.0; //NNLO 37509.0  36257.2/3 = 12085.7 - NNLO - W->lv, l=e,m,t - Inclusive W production, BR(W->lv) included, l=e,m,t, PDF error also includes alphas 
       defaultXSections_[W_MUNU_URL]    = 12503.0;
@@ -147,11 +87,9 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[A_T_URL]                = 30.7;    
       defaultXSections_[A_W_URL]                = 11.1;
 
-      //fn defaultXSections_[QCD_EM20TO30_URL]       = 2454400.; not considered!!!
       defaultXSections_[QCD_EM30TO80_URL]       = 4615893.; // 74330000. eff 0.0621 http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_30_80_EMEnriched_TuneZ2star_8TeV_pythia6&campid=Summer12
       defaultXSections_[QCD_EM80TO170_URL]      = 183294.9; // 1191000. eff 0.1539 http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_80_170_EMEnriched_TuneZ2star_8TeV_pythia6&campid=Summer12
       
-      //fn defaultXSections_[QCD_BCTOE20TO30_URL]    = 132160; not considered!!! 
       defaultXSections_[QCD_BCTOE30TO80_URL]    = 167040.; // 74240000. eff 0.00225 http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_30_80_BCtoE_TuneZ2star_8TeV_pythia6&campid=Summer12
       defaultXSections_[QCD_BCTOE80TO170_URL]   = 12981.9; //1191000. 0.0109 http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_80_170*&campid=Summer12         
       
@@ -163,7 +101,7 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[QCD_PHOTON80TO120_URL]  = 558.2865;        
       defaultXSections_[QCD_PHOTON120TO170_URL] = 108.0068;
       
-      // xsections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat8TeV
+      
       defaultXSections_[WW_URL]                 = 54.838;
       defaultXSections_[WZ_URL]                 = 33.72;
       defaultXSections_[ZZ_URL]                 = 17.627;
@@ -213,26 +151,6 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[W_MUNU_URL]    = 10438;
       defaultXSections_[W_TAUNU_URL]   = 10438; 
       
-      
-      // ALPGEN SAMPLES
-      /*
-	W0Jets           /W0Jets_TuneD6T_7TeV-alpgen-tauola                                                    2.003e+04
-	W1Jets_0to100    /W1Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    3.693e+03
-	W1Jets_100to300  /W1Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     7.197e+01
-	W2Jets_0to100    /W2Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    9.434e+02
-	W2Jets_100to300  /W2Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     6.718e+01
-	W3Jets_0to100    /W3Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    2.087e+02
-	W3Jets_100to300  /W3Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     3.243e+01
-	W4Jets_0to100    /W4Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    4.446e+01
-	W4Jets_100to300  /W4Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     1.138e+01
-	W5Jets_0to100    /W5Jets_ptW-0to100_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO 	    1.111e+01
-	W5Jets_100to300  /W5Jets_ptW-100to300_TuneZ2_7TeV-alpgen-tauola/Fall10-START38_V12-v1/GEN-SIM-RECO     3.789e+00 
-      */
-      
-      // total 
-      // w0 ->      2.024e+04 //Z2
-      // W0 ->D6    2.003e+04
-      
       defaultXSections_[W0J_URL]         = 20030.*1.3;
       defaultXSections_[W1JA_URL]        = 3693.*1.3;
       defaultXSections_[W1JB_URL]        = 71.97*1.3;
@@ -253,59 +171,17 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[TT3J_URL]        = 0.7951*2.1768 ;
       defaultXSections_[TT4J_URL]        = 0.1404*2.1768 ;
       
-      
-      /*
-	defaultXSections_[DY_HIGHLL_URL]     = 3048;
-	defaultXSections_[DY_EE_URL]         = 650;
-	defaultXSections_[DY_MM_URL]         = 650;
-	defaultXSections_[DY_TAUTAU_URL]     = 650;
-      */
-      
-      //defaultXSections_[DY_10TO50_URL]          = 310;  //NLO 310 // xsec = 310  eff=0.18 DYJetsToLL_TuneD6T_M-10To50_7TeV-madgraph-tauola (on madgraph we do not apply eff)
-
       // the number is LO cross section (3x310 pb) with a k-factor to correct for NLO (1.33). The actual source of this - I don't know.
       defaultXSections_[DY_10TO50_URL]          = 12369;
       defaultXSections_[DY_FROM50_URL]          = 3048; //NNLO 3048 //NLO 2800// xsec= 2321  eff=0.44 DYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola 
-      
-      
-      /* Fall 2010 samples
-	 defaultXSections_[S_URL]                  = 1.49;     
-	 defaultXSections_[T_URL]                  = 20.93 ;    
-	 defaultXSections_[W_URL]                  = 10.6;   
-      */
-      
-      
-      
 
-      /*
-	
-      t+ (s-channel) 	MCFM 	-- 	NLO 	Inclusive 	2.72 	+0.07-0.06 (±0.08), Total = +0.11 - 0.10 	Inclusive top decay, PDF errors also includes alphas
-      t- (s-channel) 	MCFM 	-- 	NLO 	Inclusive 	1.49 	+0.04-0.03 (±0.08), Total = +0.09-0.08 	Inclusive top decay, PDF errors also includes alphas 
-      
-      t+ (t-channel) 	MCFM 	-- 	NLO 	Inclusive 	42.6 	+0.9-0.8 (±2.2), Total = +2.4-2.3 	Inclusive top decay, PDF errors also includes alphas
-      t- (t-channel) 	MCFM 	-- 	NLO 	Inclusive 	22.0 	+0.6-0.3 (±0.8), Total = +0.10-0.8 	Inclusive top decay, PDF errors also includes alphas 
-      
-      W+tbar   	MCFM 	-- 	NLO 	Inclusive 	5.3 	±0.6 	--
-      W-t 	        MCFM 	-- 	NLO 	Inclusive 	5.3 	±0.6 	-- 
-      */
-      
-      
-      
-      
       defaultXSections_[S_URL]                  = 2.72;     
       defaultXSections_[T_URL]                  = 42.6;    
-      //defaultXSections_[W_URL]                = 5.3;   //WARNING :: This is old
       defaultXSections_[W_URL]                  = 7.87;  
-      
       
       defaultXSections_[A_S_URL]                = 1.49;    
       defaultXSections_[A_T_URL]                = 22;    
-      //defaultXSections_[A_W_URL]              = 5.3;   //WARNING :: use the new value
       defaultXSections_[A_W_URL]                = 7.87;  
-      
-
-      
-      
       
       defaultXSections_[QCD_EM20TO30_URL]       = 2454400.;     //xsec =236000000 eff=0.0104 QCD_Pt-20to30_EMEnriched_TuneZ2_7TeV-pythia6
       defaultXSections_[QCD_EM30TO80_URL]       = 3866200.;     //xsec =59480000  eff=0.065  QCD_Pt-30to80_EMEnriched_TuneZ2_7TeV-pythia6 
@@ -323,7 +199,6 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       //defaultXSections_[QCD_MU_URL]           = 349988;       //xsec=296600000 	eff=0.00118  QCD_Pt-20_MuEnrichedPt-10_TuneZ2_7TeV-pythia6 //79688.;                                    
       defaultXSections_[QCD_MU_URL]             = 84679;        //xsec=296600000 	eff=0.002855 QCD_Pt-20_MuEnrichedPt-15_TuneZ2_7TeV-pythia6      
       
-
       // xsections taken from CMS-AN-10-337
       defaultXSections_[WW_URL]                 = 43;
       defaultXSections_[WZ_URL]                 = 18.2;
@@ -354,17 +229,6 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
 
 void SampleProcessor::init(vector<TString> listOfurls, vector<double> listOfXSections, bool fullStats, double lum, uint n_data){
 
-  
-  /*
-    
-  // QCD MVA
-  qcdMVA_   = new MVAComputer("/u/home/cms/vischia/public/tau_dilepton/mvaWeights_428TrainedDiJetDataPFlow_pt20.mva");
-  
-  // W plus jets MVA
-  wjetsMVA_ =  new MVACompute("/u/home/cms/vischia/public/tau_dilepton/mvaWeights_428TrainedWMuDataPFlow_pt20.mva");
-  
-  */
-  
   nToProcess_ = n_data;
  
   if(listOfurls.size()!= listOfXSections.size() ){ 
@@ -616,12 +480,6 @@ int SampleProcessor::tdChannel(int i){
 
 void SampleProcessor::process_ttbar(){
 
-  //APLGEN TTBAR
-  //process(false, TT0J_URL, iFolder_ + TString("TT0Jets_Alpgen.root"), oFolder_ + TString("out-TT0_Alpgen.root",keys_); 
-  //process(false, TT1J_URL, iFolder_ + TString("TT1Jets_Alpgen.root"), oFolder_ + TString("out-TT1_Alpgen.root",keys_); 
-  //process(false, TT2J_URL, iFolder_ + TString("TT2Jets_Alpgen.root"), oFolder_ + TString("out-TT2_Alpgen.root",keys_); 
-  //process(false, TT3J_URL, iFolder_ + TString("TT3Jets_Alpgen.root"), oFolder_ + TString("out-TT3_Alpgen.root",keys_); 
-  //process(false, TT4J_URL, iFolder_ + TString("TT4Jets_Alpgen.root"), oFolder_ + TString("out-TT4_Alpgen.root",keys_); 
   //MADGRAPH
   //process(false, TTBAR_URL, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar-madgraph.root"),keys_);                          
   //process(false, TTBAR_URL, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar-signal-madgraph.root"),keys_, TTBAR_SIGNAL_ );   
@@ -635,25 +493,15 @@ void SampleProcessor::process_ttbar(){
   //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2.root"),keys_);
   process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar.root"),keys_);
 
-  //process(false, url_, iFolder_ + TString("AllTTJets_TuneZ2star_8TeV-madgraph-tauola.root"), oFolder_+TString("out-ttbar.root"),keys_);
-  
-  
-  
-
   //SAMPLE WITH WEIGHTS
   //pdfweights_=true; process(false, url_, iFolder_ + TString("ttbar-pdf.root"), oFolder_+TString("out-ttbar-pdf.root"),keys_); pdfweights_=false;
   //pdfweights_=true; process(false, url_, iFolder_ + TString("ttbar-pdf-nofilter-B.root"), oFolder_+TString("out-ttbar-pdf.root"),keys_); pdfweights_=false;
   ///lustre/data3/cmslocal/samples/CMSSW_4_2_X/mc/mTrees-v3-B/ttbar-pdf-nofilter-B.root
 
-
   // Trigger efficiencies study ////////////////////////////////////////////////////////////////////////
   //iFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/mc/mTrees-v3/");
   //process(false, url_, iFolder_ + TString("trig-ttbar.root"), oFolder_+TString("out-ttbar.root"),keys_);
   //////////////////////////////////////////////////////////////////////////////////////////////////////    
-
-
-
-
 
 }
 
@@ -710,8 +558,6 @@ void SampleProcessor::process_ttbar_mutau(){
 
   url_= TTBAR_URL;
 
-
-  //  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_etau.root"),keys_,  ETAU_  );    
   //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mutau.root"),keys_, MUTAU_ ); 
   //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mutau.root"),keys_, MUTAU_ ); 
   process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_mutau.root"),keys_, MUTAU_ ); 
@@ -721,21 +567,12 @@ void SampleProcessor::process_ttbar_mumu(){
 
   url_= TTBAR_URL;
 
-
-  //  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_etau.root"),keys_,  ETAU_  );    
-  //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mutau.root"),keys_, MUTAU_ ); 
-  //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mutau.root"),keys_, MUTAU_ ); 
   process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_mumu.root"),keys_, MUMU_ ); 
 }
 
 void SampleProcessor::process_ttbar_emu(){
 
   url_= TTBAR_URL;
-
-
-  //  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_etau.root"),keys_,  ETAU_  );    
-  //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mutau.root"),keys_, MUTAU_ ); 
-  //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mutau.root"),keys_, MUTAU_ ); 
   process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_emu.root"),keys_, EMU_ ); 
 }
 
@@ -865,14 +702,6 @@ void SampleProcessor::process_wh_higgs(){
   url_ = WH150_URL; process(false, url_, iFolder_ + TString("wh-pythia-m150.root"), oFolder_+TString("out-wh-pythia-m150.root"),keys_); 
   url_ = WH155_URL; process(false, url_, iFolder_ + TString("wh-pythia-m155.root"), oFolder_+TString("out-wh-pythia-m155.root"),keys_); 
   url_ = WH160_URL; process(false, url_, iFolder_ + TString("wh-pythia-m160.root"), oFolder_+TString("out-wh-pythia-m160.root"),keys_); 
-
-
-//    -rw-r--r-- 1 vischia cms  1.9M Aug 28 15:22 wh-pythia-m100.root
-//    -rw-r--r-- 1 vischia cms  144M Aug 28 15:22 wh-pythia-m140.root
-//    -rw-r--r-- 1 vischia cms  136M Aug 28 15:22 wh-pythia-m155.root
-//    -rw-r--r-- 1 vischia cms  135M Aug 28 15:23 wh-pythia-m160.root
-//    -rw-r--r-- 1 vischia cms  105M Aug 28 15:23 hh-pythia-m140.root
-
 
 
 }

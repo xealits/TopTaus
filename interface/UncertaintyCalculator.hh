@@ -33,8 +33,6 @@
 
 #include "LIP/TopTaus/interface/SelectionMonitor.hh"
 #include "LIP/TopTaus/interface/MiniEvent.hh"
-// #include "LIP/TopTaus/interface/Utilities.hh"
-
 
 using namespace std;
 
@@ -49,13 +47,6 @@ public:
   double getJetPt( PhysicsObject &j ,JetCorrectionUncertainty * junc, double jerFactor,double jes);
   PhysicsObject smearedJet(const PhysicsObject &origJet, double genJetPt, int method, int mode, double& scaleFactor); // Perhaps it would be better to create a class or a namespace METUtils
   enum UncertaintyVariations { JER, JER_UP, JER_DOWN, JES_UP, JES_DOWN,UMET_UP,UMET_DOWN,LES_UP,LES_DOWN};
-  //void computeVariation(vector<PhysicsObject>& jets, 
-  //			vector<PhysicsObject> &leptons, // not really needed for now
-  //			PhysicsObject& met, // 
-  //			vector<PhysicsObjectCollection>& jetsVar, 
-  //			vector<PhysicsObject>& metsVar,
-  //			JetCorrectionUncertainty *jecUnc);
-  //
 };
 
 

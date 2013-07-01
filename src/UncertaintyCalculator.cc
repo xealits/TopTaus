@@ -39,8 +39,7 @@ double UncertaintyCalculator::jetMETScaling( vector<double> & jerFactors, double
 // Propagate met variation test
 double UncertaintyCalculator::jetMETScalingTest( vector<double> & jerFactors, double jes,JetCorrectionUncertainty * junc, vector<PhysicsObject> & vJ , PhysicsObject& met) {
   vector<PhysicsObject> newJets;
-  //  PhysicsObject newMet(met),jetDiff(0,0,0,0),lepDiff(0,0,0,0), unclustDiff(0,0,0,0), clusteredFlux(0,0,0,0);
-  
+
   PhysicsObject 
     newMet        (new TLorentzVector(met), new TVectorD(0)),
     jetDiff       (new TLorentzVector(0,0,0,0), new TVectorD(0)),
@@ -66,25 +65,12 @@ double UncertaintyCalculator::jetMETScalingTest( vector<double> & jerFactors, do
       double en = sqrt(mass*mass+px*px+py*py+pz*pz);
       
       PhysicsObject iSmearJet = origJet;
-      //  toReturn.SetCoordinates(px, py, pz, en);
-      //      iSmearJet.SetPtEtaPhiE(px, py, pz, en); // D'oh!
       iSmearJet.SetPxPyPzE(px, py, pz, en);      
       jetDiff += (iSmearJet-vJ[ijet]);
-      
-//      if(jerF==1){
-//	cout << "-------------------------------------" << endl;
-//	cout << "JERF " << jerF << endl;
-//	cout << "orig jet   : ("<< origJet.Px() <<", " << origJet.Py() << ", " << origJet.Pz() << ", " << origJet.E() << ")" << endl; 
-//	cout << "scaled vals: ("<< px <<", " << py << ", " << pz << ", " << en << ")" << endl; 
-//	cout << "smear jet  : ("<< iSmearJet.Px() <<", " << iSmearJet.Py() << ", " << iSmearJet.Pz() << ", " << iSmearJet.E() << ")" << endl; 
-//	cout << "-------------------------------------" << endl;
-//      }
 
       newJets.push_back( iSmearJet );
     }
   
-//  if(noCorrection)
-//    cout << "jetDiff should be 0 and it is: ("<< jetDiff.Px() <<", " << jetDiff.Py() << ", " << jetDiff.Pz() << ", " << jetDiff.E() << ")" << endl; 
   //add new met
   newMet -= jetDiff; 
   newMet -= lepDiff; 
@@ -113,8 +99,6 @@ void UncertaintyCalculator::doPropagations( vector<double> & jerFactors, const d
   vector<PhysicsObject> newJets; newJets.clear();
   PhysicsObject 
     newMet        (met),
-    //    newMet        (new TLorentzVector(met), met.GetInfo()),
-    //    newMet        (new TLorentzVector(met), new TVectorD(0)),
     jetDiff       (new TLorentzVector(0,0,0,0), new TVectorD(0)),
     lepDiff       (new TLorentzVector(0,0,0,0), new TVectorD(0)), 
     unclustDiff   (new TLorentzVector(0,0,0,0), new TVectorD(0)), 
@@ -130,8 +114,8 @@ void UncertaintyCalculator::doPropagations( vector<double> & jerFactors, const d
       if(jer== 0) newJets.push_back( smearedJet(origJet, origJet[34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
       if(jer> 0)  newJets.push_back( smearedJet(origJet, origJet[34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
       if(jer< 0)  newJets.push_back( smearedJet(origJet, origJet[34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-      //      jerFactors.push_back(corr_jer); // Fuck. Output are already rescaled jets. So push back 1
-      jerFactors.push_back(1.);
+
+      jerFactors.push_back(1.); // Output are already rescaled jets. So push back 1
       
       jetDiff += (newJets[ijet]-vJ[ijet]);
     }
