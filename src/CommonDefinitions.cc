@@ -60,7 +60,10 @@ namespace commondefinitions{
   //     0.0371113,
   //     0.0289788 
   //   };
-  
+
+
+  // 2012 prompt reco prescription
+ 
   /*
     Tagger: CSVL within 30 < pt < 670 GeV, abs(eta) < 2.4, x = pt
     SFb = 1.02658*((1.+(0.0195388*x))/(1.+(0.0209145*x)));
@@ -81,8 +84,32 @@ namespace commondefinitions{
     0.030734,
     0.0438259 };
   
-  
-  
+
+  // 22Jan2013ReReco payload: https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFb-pt_NOttbar_payload_EPS13.txt
+  // Switch when the ntuples will be ready.
+  //  Tagger: CSVM within 20 < pt < 800 GeV, abs(eta) < 2.4, x = pt
+  //						    SFb = (0.939158+(0.000158694*x))+(-2.53962e-07*(x*x));
+  //  SFb_error[] = {
+  //    0.0415694,
+  //    0.023429,
+  //    0.0261074,
+  //    0.0239251,
+  //    0.0232416,
+  //    0.0197251,
+  //    0.0217319,
+  //    0.0198108,
+  //    0.0193,
+  //    0.0276144,
+  //    0.0205839,
+  //    0.026915,
+  //    0.0312739,
+  //    0.0415054,
+  //    0.0740561,
+  //    0.0598311 };
+  //
+  //  
+
+
   /*  
       double BTAG_eff_R_ = 0.812272;
       double BTAG_eff_F_ = 0.17211;

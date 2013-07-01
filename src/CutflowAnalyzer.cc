@@ -4420,6 +4420,7 @@ pair<double,double> CutflowAnalyzer::btagSF(double jetPt){
 
   double err_sf(0);
 
+  // 2012 prompt reco payload
        if( jetPt>30  && jetPt<=40  ){ err_sf = SFb_error[0];  }
   else if( jetPt>40  && jetPt<=50  ){ err_sf = SFb_error[1];  }
   else if( jetPt>50  && jetPt<=60  ){ err_sf = SFb_error[2];  }
@@ -4438,6 +4439,34 @@ pair<double,double> CutflowAnalyzer::btagSF(double jetPt){
    //use the SFb value at 670 GeV with twice the quoted uncertainty 
    jetPt=670; err_sf = 2*SFb_error[13];
   }
+       
+//  // 2012 22Jan2013ReReco payload https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFb-pt_NOttbar_payload_EPS13.txt
+//       float ptmin[] = {20, 30, 40, 50, 60, 70, 80, 100, 120, 160, 210, 260, 320, 400, 500, 600};
+//       float ptmax[] = {30, 40, 50, 60, 70, 80,100, 120, 160, 210, 260, 320, 400, 500, 600, 800};
+//       
+//       if( jetPt>20  && jetPt<=30  ){ err_sf = SFb_error[0];  }
+//  else if( jetPt>30  && jetPt<=40  ){ err_sf = SFb_error[1];  }
+//  else if( jetPt>40  && jetPt<=50  ){ err_sf = SFb_error[2];  }
+//  else if( jetPt>50  && jetPt<=60  ){ err_sf = SFb_error[3];  }
+//  else if( jetPt>60  && jetPt<=70  ){ err_sf = SFb_error[4];  }
+//  else if( jetPt>70  && jetPt<=80 ){ err_sf = SFb_error[5];  }
+//  else if( jetPt>80 && jetPt<=100 ){ err_sf = SFb_error[6];  }
+//  else if( jetPt>100 && jetPt<=120 ){ err_sf = SFb_error[7];  }
+//  else if( jetPt>120 && jetPt<=160 ){ err_sf = SFb_error[8];  }
+//  else if( jetPt>160 && jetPt<=210 ){ err_sf = SFb_error[9];  }
+//  else if( jetPt>210 && jetPt<=260 ){ err_sf = SFb_error[10]; }
+//  else if( jetPt>260 && jetPt<=320 ){ err_sf = SFb_error[11]; }
+//  else if( jetPt>320 && jetPt<=400 ){ err_sf = SFb_error[12]; }
+//  else if( jetPt>400 && jetPt<=500 ){ err_sf = SFb_error[13]; }
+//  else if( jetPt>500 && jetPt<=600 ){ err_sf = SFb_error[13]; }
+//  else if( jetPt>600 && jetPt<=800 ){ err_sf = SFb_error[13]; }
+//  else if( jetPt> 800 ){ 
+//   //use the SFb value at 670 GeV with twice the quoted uncertainty 
+//   jetPt=670; err_sf = 2*SFb_error[13];
+//  }
+//
+
+
 
   double sf = 0.603913*((1.+(0.286361*jetPt))/(1.+(0.170474*jetPt)));
 

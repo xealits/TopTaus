@@ -126,6 +126,8 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-07-01: Code cleaning
+	    New btagSF payload (will switch when ntuples will be ready)
 2013-06-28: Added H+->tb M_H+ = 200 GeV processing
 	    Fixed tables for AN (now with H+->tb yields too)
 	    Switched to btagsmultiplicity shape for limits computation
