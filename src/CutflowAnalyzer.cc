@@ -4458,11 +4458,11 @@ pair<double,double> CutflowAnalyzer::btagSF(double jetPt){
 //  else if( jetPt>260 && jetPt<=320 ){ err_sf = SFb_error[11]; }
 //  else if( jetPt>320 && jetPt<=400 ){ err_sf = SFb_error[12]; }
 //  else if( jetPt>400 && jetPt<=500 ){ err_sf = SFb_error[13]; }
-//  else if( jetPt>500 && jetPt<=600 ){ err_sf = SFb_error[13]; }
-//  else if( jetPt>600 && jetPt<=800 ){ err_sf = SFb_error[13]; }
+//  else if( jetPt>500 && jetPt<=600 ){ err_sf = SFb_error[14]; }
+//  else if( jetPt>600 && jetPt<=800 ){ err_sf = SFb_error[15]; }
 //  else if( jetPt> 800 ){ 
 //   //use the SFb value at 670 GeV with twice the quoted uncertainty 
-//   jetPt=670; err_sf = 2*SFb_error[13];
+//   jetPt=670; err_sf = 2*SFb_error[15];
 //  }
 //
 
