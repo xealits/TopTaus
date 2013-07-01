@@ -38,7 +38,10 @@ LandSShapesProducer::LandSShapesProducer(string parSet, bool produceOnly):
 void LandSShapesProducer::Init(){
 
   displayMin_ = 0.001;
-  displayMax_ = 1.001;
+  displayMax_ = 5.001;
+
+//  displayMin_ = 0.001;
+//  displayMax_ = 1.001;
 
 //  displayMin_ = 0.;
 //  displayMax_ = 200.;
@@ -1215,13 +1218,15 @@ void LandSShapesProducer::DrawTemplates(size_t i){
  
     //    cout << "dd integral: " << hist_[3]->Integral() << endl;
     normalize(hs, 1.);
-    hs.SetMaximum(0.4);
+    //    hs.SetMaximum(0.4);
+    hs.SetMaximum(1.2);
     hs.Draw("hist");
     hs.GetXaxis()->SetRange(displayMin_,displayMax_);    
     hs.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     hs.GetYaxis()->SetTitle("a.u.");
     //  hs.GetYaxis()->SetTitleOffset(1.5);
-    hs.GetXaxis()->SetTitle("p^{lead.track}/E^{#tau}");
+    //    hs.GetXaxis()->SetTitle("p^{lead.track}/E^{#tau}");
+    hs.GetXaxis()->SetTitle("btag multiplicity");
     //  hs.GetXaxis()->SetTitleOffset(1.5);
     
     hist_[0]->Scale(1./hist_[0]->Integral());
