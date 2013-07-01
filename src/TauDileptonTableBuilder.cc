@@ -27,20 +27,8 @@ namespace tableutils{
   // detailed -> select between 1 or 2 floating points
   void TauDileptonTableBuilder::mcTable( int detailed, bool includeSoverB , bool printAllErrors, bool higgs, TString key, TString name, bool systset1, bool systset2, bool systset3){ 
 
-
-    //    if(!doTheDatacards) // For datacards we want 234., for tables we want 1.1 // This does not need conditional, because of the default values
-      for(size_t i=0; i<brHtaunu_.size(); ++i)
-	brHtaunu_[i] = 5./234.;
-    
-    /*
-      cout<<endl;
-      cout<<"RATIO on data   : "<<306./455<<" +- "<<getErrorFraction(306.,432.);
-      cout<<"RATIO on MC     : "<<279./432.<<" +- "<<getErrorFraction(279.,432.,17.,22);
-      cout<<"RATIO on w+jets : "<<207.48/330.77<<" +- "<<getErrorFraction(207.48,330.77,16.77,21.18);
-    */
-    
-    
-    
+    for(size_t i=0; i<brHtaunu_.size(); ++i)
+      brHtaunu_[i] = 5./234.;
     
     bool triggerunc(true);  //enable/disable syst on trigger
     
@@ -1256,15 +1244,15 @@ namespace tableutils{
 
   TString T_HW_mc[] = {
     "HW, $M_{H}=80 GeV/c^{2}$ &", "HW, $M_{H}=100 GeV/c^{2}$ &","HW, $M_{H}=120 GeV/c^{2}$ &", "HW, $M_{H}=140 GeV/c^{2}$ &",
-    "HW, $M_{H}=150 GeV/c^{2}$ &",   // comment if needed
-    "HW, $M_{H}=155 GeV/c^{2}$ & ",  // comment if needed
+    "HW, $M_{H}=150 GeV/c^{2}$ &",   
+    "HW, $M_{H}=155 GeV/c^{2}$ & ",  
     "HW, $M_{H}=160 GeV/c^{2}$ &",
   };  
 
   TString T_HH_mc[]      = {
    "HH $M_{H}=80 GeV/c^{2}$ & ", "HH $M_{H}=100 GeV/c^{2}$ & ", "HH $M_{H}=120 GeV/c^{2}$ & ", "HH $M_{H}=140 GeV/c^{2}$ & ",
-   "HH $M_{H}=150 GeV/c^{2}$ & ", // comment if needed 
-   "HH $M_{H}=155 GeV/c^{2}$ & ", // comment if needed
+   "HH $M_{H}=150 GeV/c^{2}$ & ", 
+   "HH $M_{H}=155 GeV/c^{2}$ & ", 
    "HH $M_{H}=160 GeV/c^{2}$ & ",
   }; 
 
@@ -1273,8 +1261,8 @@ namespace tableutils{
    "$H^{+}\\rightarrow\\tau\\nu, M_{H}=190 GeV/c^{2}$ & ",
    "$H^{+}\\rightarrow\\tau\\nu, M_{H}=200 GeV/c^{2}$ & ", 
    "$H^{+}\\rightarrow\\tau\\nu, M_{H}=220 GeV/c^{2}$ & ",
-   "$H^{+}\\rightarrow\\tau\\nu, M_{H}=250 GeV/c^{2}$ & ", // comment if needed 
-   "$H^{+}\\rightarrow\\tau\\nu, M_{H}=300 GeV/c^{2}$ & ", // comment if needed
+   "$H^{+}\\rightarrow\\tau\\nu, M_{H}=250 GeV/c^{2}$ & ", 
+   "$H^{+}\\rightarrow\\tau\\nu, M_{H}=300 GeV/c^{2}$ & ", 
   }; 
 
   TString T_HTB_mc[]      = {
@@ -1282,14 +1270,13 @@ namespace tableutils{
    "$H^{+}\\rightarrow tb, M_{H}=200 GeV/c^{2}$ & ",
    "$H^{+}\\rightarrow tb, M_{H}=220 GeV/c^{2}$ & ", 
    "$H^{+}\\rightarrow tb, M_{H}=240 GeV/c^{2}$ & ",
-   "$H^{+}\\rightarrow tb, M_{H}=250 GeV/c^{2}$ & ", // comment if needed 
-   "$H^{+}\\rightarrow tb, M_{H}=260 GeV/c^{2}$ & ", // comment if needed
-   "$H^{+}\\rightarrow tb, M_{H}=280 GeV/c^{2}$ & ", // comment if needed
-   "$H^{+}\\rightarrow tb, M_{H}=300 GeV/c^{2}$ & ", // comment if needed
+   "$H^{+}\\rightarrow tb, M_{H}=250 GeV/c^{2}$ & ", 
+   "$H^{+}\\rightarrow tb, M_{H}=260 GeV/c^{2}$ & ", 
+   "$H^{+}\\rightarrow tb, M_{H}=280 GeV/c^{2}$ & ", 
+   "$H^{+}\\rightarrow tb, M_{H}=300 GeV/c^{2}$ & ", 
   }; 
 
   fprintf(f,"\\hline \n");
-  //fprintf(f,"\\hline \n");
  
   // size of extra samples
   int numbHWSamples = processedHWFiles.size();
@@ -1307,8 +1294,6 @@ namespace tableutils{
 
 
   for(int l=1;l<totalLines;l++){
-    
-    //cout<<endl<<" Debug => Line => "<<l<<endl;
 
     //hh samples
     if( l ==1 && numbHHSamples != 0 ){
@@ -2110,46 +2095,12 @@ namespace tableutils{
   vector<vector<double> > sm_datacards;
   vector<double>          data_datacards;
   vector<double>          taufakes_datacards;
-  //MUON-TAU channel ( Bkg after OS :  89.3 +/- 9.1 +/- 10.9 )
-  //double scale(0.09585155); double lum(2136);    double lumFactor(1);                                               // NO SCALE REWEIGHTING
-  //double lum(2203.);   double lumFactor(1); double scalefactor(2203./2136.);  double scale(0.09585155*scalefactor); // WITH SCALE REWEIGHTING :: WARNING DATA SHOULD NOT BE SCALED!!!
 
-
-                              
-  // HIGGS ===>
-  //double tau_fakes(89.3);     double tau_fakes_stat2(9.2*9.2); double tau_fakes_syst2(10.9*10.9);
-  // XSEC  ===>
-  //double tau_fakes(89.3);     double tau_fakes_stat2(9.1*9.1); double tau_fakes_syst2(10.9*10.9);   //no mt
-  //double tau_fakes(88.5);     double tau_fakes_stat2(0); double tau_fakes_syst2(10.8*10.8+8.9*8.9);   //no mt, new single top xsec (all syst included)
-  //double tau_fakes(88.5);     double tau_fakes_stat2(8.9*8.9); double tau_fakes_syst2(10.8*10.8);   //no mt, new single top xsec (all syst included)
-
-
-
-  //ttbar_init = 930480; scale = 0.37877225;   //SCALE UP    VALUES
-  //ttbar_init = 967053; scale = 0.36444745;   //SCALE DOWN  VALUES
-  //ttbar_init = 1062788; scale = 0.33161835;  //PDF UP   
-  //ttbar_init = 1065321; scale = 0.33082986;  //PDF DOWN
-  //double tau_fakes(73.6);     double tau_fakes_stat2(8.1*8.1); double tau_fakes_syst2(8.8*8.8); //MT fakes
-
-
-  //ELECTRON-TAU channel inclusive , Bkg after OS : 19.9 +/- 3.4 +/- 3.2
-  //double scale(0.08494740); double lum(xxx);   double lumFactor(1);  
-
- 
-  //ELECTRON-TAU channel (electron+2jets+met trigger) ,  Bkg after OS : 54.8.3 +/- 6.5 +/- 8.2
-  //double scale(0.08562379); double lum(1908.1); double lumFactor(1); //NO SCALE REWEIGHTING
-  
-  //double lum(1961.33); double lumFactor(1); double scalefactor(1961.33/1908.1); double scale(0.08562379*scalefactor); //WITH SCALE REWEIGHTING
-
-  // FIXME: hardcoded
-  //  double lum(4904); double lumFactor(1); double scalefactor(1.); double scale(0.02184544); //    double scale(0.03284470); // double scale(0.08562379); // NEW VALUES
   double lum(commondefinitions::LUM_); double lumFactor(1); double scalefactor(1.); double scale(0.51393073); //    double scale(0.03284470); // double scale(0.08562379); // NEW VALUES
 
   //  sqrt( (eA.B)^2 + (A.eB)^2 ), /B^2
 
   //  double tau_fakes(2939.9*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(261.6*261.6*0.699*0.699 + 0.02*0.02*2939.9*2939.9); // Preliminar from kNN
-
-  //  $\pm$8.55099\% 
 
   double f_1tau(2771);
   double fe_1tau(249.39);
@@ -2159,15 +2110,6 @@ namespace tableutils{
   taufakes_datacards.push_back(tau_fakes);
   taufakes_datacards.push_back(tau_fakes_stat2);
   taufakes_datacards.push_back(sqrt(tau_fakes_syst2));
-
-
-  // tau fakes: otherttbarlepton+jets + otherbkgw+jets (+otherbckZlljets?)
-  //scale = 0.0856237;
-  //ttbar_init = 930480; scale = 0.33835569; //SCALE UP VALUES
-  //ttbar_init = 967053; scale = 0.32555941; //SCALE DOWN  VALUES
-  //ttbar_init = 1062788; scale = 0.29623330;  //SCALE PDF UP VALUES
-  //ttbar_init = 1065321;  scale = 0.29552895 ;  //SCALE PDF SOWN VALUES
-
 
   //int STARTINGPOINT = STARTING_AT_LJETS_;
   int STARTINGPOINT = STARTING_AT_LJETSPLUSMET_;
@@ -2341,23 +2283,23 @@ namespace tableutils{
     tbhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m300.root"));
   }
   if( processHTB ){
-// for datacards //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m180.root"));
-// for datacards //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m200.root"));
-// for datacards //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m220.root"));
-// for datacards //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m240.root"));
-// for datacards //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m250.root"));
-// for datacards //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m260.root"));
-// for datacards //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m280.root"));
-// for datacards //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m300.root"));
-
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m180.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m200.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m220.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m240.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m250.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m260.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m280.root"));
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m300.root"));
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m180.root")); // for datacards
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m200.root")); // for datacards
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m220.root")); // for datacards
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m240.root")); // for datacards
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m250.root")); // for datacards
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m260.root")); // for datacards
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m280.root")); // for datacards
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m300.root")); // for datacards
+    
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m180.root")); // for tables
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m200.root")); // for tables
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m220.root")); // for tables
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m240.root")); // for tables
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m250.root")); // for tables
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m260.root")); // for tables
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m280.root")); // for tables
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m300.root")); // for tables
 
   }
   
@@ -3494,7 +3436,7 @@ namespace tableutils{
     //yield, stat error, jer uncert. 
     double vHTBm180(htb[0][0]); double sErHTBm180(htb[0][1]); double jesPHTBm180(sqrt(htb[0][2]*htb[0][2] + htb[0][4]*htb[0][4] + htb[0][6]*htb[0][6])); double jesNHTBm180(sqrt(htb[0][3]*htb[0][3] + htb[0][5]*htb[0][5] + htb[0][7]*htb[0][7])); double buPHTBm180(htb[0][8]); double buNHTBm180(htb[0][9]); double trPHTBm180(htb[0][13]); double trNHTBm180(htb[0][13]); double puHTBm180(0);
      double vHTBm190(0); double sErHTBm190(0); double jesPHTBm190(0); double jesNHTBm190(0); double buPHTBm190(0); double buNHTBm190(0); double trPHTBm190(0); double trNHTBm190(0); double puHTBm190(0);
-     //    double vHTBm200(htb[1][0]); double sErHTBm200(htb[1][1]); double jesPHTBm200(sqrt(htb[1][2]*htb[1][2] + htb[1][4]*htb[1][4] + htb[1][6]*htb[1][6])); double jesNHTBm200(sqrt(htb[1][3]*htb[1][3] + htb[1][5]*htb[1][5] + htb[1][7]*htb[1][7])); double buPHTBm200(htb[1][8]); double buNHTBm200(htb[1][9]); double trPHTBm200(htb[1][13]); double trNHTBm200(htb[1][13]); double puHTBm200(0);
+     double vHTBm200(htb[1][0]); double sErHTBm200(htb[1][1]); double jesPHTBm200(sqrt(htb[1][2]*htb[1][2] + htb[1][4]*htb[1][4] + htb[1][6]*htb[1][6])); double jesNHTBm200(sqrt(htb[1][3]*htb[1][3] + htb[1][5]*htb[1][5] + htb[1][7]*htb[1][7])); double buPHTBm200(htb[1][8]); double buNHTBm200(htb[1][9]); double trPHTBm200(htb[1][13]); double trNHTBm200(htb[1][13]); double puHTBm200(0);
     double vHTBm200(0); double sErHTBm200(0); double jesPHTBm200(0); double jesNHTBm200(0); double buPHTBm200(0); double buNHTBm200(0); double trPHTBm200(0); double trNHTBm200(0); double puHTBm200(0);
     double vHTBm220(htb[2][0]); double sErHTBm220(htb[2][1]); double jesPHTBm220(sqrt(htb[2][2]*htb[2][2] + htb[2][4]*htb[2][4] + htb[2][6]*htb[2][6])); double jesNHTBm220(sqrt(htb[2][3]*htb[2][3] + htb[2][5]*htb[2][5] + htb[2][7]*htb[2][7])); double buPHTBm220(htb[2][8]); double buNHTBm220(htb[2][9]); double trPHTBm220(htb[2][13]); double trNHTBm220(htb[2][13]); double puHTBm220(0);
     double vHTBm240(htb[3][0]); double sErHTBm240(htb[3][1]); double jesPHTBm240(sqrt(htb[3][2]*htb[3][2] + htb[3][4]*htb[3][4] + htb[3][6]*htb[3][6])); double jesNHTBm240(sqrt(htb[3][3]*htb[3][3] + htb[3][5]*htb[3][5] + htb[3][7]*htb[3][7])); double buPHTBm240(htb[3][8]); double buNHTBm240(htb[3][9]); double trPHTBm240(htb[3][13]); double trNHTBm240(htb[3][13]); double puHTBm240(0);
