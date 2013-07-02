@@ -157,14 +157,19 @@ int main(int argc, char* argv[])
   // FIXME: manage with --blah for having parameters like "withHiggs" and so on
   else if(runOn == "doTables"){
     cout << "Doing tables" << endl;
-    bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false), withShapes(true), withStatShapes(false);
+    bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false), produceDatacards(false), withShapes(true), withStatShapes(false);
     int detailed(2), notDetailed(1);      
     analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, sm, "PFlow", "yields-mc-", false, false, false); 
     cout << "Done SM table" << endl;
     analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false); 
     cout << "Done TBH table" << endl;
-    analyzer->summaryTable( notDetailed, true, false, false, false, withShapes, withStatShapes);
+    analyzer->summaryTable( notDetailed, true, false, false, false, produceDatacards, withShapes, withStatShapes);
     cout << "Done summary table" << endl;
+  }
+  else if(runOn == "doDatacards"){
+    bool produceDatacards(true), withShapes(true), withStatShapes(false);
+    int detailed(2), notDetailed(1); 
+    analyzer->summaryTable( notDetailed, true, false, false, false, produceDatacards, withShapes, withStatShapes);
   }
   else if(runOn == "doPlots"){
 //    PlotStyle sty();

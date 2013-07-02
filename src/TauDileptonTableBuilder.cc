@@ -2076,7 +2076,7 @@ namespace tableutils{
 // systset1 -> if enabled include only JES + MET +JER
 // systset2 -> if enabled include only btag unc
 // systset3 -> if enabled include only trigger
-  void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool systset1, bool systset2, bool systset3, bool withShapes, bool withStatShapes){ 
+  void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool systset1, bool systset2, bool systset3, bool produceDatacards, bool withShapes, bool withStatShapes){ 
 
     //    if(!doTheDatacards) // For datacards we want 234., for tables we want 1.1 // This does not need conditional, because of the default values
       for(size_t i=0; i<brHtaunu_.size(); ++i)
@@ -2283,24 +2283,26 @@ namespace tableutils{
     tbhFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m300.root"));
   }
   if( processHTB ){
-    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m180.root")); // for datacards
-    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m200.root")); // for datacards
-    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m220.root")); // for datacards
-    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m240.root")); // for datacards
-    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m250.root")); // for datacards
-    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m260.root")); // for datacards
-    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m280.root")); // for datacards
-    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m300.root")); // for datacards
-    
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m180.root")); // for tables
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m200.root")); // for tables
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m220.root")); // for tables
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m240.root")); // for tables
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m250.root")); // for tables
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m260.root")); // for tables
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m280.root")); // for tables
-    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m300.root")); // for tables
-
+    if(produceDatacards){
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m180.root")); // for datacards
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m200.root")); // for datacards
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m220.root")); // for datacards
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m240.root")); // for datacards
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m250.root")); // for datacards
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m260.root")); // for datacards
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m280.root")); // for datacards
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m300.root")); // for datacards
+    }
+    else {
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m180.root")); // for tables
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m200.root")); // for tables
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m220.root")); // for tables
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m240.root")); // for tables
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m250.root")); // for tables
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m260.root")); // for tables
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m280.root")); // for tables
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m300.root")); // for tables
+    }
   }
   
  
@@ -3390,7 +3392,7 @@ namespace tableutils{
   if(incDocument) fprintf(f,"\\end{document} \n"); //COMMENT
   fclose(f);
 
-  if(higgs) doDatacards(data_datacards, tbh_datacards, htb_datacards, sm_datacards, taufakes_datacards, withShapes, withStatShapes, string("PFlow"));
+  if(higgs && produceDatacards) doDatacards(data_datacards, tbh_datacards, htb_datacards, sm_datacards, taufakes_datacards, withShapes, withStatShapes, string("PFlow"));
 
 
   processedMCFile->Close();

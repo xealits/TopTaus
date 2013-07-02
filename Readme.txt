@@ -100,9 +100,11 @@ physicsAnalysis test/physicsAnalysisParSets_cfg.py doPlots
 
 Produce tables
 --------------
-physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables --doDatacards [true|false]
-		--doDatacards: true means datacards are produced, and tbh yields are rescaled to the ttbar production cross-section
-			       false means datacards are not produced, and tbh yields are rescaled to the production cross section of the tbh samples (1.1pb)
+physicsAnalysis test/physicsAnalysisParSets_cfg.py doTables 
+                datacards are not produced, and tbh yields are rescaled to the production cross section of the tbh samples (1.1pb)
+physicsAnalysis test/physicsAnalysisParSets_cfg.py doDatacards 
+		datacards are produced, and tbh yields are rescaled to the ttbar production cross-section
+		
 
 Produce fakerate
 ----------------
@@ -126,6 +128,8 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-07-02: Removed obsolete syst components
+	    Split doDatacards from doTables
 2013-07-01: Code cleaning
 	    New btagSF payload (will switch when ntuples will be ready)
 2013-06-28: Added H+->tb M_H+ = 200 GeV processing
