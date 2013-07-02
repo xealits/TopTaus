@@ -3437,7 +3437,7 @@ namespace tableutils{
     double vHTBm180(htb[0][0]); double sErHTBm180(htb[0][1]); double jesPHTBm180(sqrt(htb[0][2]*htb[0][2] + htb[0][4]*htb[0][4] + htb[0][6]*htb[0][6])); double jesNHTBm180(sqrt(htb[0][3]*htb[0][3] + htb[0][5]*htb[0][5] + htb[0][7]*htb[0][7])); double buPHTBm180(htb[0][8]); double buNHTBm180(htb[0][9]); double trPHTBm180(htb[0][13]); double trNHTBm180(htb[0][13]); double puHTBm180(0);
      double vHTBm190(0); double sErHTBm190(0); double jesPHTBm190(0); double jesNHTBm190(0); double buPHTBm190(0); double buNHTBm190(0); double trPHTBm190(0); double trNHTBm190(0); double puHTBm190(0);
      double vHTBm200(htb[1][0]); double sErHTBm200(htb[1][1]); double jesPHTBm200(sqrt(htb[1][2]*htb[1][2] + htb[1][4]*htb[1][4] + htb[1][6]*htb[1][6])); double jesNHTBm200(sqrt(htb[1][3]*htb[1][3] + htb[1][5]*htb[1][5] + htb[1][7]*htb[1][7])); double buPHTBm200(htb[1][8]); double buNHTBm200(htb[1][9]); double trPHTBm200(htb[1][13]); double trNHTBm200(htb[1][13]); double puHTBm200(0);
-    double vHTBm200(0); double sErHTBm200(0); double jesPHTBm200(0); double jesNHTBm200(0); double buPHTBm200(0); double buNHTBm200(0); double trPHTBm200(0); double trNHTBm200(0); double puHTBm200(0);
+     //double vHTBm200(0); double sErHTBm200(0); double jesPHTBm200(0); double jesNHTBm200(0); double buPHTBm200(0); double buNHTBm200(0); double trPHTBm200(0); double trNHTBm200(0); double puHTBm200(0);
     double vHTBm220(htb[2][0]); double sErHTBm220(htb[2][1]); double jesPHTBm220(sqrt(htb[2][2]*htb[2][2] + htb[2][4]*htb[2][4] + htb[2][6]*htb[2][6])); double jesNHTBm220(sqrt(htb[2][3]*htb[2][3] + htb[2][5]*htb[2][5] + htb[2][7]*htb[2][7])); double buPHTBm220(htb[2][8]); double buNHTBm220(htb[2][9]); double trPHTBm220(htb[2][13]); double trNHTBm220(htb[2][13]); double puHTBm220(0);
     double vHTBm240(htb[3][0]); double sErHTBm240(htb[3][1]); double jesPHTBm240(sqrt(htb[3][2]*htb[3][2] + htb[3][4]*htb[3][4] + htb[3][6]*htb[3][6])); double jesNHTBm240(sqrt(htb[3][3]*htb[3][3] + htb[3][5]*htb[3][5] + htb[3][7]*htb[3][7])); double buPHTBm240(htb[3][8]); double buNHTBm240(htb[3][9]); double trPHTBm240(htb[3][13]); double trNHTBm240(htb[3][13]); double puHTBm240(0);
     double vHTBm250(htb[4][0]); double sErHTBm250(htb[4][1]); double jesPHTBm250(sqrt(htb[4][2]*htb[4][2] + htb[4][4]*htb[4][4] + htb[4][6]*htb[4][6])); double jesNHTBm250(sqrt(htb[4][3]*htb[4][3] + htb[4][5]*htb[4][5] + htb[4][7]*htb[4][7])); double buPHTBm250(htb[4][8]); double buNHTBm250(htb[4][9]); double trPHTBm250(htb[4][13]); double trNHTBm250(htb[4][13]); double puHTBm250(0);
@@ -3669,17 +3669,17 @@ namespace tableutils{
       outfile<<" lumiErr                lnN"<<setw(7)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.00<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<endl;//"    Luminosity Error"<<endl;
       outfile<<" pileupErr               lnN"<<setw(7)<<1+puHTB/vHTB<<setw(10)<<1+putt/tt<<setw(10)<<1+puttll/ttll<<setw(10)<<1.00<<setw(10)<<1+puZll/Zll<<setw(10)<<1+puZtau/Ztau<<setw(10)<<1+pusTop/sTop<<setw(10)<<1+puVV/VV<<endl;//"    pileup"<<endl;
       if(withShapes){
-	outfile<<"jes           "<<"  shape        1        1        1           1           1           1           1           1            1     "<<endl;  //        JES_effect_on_shape                             
-	outfile<<"met           "<<"  shape        1        1        1           1           1           1           1           1            1     "<<endl; //        MET_effect_on_shape                             
-	outfile<<"jer           "<<"  shape        1        1        1           1           1           1           1           1            1     "<<endl;  //       JER_effect_on_shape                
-	if(!withStatShapes) outfile<<"#";outfile<<"HTB_Stat      "<<"  shape        1        -        -           -           -           -           -           -            -     "<<endl;
-	if(!withStatShapes) outfile<<"#";outfile<<"tt_ltau_Stat  "<<"  shape        -        -        1           -           -           -           -           -            -     "<<endl;
-	if(!withStatShapes) outfile<<"#";outfile<<"tt_ll_Stat    "<<"  shape        -        -        -           1           -           -           -           -            -     "<<endl;
-	if(!withStatShapes) outfile<<"#";outfile<<"tau_fake_Stat "<<"  shape        -        -        -           -           1           -           -           -            -     "<<endl;
-	if(!withStatShapes) outfile<<"#";outfile<<"Z_eemumu_Stat "<<"  shape        -        -        -           -           -           1           -           -            -     "<<endl;
-	if(!withStatShapes) outfile<<"#";outfile<<"Z_tautau_Stat "<<"  shape        -        -        -           -           -           -           1           -            -     "<<endl;
-	if(!withStatShapes) outfile<<"#";outfile<<"singleTop_Stat"<<"  shape        -        -        -           -           -           -           -           1            -     "<<endl;
-	if(!withStatShapes) outfile<<"#";outfile<<"di_boson_Stat "<<"  shape        -        -        -           -           -           -           -           -            1     "<<endl;
+	outfile<<"jes           "<<"  shape        1        1        1           1           1           1           1           1            "<<endl;  //        JES_effect_on_shape                             
+	outfile<<"met           "<<"  shape        1        1        1           1           1           1           1           1            "<<endl; //        MET_effect_on_shape                             
+	outfile<<"jer           "<<"  shape        1        1        1           1           1           1           1           1            "<<endl;  //       JER_effect_on_shape                
+	if(!withStatShapes) outfile<<"#";outfile<<"HTB_Stat      "<<"  shape        1        -        -           -           -           -           -            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"tt_ltau_Stat  "<<"  shape        -        1        -           -           -           -           -            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"tt_ll_Stat    "<<"  shape        -        -        1           -           -           -           -            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"tau_fake_Stat "<<"  shape        -        -        -           1           -           -           -            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"Z_eemumu_Stat "<<"  shape        -        -        -           -           1           -           -            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"Z_tautau_Stat "<<"  shape        -        -        -           -           -           1           -            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"singleTop_Stat"<<"  shape        -        -        -           -           -           -           1            -     "<<endl;
+	if(!withStatShapes) outfile<<"#";outfile<<"di_boson_Stat "<<"  shape        -        -        -           -           -           -           -            1     "<<endl;
 	//             
 	//outfile<< HH3_Stat        shape  1         -        -           -           -           -           -           -            -
 	//outfile<< WH3_Stat        shape  -         1        -           -           -           -           -           -            -
