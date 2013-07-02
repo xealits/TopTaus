@@ -3638,8 +3638,8 @@ namespace tableutils{
       outfile<<"rate      "<<vHTB<<setw(10)<<tt<<setw(10)<<ttll<<setw(10)<<tauF<<setw(10)<<Zll<<setw(10)<<Ztau<<setw(10)<<sTop<<setw(10)<<VV<<endl;//"       Projected event rates"<<endl; 
       outfile<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
       outfile<<endl;
-      outfile<<" tauMetTrg      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tau+MET trg"<<endl;
-      outfile<<" eJetMHTTrg     lnN"<<setw(7)<<1+trHTB/vHTB<<setw(10)<<1+trPtt/tt<<setw(10)<<1+trPttll/ttll<<setw(10)<<1.00<<setw(10)<<1+trPZll/Zll<<setw(10)<<1+trPZtau/Ztau<<setw(10)<<1+trPsTop/sTop<<setw(10)<<1+trPVV/VV<<endl;//"    e+jet+MHT trig"<<endl;
+      //      outfile<<" tauMetTrg      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tau+MET trg"<<endl;
+      //      outfile<<" eJetMHTTrg     lnN"<<setw(7)<<1+trHTB/vHTB<<setw(10)<<1+trPtt/tt<<setw(10)<<1+trPttll/ttll<<setw(10)<<1.00<<setw(10)<<1+trPZll/Zll<<setw(10)<<1+trPZtau/Ztau<<setw(10)<<1+trPsTop/sTop<<setw(10)<<1+trPVV/VV<<endl;//"    e+jet+MHT trig"<<endl;
       outfile<<" tauId  lnN"<<setw(7)<<1.06<<setw(10)<<1.06<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<endl;//"    tau ID"<<endl;
       outfile<<" jetTauMisId    lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    jet-> tau miss ID"<<endl;
       outfile<<" fakesSyst      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sytauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    tau-fakes syst"<<endl;
