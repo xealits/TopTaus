@@ -474,18 +474,18 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
       TString step3  = extra+TString(" #geq 2 jet"); stepsMons[key]->initMonitorForStep(step3);   dirsMaps[step3] = dirObj->mkdir("#geq 2 jet");
       TString step4  = extra+TString(" #geq 3 jet"); stepsMons[key]->initMonitorForStep(step4);   dirsMaps[step4] = dirObj->mkdir("#geq 3 jet");
       TString step5  = extra+TString(" MET");        stepsMons[key]->initMonitorForStep(step5);   dirsMaps[step5] = dirObj->mkdir("MET");
-      /// nomt ///      TString step6  = extra+TString(" MT");         stepsMons[key]->initMonitorForStep(step6);   dirsMaps[step6] = dirObj->mkdir("MT");
-      TString step6  = extra+TString(" 1 btag");     stepsMons[key]->initMonitorForStep(step6);   dirsMaps[step6] = dirObj->mkdir("1 btag");
-      TString step7  = extra+TString(" 1 Tau");      stepsMons[key]->initMonitorForStep(step7);   dirsMaps[step7] = dirObj->mkdir("1 Tau");
-      TString step8  = extra+TString(" OS");         stepsMons[key]->initMonitorForStep(step8);   dirsMaps[step8] = dirObj->mkdir("OS");
-      TString step9 = extra+TString(" 2 btag");     stepsMons[key]->initMonitorForStep(step9);  dirsMaps[step9]= dirObj->mkdir("2 btag");
-      TString step10 = extra+TString(" R");          stepsMons[key]->initMonitorForStep(step10);  dirsMaps[step10]= dirObj->mkdir("R");
+      TString step6  = extra+TString(" MT");         stepsMons[key]->initMonitorForStep(step6);   dirsMaps[step6] = dirObj->mkdir("MT");
+//      TString step6  = extra+TString(" 1 btag");     stepsMons[key]->initMonitorForStep(step6);   dirsMaps[step6] = dirObj->mkdir("1 btag");
+//      TString step7  = extra+TString(" 1 Tau");      stepsMons[key]->initMonitorForStep(step7);   dirsMaps[step7] = dirObj->mkdir("1 Tau");
+//      TString step8  = extra+TString(" OS");         stepsMons[key]->initMonitorForStep(step8);   dirsMaps[step8] = dirObj->mkdir("OS");
+//      TString step9 = extra+TString(" 2 btag");     stepsMons[key]->initMonitorForStep(step9);  dirsMaps[step9]= dirObj->mkdir("2 btag");
+//      TString step10 = extra+TString(" R");          stepsMons[key]->initMonitorForStep(step10);  dirsMaps[step10]= dirObj->mkdir("R");
 
-/// nomt ///      TString step7  = extra+TString(" 1 btag");     stepsMons[key]->initMonitorForStep(step7);   dirsMaps[step7] = dirObj->mkdir("1 btag");
-/// nomt ///      TString step8  = extra+TString(" 1 Tau");      stepsMons[key]->initMonitorForStep(step8);   dirsMaps[step8] = dirObj->mkdir("1 Tau");
-/// nomt ///      TString step9  = extra+TString(" OS");         stepsMons[key]->initMonitorForStep(step9);   dirsMaps[step9] = dirObj->mkdir("OS");
-/// nomt ///      TString step10 = extra+TString(" 2 btag");     stepsMons[key]->initMonitorForStep(step10);  dirsMaps[step10]= dirObj->mkdir("2 btag");
-/// nomt ///      TString step11 = extra+TString(" R");          stepsMons[key]->initMonitorForStep(step11);  dirsMaps[step11]= dirObj->mkdir("R");
+      TString step7  = extra+TString(" 1 btag");     stepsMons[key]->initMonitorForStep(step7);   dirsMaps[step7] = dirObj->mkdir("1 btag");
+      TString step8  = extra+TString(" 1 Tau");      stepsMons[key]->initMonitorForStep(step8);   dirsMaps[step8] = dirObj->mkdir("1 Tau");
+      TString step9  = extra+TString(" OS");         stepsMons[key]->initMonitorForStep(step9);   dirsMaps[step9] = dirObj->mkdir("OS");
+      TString step10 = extra+TString(" 2 btag");     stepsMons[key]->initMonitorForStep(step10);  dirsMaps[step10]= dirObj->mkdir("2 btag");
+      TString step11 = extra+TString(" R");          stepsMons[key]->initMonitorForStep(step11);  dirsMaps[step11]= dirObj->mkdir("R");
       
     }
 
@@ -513,30 +513,30 @@ void HistogramBuilder::buildYieldsHistograms( TFile * outFile, map< TString, Sel
 
 
   // MET cut position replaced with 3rd jets
-  TString steps[] = {"reco","trigger", "minitree","= 1 lepton","#geq 1 jet","#geq 2 jets","1l + #geq 2j + MET","1l + #geq 3j + MET", "#geq 1btag","1 #tau",         "OS", "#geq 2 btags", "R"};
-  /// nomt ///  TString steps[] = {"reco","trigger", "minitree","= 1 lepton","#geq 1 jet","#geq 2 jets","1l + #geq 2j + MET","1l + #geq 3j + MET", "MT", "#geq 1btag","1 #tau",         "OS", "#geq 2 btags", "R"};
+  //  TString steps[] = {"reco","trigger", "minitree","= 1 lepton","#geq 1 jet","#geq 2 jets","1l + #geq 2j + MET","1l + #geq 3j + MET", "#geq 1btag","1 #tau",         "OS", "#geq 2 btags", "R"};
+  TString steps[] = {"reco","trigger", "minitree","= 1 lepton","#geq 1 jet","#geq 2 jets","1l + #geq 2j + MET","1l + #geq 3j + MET", "MT", "#geq 1btag","1 #tau",         "OS", "#geq 2 btags", "R"};
 
   if( commondefinitions::MODE_ == commondefinitions::STARTING_AT_LJETS_){
       steps[6]  = TString("1 lep + #geq 3 jets");  
       steps[7]  = TString("MET"); 
      
 
-//      if(!APPLY_MT_CUT_){
-//	steps[8]  = TString("#geq 1btag");
-//	steps[9] = TString("1 #tau");
-//	steps[10] = TString("OS");
-//	steps[11] = TString("#geq 2 btags");
-//	steps[12] = TString("R");
-//      }
-//      else{
+      if(!commondefinitions::APPLY_MT_CUT_){
+	steps[8]  = TString("#geq 1btag");
+	steps[9] = TString("1 #tau");
+	steps[10] = TString("OS");
+	steps[11] = TString("#geq 2 btags");
+	steps[12] = TString("R");
+      }
+      else{
 	steps[8]  = TString("MT");
 	steps[9]  = TString("#geq 1btag");
 	steps[10] = TString("1 #tau");
 	steps[11] = TString("OS");
 	steps[12] = TString("#geq 2 btags");
 	steps[13] = TString("R");
-	//      }
-
+      }
+      
   }
 
   int nsteps = sizeof(steps)/sizeof(TString);
@@ -593,27 +593,27 @@ void HistogramBuilder::buildMCYieldsHistograms( TFile * outFile, map< TString, S
 
 
   // MONITORING EVENT YIELDS and W+jets /////////////////////////////////////////////////////////////////////////////////////////////////////
-  TString steps[] = {"reco","trigger", "minitree","= 1 lepton","#geq 1 jet","#geq 2 jets","1l + #geq 2j + MET","1l + #geq 3j + MET", "#geq 1btag","1 #tau",         "OS", "#geq 2 btags","R"};
-  /// nomt ///  TString steps[] = {"reco","trigger", "minitree","= 1 lepton","#geq 1 jet","#geq 2 jets","1l + #geq 2j + MET","1l + #geq 3j + MET","MT", "#geq 1btag","1 #tau",         "OS", "#geq 2 btags","R"};
+  //  TString steps[] = {"reco","trigger", "minitree","= 1 lepton","#geq 1 jet","#geq 2 jets","1l + #geq 2j + MET","1l + #geq 3j + MET", "#geq 1btag","1 #tau",         "OS", "#geq 2 btags","R"};
+  TString steps[] = {"reco","trigger", "minitree","= 1 lepton","#geq 1 jet","#geq 2 jets","1l + #geq 2j + MET","1l + #geq 3j + MET","MT", "#geq 1btag","1 #tau",         "OS", "#geq 2 btags","R"};
 
 
   if( commondefinitions::MODE_ == commondefinitions::STARTING_AT_LJETS_ ){
+// fix attempt not gone well//    steps[6]  = TString("1 lep + #geq 3 jets");  
+// fix attempt not gone well//    steps[7]  = TString("MET"); 
+// fix attempt not gone well//    steps[8]  = TString("#geq 1btag");
+// fix attempt not gone well//    steps[9] = TString("1 #tau");
+// fix attempt not gone well//    steps[10] = TString("OS");
+// fix attempt not gone well//    steps[11] = TString("#geq 2 btags");
+// fix attempt not gone well//    steps[12] = TString("R");
+
     steps[6]  = TString("1 lep + #geq 3 jets");  
     steps[7]  = TString("MET"); 
-    steps[8]  = TString("#geq 1btag");
-    steps[9] = TString("1 #tau");
-    steps[10] = TString("OS");
-    steps[11] = TString("#geq 2 btags");
-    steps[12] = TString("R");
-
-/// nomt ///    steps[6]  = TString("1 lep + #geq 3 jets");  
-/// nomt ///    steps[7]  = TString("MET"); 
-/// nomt ///    steps[8]  = TString("MT");
-/// nomt ///    steps[9]  = TString("#geq 1btag");
-/// nomt ///    steps[10] = TString("1 #tau");
-/// nomt ///    steps[11] = TString("OS");
-/// nomt ///    steps[12] = TString("#geq 2 btags");
-/// nomt ///    steps[13] = TString("R");
+    steps[8]  = TString("MT");
+    steps[9]  = TString("#geq 1btag");
+    steps[10] = TString("1 #tau");
+    steps[11] = TString("OS");
+    steps[12] = TString("#geq 2 btags");
+    steps[13] = TString("R");
 
   }
 

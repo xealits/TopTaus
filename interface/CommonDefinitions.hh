@@ -169,7 +169,10 @@ namespace commondefinitions{
   
   
   enum taudilCh{ 
-    ETAU_TDCH,  MUTAU_TDCH, LEPJETS_TDCH, LEPLEP_TDCH, TAUJETS_TDCH, TAUTAU_TDCH, ALLJETS_TDCH, 
+    ETAU_TDCH,  MUTAU_TDCH, LEPJETS_TDCH, 
+    LEPLEP_TDCH,
+    //    EE_TDCH, EMU_TDCH, MUMU_TDCH,
+    TAUJETS_TDCH, TAUTAU_TDCH, ALLJETS_TDCH, 
     WJETS_TDCH,
     ZJETS_TDCH, 
     ZTAUTAU_TDCH,                                               

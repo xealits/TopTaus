@@ -173,6 +173,8 @@ namespace tableutils{
   TString hName_uncminus;    hName_uncminus = key+TString("/YieldsMC")+TString("/cutflow_yields_mc_uncminus_") + leptauStringMC;
   TString hName_jerplus;     hName_jerplus  = key+TString("/YieldsMC")+TString("/cutflow_yields_mc_jerplus_")  + leptauStringMC; 
   TString hName_jerminus;    hName_jerminus = key+TString("/YieldsMC")+TString("/cutflow_yields_mc_jerminus_") + leptauStringMC;
+  TString hName_tesplus;     hName_tesplus  = key+TString("/YieldsMC")+TString("/cutflow_yields_mc_tesplus_")  + leptauStringMC; 
+  TString hName_tesminus;    hName_tesminus = key+TString("/YieldsMC")+TString("/cutflow_yields_mc_tesminus_") + leptauStringMC;
   TString hName_bminus;      hName_bminus   = key+TString("/YieldsMC")+TString("/cutflow_yields_mc_bminus_")   + leptauStringMC; 
   TString hName_bplus;       hName_bplus    = key+TString("/YieldsMC")+TString("/cutflow_yields_mc_bplus_")    + leptauStringMC; 
   TString hName_trigger;     hName_trigger  = key+TString("/YieldsMC")+TString("/cutflow_mc_triggErr_")        + leptauStringMC; 
@@ -185,6 +187,8 @@ namespace tableutils{
   TString hName_higgs_e_tau_uncminus;  hName_higgs_e_tau_uncminus = key+TString("/Yields") + TString("/e_tau/cutflow_yields_uncminus_") + etauString;
   TString hName_higgs_e_tau_jerplus;   hName_higgs_e_tau_jerplus  = key+TString("/Yields") + TString("/e_tau/cutflow_yields_jerplus_")  + etauString; 
   TString hName_higgs_e_tau_jerminus;  hName_higgs_e_tau_jerminus = key+TString("/Yields") + TString("/e_tau/cutflow_yields_jerminus_") + etauString;
+  TString hName_higgs_e_tau_tesplus;   hName_higgs_e_tau_tesplus  = key+TString("/Yields") + TString("/e_tau/cutflow_yields_tesplus_")  + etauString; 
+  TString hName_higgs_e_tau_tesminus;  hName_higgs_e_tau_tesminus = key+TString("/Yields") + TString("/e_tau/cutflow_yields_tesminus_") + etauString;
   TString hName_higgs_e_tau_bplus;     hName_higgs_e_tau_bplus    = key+TString("/Yields") + TString("/e_tau/cutflow_yields_bplus_")    + etauString; 
   TString hName_higgs_e_tau_bminus;    hName_higgs_e_tau_bminus   = key+TString("/Yields") + TString("/e_tau/cutflow_yields_bminus_")   + etauString;
   TString hName_higgs_e_tau_trigger;   hName_higgs_e_tau_trigger  = key+TString("/Yields") + TString("/e_tau/cutflow_triggErr_")        + etauString;
@@ -195,13 +199,15 @@ namespace tableutils{
   TString hName_higgs_m_tau_uncminus;  hName_higgs_m_tau_uncminus = key+TString("/Yields") + TString("/m_tau/cutflow_yields_uncminus_") + mtauString; 
   TString hName_higgs_m_tau_jerplus;   hName_higgs_m_tau_jerplus  = key+TString("/Yields") + TString("/m_tau/cutflow_yields_jerplus_")  + mtauString;  
   TString hName_higgs_m_tau_jerminus;  hName_higgs_m_tau_jerminus = key+TString("/Yields") + TString("/m_tau/cutflow_yields_jerminus_") + mtauString;
+  TString hName_higgs_m_tau_tesplus;   hName_higgs_m_tau_tesplus  = key+TString("/Yields") + TString("/m_tau/cutflow_yields_tesplus_")  + mtauString;  
+  TString hName_higgs_m_tau_tesminus;  hName_higgs_m_tau_tesminus = key+TString("/Yields") + TString("/m_tau/cutflow_yields_tesminus_") + mtauString;
   TString hName_higgs_m_tau_bplus;     hName_higgs_m_tau_bplus    = key+TString("/Yields") + TString("/m_tau/cutflow_yields_bplus_")    + mtauString;  
   TString hName_higgs_m_tau_bminus;    hName_higgs_m_tau_bminus   = key+TString("/Yields") + TString("/m_tau/cutflow_yields_bminus_")   + mtauString;
   TString hName_higgs_m_tau_trigger;   hName_higgs_m_tau_trigger  = key+TString("/Yields") + TString("/m_tau/cutflow_triggErr_")        + mtauString;
 
   // MC split channel plots
   TH2D * h(0); TH2D * h_plus(0); TH2D * h_minus(0); 
-  TH2D * h_uncplus(0); TH2D * h_uncminus(0); TH2D * h_jerplus(0); TH2D * h_jerminus(0); TH2D * h_bplus(0); TH2D * h_bminus(0);TH2D * h_trigger(0);
+  TH2D * h_uncplus(0); TH2D * h_uncminus(0); TH2D * h_jerplus(0); TH2D * h_jerminus(0); TH2D* h_tesplus(0); TH2D* h_tesminus(0); TH2D * h_bplus(0); TH2D * h_bminus(0);TH2D * h_trigger(0);
 
   // data plots
   TH1D * hData(0) ; TH1D * hData_e(0); TH1D * hData_m(0);
@@ -209,11 +215,11 @@ namespace tableutils{
   TH1D * h_e(0); TH1D * h_m(0);
 
 
-  vector< TH1D * > h_hh_e, h_hh_e_plus, h_hh_e_minus, h_hh_e_uncplus, h_hh_e_uncminus, h_hh_e_jerplus, h_hh_e_jerminus, h_hh_e_bplus, h_hh_e_bminus, h_hh_e_trigger;
-  vector< TH1D * > h_hh_m, h_hh_m_plus, h_hh_m_minus, h_hh_m_uncplus, h_hh_m_uncminus, h_hh_m_jerplus, h_hh_m_jerminus, h_hh_m_bplus, h_hh_m_bminus, h_hh_m_trigger;
+  vector< TH1D * > h_hh_e, h_hh_e_plus, h_hh_e_minus, h_hh_e_uncplus, h_hh_e_uncminus, h_hh_e_jerplus, h_hh_e_tesplus, h_hh_e_jerminus, h_hh_e_tesminus, h_hh_e_bplus, h_hh_e_bminus, h_hh_e_trigger;
+  vector< TH1D * > h_hh_m, h_hh_m_plus, h_hh_m_minus, h_hh_m_uncplus, h_hh_m_uncminus, h_hh_m_jerplus, h_hh_m_tesplus, h_hh_m_jerminus, h_hh_m_tesminus, h_hh_m_bplus, h_hh_m_bminus, h_hh_m_trigger;
     
-  vector< TH1D * > h_hw_e, h_hw_e_plus, h_hw_e_minus, h_hw_e_uncplus, h_hw_e_uncminus, h_hw_e_jerplus, h_hw_e_jerminus, h_hw_e_bplus, h_hw_e_bminus, h_hw_e_trigger; 
-  vector< TH1D * > h_hw_m, h_hw_m_plus, h_hw_m_minus, h_hw_m_uncplus, h_hw_m_uncminus, h_hw_m_jerplus, h_hw_m_jerminus, h_hw_m_bplus, h_hw_m_bminus, h_hw_m_trigger;
+  vector< TH1D * > h_hw_e, h_hw_e_plus, h_hw_e_minus, h_hw_e_uncplus, h_hw_e_uncminus, h_hw_e_jerplus, h_hw_e_tesplus, h_hw_e_jerminus, h_hw_e_tesminus, h_hw_e_bplus, h_hw_e_bminus, h_hw_e_trigger; 
+  vector< TH1D * > h_hw_m, h_hw_m_plus, h_hw_m_minus, h_hw_m_uncplus, h_hw_m_uncminus, h_hw_m_jerplus, h_hw_m_tesplus, h_hw_m_jerminus, h_hw_m_tesminus, h_hw_m_bplus, h_hw_m_bminus, h_hw_m_trigger;
 
   vector< TH1D * > 
     h_tbh_e,
@@ -223,6 +229,8 @@ namespace tableutils{
     h_tbh_e_uncminus,
     h_tbh_e_jerplus,
     h_tbh_e_jerminus,
+    h_tbh_e_tesplus,
+    h_tbh_e_tesminus,
     h_tbh_e_bplus,
     h_tbh_e_bminus,
     h_tbh_e_trigger; 
@@ -234,6 +242,8 @@ namespace tableutils{
     h_tbh_m_uncminus,
     h_tbh_m_jerplus,
     h_tbh_m_jerminus, 
+    h_tbh_m_tesplus,
+    h_tbh_m_tesminus, 
     h_tbh_m_bplus, 
     h_tbh_m_bminus, 
     h_tbh_m_trigger;
@@ -246,6 +256,8 @@ namespace tableutils{
     h_htb_e_uncminus,
     h_htb_e_jerplus,
     h_htb_e_jerminus,
+    h_htb_e_tesplus,
+    h_htb_e_tesminus,
     h_htb_e_bplus,
     h_htb_e_bminus,
     h_htb_e_trigger; 
@@ -257,6 +269,8 @@ namespace tableutils{
     h_htb_m_uncminus,
     h_htb_m_jerplus,
     h_htb_m_jerminus, 
+    h_htb_m_tesplus,
+    h_htb_m_tesminus, 
     h_htb_m_bplus, 
     h_htb_m_bminus, 
     h_htb_m_trigger;
@@ -269,6 +283,8 @@ namespace tableutils{
     h_uncminus = (TH2D*) processedFile->Get(hName_uncminus);
     h_jerplus  = (TH2D*) processedFile->Get(hName_jerplus);
     h_jerminus = (TH2D*) processedFile->Get(hName_jerminus);
+    h_tesplus  = (TH2D*) processedFile->Get(hName_tesplus);
+    h_tesminus = (TH2D*) processedFile->Get(hName_tesminus);
     h_bplus    = (TH2D*) processedFile->Get(hName_bplus);
     h_bminus   = (TH2D*) processedFile->Get(hName_bminus);
     if (triggerunc )h_trigger  = (TH2D*) processedFile->Get(hName_trigger); 
@@ -288,6 +304,8 @@ namespace tableutils{
       h_hh_e_uncminus.push_back((TH1D *)(processedHHFiles[i])->Get(hName_higgs_e_tau_uncminus)); h_hh_m_uncminus.push_back((TH1D *)(processedHHFiles[i])->Get(hName_higgs_m_tau_uncminus));
       h_hh_e_jerplus.push_back( (TH1D *)(processedHHFiles[i])->Get(hName_higgs_e_tau_jerplus) ); h_hh_m_jerplus.push_back( (TH1D *)(processedHHFiles[i])->Get(hName_higgs_m_tau_jerplus) );   
       h_hh_e_jerminus.push_back((TH1D *)(processedHHFiles[i])->Get(hName_higgs_e_tau_jerminus)); h_hh_m_jerminus.push_back((TH1D *)(processedHHFiles[i])->Get(hName_higgs_m_tau_jerminus));  
+      h_hh_e_tesplus.push_back( (TH1D *)(processedHHFiles[i])->Get(hName_higgs_e_tau_tesplus) ); h_hh_m_tesplus.push_back( (TH1D *)(processedHHFiles[i])->Get(hName_higgs_m_tau_tesplus) );   
+      h_hh_e_tesminus.push_back((TH1D *)(processedHHFiles[i])->Get(hName_higgs_e_tau_tesminus)); h_hh_m_tesminus.push_back((TH1D *)(processedHHFiles[i])->Get(hName_higgs_m_tau_tesminus));  
       h_hh_e_bplus.push_back(   (TH1D *)(processedHHFiles[i])->Get(hName_higgs_e_tau_bplus) );   h_hh_m_bplus.push_back(   (TH1D *)(processedHHFiles[i])->Get(hName_higgs_m_tau_bplus)   );   
       h_hh_e_bminus.push_back(  (TH1D *)(processedHHFiles[i])->Get(hName_higgs_e_tau_bminus));   h_hh_m_bminus.push_back(  (TH1D *)(processedHHFiles[i])->Get(hName_higgs_m_tau_bminus)  );  
       if (triggerunc ){ 
@@ -296,10 +314,10 @@ namespace tableutils{
     }
     else { 
       h_hh_e.push_back(0);  h_hh_e_plus.push_back(0); h_hh_e_minus.push_back(0); h_hh_e_trigger.push_back(0); 
-      h_hh_e_uncplus.push_back(0); h_hh_e_uncminus.push_back(0); h_hh_e_jerplus.push_back(0); h_hh_e_jerminus.push_back(0); h_hh_e_bplus.push_back(0);   h_hh_e_bminus.push_back(0);
+      h_hh_e_uncplus.push_back(0); h_hh_e_uncminus.push_back(0); h_hh_e_jerplus.push_back(0); h_hh_e_jerminus.push_back(0); h_hh_e_tesplus.push_back(0); h_hh_e_tesminus.push_back(0); h_hh_e_bplus.push_back(0);   h_hh_e_bminus.push_back(0);
 
       h_hh_m.push_back(0);  h_hh_m_plus.push_back(0); h_hh_m_minus.push_back(0); h_hh_m_trigger.push_back(0);
-      h_hh_m_uncplus.push_back(0); h_hh_m_uncminus.push_back(0); h_hh_m_jerplus.push_back(0); h_hh_m_jerminus.push_back(0); h_hh_m_bplus.push_back(0); h_hh_m_bminus.push_back(0); 
+      h_hh_m_uncplus.push_back(0); h_hh_m_uncminus.push_back(0); h_hh_m_jerplus.push_back(0); h_hh_m_jerminus.push_back(0); h_hh_m_tesplus.push_back(0); h_hh_m_tesminus.push_back(0); h_hh_m_bplus.push_back(0); h_hh_m_bminus.push_back(0); 
 
     }
   }
@@ -314,6 +332,8 @@ namespace tableutils{
       h_hw_e_uncminus.push_back((TH1D *)(processedHWFiles[i])->Get(hName_higgs_e_tau_uncminus)); h_hw_m_uncminus.push_back((TH1D *)(processedHWFiles[i])->Get(hName_higgs_m_tau_uncminus)); 
       h_hw_e_jerplus.push_back( (TH1D *)(processedHWFiles[i])->Get(hName_higgs_e_tau_jerplus) ); h_hw_m_jerplus.push_back( (TH1D *)(processedHWFiles[i])->Get(hName_higgs_m_tau_jerplus) ); 
       h_hw_e_jerminus.push_back((TH1D *)(processedHWFiles[i])->Get(hName_higgs_e_tau_jerminus)); h_hw_m_jerminus.push_back((TH1D *)(processedHWFiles[i])->Get(hName_higgs_m_tau_jerminus)); 
+      h_hw_e_tesplus.push_back( (TH1D *)(processedHWFiles[i])->Get(hName_higgs_e_tau_tesplus) ); h_hw_m_tesplus.push_back( (TH1D *)(processedHWFiles[i])->Get(hName_higgs_m_tau_tesplus) ); 
+      h_hw_e_tesminus.push_back((TH1D *)(processedHWFiles[i])->Get(hName_higgs_e_tau_tesminus)); h_hw_m_tesminus.push_back((TH1D *)(processedHWFiles[i])->Get(hName_higgs_m_tau_tesminus)); 
       h_hw_e_bplus.push_back(   (TH1D *)(processedHWFiles[i])->Get(hName_higgs_e_tau_bplus) );   h_hw_m_bplus.push_back(   (TH1D *)(processedHWFiles[i])->Get(hName_higgs_m_tau_bplus)   ); 
       h_hw_e_bminus.push_back(  (TH1D *)(processedHWFiles[i])->Get(hName_higgs_e_tau_bminus));   h_hw_m_bminus.push_back(  (TH1D *)(processedHWFiles[i])->Get(hName_higgs_m_tau_bminus)  ); 
       if(triggerunc ){
@@ -322,10 +342,10 @@ namespace tableutils{
     }
     else { 
       h_hw_e.push_back(0); h_hw_e_plus.push_back(0); h_hw_e_minus.push_back(0); h_hw_e_trigger.push_back(0);
-      h_hw_e_uncplus.push_back(0); h_hw_e_uncminus.push_back(0); h_hw_e_jerplus.push_back(0); h_hw_e_jerminus.push_back(0); h_hw_e_bplus.push_back(0); h_hw_e_bminus.push_back(0);
+      h_hw_e_uncplus.push_back(0); h_hw_e_uncminus.push_back(0); h_hw_e_jerplus.push_back(0); h_hw_e_jerminus.push_back(0); h_hw_e_tesplus.push_back(0); h_hw_e_tesminus.push_back(0); h_hw_e_bplus.push_back(0); h_hw_e_bminus.push_back(0);
 
       h_hw_m.push_back(0); h_hw_m_plus.push_back(0); h_hw_m_minus.push_back(0); h_hw_m_trigger.push_back(0);
-      h_hw_m_uncplus.push_back(0); h_hw_m_uncminus.push_back(0); h_hw_m_jerplus.push_back(0); h_hw_m_jerminus.push_back(0); h_hw_m_bplus.push_back(0); h_hw_m_bminus.push_back(0);
+      h_hw_m_uncplus.push_back(0); h_hw_m_uncminus.push_back(0); h_hw_m_jerplus.push_back(0); h_hw_m_jerminus.push_back(0); h_hw_m_tesplus.push_back(0); h_hw_m_tesminus.push_back(0); h_hw_m_bplus.push_back(0); h_hw_m_bminus.push_back(0);
 
     }
   }
@@ -342,6 +362,8 @@ namespace tableutils{
       h_tbh_e_uncminus.push_back((TH1D *)(processedTBHFiles[i])->Get(hName_higgs_e_tau_uncminus)); h_tbh_m_uncminus.push_back((TH1D *)(processedTBHFiles[i])->Get(hName_higgs_m_tau_uncminus)); 
       h_tbh_e_jerplus.push_back( (TH1D *)(processedTBHFiles[i])->Get(hName_higgs_e_tau_jerplus) ); h_tbh_m_jerplus.push_back( (TH1D *)(processedTBHFiles[i])->Get(hName_higgs_m_tau_jerplus) ); 
       h_tbh_e_jerminus.push_back((TH1D *)(processedTBHFiles[i])->Get(hName_higgs_e_tau_jerminus)); h_tbh_m_jerminus.push_back((TH1D *)(processedTBHFiles[i])->Get(hName_higgs_m_tau_jerminus)); 
+      h_tbh_e_tesplus.push_back( (TH1D *)(processedTBHFiles[i])->Get(hName_higgs_e_tau_tesplus) ); h_tbh_m_tesplus.push_back( (TH1D *)(processedTBHFiles[i])->Get(hName_higgs_m_tau_tesplus) ); 
+      h_tbh_e_tesminus.push_back((TH1D *)(processedTBHFiles[i])->Get(hName_higgs_e_tau_tesminus)); h_tbh_m_tesminus.push_back((TH1D *)(processedTBHFiles[i])->Get(hName_higgs_m_tau_tesminus)); 
       h_tbh_e_bplus.push_back(   (TH1D *)(processedTBHFiles[i])->Get(hName_higgs_e_tau_bplus) );   h_tbh_m_bplus.push_back(   (TH1D *)(processedTBHFiles[i])->Get(hName_higgs_m_tau_bplus)   ); 
       h_tbh_e_bminus.push_back(  (TH1D *)(processedTBHFiles[i])->Get(hName_higgs_e_tau_bminus));   h_tbh_m_bminus.push_back(  (TH1D *)(processedTBHFiles[i])->Get(hName_higgs_m_tau_bminus)  ); 
       if(triggerunc ){
@@ -350,10 +372,10 @@ namespace tableutils{
     }
     else { 
       h_tbh_e.push_back(0); h_tbh_e_plus.push_back(0); h_tbh_e_minus.push_back(0); h_tbh_e_trigger.push_back(0);
-      h_tbh_e_uncplus.push_back(0); h_tbh_e_uncminus.push_back(0); h_tbh_e_jerplus.push_back(0); h_tbh_e_jerminus.push_back(0); h_tbh_e_bplus.push_back(0); h_tbh_e_bminus.push_back(0);
+      h_tbh_e_uncplus.push_back(0); h_tbh_e_uncminus.push_back(0); h_tbh_e_jerplus.push_back(0); h_tbh_e_jerminus.push_back(0); h_tbh_e_tesplus.push_back(0); h_tbh_e_tesminus.push_back(0); h_tbh_e_bplus.push_back(0); h_tbh_e_bminus.push_back(0);
 
       h_tbh_m.push_back(0); h_tbh_m_plus.push_back(0); h_tbh_m_minus.push_back(0); h_tbh_m_trigger.push_back(0);
-      h_tbh_m_uncplus.push_back(0); h_tbh_m_uncminus.push_back(0); h_tbh_m_jerplus.push_back(0); h_tbh_m_jerminus.push_back(0); h_tbh_m_bplus.push_back(0); h_tbh_m_bminus.push_back(0);
+      h_tbh_m_uncplus.push_back(0); h_tbh_m_uncminus.push_back(0); h_tbh_m_jerplus.push_back(0); h_tbh_m_jerminus.push_back(0); h_tbh_m_tesplus.push_back(0); h_tbh_m_tesminus.push_back(0); h_tbh_m_bplus.push_back(0); h_tbh_m_bminus.push_back(0);
 
     }
   }
@@ -370,6 +392,8 @@ namespace tableutils{
       h_htb_e_uncminus.push_back((TH1D *)(processedHTBFiles[i])->Get(hName_higgs_e_tau_uncminus)); h_htb_m_uncminus.push_back((TH1D *)(processedHTBFiles[i])->Get(hName_higgs_m_tau_uncminus)); 
       h_htb_e_jerplus.push_back( (TH1D *)(processedHTBFiles[i])->Get(hName_higgs_e_tau_jerplus) ); h_htb_m_jerplus.push_back( (TH1D *)(processedHTBFiles[i])->Get(hName_higgs_m_tau_jerplus) ); 
       h_htb_e_jerminus.push_back((TH1D *)(processedHTBFiles[i])->Get(hName_higgs_e_tau_jerminus)); h_htb_m_jerminus.push_back((TH1D *)(processedHTBFiles[i])->Get(hName_higgs_m_tau_jerminus)); 
+      h_htb_e_tesplus.push_back( (TH1D *)(processedHTBFiles[i])->Get(hName_higgs_e_tau_tesplus) ); h_htb_m_tesplus.push_back( (TH1D *)(processedHTBFiles[i])->Get(hName_higgs_m_tau_tesplus) ); 
+      h_htb_e_tesminus.push_back((TH1D *)(processedHTBFiles[i])->Get(hName_higgs_e_tau_tesminus)); h_htb_m_tesminus.push_back((TH1D *)(processedHTBFiles[i])->Get(hName_higgs_m_tau_tesminus)); 
       h_htb_e_bplus.push_back(   (TH1D *)(processedHTBFiles[i])->Get(hName_higgs_e_tau_bplus) );   h_htb_m_bplus.push_back(   (TH1D *)(processedHTBFiles[i])->Get(hName_higgs_m_tau_bplus)   ); 
       h_htb_e_bminus.push_back(  (TH1D *)(processedHTBFiles[i])->Get(hName_higgs_e_tau_bminus));   h_htb_m_bminus.push_back(  (TH1D *)(processedHTBFiles[i])->Get(hName_higgs_m_tau_bminus)  ); 
       if(triggerunc ){
@@ -378,10 +402,10 @@ namespace tableutils{
     }
     else { 
       h_htb_e.push_back(0); h_htb_e_plus.push_back(0); h_htb_e_minus.push_back(0); h_htb_e_trigger.push_back(0);
-      h_htb_e_uncplus.push_back(0); h_htb_e_uncminus.push_back(0); h_htb_e_jerplus.push_back(0); h_htb_e_jerminus.push_back(0); h_htb_e_bplus.push_back(0); h_htb_e_bminus.push_back(0);
+      h_htb_e_uncplus.push_back(0); h_htb_e_uncminus.push_back(0); h_htb_e_jerplus.push_back(0); h_htb_e_jerminus.push_back(0); h_htb_e_tesplus.push_back(0); h_htb_e_tesminus.push_back(0); h_htb_e_bplus.push_back(0); h_htb_e_bminus.push_back(0);
 
       h_htb_m.push_back(0); h_htb_m_plus.push_back(0); h_htb_m_minus.push_back(0); h_htb_m_trigger.push_back(0);
-      h_htb_m_uncplus.push_back(0); h_htb_m_uncminus.push_back(0); h_htb_m_jerplus.push_back(0); h_htb_m_jerminus.push_back(0); h_htb_m_bplus.push_back(0); h_htb_m_bminus.push_back(0);
+      h_htb_m_uncplus.push_back(0); h_htb_m_uncminus.push_back(0); h_htb_m_jerplus.push_back(0); h_htb_m_jerminus.push_back(0); h_htb_m_tesplus.push_back(0); h_htb_m_tesminus.push_back(0); h_htb_m_bplus.push_back(0); h_htb_m_bminus.push_back(0);
 
     }
   }
@@ -390,12 +414,13 @@ namespace tableutils{
   double dataTotal[14], dataTotal_e[14], dataTotal_m[14], syst_error_plus[14], syst_error_minus[14];
    
   // copy all data to matrix ( x = 14 steps of selection ,y =16 = 13 ev types + 1 total + 2 for S/B and S/sqrt B )
-  double d[14][16], e[14][16], d_plus[14][16], d_minus[14][16], 
-         d_uncplus[14][16],    d_uncminus[14][16], 
-         d_jerplus[14][16],    d_jerminus[14][16], 
-         d_bplus[14][16],      d_bminus[14][16], 
-         d_trigger[14][16],
-         systErrPlus[14][16],  systErrMinus[14][16];
+  double d[14][18], e[14][18], d_plus[14][18], d_minus[14][18], 
+         d_uncplus[14][18],    d_uncminus[14][18], 
+         d_jerplus[14][18],    d_jerminus[14][18], 
+         d_tesplus[14][18],    d_tesminus[14][18], 
+         d_bplus[14][18],      d_bminus[14][18], 
+         d_trigger[14][18],
+         systErrPlus[14][18],  systErrMinus[14][18];
          
   // split by e channel and mu channel /////////////////////////////////////////////////////////////////////////
   double d_e[14], d_m[14], d_e_systErrMinus[14], d_e_systErrPlus[14], d_m_systErrPlus[14], d_m_systErrMinus[14];
@@ -417,6 +442,7 @@ namespace tableutils{
       double data_hh_e_plus,    data_hh_e_minus,    data_hh_m_plus,    data_hh_m_minus;
       double data_hh_e_uncplus, data_hh_e_uncminus, data_hh_m_uncplus, data_hh_m_uncminus;
       double data_hh_e_jerplus, data_hh_e_jerminus, data_hh_m_jerplus, data_hh_m_jerminus;
+      double data_hh_e_tesplus, data_hh_e_tesminus, data_hh_m_tesplus, data_hh_m_tesminus;
       double data_hh_e_bplus,   data_hh_e_bminus,   data_hh_m_bplus,   data_hh_m_bminus;
       double data_hh_e_trigger, data_hh_m_trigger;
       
@@ -436,6 +462,10 @@ namespace tableutils{
       if( h_hh_e_jerminus[samp] !=0 ){ data_hh_e_jerminus = h_hh_e_jerminus[samp]->GetBinContent(x+1) ; } else { data_hh_e_jerminus= 0 ;       } 
       if( h_hh_m_jerplus[samp]  !=0 ){ data_hh_m_jerplus  = h_hh_m_jerplus[samp]->GetBinContent(x+1);   } else { data_hh_m_jerplus = 0 ;       }
       if( h_hh_m_jerminus[samp] !=0 ){ data_hh_m_jerminus = h_hh_m_jerminus[samp]->GetBinContent(x+1);  } else { data_hh_m_jerminus= 0 ;       }
+      if( h_hh_e_tesplus[samp]  !=0 ){ data_hh_e_tesplus  = h_hh_e_tesplus[samp]->GetBinContent(x+1);   } else { data_hh_e_tesplus = 0 ;       }
+      if( h_hh_e_tesminus[samp] !=0 ){ data_hh_e_tesminus = h_hh_e_tesminus[samp]->GetBinContent(x+1) ; } else { data_hh_e_tesminus= 0 ;       } 
+      if( h_hh_m_tesplus[samp]  !=0 ){ data_hh_m_tesplus  = h_hh_m_tesplus[samp]->GetBinContent(x+1);   } else { data_hh_m_tesplus = 0 ;       }
+      if( h_hh_m_tesminus[samp] !=0 ){ data_hh_m_tesminus = h_hh_m_tesminus[samp]->GetBinContent(x+1);  } else { data_hh_m_tesminus= 0 ;       }
       if( h_hh_e_bplus[samp]    !=0 ){ data_hh_e_bplus    = h_hh_e_bplus[samp]->GetBinContent(x+1);     } else { data_hh_e_bplus = 0 ;         }
       if( h_hh_e_bminus[samp]   !=0 ){ data_hh_e_bminus   = h_hh_e_bminus[samp]->GetBinContent(x+1);    } else { data_hh_e_bminus= 0 ;         }  
       if( h_hh_m_bplus[samp]    !=0 ){ data_hh_m_bplus    = h_hh_m_bplus[samp]->GetBinContent(x+1);     } else { data_hh_m_bplus = 0 ;         }
@@ -454,6 +484,8 @@ namespace tableutils{
       double syst_uncminus_e = fabs( data_hh_e[x]-data_hh_e_uncminus );  double syst_uncminus_m = fabs( data_hh_m[x]-data_hh_m_uncminus );
       double syst_jerplus_e  = fabs( data_hh_e[x]-data_hh_e_jerplus  );  double syst_jerplus_m  = fabs( data_hh_m[x]-data_hh_m_jerplus );
       double syst_jerminus_e = fabs( data_hh_e[x]-data_hh_e_jerminus );  double syst_jerminus_m = fabs( data_hh_m[x]-data_hh_m_jerminus );
+      double syst_tesplus_e  = fabs( data_hh_e[x]-data_hh_e_tesplus  );  double syst_tesplus_m  = fabs( data_hh_m[x]-data_hh_m_tesplus );
+      double syst_tesminus_e = fabs( data_hh_e[x]-data_hh_e_tesminus );  double syst_tesminus_m = fabs( data_hh_m[x]-data_hh_m_tesminus );
       double syst_bplus_e    = fabs( data_hh_e[x]-data_hh_e_bplus  );    double syst_bplus_m    = fabs( data_hh_m[x]-data_hh_m_bplus );
       double syst_bminus_e   = fabs( data_hh_e[x]-data_hh_e_bminus );    double syst_bminus_m   = fabs( data_hh_m[x]-data_hh_m_bminus );
 
@@ -464,12 +496,12 @@ namespace tableutils{
       double syst_tauid_e(0);  double syst_tauid_m(0);
 
       if( x >= TAUSTEP){ syst_tauid_e = TAU_ID_ERR*data_hh_e[x]; syst_tauid_m = TAU_ID_ERR*data_hh_m[x]; } 
-      
+    
       
 
       if(systset1){ 
         syst_tauid_e =0;  syst_tauid_m=0; syst_lum_e =0; syst_lum_m=0; syst_eff_e=0; syst_eff_m=0; syst_ttbar_cs_e=0; syst_ttbar_cs_m=0; 
-        syst_bplus_e = 0; syst_bplus_m=0; syst_bminus_e = 0; syst_bminus_m=0;
+        syst_bplus_e = 0; syst_bplus_m=0; syst_bminus_e = 0; syst_bminus_m=0; syst_tesplus_e=0; syst_tesplus_m=0; syst_tesminus_e=0; syst_tesminus_m=0;
         syst_trigger_e = 0;  syst_trigger_m=0;
       }
       if(systset2){
@@ -477,6 +509,7 @@ namespace tableutils{
         syst_plus_e = 0;  syst_plus_m=0;  syst_minus_e = 0; syst_minus_m=0;
         syst_uncplus_e = 0;  syst_uncplus_m=0;  syst_uncminus_e = 0; syst_uncminus_m=0;
         syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0;   
+	syst_tesplus_e = 0;  syst_tesplus_m=0;  syst_tesminus_e = 0; syst_tesminus_m=0;   
         syst_trigger_e = 0;  syst_trigger_m=0;            
       }
       if(systset3){
@@ -485,6 +518,7 @@ namespace tableutils{
         syst_plus_e = 0;  syst_plus_m=0;  syst_minus_e  = 0; syst_minus_m =0;
         syst_uncplus_e = 0;  syst_uncplus_m=0;  syst_uncminus_e = 0; syst_uncminus_m=0;
         syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0;               
+	//        syst_tesplus_e = 0;  syst_tesplus_m=0;  syst_tesminus_e = 0; syst_tesminus_m=0;               
       }
 
 
@@ -493,10 +527,10 @@ namespace tableutils{
 
       if(triggerunc){ temp_e += pow(syst_trigger_e,2 ); temp_m += pow(syst_trigger_m,2 ); }
 
-      data_syst_e_plus.push_back(  sqrt( pow(syst_plus_e,2)   + pow(syst_uncplus_e,2)  + pow(syst_jerplus_e,2)  + pow(syst_bplus_e,2)  + temp_e )); 
-      data_syst_e_minus.push_back( sqrt( pow(syst_minus_e,2)  + pow(syst_uncminus_e,2) + pow(syst_jerminus_e,2) + pow(syst_bminus_e,2) + temp_e )); 
-      data_syst_m_plus.push_back(  sqrt( pow(syst_plus_m,2)   + pow(syst_uncplus_m,2)  + pow(syst_jerplus_m,2)  + pow(syst_bplus_m,2)  + temp_m )); 
-      data_syst_m_minus.push_back( sqrt( pow(syst_minus_m,2)  + pow(syst_uncminus_m,2) + pow(syst_jerminus_m,2) + pow(syst_bminus_m,2) + temp_m ));
+      data_syst_e_plus.push_back(  sqrt( pow(syst_plus_e,2)   + pow(syst_uncplus_e,2)  + pow(syst_jerplus_e,2)  + pow(syst_bplus_e,2)  + pow(syst_tesplus_e,2)  + temp_e )); 
+      data_syst_e_minus.push_back( sqrt( pow(syst_minus_e,2)  + pow(syst_uncminus_e,2) + pow(syst_jerminus_e,2) + pow(syst_bminus_e,2) + pow(syst_tesminus_e,2) + temp_e )); 
+      data_syst_m_plus.push_back(  sqrt( pow(syst_plus_m,2)   + pow(syst_uncplus_m,2)  + pow(syst_jerplus_m,2)  + pow(syst_bplus_m,2)  + pow(syst_tesplus_m,2)  + temp_m )); 
+      data_syst_m_minus.push_back( sqrt( pow(syst_minus_m,2)  + pow(syst_uncminus_m,2) + pow(syst_jerminus_m,2) + pow(syst_bminus_m,2) + pow(syst_tesminus_m,2) + temp_m ));
 
       // DEBUG
       //if(samp==1 && x == OS_STEP2 ){
@@ -535,6 +569,7 @@ namespace tableutils{
       double data_hw_e_plus,    data_hw_e_minus,    data_hw_m_plus,    data_hw_m_minus;
       double data_hw_e_uncplus, data_hw_e_uncminus, data_hw_m_uncplus, data_hw_m_uncminus;
       double data_hw_e_jerplus, data_hw_e_jerminus, data_hw_m_jerplus, data_hw_m_jerminus;
+      double data_hw_e_tesplus, data_hw_e_tesminus, data_hw_m_tesplus, data_hw_m_tesminus;
       double data_hw_e_bplus,   data_hw_e_bminus,   data_hw_m_bplus,   data_hw_m_bminus;
       double data_hw_e_trigger, data_hw_m_trigger;
 
@@ -554,6 +589,10 @@ namespace tableutils{
       if( h_hw_e_jerminus[samp] !=0 ){ data_hw_e_jerminus = h_hw_e_jerminus[samp]->GetBinContent(x+1);} else { data_hw_e_jerminus= 0 ;      } 
       if( h_hw_m_jerplus[samp]  !=0 ){ data_hw_m_jerplus  = h_hw_m_jerplus[samp]->GetBinContent(x+1); } else { data_hw_m_jerplus = 0 ;      }
       if( h_hw_m_jerminus[samp] !=0 ){ data_hw_m_jerminus = h_hw_m_jerminus[samp]->GetBinContent(x+1);} else { data_hw_m_jerminus= 0 ;      }
+      if( h_hw_e_tesplus[samp]  !=0 ){ data_hw_e_tesplus  = h_hw_e_tesplus[samp]->GetBinContent(x+1); } else { data_hw_e_tesplus = 0 ;      }
+      if( h_hw_e_tesminus[samp] !=0 ){ data_hw_e_tesminus = h_hw_e_tesminus[samp]->GetBinContent(x+1);} else { data_hw_e_tesminus= 0 ;      } 
+      if( h_hw_m_tesplus[samp]  !=0 ){ data_hw_m_tesplus  = h_hw_m_tesplus[samp]->GetBinContent(x+1); } else { data_hw_m_tesplus = 0 ;      }
+      if( h_hw_m_tesminus[samp] !=0 ){ data_hw_m_tesminus = h_hw_m_tesminus[samp]->GetBinContent(x+1);} else { data_hw_m_tesminus= 0 ;      }
       if( h_hw_e_bplus[samp]    !=0 ){ data_hw_e_bplus    = h_hw_e_bplus[samp]->GetBinContent(x+1);   } else { data_hw_e_bplus = 0 ;        }
       if( h_hw_e_bminus[samp]   !=0 ){ data_hw_e_bminus   = h_hw_e_bminus[samp]->GetBinContent(x+1);  } else { data_hw_e_bminus= 0 ;        } 
       if( h_hw_m_bplus[samp]    !=0 ){ data_hw_m_bplus    = h_hw_m_bplus[samp]->GetBinContent(x+1);   } else { data_hw_m_bplus = 0 ;        }
@@ -574,6 +613,9 @@ namespace tableutils{
       double syst_jerplus_e  = fabs( data_hw_e[x]-data_hw_e_jerplus );  double syst_jerplus_m  = fabs( data_hw_m[x]-data_hw_m_jerplus );
       double syst_jerminus_e = fabs( data_hw_e[x]-data_hw_e_jerminus ); double syst_jerminus_m = fabs( data_hw_m[x]-data_hw_m_jerminus );
 
+      double syst_tesplus_e  = fabs( data_hw_e[x]-data_hw_e_tesplus );  double syst_tesplus_m  = fabs( data_hw_m[x]-data_hw_m_tesplus );
+      double syst_tesminus_e = fabs( data_hw_e[x]-data_hw_e_tesminus ); double syst_tesminus_m = fabs( data_hw_m[x]-data_hw_m_tesminus );
+
       double syst_bplus_e  = fabs( data_hw_e[x]-data_hw_e_bplus );      double syst_bplus_m  = fabs( data_hw_m[x]-data_hw_m_bplus );
       double syst_bminus_e = fabs( data_hw_e[x]-data_hw_e_bminus );     double syst_bminus_m = fabs( data_hw_m[x]-data_hw_m_bminus );
 
@@ -587,14 +629,14 @@ namespace tableutils{
 
       if(systset1){ 
         syst_tauid_e =0;  syst_tauid_m=0; syst_lum_e =0; syst_lum_m=0; syst_eff_e=0; syst_eff_m=0; syst_ttbar_cs_e=0; syst_ttbar_cs_m=0; 
-        syst_bplus_e = 0; syst_bplus_m=0; syst_bminus_e = 0; syst_bminus_m=0;
+        syst_bplus_e = 0; syst_bplus_m=0; syst_bminus_e = 0; syst_bminus_m=0; syst_tesplus_e=0; syst_tesplus_m=0; syst_tesminus_e=0; syst_tesminus_m=0;
         syst_trigger_e = 0;  syst_trigger_m=0;
       }
       if(systset2){
         syst_tauid_e =0;  syst_tauid_m=0; syst_lum_e =0; syst_lum_m=0; syst_eff_e=0; syst_eff_m=0; syst_ttbar_cs_e=0; syst_ttbar_cs_m=0; 
         syst_plus_e = 0;  syst_plus_m=0;  syst_minus_e = 0; syst_minus_m=0;
         syst_uncplus_e = 0;  syst_uncplus_m=0;  syst_uncminus_e = 0; syst_uncminus_m=0;
-        syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0;               
+        syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0; syst_tesplus_e=0; syst_tesplus_m=0; syst_tesminus_e=0; syst_tesminus_m=0;               
         syst_trigger_e = 0;  syst_trigger_m=0;
       }
       if(systset3){
@@ -602,7 +644,8 @@ namespace tableutils{
         syst_bplus_e = 0; syst_bplus_m=0; syst_bminus_e = 0; syst_bminus_m=0;
         syst_plus_e = 0;  syst_plus_m=0;  syst_minus_e  = 0; syst_minus_m =0;
         syst_uncplus_e = 0;  syst_uncplus_m=0;  syst_uncminus_e = 0; syst_uncminus_m=0;
-        syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0;               
+        syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0;
+	//syst_tesplus_e=0; syst_tesplus_m=0; syst_tesminus_e=0; syst_tesminus_m=0;               
       }
 
       double temp_e = pow(syst_tauid_e,2) +  pow(syst_eff_e,2) + pow(syst_ttbar_cs_e,2) +pow(syst_lum_e,2);
@@ -611,10 +654,10 @@ namespace tableutils{
       if(triggerunc){ temp_e += pow(syst_trigger_e,2 ); temp_m += pow(syst_trigger_m,2 ); }
 
 
-      data_syst_e_plus.push_back(  sqrt( pow(syst_plus_e,2)   + pow(syst_uncplus_e,2)  + pow(syst_jerplus_e,2)  + pow(syst_bplus_e,2)  + temp_e )); 
-      data_syst_e_minus.push_back( sqrt( pow(syst_minus_e,2)  + pow(syst_uncminus_e,2) + pow(syst_jerminus_e,2) + pow(syst_bminus_e,2) + temp_e )); 
-      data_syst_m_plus.push_back(  sqrt( pow(syst_plus_m,2)   + pow(syst_uncplus_m,2)  + pow(syst_jerplus_m,2)  + pow(syst_bplus_m,2)  + temp_m )); 
-      data_syst_m_minus.push_back( sqrt( pow(syst_minus_m,2)  + pow(syst_uncminus_m,2) + pow(syst_jerminus_m,2) + pow(syst_bminus_m,2) + temp_m ));
+      data_syst_e_plus.push_back(  sqrt( pow(syst_plus_e,2)   + pow(syst_uncplus_e,2)  + pow(syst_jerplus_e,2)  + pow(syst_bplus_e,2)  + pow(syst_tesplus_e,2)  + temp_e )); 
+      data_syst_e_minus.push_back( sqrt( pow(syst_minus_e,2)  + pow(syst_uncminus_e,2) + pow(syst_jerminus_e,2) + pow(syst_bminus_e,2) + pow(syst_tesminus_e,2) + temp_e )); 
+      data_syst_m_plus.push_back(  sqrt( pow(syst_plus_m,2)   + pow(syst_uncplus_m,2)  + pow(syst_jerplus_m,2)  + pow(syst_bplus_m,2)  + pow(syst_tesplus_m,2)  + temp_m )); 
+      data_syst_m_minus.push_back( sqrt( pow(syst_minus_m,2)  + pow(syst_uncminus_m,2) + pow(syst_jerminus_m,2) + pow(syst_bminus_m,2) + pow(syst_tesminus_m,2) + temp_m ));
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
     }
@@ -641,6 +684,7 @@ namespace tableutils{
       double data_tbh_e_plus,    data_tbh_e_minus,    data_tbh_m_plus,    data_tbh_m_minus;
       double data_tbh_e_uncplus, data_tbh_e_uncminus, data_tbh_m_uncplus, data_tbh_m_uncminus;
       double data_tbh_e_jerplus, data_tbh_e_jerminus, data_tbh_m_jerplus, data_tbh_m_jerminus;
+      double data_tbh_e_tesplus, data_tbh_e_tesminus, data_tbh_m_tesplus, data_tbh_m_tesminus;
       double data_tbh_e_bplus,   data_tbh_e_bminus,   data_tbh_m_bplus,   data_tbh_m_bminus;
       double data_tbh_e_trigger, data_tbh_m_trigger;
       
@@ -660,6 +704,10 @@ namespace tableutils{
       if( h_tbh_e_jerminus[samp] !=0 ){ data_tbh_e_jerminus = h_tbh_e_jerminus[samp]->GetBinContent(x+1) ; } else { data_tbh_e_jerminus= 0 ;       } 
       if( h_tbh_m_jerplus[samp]  !=0 ){ data_tbh_m_jerplus  = h_tbh_m_jerplus[samp]->GetBinContent(x+1);   } else { data_tbh_m_jerplus = 0 ;       }
       if( h_tbh_m_jerminus[samp] !=0 ){ data_tbh_m_jerminus = h_tbh_m_jerminus[samp]->GetBinContent(x+1);  } else { data_tbh_m_jerminus= 0 ;       }
+      if( h_tbh_e_tesplus[samp]  !=0 ){ data_tbh_e_tesplus  = h_tbh_e_tesplus[samp]->GetBinContent(x+1);   } else { data_tbh_e_tesplus = 0 ;       }
+      if( h_tbh_e_tesminus[samp] !=0 ){ data_tbh_e_tesminus = h_tbh_e_tesminus[samp]->GetBinContent(x+1) ; } else { data_tbh_e_tesminus= 0 ;       } 
+      if( h_tbh_m_tesplus[samp]  !=0 ){ data_tbh_m_tesplus  = h_tbh_m_tesplus[samp]->GetBinContent(x+1);   } else { data_tbh_m_tesplus = 0 ;       }
+      if( h_tbh_m_tesminus[samp] !=0 ){ data_tbh_m_tesminus = h_tbh_m_tesminus[samp]->GetBinContent(x+1);  } else { data_tbh_m_tesminus= 0 ;       }
       if( h_tbh_e_bplus[samp]    !=0 ){ data_tbh_e_bplus    = h_tbh_e_bplus[samp]->GetBinContent(x+1);     } else { data_tbh_e_bplus = 0 ;         }
       if( h_tbh_e_bminus[samp]   !=0 ){ data_tbh_e_bminus   = h_tbh_e_bminus[samp]->GetBinContent(x+1);    } else { data_tbh_e_bminus= 0 ;         }  
       if( h_tbh_m_bplus[samp]    !=0 ){ data_tbh_m_bplus    = h_tbh_m_bplus[samp]->GetBinContent(x+1);     } else { data_tbh_m_bplus = 0 ;         }
@@ -678,6 +726,8 @@ namespace tableutils{
       double syst_uncminus_e = fabs( data_tbh_e[x]-data_tbh_e_uncminus );  double syst_uncminus_m = fabs( data_tbh_m[x]-data_tbh_m_uncminus );
       double syst_jerplus_e  = fabs( data_tbh_e[x]-data_tbh_e_jerplus  );  double syst_jerplus_m  = fabs( data_tbh_m[x]-data_tbh_m_jerplus );
       double syst_jerminus_e = fabs( data_tbh_e[x]-data_tbh_e_jerminus );  double syst_jerminus_m = fabs( data_tbh_m[x]-data_tbh_m_jerminus );
+      double syst_tesplus_e  = fabs( data_tbh_e[x]-data_tbh_e_tesplus  );  double syst_tesplus_m  = fabs( data_tbh_m[x]-data_tbh_m_tesplus );
+      double syst_tesminus_e = fabs( data_tbh_e[x]-data_tbh_e_tesminus );  double syst_tesminus_m = fabs( data_tbh_m[x]-data_tbh_m_tesminus );
       double syst_bplus_e    = fabs( data_tbh_e[x]-data_tbh_e_bplus  );    double syst_bplus_m    = fabs( data_tbh_m[x]-data_tbh_m_bplus );
       double syst_bminus_e   = fabs( data_tbh_e[x]-data_tbh_e_bminus );    double syst_bminus_m   = fabs( data_tbh_m[x]-data_tbh_m_bminus );
 
@@ -697,6 +747,8 @@ namespace tableutils{
       cout << " syst_uncminus_e : " << syst_uncminus_e << ", syst_uncminus_m : " << syst_uncminus_m << endl;
       cout << " syst_jerplus_e  : " << syst_jerplus_e  << ", syst_jerplus_m  : " << syst_jerplus_m  << endl;
       cout << " syst_jerminus_e : " << syst_jerminus_e << ", syst_jerminus_m : " << syst_jerminus_m << endl;
+      cout << " syst_tesplus_e  : " << syst_tesplus_e  << ", syst_tesplus_m  : " << syst_tesplus_m  << endl;
+      cout << " syst_tesminus_e : " << syst_tesminus_e << ", syst_tesminus_m : " << syst_tesminus_m << endl;
       cout << " syst_bplus_e    : " << syst_bplus_e    << ", syst_bplus_m    : " << syst_bplus_m    << endl;
       cout << " syst_bminus_e   : " << syst_bminus_e   << ", syst_bminus_m   : " << syst_bminus_m   << endl;
       cout << " syst_lum_e      : " << syst_lum_e      << ", syst_lum_m      : " << syst_lum_m      << endl;
@@ -711,14 +763,14 @@ namespace tableutils{
 
       if(systset1){ 
         syst_tauid_e =0;  syst_tauid_m=0; syst_lum_e =0; syst_lum_m=0; syst_eff_e=0; syst_eff_m=0; syst_ttbar_cs_e=0; syst_ttbar_cs_m=0; 
-        syst_bplus_e = 0; syst_bplus_m=0; syst_bminus_e = 0; syst_bminus_m=0;
+        syst_bplus_e = 0; syst_bplus_m=0; syst_bminus_e = 0; syst_bminus_m=0; syst_tesplus_e=0; syst_tesplus_m=0; syst_tesminus_e=0; syst_tesminus_m=0;
         syst_trigger_e = 0;  syst_trigger_m=0;
       }
       if(systset2){
         syst_tauid_e =0;  syst_tauid_m=0; syst_lum_e =0; syst_lum_m=0; syst_eff_e=0; syst_eff_m=0; syst_ttbar_cs_e=0; syst_ttbar_cs_m=0; 
         syst_plus_e = 0;  syst_plus_m=0;  syst_minus_e = 0; syst_minus_m=0;
         syst_uncplus_e = 0;  syst_uncplus_m=0;  syst_uncminus_e = 0; syst_uncminus_m=0;
-        syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0;   
+        syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0;    syst_tesplus_m=0; syst_tesminus_e=0; syst_tesminus_m=0;
         syst_trigger_e = 0;  syst_trigger_m=0;            
       }
       if(systset3){
@@ -726,7 +778,7 @@ namespace tableutils{
         syst_bplus_e = 0; syst_bplus_m=0; syst_bminus_e = 0; syst_bminus_m=0;
         syst_plus_e = 0;  syst_plus_m=0;  syst_minus_e  = 0; syst_minus_m =0;
         syst_uncplus_e = 0;  syst_uncplus_m=0;  syst_uncminus_e = 0; syst_uncminus_m=0;
-        syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0;               
+        syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0; //               syst_tesplus_m=0; syst_tesminus_e=0; syst_tesminus_m=0;
       }
 
 
@@ -735,10 +787,10 @@ namespace tableutils{
 
       if(triggerunc){ temp_e += pow(syst_trigger_e,2 ); temp_m += pow(syst_trigger_m,2 ); }
 
-      data_syst_e_plus.push_back(  sqrt( pow(syst_plus_e,2)   + pow(syst_uncplus_e,2)  + pow(syst_jerplus_e,2)  + pow(syst_bplus_e,2)  + temp_e )); 
-      data_syst_e_minus.push_back( sqrt( pow(syst_minus_e,2)  + pow(syst_uncminus_e,2) + pow(syst_jerminus_e,2) + pow(syst_bminus_e,2) + temp_e )); 
-      data_syst_m_plus.push_back(  sqrt( pow(syst_plus_m,2)   + pow(syst_uncplus_m,2)  + pow(syst_jerplus_m,2)  + pow(syst_bplus_m,2)  + temp_m )); 
-      data_syst_m_minus.push_back( sqrt( pow(syst_minus_m,2)  + pow(syst_uncminus_m,2) + pow(syst_jerminus_m,2) + pow(syst_bminus_m,2) + temp_m ));
+      data_syst_e_plus.push_back(  sqrt( pow(syst_plus_e,2)   + pow(syst_uncplus_e,2)  + pow(syst_jerplus_e,2)  + pow(syst_bplus_e,2)  + pow(syst_tesplus_e,2)  + temp_e )); 
+      data_syst_e_minus.push_back( sqrt( pow(syst_minus_e,2)  + pow(syst_uncminus_e,2) + pow(syst_jerminus_e,2) + pow(syst_bminus_e,2) + pow(syst_tesminus_e,2) + temp_e )); 
+      data_syst_m_plus.push_back(  sqrt( pow(syst_plus_m,2)   + pow(syst_uncplus_m,2)  + pow(syst_jerplus_m,2)  + pow(syst_bplus_m,2)  + pow(syst_tesplus_m,2)  + temp_m )); 
+      data_syst_m_minus.push_back( sqrt( pow(syst_minus_m,2)  + pow(syst_uncminus_m,2) + pow(syst_jerminus_m,2) + pow(syst_bminus_m,2) + pow(syst_tesminus_m,2) + temp_m ));
 
       // DEBUG
       //if(samp==1 && x == OS_STEP2 ){
@@ -784,6 +836,7 @@ namespace tableutils{
       double data_htb_e_plus,    data_htb_e_minus,    data_htb_m_plus,    data_htb_m_minus;
       double data_htb_e_uncplus, data_htb_e_uncminus, data_htb_m_uncplus, data_htb_m_uncminus;
       double data_htb_e_jerplus, data_htb_e_jerminus, data_htb_m_jerplus, data_htb_m_jerminus;
+      double data_htb_e_tesplus, data_htb_e_tesminus, data_htb_m_tesplus, data_htb_m_tesminus;
       double data_htb_e_bplus,   data_htb_e_bminus,   data_htb_m_bplus,   data_htb_m_bminus;
       double data_htb_e_trigger, data_htb_m_trigger;
       
@@ -803,6 +856,10 @@ namespace tableutils{
       if( h_htb_e_jerminus[samp] !=0 ){ data_htb_e_jerminus = h_htb_e_jerminus[samp]->GetBinContent(x+1) ; } else { data_htb_e_jerminus= 0 ;       } 
       if( h_htb_m_jerplus[samp]  !=0 ){ data_htb_m_jerplus  = h_htb_m_jerplus[samp]->GetBinContent(x+1);   } else { data_htb_m_jerplus = 0 ;       }
       if( h_htb_m_jerminus[samp] !=0 ){ data_htb_m_jerminus = h_htb_m_jerminus[samp]->GetBinContent(x+1);  } else { data_htb_m_jerminus= 0 ;       }
+      if( h_htb_e_tesplus[samp]  !=0 ){ data_htb_e_tesplus  = h_htb_e_tesplus[samp]->GetBinContent(x+1);   } else { data_htb_e_tesplus = 0 ;       }
+      if( h_htb_e_tesminus[samp] !=0 ){ data_htb_e_tesminus = h_htb_e_tesminus[samp]->GetBinContent(x+1) ; } else { data_htb_e_tesminus= 0 ;       } 
+      if( h_htb_m_tesplus[samp]  !=0 ){ data_htb_m_tesplus  = h_htb_m_tesplus[samp]->GetBinContent(x+1);   } else { data_htb_m_tesplus = 0 ;       }
+      if( h_htb_m_tesminus[samp] !=0 ){ data_htb_m_tesminus = h_htb_m_tesminus[samp]->GetBinContent(x+1);  } else { data_htb_m_tesminus= 0 ;       }
       if( h_htb_e_bplus[samp]    !=0 ){ data_htb_e_bplus    = h_htb_e_bplus[samp]->GetBinContent(x+1);     } else { data_htb_e_bplus = 0 ;         }
       if( h_htb_e_bminus[samp]   !=0 ){ data_htb_e_bminus   = h_htb_e_bminus[samp]->GetBinContent(x+1);    } else { data_htb_e_bminus= 0 ;         }  
       if( h_htb_m_bplus[samp]    !=0 ){ data_htb_m_bplus    = h_htb_m_bplus[samp]->GetBinContent(x+1);     } else { data_htb_m_bplus = 0 ;         }
@@ -821,6 +878,8 @@ namespace tableutils{
       double syst_uncminus_e = fabs( data_htb_e[x]-data_htb_e_uncminus );  double syst_uncminus_m = fabs( data_htb_m[x]-data_htb_m_uncminus );
       double syst_jerplus_e  = fabs( data_htb_e[x]-data_htb_e_jerplus  );  double syst_jerplus_m  = fabs( data_htb_m[x]-data_htb_m_jerplus );
       double syst_jerminus_e = fabs( data_htb_e[x]-data_htb_e_jerminus );  double syst_jerminus_m = fabs( data_htb_m[x]-data_htb_m_jerminus );
+      double syst_tesplus_e  = fabs( data_htb_e[x]-data_htb_e_tesplus  );  double syst_tesplus_m  = fabs( data_htb_m[x]-data_htb_m_tesplus );
+      double syst_tesminus_e = fabs( data_htb_e[x]-data_htb_e_tesminus );  double syst_tesminus_m = fabs( data_htb_m[x]-data_htb_m_tesminus );
       double syst_bplus_e    = fabs( data_htb_e[x]-data_htb_e_bplus  );    double syst_bplus_m    = fabs( data_htb_m[x]-data_htb_m_bplus );
       double syst_bminus_e   = fabs( data_htb_e[x]-data_htb_e_bminus );    double syst_bminus_m   = fabs( data_htb_m[x]-data_htb_m_bminus );
 
@@ -840,6 +899,8 @@ namespace tableutils{
       cout << " syst_uncminus_e : " << syst_uncminus_e << ", syst_uncminus_m : " << syst_uncminus_m << endl;
       cout << " syst_jerplus_e  : " << syst_jerplus_e  << ", syst_jerplus_m  : " << syst_jerplus_m  << endl;
       cout << " syst_jerminus_e : " << syst_jerminus_e << ", syst_jerminus_m : " << syst_jerminus_m << endl;
+      cout << " syst_tesplus_e  : " << syst_tesplus_e  << ", syst_tesplus_m  : " << syst_tesplus_m  << endl;
+      cout << " syst_tesminus_e : " << syst_tesminus_e << ", syst_tesminus_m : " << syst_tesminus_m << endl;
       cout << " syst_bplus_e    : " << syst_bplus_e    << ", syst_bplus_m    : " << syst_bplus_m    << endl;
       cout << " syst_bminus_e   : " << syst_bminus_e   << ", syst_bminus_m   : " << syst_bminus_m   << endl;
       cout << " syst_lum_e      : " << syst_lum_e      << ", syst_lum_m      : " << syst_lum_m      << endl;
@@ -854,14 +915,14 @@ namespace tableutils{
 
       if(systset1){ 
         syst_tauid_e =0;  syst_tauid_m=0; syst_lum_e =0; syst_lum_m=0; syst_eff_e=0; syst_eff_m=0; syst_ttbar_cs_e=0; syst_ttbar_cs_m=0; 
-        syst_bplus_e = 0; syst_bplus_m=0; syst_bminus_e = 0; syst_bminus_m=0;
+        syst_bplus_e = 0; syst_bplus_m=0; syst_bminus_e = 0; syst_bminus_m=0; syst_tesplus_e=0; syst_tesplus_m=0; syst_tesminus_e=0; syst_tesminus_m=0;
         syst_trigger_e = 0;  syst_trigger_m=0;
       }
       if(systset2){
         syst_tauid_e =0;  syst_tauid_m=0; syst_lum_e =0; syst_lum_m=0; syst_eff_e=0; syst_eff_m=0; syst_ttbar_cs_e=0; syst_ttbar_cs_m=0; 
         syst_plus_e = 0;  syst_plus_m=0;  syst_minus_e = 0; syst_minus_m=0;
         syst_uncplus_e = 0;  syst_uncplus_m=0;  syst_uncminus_e = 0; syst_uncminus_m=0;
-        syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0;   
+        syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0; syst_tesplus_e=0; syst_tesplus_m=0; syst_tesminus_e=0; syst_tesminus_m=0;   
         syst_trigger_e = 0;  syst_trigger_m=0;            
       }
       if(systset3){
@@ -869,7 +930,7 @@ namespace tableutils{
         syst_bplus_e = 0; syst_bplus_m=0; syst_bminus_e = 0; syst_bminus_m=0;
         syst_plus_e = 0;  syst_plus_m=0;  syst_minus_e  = 0; syst_minus_m =0;
         syst_uncplus_e = 0;  syst_uncplus_m=0;  syst_uncminus_e = 0; syst_uncminus_m=0;
-        syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0;               
+        syst_jerplus_e = 0;  syst_jerplus_m=0;  syst_jerminus_e = 0; syst_jerminus_m=0; // syst_tesplus_e=0; syst_tesplus_m=0; syst_tesminus_e=0; syst_tesminus_m=0;              
       }
 
 
@@ -878,10 +939,10 @@ namespace tableutils{
 
       if(triggerunc){ temp_e += pow(syst_trigger_e,2 ); temp_m += pow(syst_trigger_m,2 ); }
 
-      data_syst_e_plus.push_back(  sqrt( pow(syst_plus_e,2)   + pow(syst_uncplus_e,2)  + pow(syst_jerplus_e,2)  + pow(syst_bplus_e,2)  + temp_e )); 
-      data_syst_e_minus.push_back( sqrt( pow(syst_minus_e,2)  + pow(syst_uncminus_e,2) + pow(syst_jerminus_e,2) + pow(syst_bminus_e,2) + temp_e )); 
-      data_syst_m_plus.push_back(  sqrt( pow(syst_plus_m,2)   + pow(syst_uncplus_m,2)  + pow(syst_jerplus_m,2)  + pow(syst_bplus_m,2)  + temp_m )); 
-      data_syst_m_minus.push_back( sqrt( pow(syst_minus_m,2)  + pow(syst_uncminus_m,2) + pow(syst_jerminus_m,2) + pow(syst_bminus_m,2) + temp_m ));
+      data_syst_e_plus.push_back(  sqrt( pow(syst_plus_e,2)   + pow(syst_uncplus_e,2)  + pow(syst_jerplus_e,2)  + pow(syst_bplus_e,2)  + pow(syst_tesplus_e,2)  + temp_e )); 
+      data_syst_e_minus.push_back( sqrt( pow(syst_minus_e,2)  + pow(syst_uncminus_e,2) + pow(syst_jerminus_e,2) + pow(syst_bminus_e,2) + pow(syst_tesminus_e,2) + temp_e )); 
+      data_syst_m_plus.push_back(  sqrt( pow(syst_plus_m,2)   + pow(syst_uncplus_m,2)  + pow(syst_jerplus_m,2)  + pow(syst_bplus_m,2)  + pow(syst_tesplus_m,2)  + temp_m )); 
+      data_syst_m_minus.push_back( sqrt( pow(syst_minus_m,2)  + pow(syst_uncminus_m,2) + pow(syst_jerminus_m,2) + pow(syst_bminus_m,2) + pow(syst_tesminus_m,2) + temp_m ));
 
       // DEBUG
       //if(samp==1 && x == OS_STEP2 ){
@@ -920,9 +981,9 @@ namespace tableutils{
 
     d_e[x]=0; d_m[x]=0; d_e_systErrPlus[x]=0; d_e_systErrMinus[x]=0; d_m_systErrPlus[x]=0; d_m_systErrMinus[x]=0;
 
-    for(int y=0;y<15;y++){ 
+    for(int y=0;y<17;y++){ 
       d[x][y]=0; e[x][y]=0; d_trigger[x][y]=0; d_plus[x][y]=0; d_minus[x][y]=0;
-      d_uncplus[x][y]=0; d_uncminus[x][y]=0; d_jerplus[x][y]=0; d_jerminus[x][y]=0;  d_bplus[x][y]=0; d_bminus[x][y]=0; 
+      d_uncplus[x][y]=0; d_uncminus[x][y]=0; d_jerplus[x][y]=0; d_jerminus[x][y]=0;  d_tesplus[x][y]=0; d_tesminus[x][y]=0;  d_bplus[x][y]=0; d_bminus[x][y]=0; 
       systErrPlus[x][y]=0; systErrMinus[x][y]=0; 
     } 
   }
@@ -945,7 +1006,7 @@ namespace tableutils{
     //////////////////////////////////////////////////////
 
     // fill values with histogram data //////////////////////////////////////////////////////////////////////
-    for(int y=0;y<13;y++){  
+    for(int y=0;y<15;y++){  
    
       // yields //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       if(h)          { d[x][y]          = ( h->GetBinContent(x+1,y+1)         ) ;  e[x][y] = ( h->GetBinError(x+1,y+1) );            } 
@@ -955,6 +1016,8 @@ namespace tableutils{
       if(h_uncminus) { d_uncminus[x][y] = ( h_uncminus->GetBinContent(x+1,y+1)) ;                                                    }
       if(h_jerplus)  { d_jerplus[x][y]  = ( h_jerplus->GetBinContent(x+1,y+1) ) ;                                                    } 
       if(h_jerminus) { d_jerminus[x][y] = ( h_jerminus->GetBinContent(x+1,y+1)) ;                                                    }
+      if(h_tesplus)  { d_tesplus[x][y]  = ( h_tesplus->GetBinContent(x+1,y+1) ) ;                                                    } 
+      if(h_tesminus) { d_tesminus[x][y] = ( h_tesminus->GetBinContent(x+1,y+1)) ;                                                    }
       if(h_bplus)    { d_bplus[x][y]    = ( h_bplus->GetBinContent(x+1,y+1)   ) ;                                                    } 
       if(h_bminus)   { d_bminus[x][y]   = ( h_bminus->GetBinContent(x+1,y+1)  ) ;                                                    }
       if (triggerunc && h_trigger)  { d_trigger[x][y]  = ( h_trigger->GetBinContent(x+1,y+1) ) ;                                     }
@@ -963,7 +1026,7 @@ namespace tableutils{
 
       cout << "Name: " << hName << ", value: " << d[x][y] << ", stat error: " << e[x][y] <<endl;
 
-      if( XSECMEASUREMENT && ( y==ETAU_TDCH || y==MUTAU_TDCH || y==LEPJETS_TDCH || y==LEPLEP_TDCH || y==TAUJETS_TDCH || y==TAUTAU_TDCH || y==ALLJETS_TDCH)  ){  
+      if( XSECMEASUREMENT && ( y==ETAU_TDCH || y==MUTAU_TDCH || y==LEPJETS_TDCH || y==LEPLEP_TDCH /* y==EE_TDCH || y==EMU_TDCH || y==MUMU_TDCH*/ || y==TAUJETS_TDCH || y==TAUTAU_TDCH || y==ALLJETS_TDCH)  ){  
         double scalefactor( XSEC_EXP_ / 234. );  //note it should be 234
         d[x][y]          *= scalefactor ; 
         d_plus[x][y]     *= scalefactor ;
@@ -972,6 +1035,8 @@ namespace tableutils{
         d_uncminus[x][y] *= scalefactor ;
         d_jerplus[x][y]  *= scalefactor ;
         d_jerminus[x][y] *= scalefactor ;
+        d_tesplus[x][y]  *= scalefactor ;
+        d_tesminus[x][y] *= scalefactor ;
         d_bplus[x][y]    *= scalefactor ;
         d_bminus[x][y]   *= scalefactor ;  
         d_trigger[x][y]  *= scalefactor ;    
@@ -984,6 +1049,8 @@ namespace tableutils{
       double syst_uncminus = fabs(d[x][y]-d_uncminus[x][y]);   
       double syst_jerplus  = fabs(d[x][y]-d_jerplus[x][y]);    
       double syst_jerminus = fabs(d[x][y]-d_jerminus[x][y]); 
+      double syst_tesplus  = fabs(d[x][y]-d_tesplus[x][y]);    
+      double syst_tesminus = fabs(d[x][y]-d_tesminus[x][y]); 
       double syst_bplus    = fabs(d[x][y]-d_bplus[x][y]);    
       double syst_bminus   = fabs(d[x][y]-d_bminus[x][y]); 
       double syst_lum      = LUM_ERR*d[x][y];
@@ -994,7 +1061,7 @@ namespace tableutils{
       double sample_cs(0);
 
       if(      y==QCD_TDCH )                                                                                                               { sample_cs = QCD_CS_ERR ;      }
-      else if( y==ETAU_TDCH || y==MUTAU_TDCH || y==LEPJETS_TDCH || y==LEPLEP_TDCH || y==TAUJETS_TDCH || y==TAUTAU_TDCH || y==ALLJETS_TDCH ){ sample_cs = TTBAR_CS_ERR;     }
+      else if( y==ETAU_TDCH || y==MUTAU_TDCH || y==LEPJETS_TDCH || y==LEPLEP_TDCH /* y==EE_TDCH || y==EMU_TDCH || y==MUMU_TDCH*/ || y==TAUJETS_TDCH || y==TAUTAU_TDCH || y==ALLJETS_TDCH ){ sample_cs = TTBAR_CS_ERR;     }
       else if( y==SINGLETOP_TDCH )                                                                                                         { sample_cs = SINGLETOP_CS_ERR; }              
       else if( y==WJETS_TDCH     )                                                                                                         { sample_cs = WJETS_CS_ERR;     }              
       else                                                                                                                                 { sample_cs = OTHER_CS_ERR;     }
@@ -1003,11 +1070,8 @@ namespace tableutils{
      
       double syst_tauid(0);                                             
  
-      if     ( x >= TAUSTEP && y!=LEPJETS_TDCH && y!=ZJETS_TDCH  && y!=LEPLEP_TDCH     ){ syst_tauid = TAU_ID_ERR*d[x][y];     }  
-      else if( x >= TAUSTEP && ( y==LEPJETS_TDCH || y==ZJETS_TDCH || y==LEPLEP_TDCH )  ){ syst_tauid = TAU_MISSID_ERR*d[x][y]; }
-
-
-
+      if     ( x >= TAUSTEP && y!=LEPJETS_TDCH && y!=ZJETS_TDCH  && y!=LEPLEP_TDCH /*y!=EE_TDCH && y!=EMU_TDCH && y!= MUMU_TDCH */     ){ syst_tauid = TAU_ID_ERR*d[x][y];     }  
+      else if( x >= TAUSTEP && ( y==LEPJETS_TDCH || y==ZJETS_TDCH || y==LEPLEP_TDCH /*y==EE_TDCH || y==EMU_TDCH || y==MUMU_TDCH*/ )  ){ syst_tauid = TAU_MISSID_ERR*d[x][y]; }
 
       // signal theory unc.
       double syst_theoryeff(0); if( XSECMEASUREMENT && ( y==ETAU_TDCH || y==MUTAU_TDCH )) syst_theoryeff = SIGNAL_EFF_ERR*d[x][y];
@@ -1030,19 +1094,19 @@ namespace tableutils{
 
       if(systset1){ 
         syst_tauid = 0;  syst_lum = 0; syst_eff_lep=0; syst_cs=0; ;
-        syst_bplus = 0;  syst_bminus = 0; syst_theoryeff=0;
+        syst_bplus = 0;  syst_bminus = 0; syst_theoryeff=0; syst_tesplus=0; syst_tesminus=0;
         syst_trigger=0;
       }
       if(systset2){
         syst_tauid = 0;  syst_lum = 0; syst_eff_lep=0; syst_cs=0; ; 
         syst_uncplus = 0; syst_uncminus= 0;  syst_jerplus = 0;  syst_jerminus = 0; syst_plus=0; syst_minus=0; syst_theoryeff=0;
-        syst_trigger=0;
+        syst_trigger=0; syst_tesplus=0; syst_tesminus=0;
       }
       if(systset3){
         syst_tauid = 0;  syst_lum = 0; syst_eff_lep=0; syst_cs=0; ;
         syst_bplus = 0;  syst_bminus = 0; syst_theoryeff=0;
         syst_uncplus = 0; syst_uncminus= 0;  syst_jerplus = 0;  syst_jerminus = 0; syst_plus=0; syst_minus=0; syst_theoryeff=0;
-        
+	//        syst_tesplus=0; syst_tesminus=0;
       }
 
      
@@ -1050,8 +1114,8 @@ namespace tableutils{
       double temp;
       temp = pow(syst_lum,2)+ pow(syst_tauid,2) + pow(syst_cs,2) + pow(syst_eff_lep,2)+pow(syst_theoryeff,2);
       if(triggerunc){ temp += pow(syst_trigger,2); }
-      systErrPlus[x][y]  = sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2)  + pow(syst_bplus,2)  + temp ); 
-      systErrMinus[x][y] = sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_bminus,2) + temp );
+      systErrPlus[x][y]  = sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2)  + pow(syst_bplus,2)  + pow(syst_tesplus,2)  + temp ); 
+      systErrMinus[x][y] = sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_bminus,2) + pow(syst_tesminus,2) + temp );
       
    
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
@@ -1075,18 +1139,20 @@ namespace tableutils{
     double signal_plus(   d_plus[x][0]    + d_plus[x][1]   ), signal_minus(    d_minus[x][0]    + d_minus[x][1]); 
     double signal_uncplus(d_uncplus[x][0] + d_uncplus[x][1]), signal_uncminus( d_uncminus[x][0] + d_uncminus[x][1]);
     double signal_jerplus(d_jerplus[x][0] + d_jerplus[x][1]), signal_jerminus( d_jerminus[x][0] + d_jerminus[x][1]);
+    double signal_tesplus(d_tesplus[x][0] + d_tesplus[x][1]), signal_tesminus( d_tesminus[x][0] + d_tesminus[x][1]);
     double signal_bplus(  d_bplus[x][0]   + d_bplus[x][1]  ), signal_bminus(   d_bminus[x][0]   + d_bminus[x][1]);
     double signal_trigger = pow( d_trigger[x][0],2) + pow(d_trigger[x][1],2) ;
     double err_signal2 = (e[x][0])*(e[x][0]) + (e[x][1])*(e[x][1]) ;
 
     
     // standard model background 
-    double bkg(0),bkg_plus(0), bkg_minus(0), bkg_uncplus(0), bkg_uncminus(0), bkg_jerplus(0), bkg_jerminus(0), bkg_bplus(0), bkg_bminus(0), err_bkg2(0), bkg_trigger(0); 
-    for(int y2=2;y2<13;y2++){ 
+    double bkg(0),bkg_plus(0), bkg_minus(0), bkg_uncplus(0), bkg_uncminus(0), bkg_jerplus(0), bkg_jerminus(0), bkg_tesplus(0), bkg_tesminus(0), bkg_bplus(0), bkg_bminus(0), err_bkg2(0), bkg_trigger(0); 
+    for(int y2=2;y2<15;y2++){ 
       bkg += d[x][y2]; err_bkg2 += (e[x][y2])*(e[x][y2]);
       bkg_plus     += d_plus[x][y2];     bkg_minus   += d_minus[x][y2];  
       bkg_uncminus += d_uncminus[x][y2]; bkg_uncplus += d_uncplus[x][y2];       
       bkg_jerminus += d_jerminus[x][y2]; bkg_jerplus += d_jerplus[x][y2];
+      bkg_tesminus += d_tesminus[x][y2]; bkg_tesplus += d_tesplus[x][y2];
       bkg_bminus   += d_bminus[x][y2];   bkg_bplus   += d_bplus[x][y2];
       bkg_trigger  += pow(d_trigger[x][y2],2); 
     }
@@ -1102,32 +1168,34 @@ namespace tableutils{
 
     //cout<<" step : "<<x<<" sob "<<sob<<" sqrt b "<<sosqrtb<<" signal "<<signal<<" bkg "<<bkg<<endl;
 
-    d_plus[x][13]    = signal_plus  + bkg_plus;    d_uncplus[x][13]  = signal_uncplus  + bkg_uncplus;   d_jerplus[x][13]  = signal_jerplus  + bkg_jerplus; 
-    d_bplus[x][13]   = signal_bplus + bkg_bplus;
+    d_plus[x][15]    = signal_plus  + bkg_plus;    d_uncplus[x][15]  = signal_uncplus  + bkg_uncplus;   d_jerplus[x][15]  = signal_jerplus  + bkg_jerplus; 
+    d_bplus[x][15]   = signal_bplus + bkg_bplus;  d_tesplus[x][15]  = signal_tesplus  + bkg_tesplus;
     
-    d_minus[x][13]   = signal_minus + bkg_minus;   d_uncminus[x][13] = signal_uncminus + bkg_uncminus;  d_jerminus[x][13] = signal_jerminus + bkg_jerminus;
-    d_bminus[x][13]  = signal_bminus  + bkg_bminus;
+    d_minus[x][15]   = signal_minus + bkg_minus;   d_uncminus[x][15] = signal_uncminus + bkg_uncminus;  d_jerminus[x][15] = signal_jerminus + bkg_jerminus;
+    d_bminus[x][15]  = signal_bminus  + bkg_bminus;  d_tesminus[x][15] = signal_tesminus + bkg_tesminus;
 
-    d_trigger[x][13] = sqrt( signal_trigger +  bkg_trigger );
+    d_trigger[x][15] = sqrt( signal_trigger +  bkg_trigger );
 
 
-    d[x][13]=signal+bkg; e[x][13] = sqrt( err_signal2 + err_bkg2 );
+    d[x][15]=signal+bkg; e[x][15] = sqrt( err_signal2 + err_bkg2 );
     // S/B
-    d[x][14] = sob;      e[x][14] = err_sob;
+    d[x][16] = sob;      e[x][16] = err_sob;
     // S/Sqrt(B)
-    d[x][15] = sosqrtb;  e[x][15] = err_sosqrtb;
+    d[x][17] = sosqrtb;  e[x][17] = err_sosqrtb;
 
 
-    double temp_syst_plus      = fabs(d_plus[x][13]    - d[x][13]);   
-    double temp_syst_minus     = fabs(d_minus[x][13]   - d[x][13]);
-    double temp_syst_uncplus   = fabs(d_uncplus[x][13] - d[x][13]);   
-    double temp_syst_uncminus  = fabs(d_uncminus[x][13]- d[x][13]);
-    double temp_syst_jerplus   = fabs(d_jerplus[x][13] - d[x][13]);   
-    double temp_syst_jerminus  = fabs(d_jerminus[x][13]- d[x][13]);
-    double temp_syst_bplus     = fabs(d_bplus[x][13]   - d[x][13]);
-    double temp_syst_bminus    = fabs(d_bminus[x][13]  - d[x][13]);
+    double temp_syst_plus      = fabs(d_plus[x][15]    - d[x][15]);   
+    double temp_syst_minus     = fabs(d_minus[x][15]   - d[x][15]);
+    double temp_syst_uncplus   = fabs(d_uncplus[x][15] - d[x][15]);   
+    double temp_syst_uncminus  = fabs(d_uncminus[x][15]- d[x][15]);
+    double temp_syst_jerplus   = fabs(d_jerplus[x][15] - d[x][15]);   
+    double temp_syst_jerminus  = fabs(d_jerminus[x][15]- d[x][15]);
+    double temp_syst_tesplus   = fabs(d_tesplus[x][15] - d[x][15]);   
+    double temp_syst_tesminus  = fabs(d_tesminus[x][15]- d[x][15]);
+    double temp_syst_bplus     = fabs(d_bplus[x][15]   - d[x][15]);
+    double temp_syst_bminus    = fabs(d_bminus[x][15]  - d[x][15]);
 
-    double temp_syst_ttbar      = TTBAR_CS_ERR     * ( d[x][ETAU_TDCH]+d[x][MUTAU_TDCH]+d[x][LEPJETS_TDCH]+d[x][LEPLEP_TDCH]+d[x][TAUJETS_TDCH]+d[x][TAUTAU_TDCH]+d[x][ALLJETS_TDCH]);
+    double temp_syst_ttbar      = TTBAR_CS_ERR     * ( d[x][ETAU_TDCH]+d[x][MUTAU_TDCH]+d[x][LEPJETS_TDCH]+d[x][LEPLEP_TDCH]/*d[x][EE_TDCH]+d[x][EMU_TDCH]+d[x][MUMU_TDCH]*/+d[x][TAUJETS_TDCH]+d[x][TAUTAU_TDCH]+d[x][ALLJETS_TDCH]);
     double temp_syst_wjets      = WJETS_CS_ERR     * ( d[x][WJETS_TDCH] );
     double temp_syst_singletop  = SINGLETOP_CS_ERR * ( d[x][SINGLETOP_TDCH]);
     double temp_syst_diboson    = OTHER_CS_ERR     * ( d[x][EWKDI_TDCH] );
@@ -1135,13 +1203,14 @@ namespace tableutils{
     double temp_syst_qcd        = QCD_CS_ERR       * ( d[x][QCD_TDCH] );
 
     double temp_syst_tauid      = 0; if( x>=TAUSTEP ){ temp_syst_tauid     = TAU_ID_ERR     *(d[x][ETAU_TDCH]+d[x][MUTAU_TDCH]+d[x][TAUJETS_TDCH]+d[x][TAUTAU_TDCH]);}
-    double temp_syst_misstauid  = 0; if( x>=TAUSTEP ){ temp_syst_misstauid = TAU_MISSID_ERR *(d[x][LEPJETS_TDCH]+d[x][LEPLEP_TDCH]+d[x][ALLJETS_TDCH]);              }
 
-    double temp_syst_lum      = LUM_ERR*d[x][13];
-    double temp_syst_eff_lep  = LEP_EFF_ERR*d[x][13];
+    double temp_syst_misstauid  = 0; if( x>=TAUSTEP ){ temp_syst_misstauid = TAU_MISSID_ERR *(d[x][LEPJETS_TDCH]+d[x][LEPLEP_TDCH]/*d[x][EE_TDCH]+d[x][EMU_TDCH]+d[x][MUMU_TDCH]*/+d[x][ALLJETS_TDCH]);              }
+
+    double temp_syst_lum      = LUM_ERR*d[x][15];
+    double temp_syst_eff_lep  = LEP_EFF_ERR*d[x][15];
 
     double syst_theoryeff = 0;
-    double temp_syst_trigger  = d_trigger[x][13] ;
+    double temp_syst_trigger  = d_trigger[x][15] ;
 
     if (XSECMEASUREMENT) syst_theoryeff = SIGNAL_EFF_ERR*signal;
      
@@ -1149,7 +1218,7 @@ namespace tableutils{
       temp_syst_misstauid = 0;
       temp_syst_eff_lep   = 0;
       temp_syst_tauid =0; temp_syst_qcd=0; temp_syst_ttbar =0; temp_syst_wjets=0; temp_syst_singletop=0; temp_syst_diboson=0; temp_syst_zjets=0; temp_syst_lum=0;
-      temp_syst_bplus =0; temp_syst_bminus = 0; 
+      temp_syst_bplus =0; temp_syst_bminus = 0; temp_syst_tesplus = 0; temp_syst_tesminus = 0;
       syst_theoryeff=0;
       temp_syst_trigger=0;
     }
@@ -1159,7 +1228,7 @@ namespace tableutils{
       temp_syst_tauid =0; temp_syst_qcd=0; temp_syst_ttbar =0; temp_syst_wjets=0; temp_syst_singletop=0; temp_syst_diboson=0; temp_syst_zjets=0; temp_syst_lum=0;
       temp_syst_plus = 0; temp_syst_minus = 0;
       temp_syst_uncplus = 0; temp_syst_uncminus = 0;
-      temp_syst_jerplus = 0; temp_syst_jerminus = 0;
+      temp_syst_jerplus = 0; temp_syst_jerminus = 0;temp_syst_tesplus = 0; temp_syst_tesminus = 0;
       syst_theoryeff=0;
       temp_syst_trigger=0;
     }
@@ -1171,7 +1240,7 @@ namespace tableutils{
      temp_syst_bplus =0; temp_syst_bminus = 0; 
      temp_syst_plus = 0; temp_syst_minus = 0;
      temp_syst_uncplus = 0; temp_syst_uncminus = 0;
-     temp_syst_jerplus = 0; temp_syst_jerminus = 0;
+     temp_syst_jerplus = 0; temp_syst_jerminus = 0;//temp_syst_tesplus = 0; temp_syst_tesminus = 0;
      syst_theoryeff=0;
    }
 
@@ -1185,8 +1254,8 @@ namespace tableutils{
 
    if( triggerunc ){ temp += pow(temp_syst_trigger,2);  }
 
-   syst_error_plus[x]  = sqrt( pow(temp_syst_plus,2)  + pow(temp_syst_uncplus,2) +  pow(temp_syst_jerplus,2)  + pow(temp_syst_bplus,2) + temp );
-   syst_error_minus[x] = sqrt( pow(temp_syst_minus,2) + pow(temp_syst_uncminus,2) + pow(temp_syst_jerminus,2) + pow(temp_syst_bminus,2) + temp );
+   syst_error_plus[x]  = sqrt( pow(temp_syst_plus,2)  + pow(temp_syst_uncplus,2) +  pow(temp_syst_jerplus,2)  + pow(temp_syst_bplus,2)  + pow(temp_syst_tesplus,2)  + temp );
+   syst_error_minus[x] = sqrt( pow(temp_syst_minus,2) + pow(temp_syst_uncminus,2) + pow(temp_syst_jerminus,2) + pow(temp_syst_bminus,2) + pow(temp_syst_tesminus,2) + temp );
 
    cout<<"\n debug : trigger unc = "<<temp_syst_trigger<<" syst plus = "<<syst_error_plus[x]<<endl;
   
@@ -1236,7 +1305,9 @@ namespace tableutils{
 
   TString Tcolumn_mc[] = {
     "$e\\tau_h$","$\\mu\\tau_h$", 
-    "lepton+jets", "dilepton", "tau+jets", "$\\tau\\tau$", "full had.", 
+    "lepton+jets", //"dilepton", 
+    "ee", "e\\mu", "\\mu\\mu",
+    "tau+jets", "$\\tau\\tau$", "full had.", 
     "W+jets", "Z(ll)+jets", "$Z(\\tau\\tau)$+jets", "Single Top", "QCD", "WW,WZ,ZZ",
     "total ", "S/B", "S/$\\sqrt{B}$"
   };
@@ -1797,7 +1868,7 @@ namespace tableutils{
     
       if(hh_contrib || hw_contrib || tbh_contrib || htb_contrib ) fprintf(f,"\\hline \n\n"); 
 
-      for(int k=0; k<13;k++){ // 13 sources of background
+      for(int k=0; k<15;k++){ // 15 sources of background
 
         //if(k== 3 || k ==2 || k==5 || k == 6 || k==7 || k==11 ) continue;
 
@@ -1805,16 +1876,19 @@ namespace tableutils{
         if     (k ==0 ) { d2=TString("tau dilepton from $t\\bar{t}$ & $e\\tau_h$ & ");}
         else if(k == 1) { d2=TString(" & $\\mu\\tau_h$ & ");}
         else if(k == 2) { fprintf(f,"\\hline ");  d2=TString(" & lepton+jets & ");}
-        else if(k == 3) { d2=TString(" & dilepton & ");}
-        else if(k == 4) { d2=TString(" other $t\\bar{t}$ & tau+jets & ");}
-        else if(k == 5) { d2=TString(" & $\\tau\\tau$ & ");}
-        else if(k == 6) { d2=TString(" & full had. & ");}
-        else if(k == 7) { fprintf(f,"\\hline");  d2=TString(" & W+jets & ");}
-        else if(k == 8) { d2=TString(" & Z(ll)+jets & ");}
-        else if(k == 9) { d2=TString("  other bkg & Z($\\tau\\tau$)+jets & ");}
-        else if(k == 10){ d2=TString(" & single top & ");}
-        else if(k == 11){ d2=TString(" & QCD & "); }
-        else if(k == 12){ d2=TString(" & WW,WZ,ZZ & ");}
+	//        else if(k == 3) { d2=TString(" & dilepton & ");}
+        else if(k == 3) { d2=TString(" & ee & ");}
+        else if(k == 4) { d2=TString(" & e$\\mu$ & ");}
+        else if(k == 5) { d2=TString(" & $\\mu\\mu$ & ");}
+        else if(k == 6) { d2=TString(" other $t\\bar{t}$ & tau+jets & ");}
+        else if(k == 7) { d2=TString(" & $\\tau\\tau$ & ");}
+        else if(k == 8) { d2=TString(" & full had. & ");}
+        else if(k == 9) { fprintf(f,"\\hline");  d2=TString(" & W+jets & ");}
+        else if(k == 10){ d2=TString(" & Z(ll)+jets & ");}
+        else if(k == 11){ d2=TString("  other bkg & Z($\\tau\\tau$)+jets & ");}
+        else if(k == 12){ d2=TString(" & single top & ");}
+        else if(k == 13){ d2=TString(" & QCD & "); }
+        else if(k == 14){ d2=TString(" & WW,WZ,ZZ & ");}
 
         if      ( detailed == D1 ){ 
           if(      STARTINGPOINT == STARTING_AT_LJETS_        ){ d2 = d2 + TString(" %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n");}  
@@ -1941,17 +2015,17 @@ namespace tableutils{
         fprintf(f, data_m, d_m[COL2], d_m[COL3], d_m[COL4], d_m[COL5], d_m[COL6], d_m[COL7], d_m[COL8], d_m[COL9]);
         d4= TString(" MC(SM)  &  total & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f  & %8.0f & %8.0f  & %8.0f \\\\ \n");
         line4.Append(d4);  const char * data4 = line4.Data();
-        fprintf(f, data4, d[COL2][13], d[COL3][13], d[COL4][13], d[COL5][13], d[COL6][13], d[COL7][13], d[COL8][13], d[COL9][13]);
+        fprintf(f, data4, d[COL2][15], d[COL3][15], d[COL4][15], d[COL5][15], d[COL6][15], d[COL7][15], d[COL8][15], d[COL9][15]);
         d5=TString(" & stat $\\pm$ syst & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.1f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); 
         line.Append(d5);  data = line.Data();
-        fprintf(f, data, e[COL2][13], syst_error_plus[COL2], syst_error_minus[COL2],
-                         e[COL3][13], syst_error_plus[COL3], syst_error_minus[COL3],    
-                         e[COL4][13], syst_error_plus[COL4], syst_error_minus[COL4], 
-                         e[COL5][13], syst_error_plus[COL5], syst_error_minus[COL5],
-                         e[COL6][13], syst_error_plus[COL6], syst_error_minus[COL6],
-                         e[COL7][13], syst_error_plus[COL7], syst_error_minus[COL7],
-                         e[COL8][13], syst_error_plus[COL8], syst_error_minus[COL8],
-                         e[COL9][13], syst_error_plus[COL9], syst_error_minus[COL9]);
+        fprintf(f, data, e[COL2][15], syst_error_plus[COL2], syst_error_minus[COL2],
+                         e[COL3][15], syst_error_plus[COL3], syst_error_minus[COL3],    
+                         e[COL4][15], syst_error_plus[COL4], syst_error_minus[COL4], 
+                         e[COL5][15], syst_error_plus[COL5], syst_error_minus[COL5],
+                         e[COL6][15], syst_error_plus[COL6], syst_error_minus[COL6],
+                         e[COL7][15], syst_error_plus[COL7], syst_error_minus[COL7],
+                         e[COL8][15], syst_error_plus[COL8], syst_error_minus[COL8],
+                         e[COL9][15], syst_error_plus[COL9], syst_error_minus[COL9]);
       } 
 
 
@@ -1960,16 +2034,16 @@ namespace tableutils{
         fprintf(f, data_m, d_m[COL2], d_m[COL3], d_m[COL4], d_m[COL5], d_m[COL6], d_m[COL7], d_m[COL8]);
         d4= TString(" MC(SM)  &  total & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f\\\\ \n");
         line4.Append(d4);  const char * data4 = line4.Data();
-        fprintf(f, data4, d[COL2][13], d[COL3][13], d[COL4][13], d[COL5][13], d[COL6][13], d[COL7][13], d[COL8][13]);
+        fprintf(f, data4, d[COL2][15], d[COL3][15], d[COL4][15], d[COL5][15], d[COL6][15], d[COL7][15], d[COL8][15]);
         d5=TString(" & stat $\\pm$ syst & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); 
         line.Append(d5);  data = line.Data();
-        fprintf(f, data, e[COL2][13], syst_error_plus[COL2], syst_error_minus[COL2],
-          e[COL3][13], syst_error_plus[COL3], syst_error_minus[COL3],    
-          e[COL4][13], syst_error_plus[COL4], syst_error_minus[COL4], 
-          e[COL5][13], syst_error_plus[COL5], syst_error_minus[COL5],
-          e[COL6][13], syst_error_plus[COL6], syst_error_minus[COL6],
-          e[COL7][13], syst_error_plus[COL7], syst_error_minus[COL7],
-          e[COL8][13], syst_error_plus[COL8], syst_error_minus[COL8]
+        fprintf(f, data, e[COL2][15], syst_error_plus[COL2], syst_error_minus[COL2],
+          e[COL3][15], syst_error_plus[COL3], syst_error_minus[COL3],    
+          e[COL4][15], syst_error_plus[COL4], syst_error_minus[COL4], 
+          e[COL5][15], syst_error_plus[COL5], syst_error_minus[COL5],
+          e[COL6][15], syst_error_plus[COL6], syst_error_minus[COL6],
+          e[COL7][15], syst_error_plus[COL7], syst_error_minus[COL7],
+          e[COL8][15], syst_error_plus[COL8], syst_error_minus[COL8]
         );
       } 
 
@@ -1981,20 +2055,20 @@ namespace tableutils{
       if( STARTINGPOINT == STARTING_AT_LJETS_ ){
         d1=TString(" & S/B &  %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f   \\\\ \n");
         line1.Append(d1); data1 = line1.Data();
-        fprintf(f, data1, d[COL2][14], d[COL3][14], d[COL4][14], d[COL5][14], d[COL6][14], d[COL7][14] , d[COL8][14], d[COL9][14]);
+        fprintf(f, data1, d[COL2][16], d[COL3][16], d[COL4][16], d[COL5][16], d[COL6][16], d[COL7][16] , d[COL8][16], d[COL9][16]);
 
         d2=TString(" & S/$\\sqrt{B}$ & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f \\\\ \n");
         line2.Append(d2); data2 = line2.Data();
-        fprintf(f, data2, d[COL2][15], d[COL3][15], d[COL4][15], d[COL5][15],  d[COL6][15],  d[COL7][15],  d[COL8][15],  d[COL9][15]);
+        fprintf(f, data2, d[COL2][17], d[COL3][17], d[COL4][17], d[COL5][17],  d[COL6][17],  d[COL7][17],  d[COL8][17],  d[COL9][17]);
       }
       if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){
         d1=TString(" & S/B &  %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f  \\\\ \n");
         line1.Append(d1); data1 = line1.Data();
-        fprintf(f, data1, d[COL2][14], d[COL3][14], d[COL4][14], d[COL5][14], d[COL6][14], d[COL7][14], d[COL8][14]);
+        fprintf(f, data1, d[COL2][16], d[COL3][16], d[COL4][16], d[COL5][16], d[COL6][16], d[COL7][16], d[COL8][16]);
 
         d2=TString(" & S/$\\sqrt{B}$ & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f \\\\ \n");
         line2.Append(d2); data2 = line2.Data();
-        fprintf(f, data2, d[COL2][15], d[COL3][15], d[COL4][15], d[COL5][15],  d[COL6][15], d[COL7][15],  d[COL8][15]);
+        fprintf(f, data2, d[COL2][17], d[COL3][17], d[COL4][17], d[COL5][17],  d[COL6][17], d[COL7][17],  d[COL8][17]);
       }
     }  
   } 
@@ -2057,22 +2131,6 @@ namespace tableutils{
 // Summary Table
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // systset1 -> if enabled include only JES + MET +JER
 // systset2 -> if enabled include only btag unc
 // systset3 -> if enabled include only trigger
@@ -2125,14 +2183,21 @@ namespace tableutils{
 
 
    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  int STEP,TAUSTEP ,BTAG1STEP, BTAG2STEP; int COL1,COL2,COL3,COL4,COL5,COL6,COL7,COL8,COL9;
+  int STEP,TAUSTEP,OSSTEP ,BTAG1STEP, BTAG2STEP; int COL1,COL2,COL3,COL4,COL5,COL6,COL7,COL8,COL9;
   
-  TAUSTEP = TAU_STEP2; BTAG1STEP = BTAG1_STEP2; /*STEP=BTAG1_STEP2; */ STEP = OS_STEP2;
+  
+  // hack
+  int TAU_NOMT, OS_NOMT, BTAG2_NOMT;
+  if(APPLY_MT_CUT_) { TAU_NOMT = TAU_STEP2;   OS_NOMT = OS_STEP2;   BTAG2_NOMT = BTAG2_STEP2;}
+  else              { TAU_NOMT = TAU_STEP2-1; OS_NOMT = OS_STEP2-1; BTAG2_NOMT = BTAG2_STEP2-1;}
+  // end hack
+
+  TAUSTEP = TAU_NOMT; BTAG1STEP = BTAG1_STEP2; /*STEP=BTAG1_STEP2; */ OSSTEP = OS_NOMT; BTAG2STEP = BTAG2_NOMT;
 // nomt //  if(     STARTINGPOINT == STARTING_AT_LJETS_         ){ COL2 = JET3_STEP2; COL3=MET_STEP2;    COL4=BTAG1_STEP2; COL5=TAU_STEP2; COL6=OS_STEP2;    COL7=BTAG2_STEP2; COL8=R_STEP1; }
 // nomt //  else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){ COL2 = MET_STEP2;   COL3=BTAG1_STEP2 ;  COL4=TAU_STEP2;   COL5=OS_STEP2;  COL6=BTAG2_STEP2; COL7=R_STEP2; }                 
 
-  if(     STARTINGPOINT == STARTING_AT_LJETS_         ){ COL2 = JET3_STEP2; COL3=MET_STEP2;   COL4=MT_STEP2;  COL5=BTAG1_STEP2; COL6=TAU_STEP2; COL7=OS_STEP2;    COL8=BTAG2_STEP2; COL9=R_STEP1; }
-  else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){ COL2 = MET_STEP2;  COL3=MT_STEP2; COL4=BTAG1_STEP2 ;  COL5=TAU_STEP2;   COL6=OS_STEP2;  COL7=BTAG2_STEP2; COL8=R_STEP2; }                 
+  if(     STARTINGPOINT == STARTING_AT_LJETS_         ){ COL2 = JET3_STEP2; COL3=MET_STEP2;   COL4=MT_STEP2;  COL5=BTAG1_STEP2; COL6=TAU_NOMT; COL7=OS_NOMT;    COL8=BTAG2_NOMT; COL9=R_STEP2; }
+  else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){ COL2 = MET_STEP2;  COL3=MT_STEP2; COL4=BTAG1_STEP2 ;  COL5=TAU_NOMT;   COL6=OS_NOMT;  COL7=BTAG2_NOMT; COL8=R_STEP2; }                 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -2165,16 +2230,20 @@ namespace tableutils{
   
   TFile * processedMCFile = TFile::Open(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-mc.root")); TFile * processedDataFile = TFile::Open(outputArea_+TString("nomt-2012-V1-data-MU-20GeV/out-data.root")); 
 
-  map<TString,TString> hNameData_m, hNameMC_m, 
+  map<TString,TString> 
+    hNameData_m, hNameMC_m, 
     hNameMC_plus_m, hNameMC_minus_m, 
     hNameMC_uncplus_m, hNameMC_uncminus_m, 
     hNameMC_jerplus_m, hNameMC_jerminus_m,
+    hNameMC_tesplus_m, hNameMC_tesminus_m,
     hNameMC_bplus_m, hNameMC_bminus_m,
     hNameMC_trigger_m;
   
-  map<TString,TString> hName_higgs_m, hName_higgs_plus_m, hName_higgs_minus_m, 
+  map<TString,TString> 
+    hName_higgs_m, hName_higgs_plus_m, hName_higgs_minus_m, 
     hName_higgs_uncplus_m, hName_higgs_uncminus_m, 
     hName_higgs_jerminus_m, hName_higgs_jerplus_m,
+    hName_higgs_tesminus_m, hName_higgs_tesplus_m,
     hName_higgs_bminus_m, hName_higgs_bplus_m, hName_higgs_trigger_m;
   
   
@@ -2199,6 +2268,8 @@ namespace tableutils{
     TString hNameMC_uncminus(algo+TString("/YieldsMC")+TString("/cutflow_yields_mc_uncminus_")+ leptauStringMC); hNameMC_uncminus_m[algo]  = hNameMC_uncminus;
     TString hNameMC_jerplus( algo+TString("/YieldsMC")+TString("/cutflow_yields_mc_jerplus_") + leptauStringMC); hNameMC_jerplus_m[algo]   = hNameMC_jerplus;
     TString hNameMC_jerminus(algo+TString("/YieldsMC")+TString("/cutflow_yields_mc_jerminus_")+ leptauStringMC); hNameMC_jerminus_m[algo]  = hNameMC_jerminus;
+    TString hNameMC_tesplus( algo+TString("/YieldsMC")+TString("/cutflow_yields_mc_tesplus_") + leptauStringMC); hNameMC_tesplus_m[algo]   = hNameMC_tesplus;
+    TString hNameMC_tesminus(algo+TString("/YieldsMC")+TString("/cutflow_yields_mc_tesminus_")+ leptauStringMC); hNameMC_tesminus_m[algo]  = hNameMC_tesminus;
     TString hNameMC_bplus(   algo+TString("/YieldsMC")+TString("/cutflow_yields_mc_bplus_")   + leptauStringMC); hNameMC_bplus_m[algo]     = hNameMC_bplus;
     TString hNameMC_bminus(  algo+TString("/YieldsMC")+TString("/cutflow_yields_mc_bminus_")  + leptauStringMC); hNameMC_bminus_m[algo]    = hNameMC_bminus;
     TString hNameMC_trigger( algo+TString("/YieldsMC")+TString("/cutflow_mc_triggErr_")       + leptauStringMC); hNameMC_trigger_m[algo]   = hNameMC_trigger;
@@ -2211,6 +2282,8 @@ namespace tableutils{
     TString hName_higgs_uncminus( algo + TString("/Yields")+ TString("/lep_tau/cutflow_yields_uncminus_")+leptauString); hName_higgs_uncminus_m[algo] = hName_higgs_uncminus;
     TString hName_higgs_jerplus(  algo + TString("/Yields")+ TString("/lep_tau/cutflow_yields_jerplus_") +leptauString); hName_higgs_jerplus_m[algo]  = hName_higgs_jerplus;
     TString hName_higgs_jerminus( algo + TString("/Yields")+ TString("/lep_tau/cutflow_yields_jerminus_")+leptauString); hName_higgs_jerminus_m[algo] = hName_higgs_jerminus;
+    TString hName_higgs_tesplus(  algo + TString("/Yields")+ TString("/lep_tau/cutflow_yields_tesplus_") +leptauString); hName_higgs_tesplus_m[algo]  = hName_higgs_tesplus;
+    TString hName_higgs_tesminus( algo + TString("/Yields")+ TString("/lep_tau/cutflow_yields_tesminus_")+leptauString); hName_higgs_tesminus_m[algo] = hName_higgs_tesminus;
     TString hName_higgs_bplus(    algo + TString("/Yields")+ TString("/lep_tau/cutflow_yields_bplus_")   +leptauString); hName_higgs_bplus_m[algo]    = hName_higgs_bplus;
     TString hName_higgs_bminus(   algo + TString("/Yields")+ TString("/lep_tau/cutflow_yields_bminus_")  +leptauString); hName_higgs_bminus_m[algo]   = hName_higgs_bminus;
     TString hName_higgs_trigger(  algo + TString("/Yields")+ TString("/lep_tau/cutflow_triggErr_")+leptauString); hName_higgs_trigger_m[algo]  = hName_higgs_trigger;
@@ -2221,12 +2294,12 @@ namespace tableutils{
   // map histograms for data
   map< TString, TH1D * > hData;
   // map histograms for MC 
-  map< TString, TH2D * > hMC, hMC_plus, hMC_minus, hMC_uncplus, hMC_uncminus, hMC_jerplus, hMC_jerminus, hMC_bplus, hMC_bminus, hMC_trigger;      
+  map< TString, TH2D * > hMC, hMC_plus, hMC_minus, hMC_uncplus, hMC_uncminus, hMC_jerplus, hMC_jerminus, hMC_tesplus, hMC_tesminus, hMC_bplus, hMC_bminus, hMC_trigger;      
   // map histograms for higgs
-  map< TString, vector< TH1D * > > h_hh, h_hh_plus, h_hh_minus, h_hh_uncplus, h_hh_uncminus, h_hh_jerplus, h_hh_jerminus, h_hh_bplus, h_hh_bminus, h_hh_trigger;
-  map< TString, vector< TH1D * > > h_hw, h_hw_plus, h_hw_minus, h_hw_uncplus, h_hw_uncminus, h_hw_jerplus, h_hw_jerminus, h_hw_bplus, h_hw_bminus, h_hw_trigger;
-  map< TString, vector< TH1D * > > h_tbh, h_tbh_plus, h_tbh_minus, h_tbh_uncplus, h_tbh_uncminus, h_tbh_jerplus, h_tbh_jerminus, h_tbh_bplus, h_tbh_bminus, h_tbh_trigger;
-  map< TString, vector< TH1D * > > h_htb, h_htb_plus, h_htb_minus, h_htb_uncplus, h_htb_uncminus, h_htb_jerplus, h_htb_jerminus, h_htb_bplus, h_htb_bminus, h_htb_trigger;
+  map< TString, vector< TH1D * > > h_hh, h_hh_plus, h_hh_minus, h_hh_uncplus, h_hh_uncminus, h_hh_jerplus, h_hh_jerminus, h_hh_tesplus, h_hh_tesminus, h_hh_bplus, h_hh_bminus, h_hh_trigger;
+  map< TString, vector< TH1D * > > h_hw, h_hw_plus, h_hw_minus, h_hw_uncplus, h_hw_uncminus, h_hw_jerplus, h_hw_jerminus, h_hw_tesplus, h_hw_tesminus, h_hw_bplus, h_hw_bminus, h_hw_trigger;
+  map< TString, vector< TH1D * > > h_tbh, h_tbh_plus, h_tbh_minus, h_tbh_uncplus, h_tbh_uncminus, h_tbh_jerplus, h_tbh_jerminus, h_tbh_tesplus, h_tbh_tesminus, h_tbh_bplus, h_tbh_bminus, h_tbh_trigger;
+  map< TString, vector< TH1D * > > h_htb, h_htb_plus, h_htb_minus, h_htb_uncplus, h_htb_uncminus, h_htb_jerplus, h_htb_jerminus, h_htb_tesplus, h_htb_tesminus, h_htb_bplus, h_htb_bminus, h_htb_trigger;
   
 
   // Get Data Histogram //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2246,6 +2319,8 @@ namespace tableutils{
       hMC_uncminus[algo] = (TH2D*) processedMCFile->Get(hNameMC_uncminus_m[algo]);          hMC_uncminus[algo]->Scale(scalefactor);
       hMC_jerplus[algo]  = (TH2D*) processedMCFile->Get(hNameMC_jerplus_m[algo]);           hMC_jerplus[algo]->Scale(scalefactor);
       hMC_jerminus[algo] = (TH2D*) processedMCFile->Get(hNameMC_jerminus_m[algo]);          hMC_jerminus[algo]->Scale(scalefactor);
+      hMC_tesplus[algo]  = (TH2D*) processedMCFile->Get(hNameMC_tesplus_m[algo]);           hMC_tesplus[algo]->Scale(scalefactor);
+      hMC_tesminus[algo] = (TH2D*) processedMCFile->Get(hNameMC_tesminus_m[algo]);          hMC_tesminus[algo]->Scale(scalefactor);
       hMC_bplus[algo]    = (TH2D*) processedMCFile->Get(hNameMC_bplus_m[algo]);             hMC_bplus[algo]->Scale(scalefactor);
       hMC_bminus[algo]   = (TH2D*) processedMCFile->Get(hNameMC_bminus_m[algo]);            hMC_bminus[algo]->Scale(scalefactor);
       hMC_trigger[algo]  = (TH2D*) processedMCFile->Get(hNameMC_trigger_m[algo]);           hMC_trigger[algo]->Scale(scalefactor);
@@ -2313,7 +2388,7 @@ namespace tableutils{
   for(uint i = 0; i<htbFiles.size(); i++ ){  processedHTBFiles.push_back( TFile::Open( htbFiles[i] ) ); }
   cout << "Open hh and wh and tbh and htb files if any" << endl;
   for(uint j=0; j<keys.size(); j++){
-    vector<TH1D * > v_hh, v_hh_plus, v_hh_minus, v_hh_uncplus, v_hh_uncminus, v_hh_jerplus, v_hh_jerminus, v_hh_bplus, v_hh_bminus, v_hh_trigger;
+    vector<TH1D * > v_hh, v_hh_plus, v_hh_minus, v_hh_uncplus, v_hh_uncminus, v_hh_jerplus, v_hh_jerminus, v_hh_tesplus, v_hh_tesminus, v_hh_bplus, v_hh_bminus, v_hh_trigger;
     TString algo = keys[j];
     for(uint i = 0; i< hhFiles.size(); i++ ){ 
       if(processedHHFiles[i]){ 
@@ -2329,7 +2404,9 @@ namespace tableutils{
 	cout << "open fifth histo" << endl;
         h=(TH1D *)(processedHHFiles[i])->Get(hName_higgs_jerplus_m[algo]);  h->Scale(scalefactor); v_hh_jerplus.push_back(h);
         h=(TH1D *)(processedHHFiles[i])->Get(hName_higgs_jerminus_m[algo]); h->Scale(scalefactor); v_hh_jerminus.push_back(h);
-        h=(TH1D *)(processedHHFiles[i])->Get(hName_higgs_bplus_m[algo]);    h->Scale(scalefactor); v_hh_bplus.push_back(h);
+	h=(TH1D *)(processedHHFiles[i])->Get(hName_higgs_tesplus_m[algo]);  h->Scale(scalefactor); v_hh_tesplus.push_back(h);
+	h=(TH1D *)(processedHHFiles[i])->Get(hName_higgs_tesminus_m[algo]); h->Scale(scalefactor); v_hh_tesminus.push_back(h);
+	h=(TH1D *)(processedHHFiles[i])->Get(hName_higgs_bplus_m[algo]);    h->Scale(scalefactor); v_hh_bplus.push_back(h);
 	cout << "open ninth histo" << endl;
         h=(TH1D *)(processedHHFiles[i])->Get(hName_higgs_bminus_m[algo]);   h->Scale(scalefactor); v_hh_bminus.push_back(h);
 	cout << "open tenth histo" << endl;
@@ -2340,6 +2417,7 @@ namespace tableutils{
         v_hh.push_back(0);         v_hh_plus.push_back(0);       v_hh_minus.push_back(0); 
         v_hh_uncplus.push_back(0); v_hh_uncminus.push_back(0); 
         v_hh_jerplus.push_back(0); v_hh_jerminus.push_back(0);
+	v_hh_tesplus.push_back(0); v_hh_tesminus.push_back(0);
         v_hh_bplus.push_back(0);   v_hh_bminus.push_back(0);
         v_hh_trigger.push_back(0);
       }
@@ -2347,14 +2425,15 @@ namespace tableutils{
     h_hh[algo] = v_hh;  h_hh_plus[algo] = v_hh_plus;  h_hh_minus[algo] = v_hh_minus;
     h_hh_uncplus[algo] = v_hh_uncplus;  h_hh_uncminus[algo] = v_hh_uncminus;
     h_hh_jerplus[algo] = v_hh_jerplus;  h_hh_jerminus[algo] = v_hh_jerminus;
+    h_hh_tesplus[algo] = v_hh_tesplus;  h_hh_tesminus[algo] = v_hh_tesminus;
     h_hh_bplus[algo]   = v_hh_bplus;    h_hh_bminus[algo] = v_hh_bminus;
     h_hh_trigger[algo] = v_hh_trigger;
   }
-
+  
   cout << "Got hh histograms, if any" << endl;
 
   for(uint j=0; j<keys.size(); j++){
-    vector<TH1D * > v_hw, v_hw_plus, v_hw_minus, v_hw_uncplus, v_hw_uncminus, v_hw_jerplus, v_hw_jerminus, v_hw_bplus, v_hw_bminus, v_hw_trigger;
+    vector<TH1D * > v_hw, v_hw_plus, v_hw_minus, v_hw_uncplus, v_hw_uncminus, v_hw_jerplus, v_hw_jerminus, v_hw_tesplus, v_hw_tesminus, v_hw_bplus, v_hw_bminus, v_hw_trigger;
     TString algo = keys[j];
     for(uint i = 0; i< hwFiles.size(); i++ ){ 
       if(processedHWFiles[i]){ 
@@ -2366,15 +2445,17 @@ namespace tableutils{
         h=(TH1D *)(processedHWFiles[i])->Get(hName_higgs_uncminus_m[algo]); h->Scale(scalefactor); v_hw_uncminus.push_back(h);
         h=(TH1D *)(processedHWFiles[i])->Get(hName_higgs_jerplus_m[algo]);  h->Scale(scalefactor); v_hw_jerplus.push_back(h);
         h=(TH1D *)(processedHWFiles[i])->Get(hName_higgs_jerminus_m[algo]); h->Scale(scalefactor); v_hw_jerminus.push_back(h);
+        h=(TH1D *)(processedHWFiles[i])->Get(hName_higgs_tesplus_m[algo]);  h->Scale(scalefactor); v_hw_tesplus.push_back(h);
+        h=(TH1D *)(processedHWFiles[i])->Get(hName_higgs_tesminus_m[algo]); h->Scale(scalefactor); v_hw_tesminus.push_back(h);
         h=(TH1D *)(processedHWFiles[i])->Get(hName_higgs_bplus_m[algo]);    h->Scale(scalefactor); v_hw_bplus.push_back(h);
         h=(TH1D *)(processedHWFiles[i])->Get(hName_higgs_bminus_m[algo]);   h->Scale(scalefactor); v_hw_bminus.push_back(h);
         h=(TH1D *)(processedHWFiles[i])->Get(hName_higgs_trigger_m[algo]);  h->Scale(scalefactor); v_hw_trigger.push_back(h);
-
       }
       else { 
         v_hw.push_back(0);         v_hw_plus.push_back(0);     v_hw_minus.push_back(0); 
         v_hw_uncplus.push_back(0); v_hw_uncminus.push_back(0); 
         v_hw_jerplus.push_back(0); v_hw_jerminus.push_back(0); 
+        v_hw_tesplus.push_back(0); v_hw_tesminus.push_back(0); 
         v_hw_bplus.push_back(0);   v_hw_bminus.push_back(0);
         v_hw_trigger.push_back(0);  
       }
@@ -2382,13 +2463,14 @@ namespace tableutils{
     h_hw[algo] = v_hw;  h_hw_plus[algo] = v_hw_plus;  h_hw_minus[algo] = v_hw_minus;
     h_hw_uncplus[algo] = v_hw_uncplus;  h_hw_uncminus[algo] = v_hw_uncminus;
     h_hw_jerplus[algo] = v_hw_jerplus;  h_hw_jerminus[algo] = v_hw_jerminus;
+    h_hw_tesplus[algo] = v_hw_tesplus;  h_hw_tesminus[algo] = v_hw_tesminus;
     h_hw_bplus[algo]   = v_hw_bplus;    h_hw_bminus[algo] = v_hw_bminus;
     h_hw_trigger[algo] = v_hw_trigger;
   } 
   cout << "Got wh  histograms, if any" << endl;
 
   for(uint j=0; j<keys.size(); j++){
-    vector<TH1D * > v_tbh, v_tbh_plus, v_tbh_minus, v_tbh_uncplus, v_tbh_uncminus, v_tbh_jerplus, v_tbh_jerminus, v_tbh_bplus, v_tbh_bminus, v_tbh_trigger;
+    vector<TH1D * > v_tbh, v_tbh_plus, v_tbh_minus, v_tbh_uncplus, v_tbh_uncminus, v_tbh_jerplus, v_tbh_jerminus, v_tbh_tesplus, v_tbh_tesminus, v_tbh_bplus, v_tbh_bminus, v_tbh_trigger;
     TString algo = keys[j];
     for(uint i = 0; i< tbhFiles.size(); i++ ){ 
       if(processedTBHFiles[i]){ 
@@ -2404,6 +2486,8 @@ namespace tableutils{
 	cout << "open fifth histo" << endl;
         h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_jerplus_m[algo]);  h->Scale(scalefactor); v_tbh_jerplus.push_back(h);
         h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_jerminus_m[algo]); h->Scale(scalefactor); v_tbh_jerminus.push_back(h);
+        h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_tesplus_m[algo]);  h->Scale(scalefactor); v_tbh_tesplus.push_back(h);
+        h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_tesminus_m[algo]); h->Scale(scalefactor); v_tbh_tesminus.push_back(h);
         h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_bplus_m[algo]);    h->Scale(scalefactor); v_tbh_bplus.push_back(h);
 	cout << "open ninth histo" << endl;
         h=(TH1D *)(processedTBHFiles[i])->Get(hName_higgs_bminus_m[algo]);   h->Scale(scalefactor); v_tbh_bminus.push_back(h);
@@ -2415,6 +2499,7 @@ namespace tableutils{
         v_tbh.push_back(0);         v_tbh_plus.push_back(0);       v_tbh_minus.push_back(0); 
         v_tbh_uncplus.push_back(0); v_tbh_uncminus.push_back(0); 
         v_tbh_jerplus.push_back(0); v_tbh_jerminus.push_back(0);
+        v_tbh_tesplus.push_back(0); v_tbh_tesminus.push_back(0);
         v_tbh_bplus.push_back(0);   v_tbh_bminus.push_back(0);
         v_tbh_trigger.push_back(0);
       }
@@ -2422,13 +2507,14 @@ namespace tableutils{
     h_tbh[algo] = v_tbh;  h_tbh_plus[algo] = v_tbh_plus;  h_tbh_minus[algo] = v_tbh_minus;
     h_tbh_uncplus[algo] = v_tbh_uncplus;  h_tbh_uncminus[algo] = v_tbh_uncminus;
     h_tbh_jerplus[algo] = v_tbh_jerplus;  h_tbh_jerminus[algo] = v_tbh_jerminus;
+    h_tbh_tesplus[algo] = v_tbh_tesplus;  h_tbh_tesminus[algo] = v_tbh_tesminus;
     h_tbh_bplus[algo]   = v_tbh_bplus;    h_tbh_bminus[algo] = v_tbh_bminus;
     h_tbh_trigger[algo] = v_tbh_trigger;
   }
   cout << "got TBH histograms, if any" << endl;
 
   for(uint j=0; j<keys.size(); j++){
-    vector<TH1D * > v_htb, v_htb_plus, v_htb_minus, v_htb_uncplus, v_htb_uncminus, v_htb_jerplus, v_htb_jerminus, v_htb_bplus, v_htb_bminus, v_htb_trigger;
+    vector<TH1D * > v_htb, v_htb_plus, v_htb_minus, v_htb_uncplus, v_htb_uncminus, v_htb_jerplus, v_htb_jerminus, v_htb_tesplus, v_htb_tesminus, v_htb_bplus, v_htb_bminus, v_htb_trigger;
     TString algo = keys[j];
     for(uint i = 0; i< htbFiles.size(); i++ ){ 
       if(processedHTBFiles[i]){ 
@@ -2445,6 +2531,8 @@ namespace tableutils{
 	cout << "open fifth histo" << endl;
         h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_jerplus_m[algo]);  h->Scale(scalefactor); v_htb_jerplus.push_back(h);
         h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_jerminus_m[algo]); h->Scale(scalefactor); v_htb_jerminus.push_back(h);
+        h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_tesplus_m[algo]);  h->Scale(scalefactor); v_htb_tesplus.push_back(h);
+        h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_tesminus_m[algo]); h->Scale(scalefactor); v_htb_tesminus.push_back(h);
         h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_bplus_m[algo]);    h->Scale(scalefactor); v_htb_bplus.push_back(h);
 	cout << "open ninth histo" << endl;
         h=(TH1D *)(processedHTBFiles[i])->Get(hName_higgs_bminus_m[algo]);   h->Scale(scalefactor); v_htb_bminus.push_back(h);
@@ -2456,6 +2544,7 @@ namespace tableutils{
         v_htb.push_back(0);         v_htb_plus.push_back(0);       v_htb_minus.push_back(0); 
         v_htb_uncplus.push_back(0); v_htb_uncminus.push_back(0); 
         v_htb_jerplus.push_back(0); v_htb_jerminus.push_back(0);
+        v_htb_tesplus.push_back(0); v_htb_tesminus.push_back(0);
         v_htb_bplus.push_back(0);   v_htb_bminus.push_back(0);
         v_htb_trigger.push_back(0);
       }
@@ -2463,6 +2552,7 @@ namespace tableutils{
     h_htb[algo] = v_htb;  h_htb_plus[algo] = v_htb_plus;  h_htb_minus[algo] = v_htb_minus;
     h_htb_uncplus[algo] = v_htb_uncplus;  h_htb_uncminus[algo] = v_htb_uncminus;
     h_htb_jerplus[algo] = v_htb_jerplus;  h_htb_jerminus[algo] = v_htb_jerminus;
+    h_htb_tesplus[algo] = v_htb_tesplus;  h_htb_tesminus[algo] = v_htb_tesminus;
     h_htb_bplus[algo]   = v_htb_bplus;    h_htb_bminus[algo] = v_htb_bminus;
     h_htb_trigger[algo] = v_htb_trigger;
   }
@@ -2487,7 +2577,7 @@ namespace tableutils{
 
   // SM MC data/errors holders
   map< pair< TString, pair<int,int> > , double > dMC, dMC_err, dMC_plus, dMC_minus, dMC_uncplus, dMC_uncminus, dMC_trigger,
-                                                 dMC_jerplus, dMC_jerminus, dMC_bplus, dMC_bminus,dMC_syst_plus, dMC_syst_minus;
+                                                 dMC_jerplus, dMC_jerminus, dMC_tesplus, dMC_tesminus, dMC_bplus, dMC_bminus,dMC_syst_plus, dMC_syst_minus;
 
   // DATA holder
   map< pair<TString,int> , double> dataTotal;
@@ -2505,7 +2595,7 @@ namespace tableutils{
       for(int x=0; x<12;x++){
         // get data and stats errors //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         double data_hh_plus, data_hh_minus;
-        double data_hh_uncplus, data_hh_uncminus, data_hh_jerplus, data_hh_jerminus, data_hh_bplus, data_hh_bminus, data_hh_trigger;
+        double data_hh_uncplus, data_hh_uncminus, data_hh_jerplus, data_hh_jerminus, data_hh_tesplus, data_hh_tesminus, data_hh_bplus, data_hh_bminus, data_hh_trigger;
         if( h_hh[algo][samp]          != 0 ){ data_hh.push_back(      h_hh[algo][samp]->GetBinContent(x+1) );  } else { data_hh.push_back( 0 );   }
         if( h_hh[algo][samp]          != 0 ){ data_hh_err.push_back(  h_hh[algo][samp]->GetBinError(x+1)   );  } else { data_hh_err.push_back(0); }
         if( h_hh_plus[algo][samp]     != 0 ){ data_hh_plus  =    h_hh_plus[algo][samp]->GetBinContent(x+1);    } else { data_hh_plus       = 0 ;  }
@@ -2514,6 +2604,8 @@ namespace tableutils{
         if( h_hh_uncminus[algo][samp] != 0 ){ data_hh_uncminus = h_hh_uncminus[algo][samp]->GetBinContent(x+1);} else { data_hh_uncminus   = 0 ;  }  
         if( h_hh_jerplus[algo][samp]  != 0 ){ data_hh_jerplus  = h_hh_jerplus[algo][samp]->GetBinContent(x+1); } else { data_hh_jerplus    = 0 ;  }
         if( h_hh_jerminus[algo][samp] != 0 ){ data_hh_jerminus = h_hh_jerminus[algo][samp]->GetBinContent(x+1);} else { data_hh_jerminus   = 0 ;  }  
+        if( h_hh_tesplus[algo][samp]  != 0 ){ data_hh_tesplus  = h_hh_tesplus[algo][samp]->GetBinContent(x+1); } else { data_hh_tesplus    = 0 ;  }
+        if( h_hh_tesminus[algo][samp] != 0 ){ data_hh_tesminus = h_hh_tesminus[algo][samp]->GetBinContent(x+1);} else { data_hh_tesminus   = 0 ;  }  
         if( h_hh_bplus[algo][samp]    != 0 ){ data_hh_bplus    = h_hh_bplus[algo][samp]->GetBinContent(x+1); }   else { data_hh_bplus      = 0 ;  }
         if( h_hh_bminus[algo][samp]   != 0 ){ data_hh_bminus   = h_hh_bminus[algo][samp]->GetBinContent(x+1);}   else { data_hh_bminus     = 0 ;  }
         if( h_hh_trigger[algo][samp]  != 0 ){ data_hh_trigger  = h_hh_trigger[algo][samp]->GetBinContent(x+1);}  else { data_hh_trigger    = 0 ;  }  
@@ -2524,6 +2616,7 @@ namespace tableutils{
         double syst_plus     = fabs( data_hh[x]-data_hh_plus );         double syst_minus    = fabs( data_hh[x]-data_hh_minus );   
         double syst_uncplus  = fabs( data_hh[x]-data_hh_uncplus );      double syst_uncminus = fabs( data_hh[x]-data_hh_uncminus );   
         double syst_jerplus  = fabs( data_hh[x]-data_hh_jerplus );      double syst_jerminus = fabs( data_hh[x]-data_hh_jerminus );
+        double syst_tesplus  = fabs( data_hh[x]-data_hh_tesplus );      double syst_tesminus = fabs( data_hh[x]-data_hh_tesminus );
         double syst_bplus    = fabs( data_hh[x]-data_hh_bplus );        double syst_bminus   = fabs( data_hh[x]-data_hh_bminus );      
 
         double syst_lum      = LUM_ERR*data_hh[x];         
@@ -2533,18 +2626,18 @@ namespace tableutils{
         double syst_tauid(0);  if( x >= TAUSTEP) { syst_tauid = TAU_ID_ERR*data_hh[x];   }  
         double syst_trigger = data_hh_trigger;
         
-        if(systset1){ syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_trigger=0; } 
+        if(systset1){ syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_trigger=0; syst_tesplus=0; syst_tesminus=0; } 
         if(systset2){ 
-          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_trigger=0;
+          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_trigger=0; syst_tesplus=0; syst_tesminus=0;
         } 
         if(systset3){ 
-          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; 
+          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; // syst_tesplus=0; syst_tesminus=0;
         } 
      
         double temp =  pow(syst_lum,2) + pow(syst_eff_lep,2) + pow(syst_ttbar_cs,2) + pow(syst_tauid,2) + pow(syst_trigger,2);
 
-        data_syst_plus.push_back(  sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2)  + pow(syst_bplus,2)  + temp) );   
-        data_syst_minus.push_back( sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_bminus,2) + temp) ); 
+        data_syst_plus.push_back(  sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2)  + pow(syst_tesplus,2) + pow(syst_bplus,2)  + temp) );   
+        data_syst_minus.push_back( sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_tesminus,2)+ pow(syst_bminus,2) + temp) ); 
   
         //cout<<endl<<" HH algo : "<<algo<<" data syst plus "<<(data_syst_plus[x])<<" data syst minus "<<(data_syst_minus[x])<<" temp "<<temp<<endl;
 
@@ -2562,7 +2655,7 @@ namespace tableutils{
       vector<double> data_hw, data_hw_err, data_syst_plus, data_syst_minus, data_hw_blpus; 
       for(int x=0; x<12;x++){
         // get data and stats errors ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        double data_hw_plus, data_hw_minus; double data_hw_uncplus, data_hw_uncminus, data_hw_jerplus, data_hw_jerminus, data_hw_bplus, data_hw_bminus, data_hw_trigger; 
+        double data_hw_plus, data_hw_minus; double data_hw_uncplus, data_hw_uncminus, data_hw_jerplus, data_hw_jerminus, data_hw_tesplus, data_hw_tesminus, data_hw_bplus, data_hw_bminus, data_hw_trigger; 
      
         if( h_hw[algo][samp]          !=0 ){ data_hw.push_back(       h_hw[algo][samp]->GetBinContent(x+1) );  } else { data_hw.push_back( 0 );     }
         if( h_hw[algo][samp]          !=0 ){ data_hw_err.push_back(   h_hw[algo][samp]->GetBinError(x+1)   );  } else { data_hw_err.push_back( 0 ); }
@@ -2572,6 +2665,8 @@ namespace tableutils{
         if( h_hw_uncminus[algo][samp] !=0 ){ data_hw_uncminus = h_hw_uncminus[algo][samp]->GetBinContent(x+1); } else { data_hw_uncminus   = 0 ;    }
         if( h_hw_jerplus[algo][samp]  !=0 ){ data_hw_jerplus  = h_hw_jerplus[algo][samp]->GetBinContent(x+1);  } else { data_hw_jerplus    = 0 ;    }
         if( h_hw_jerminus[algo][samp] !=0 ){ data_hw_jerminus = h_hw_jerminus[algo][samp]->GetBinContent(x+1); } else { data_hw_jerminus   = 0 ;    }  
+        if( h_hw_tesplus[algo][samp]  !=0 ){ data_hw_tesplus  = h_hw_tesplus[algo][samp]->GetBinContent(x+1);  } else { data_hw_tesplus    = 0 ;    }
+        if( h_hw_tesminus[algo][samp] !=0 ){ data_hw_tesminus = h_hw_tesminus[algo][samp]->GetBinContent(x+1); } else { data_hw_tesminus   = 0 ;    }  
         if( h_hw_bplus[algo][samp]    !=0 ){ data_hw_bplus    = h_hw_bplus[algo][samp]->GetBinContent(x+1);    } else { data_hw_bplus      = 0 ;    }
         if( h_hw_bminus[algo][samp]   !=0 ){ data_hw_bminus   = h_hw_bminus[algo][samp]->GetBinContent(x+1);   } else { data_hw_bminus     = 0 ;    }  
         if( h_hw_trigger[algo][samp]  != 0){ data_hw_trigger  = h_hw_trigger[algo][samp]->GetBinContent(x+1);  } else { data_hw_trigger    = 0 ;    }  
@@ -2581,6 +2676,7 @@ namespace tableutils{
         double syst_plus     = fabs( data_hw[x]-data_hw_plus );      double syst_minus    = fabs( data_hw[x]-data_hw_minus );   
         double syst_uncplus  = fabs( data_hw[x]-data_hw_uncplus );   double syst_uncminus = fabs( data_hw[x]-data_hw_uncminus );   
         double syst_jerplus  = fabs( data_hw[x]-data_hw_jerplus );   double syst_jerminus = fabs( data_hw[x]-data_hw_jerminus );   
+        double syst_tesplus  = fabs( data_hw[x]-data_hw_tesplus );   double syst_tesminus = fabs( data_hw[x]-data_hw_tesminus );   
         double syst_bplus    = fabs( data_hw[x]-data_hw_bplus );     double syst_bminus   = fabs( data_hw[x]-data_hw_bminus );   
         double syst_trigger  = data_hw_trigger;   
    
@@ -2596,18 +2692,18 @@ namespace tableutils{
         
         double syst_tauid(0);  if( x >= TAUSTEP   ){ syst_tauid = TAU_ID_ERR*data_hw[x];   }  
         
-        if(systset1){ syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0;  syst_trigger=0;} 
+        if(systset1){ syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0;  syst_trigger=0; syst_tesplus=0; syst_tesminus=0;} 
         if(systset2){ 
-          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_trigger=0;
+          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_trigger=0; syst_tesplus=0; syst_tesminus=0;
         } 
         if(systset3){ 
-          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; 
+          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; // syst_tesplus=0; syst_tesminus=0;
         }       
    
         double temp = pow(syst_lum,2) + pow(syst_eff_lep,2) + pow(syst_ttbar_cs,2) + pow(syst_tauid,2);
 
-        data_syst_plus.push_back(  sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2) + pow(syst_bplus,2)   + temp));  
-        data_syst_minus.push_back( sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_bminus,2) + temp)); 
+        data_syst_plus.push_back(  sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2) + pow(syst_tesplus,2)  + pow(syst_bplus,2)   + temp));  
+        data_syst_minus.push_back( sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2)+ pow(syst_tesminus,2) + pow(syst_bminus,2) + temp)); 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
       }
@@ -2623,8 +2719,8 @@ namespace tableutils{
       vector<double> data_tbh, data_tbh_err, data_syst_plus, data_syst_minus; 
       for(int x=0; x<12;x++){
         // get data and stats errors //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        double data_tbh_plus, data_tbh_minus;
-        double data_tbh_uncplus, data_tbh_uncminus, data_tbh_jerplus, data_tbh_jerminus, data_tbh_bplus, data_tbh_bminus, data_tbh_trigger;
+        double data_tbh_plus, data_tbh_minus; 
+        double data_tbh_uncplus, data_tbh_uncminus, data_tbh_jerplus, data_tbh_jerminus, data_tbh_tesplus, data_tbh_tesminus, data_tbh_bplus, data_tbh_bminus, data_tbh_trigger;
         if( h_tbh[algo][samp]          != 0 ){ data_tbh.push_back(      h_tbh[algo][samp]->GetBinContent(x+1) );  } else { data_tbh.push_back( 0 );   }
         if( h_tbh[algo][samp]          != 0 ){ data_tbh_err.push_back(  h_tbh[algo][samp]->GetBinError(x+1)   );  } else { data_tbh_err.push_back(0); }
         if( h_tbh_plus[algo][samp]     != 0 ){ data_tbh_plus  =    h_tbh_plus[algo][samp]->GetBinContent(x+1);    } else { data_tbh_plus       = 0 ;  }
@@ -2633,6 +2729,8 @@ namespace tableutils{
         if( h_tbh_uncminus[algo][samp] != 0 ){ data_tbh_uncminus = h_tbh_uncminus[algo][samp]->GetBinContent(x+1);} else { data_tbh_uncminus   = 0 ;  }  
         if( h_tbh_jerplus[algo][samp]  != 0 ){ data_tbh_jerplus  = h_tbh_jerplus[algo][samp]->GetBinContent(x+1); } else { data_tbh_jerplus    = 0 ;  }
         if( h_tbh_jerminus[algo][samp] != 0 ){ data_tbh_jerminus = h_tbh_jerminus[algo][samp]->GetBinContent(x+1);} else { data_tbh_jerminus   = 0 ;  }  
+        if( h_tbh_tesplus[algo][samp]  != 0 ){ data_tbh_tesplus  = h_tbh_tesplus[algo][samp]->GetBinContent(x+1); } else { data_tbh_tesplus    = 0 ;  }
+        if( h_tbh_tesminus[algo][samp] != 0 ){ data_tbh_tesminus = h_tbh_tesminus[algo][samp]->GetBinContent(x+1);} else { data_tbh_tesminus   = 0 ;  }  
         if( h_tbh_bplus[algo][samp]    != 0 ){ data_tbh_bplus    = h_tbh_bplus[algo][samp]->GetBinContent(x+1); }   else { data_tbh_bplus      = 0 ;  }
         if( h_tbh_bminus[algo][samp]   != 0 ){ data_tbh_bminus   = h_tbh_bminus[algo][samp]->GetBinContent(x+1);}   else { data_tbh_bminus     = 0 ;  }
         if( h_tbh_trigger[algo][samp]  != 0 ){ data_tbh_trigger  = h_tbh_trigger[algo][samp]->GetBinContent(x+1);}  else { data_tbh_trigger    = 0 ;  }  
@@ -2643,6 +2741,7 @@ namespace tableutils{
         double syst_plus     = fabs( data_tbh[x]-data_tbh_plus );         double syst_minus    = fabs( data_tbh[x]-data_tbh_minus );   
         double syst_uncplus  = fabs( data_tbh[x]-data_tbh_uncplus );      double syst_uncminus = fabs( data_tbh[x]-data_tbh_uncminus );   
         double syst_jerplus  = fabs( data_tbh[x]-data_tbh_jerplus );      double syst_jerminus = fabs( data_tbh[x]-data_tbh_jerminus );
+        double syst_tesplus  = fabs( data_tbh[x]-data_tbh_tesplus );      double syst_tesminus = fabs( data_tbh[x]-data_tbh_tesminus );
         double syst_bplus    = fabs( data_tbh[x]-data_tbh_bplus );        double syst_bminus   = fabs( data_tbh[x]-data_tbh_bminus );      
 
         double syst_lum      = LUM_ERR*data_tbh[x];         
@@ -2652,18 +2751,18 @@ namespace tableutils{
         double syst_tauid(0);  if( x >= TAUSTEP) { syst_tauid = TAU_ID_ERR*data_tbh[x];   }  
         double syst_trigger = data_tbh_trigger;
         
-        if(systset1){ syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_trigger=0; } 
+        if(systset1){ syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_trigger=0; syst_tesplus=0; syst_tesminus=0;} 
         if(systset2){ 
-          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_trigger=0;
+          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_trigger=0;syst_tesplus=0; syst_tesminus=0;
         } 
         if(systset3){ 
-          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; 
+          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; //syst_tesplus=0; syst_tesminus=0;
         } 
      
         double temp =  pow(syst_lum,2) + pow(syst_eff_lep,2) + pow(syst_ttbar_cs,2) + pow(syst_tauid,2) + pow(syst_trigger,2);
 
-        data_syst_plus.push_back(  sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2)  + pow(syst_bplus,2)  + temp) );   
-        data_syst_minus.push_back( sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_bminus,2) + temp) ); 
+        data_syst_plus.push_back(  sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2)  + pow(syst_tesplus,2)  + pow(syst_bplus,2)  + temp) );   
+        data_syst_minus.push_back( sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_tesminus,2) + pow(syst_bminus,2) + temp) ); 
   
         //cout<<endl<<" TBH algo : "<<algo<<" data syst plus "<<(data_syst_plus[x])<<" data syst minus "<<(data_syst_minus[x])<<" temp "<<temp<<endl;
 
@@ -2688,7 +2787,9 @@ namespace tableutils{
 	  //        temp_tbh_datacards.push_back( syst_ttbar_cs );
 	  temp_tbh_datacards.push_back( syst_tauid    );
 	  temp_tbh_datacards.push_back( syst_trigger  );
-
+	  temp_tbh_datacards.push_back( syst_tesplus  );
+	  temp_tbh_datacards.push_back( syst_tesminus );
+	  
 	  
 	  tbh_datacards.push_back(temp_tbh_datacards);
 	}
@@ -2708,7 +2809,7 @@ namespace tableutils{
       for(int x=0; x<12;x++){
         // get data and stats errors //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         double data_htb_plus, data_htb_minus;
-        double data_htb_uncplus, data_htb_uncminus, data_htb_jerplus, data_htb_jerminus, data_htb_bplus, data_htb_bminus, data_htb_trigger;
+        double data_htb_uncplus, data_htb_uncminus, data_htb_jerplus, data_htb_jerminus, data_htb_tesplus, data_htb_tesminus, data_htb_bplus, data_htb_bminus, data_htb_trigger;
         if( h_htb[algo][samp]          != 0 ){ data_htb.push_back(      h_htb[algo][samp]->GetBinContent(x+1) );  } else { data_htb.push_back( 0 );   }
         if( h_htb[algo][samp]          != 0 ){ data_htb_err.push_back(  h_htb[algo][samp]->GetBinError(x+1)   );  } else { data_htb_err.push_back(0); }
         if( h_htb_plus[algo][samp]     != 0 ){ data_htb_plus  =    h_htb_plus[algo][samp]->GetBinContent(x+1);    } else { data_htb_plus       = 0 ;  }
@@ -2717,6 +2818,8 @@ namespace tableutils{
         if( h_htb_uncminus[algo][samp] != 0 ){ data_htb_uncminus = h_htb_uncminus[algo][samp]->GetBinContent(x+1);} else { data_htb_uncminus   = 0 ;  }  
         if( h_htb_jerplus[algo][samp]  != 0 ){ data_htb_jerplus  = h_htb_jerplus[algo][samp]->GetBinContent(x+1); } else { data_htb_jerplus    = 0 ;  }
         if( h_htb_jerminus[algo][samp] != 0 ){ data_htb_jerminus = h_htb_jerminus[algo][samp]->GetBinContent(x+1);} else { data_htb_jerminus   = 0 ;  }  
+        if( h_htb_tesplus[algo][samp]  != 0 ){ data_htb_tesplus  = h_htb_tesplus[algo][samp]->GetBinContent(x+1); } else { data_htb_tesplus    = 0 ;  }
+        if( h_htb_tesminus[algo][samp] != 0 ){ data_htb_tesminus = h_htb_tesminus[algo][samp]->GetBinContent(x+1);} else { data_htb_tesminus   = 0 ;  }  
         if( h_htb_bplus[algo][samp]    != 0 ){ data_htb_bplus    = h_htb_bplus[algo][samp]->GetBinContent(x+1); }   else { data_htb_bplus      = 0 ;  }
         if( h_htb_bminus[algo][samp]   != 0 ){ data_htb_bminus   = h_htb_bminus[algo][samp]->GetBinContent(x+1);}   else { data_htb_bminus     = 0 ;  }
         if( h_htb_trigger[algo][samp]  != 0 ){ data_htb_trigger  = h_htb_trigger[algo][samp]->GetBinContent(x+1);}  else { data_htb_trigger    = 0 ;  }  
@@ -2727,6 +2830,7 @@ namespace tableutils{
         double syst_plus     = fabs( data_htb[x]-data_htb_plus );         double syst_minus    = fabs( data_htb[x]-data_htb_minus );   
         double syst_uncplus  = fabs( data_htb[x]-data_htb_uncplus );      double syst_uncminus = fabs( data_htb[x]-data_htb_uncminus );   
         double syst_jerplus  = fabs( data_htb[x]-data_htb_jerplus );      double syst_jerminus = fabs( data_htb[x]-data_htb_jerminus );
+        double syst_tesplus  = fabs( data_htb[x]-data_htb_tesplus );      double syst_tesminus = fabs( data_htb[x]-data_htb_tesminus );
         double syst_bplus    = fabs( data_htb[x]-data_htb_bplus );        double syst_bminus   = fabs( data_htb[x]-data_htb_bminus );      
 
         double syst_lum      = LUM_ERR*data_htb[x];         
@@ -2736,18 +2840,18 @@ namespace tableutils{
         double syst_tauid(0);  if( x >= TAUSTEP) { syst_tauid = TAU_ID_ERR*data_htb[x];   }  
         double syst_trigger = data_htb_trigger;
         
-        if(systset1){ syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_trigger=0; } 
+        if(systset1){ syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_trigger=0; syst_tesplus=0; syst_tesminus=0; } 
         if(systset2){ 
-          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_trigger=0;
+          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_trigger=0; syst_tesplus=0; syst_tesminus=0; 
         } 
         if(systset3){ 
-          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; 
+          syst_lum=0; syst_tauid=0; syst_ttbar_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; // syst_tesplus=0; syst_tesminus=0; 
         } 
      
         double temp =  pow(syst_lum,2) + pow(syst_eff_lep,2) + pow(syst_ttbar_cs,2) + pow(syst_tauid,2) + pow(syst_trigger,2);
 
-        data_syst_plus.push_back(  sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2)  + pow(syst_bplus,2)  + temp) );   
-        data_syst_minus.push_back( sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_bminus,2) + temp) ); 
+        data_syst_plus.push_back(  sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2)  + pow(syst_tesplus,2)  + pow(syst_bplus,2)  + temp) );   
+        data_syst_minus.push_back( sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_tesminus,2) + pow(syst_bminus,2) + temp) ); 
   
         //cout<<endl<<" HTB algo : "<<algo<<" data syst plus "<<(data_syst_plus[x])<<" data syst minus "<<(data_syst_minus[x])<<" temp "<<temp<<endl;
 
@@ -2772,7 +2876,8 @@ namespace tableutils{
 	  //        temp_htb_datacards.push_back( syst_ttbar_cs );
 	  temp_htb_datacards.push_back( syst_tauid    );
 	  temp_htb_datacards.push_back( syst_trigger  );
-
+	  temp_htb_datacards.push_back( syst_tesplus  );
+	  temp_htb_datacards.push_back( syst_tesminus );
 	  
 	  htb_datacards.push_back(temp_htb_datacards);
 	}
@@ -2802,7 +2907,7 @@ namespace tableutils{
       //////////////////////////////////////////////////////////////////////////////////////////////
       
       // fill values with histogram data /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      for(int y=0;y<13;y++){  
+      for(int y=0;y<17;y++){  
 
         //map< pair< TString, pair<int,int>, double> 
         pair<int,int> keytemp(x,y);
@@ -2815,11 +2920,13 @@ namespace tableutils{
         if(hMC_uncminus[algo]) { dMC_uncminus[k] = (hMC_uncminus[algo]->GetBinContent(x+1,y+1));                                                     }
         if(hMC_jerplus[algo])  { dMC_jerplus[k]  = (hMC_jerplus[algo]->GetBinContent(x+1,y+1));                                                      }   
         if(hMC_jerminus[algo]) { dMC_jerminus[k] = (hMC_jerminus[algo]->GetBinContent(x+1,y+1));                                                     }
+        if(hMC_tesplus[algo])  { dMC_tesplus[k]  = (hMC_tesplus[algo]->GetBinContent(x+1,y+1));                                                      }   
+        if(hMC_tesminus[algo]) { dMC_tesminus[k] = (hMC_tesminus[algo]->GetBinContent(x+1,y+1));                                                     }
         if(hMC_bplus[algo])    { dMC_bplus[k]    = (hMC_bplus[algo]->GetBinContent(x+1,y+1));                                                        } 
         if(hMC_bminus[algo])   { dMC_bminus[k]   = (hMC_bminus[algo]->GetBinContent(x+1,y+1));                                                       } 
         if(hMC_trigger[algo])  { dMC_trigger[k]  = (hMC_trigger[algo]->GetBinContent(x+1,y+1));                                                      } 
 
-        if( XSECMEASUREMENT && y==LEPLEP_TDCH ){   
+        if( XSECMEASUREMENT && /*( y==EE_TDCH || y==EMU_TDCH || y==MUMU_TDCH)*/ y==LEPLEP_TDCH ){   
           // Note : we re-scale ttbar lepton+lepton ( we get it from MC)
           double scalefactor( XSEC_EXP_/234.); //note it should be 234
           dMC[k]          *= scalefactor;
@@ -2829,6 +2936,8 @@ namespace tableutils{
           dMC_uncminus[k] *= scalefactor;
           dMC_jerplus[k]  *= scalefactor;
           dMC_jerminus[k] *= scalefactor;
+          dMC_tesplus[k]  *= scalefactor;
+          dMC_tesminus[k] *= scalefactor;
           dMC_bplus[k]    *= scalefactor;
           dMC_trigger[k]  *= scalefactor;
         }
@@ -2836,6 +2945,9 @@ namespace tableutils{
         //compute systematics //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         double syst_plus  = fabs(dMC[k]-dMC_plus[k]);    double syst_uncplus  = fabs(dMC[k]-dMC_uncplus[k]);    double syst_jerplus  = fabs(dMC[k]-dMC_jerplus[k]); 
         double syst_minus = fabs(dMC[k]-dMC_minus[k]);   double syst_uncminus = fabs(dMC[k]-dMC_uncminus[k]);   double syst_jerminus = fabs(dMC[k]-dMC_jerminus[k]);
+	
+	double syst_tesplus  = fabs(dMC[k]-dMC_tesplus[k]); 
+	double syst_tesminus = fabs(dMC[k]-dMC_tesminus[k]);
 
         double syst_bplus    = fabs(dMC[k]-dMC_bplus[k]);  double syst_bminus = fabs(dMC[k]-dMC_bminus[k]); 
         double syst_lum      = LUM_ERR*dMC[k];
@@ -2846,13 +2958,13 @@ namespace tableutils{
   
         
         if(      y==QCD_TDCH )                                                                                                               { sample_cs = QCD_CS_ERR ;      }
-        else if( y==ETAU_TDCH || y==MUTAU_TDCH || y==LEPJETS_TDCH || y==LEPLEP_TDCH || y==TAUJETS_TDCH || y==TAUTAU_TDCH || y==ALLJETS_TDCH ){ sample_cs = TTBAR_CS_ERR;     }
+        else if( y==ETAU_TDCH || y==MUTAU_TDCH || y==LEPJETS_TDCH || /*y==EE_TDCH || y==EMU_TDCH || y==MUMU_TDCH*/ y==LEPLEP_TDCH || y==TAUJETS_TDCH || y==TAUTAU_TDCH || y==ALLJETS_TDCH ){ sample_cs = TTBAR_CS_ERR;     }
         else if( y == SINGLETOP_TDCH )                                                                                                       { sample_cs = SINGLETOP_CS_ERR; }              
         else if( y == WJETS_TDCH     )                                                                                                       { sample_cs = WJETS_CS_ERR;     }              
         else                                                                                                                                 { sample_cs = OTHER_CS_ERR;     }
         
 
-        if(XSECMEASUREMENT && y==LEPLEP_TDCH ){ sample_cs = XSEC_EXP_ERR_; }
+        if(XSECMEASUREMENT && /*(y==EE_TDCH || y==EMU_TDCH || y==MUMU_TDCH)*/ y==LEPLEP_TDCH ){ sample_cs = XSEC_EXP_ERR_; }
 
         syst_cs = sample_cs * dMC[k];
  
@@ -2881,19 +2993,22 @@ namespace tableutils{
 	  // syst_theory? syst_cs? sample_cs? // FIXME: fixme
 	  temp_sm_datacards.push_back( syst_tauid    );
 	  temp_sm_datacards.push_back( syst_trigger  );
+	  temp_sm_datacards.push_back( syst_tesplus  );
+	  temp_sm_datacards.push_back( syst_tesminus );
 	  sm_datacards.push_back(temp_sm_datacards);
 	  cout<<endl<< "KNOW BETTER WHAT IS WHAT " << sm_datacards.size() << " " << temp_sm_datacards[0] << endl; 
 	}
 	
-        if(systset1){ syst_lum=0; syst_tauid=0; syst_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_theory=0; syst_trigger=0; } 
-        if(systset2){ syst_lum=0; syst_tauid=0; syst_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_theory=0; syst_trigger=0;} 
-        if(systset3){ syst_lum=0; syst_tauid=0; syst_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_theory=0; } 
+        if(systset1){ syst_lum=0; syst_tauid=0; syst_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_theory=0; syst_trigger=0; syst_tesplus=0; syst_tesminus=0; } 
+        if(systset2){ syst_lum=0; syst_tauid=0; syst_cs=0; syst_eff_lep=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_theory=0; syst_trigger=0; syst_tesplus=0; syst_tesminus=0; } 
+        if(systset3){ syst_lum=0; syst_tauid=0; syst_cs=0; syst_eff_lep=0; syst_bplus=0; syst_bminus=0; syst_plus=0; syst_uncplus=0; syst_jerplus=0; syst_minus=0; syst_uncminus=0; syst_jerminus=0; syst_theory=0;// syst_tesplus=0; syst_tesminus=0;  
+} 
 
 
         double temp = pow(syst_lum,2) + pow(syst_tauid,2) + pow(syst_cs,2) + pow(syst_eff_lep,2) + pow(syst_theory,2);
 
-        dMC_syst_plus[k] = sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2)  + pow(syst_bplus,2) + temp ); 
-        dMC_syst_minus[k]= sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_bminus,2) + temp ); 
+        dMC_syst_plus[k] = sqrt( pow(syst_plus,2)  + pow(syst_uncplus,2)  + pow(syst_jerplus,2)  + pow(syst_tesplus,2)  + pow(syst_bplus,2) + temp ); 
+        dMC_syst_minus[k]= sqrt( pow(syst_minus,2) + pow(syst_uncminus,2) + pow(syst_jerminus,2) + pow(syst_tesminus,2) + pow(syst_bminus,2) + temp ); 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
       }
@@ -2944,10 +3059,16 @@ namespace tableutils{
     "$H^{+}\\rightarrow tb, M_{H^{+}}=300GeV$ &"
   };
 
+  //  TString    other[] = {
+  //    "$t\\bar{t}$ tau-dilepton &","$\\tau$ fakes &", "$t\\bar{t}\\to\\ell\\ell$ &", "$Z/\\gamma\\rightarrow ee,\\mu\\mu$ &", "$Z/\\gamma\\rightarrow \\tau\\tau$ &",
+  //    "single top &","WW,WZ,ZZ &"
+  //  };
+  
   TString    other[] = {
-    "$t\\bar{t}$ tau-dilepton &","$\\tau$ fakes &", "$t\\bar{t}\\to\\ell\\ell$ &", "$Z/\\gamma\\rightarrow ee,\\mu\\mu$ &", "$Z/\\gamma\\rightarrow \\tau\\tau$ &",
+    "$t\\bar{t}$ tau-dilepton &","$\\tau$ fakes &", "$t\\bar{t}\\to ee$ &","$t\\bar{t}\\to e\\mu &","$t\\bar{t}\\to\\mu\\mu &" "$Z/\\gamma\\rightarrow ee,\\mu\\mu$ &", "$Z/\\gamma\\rightarrow \\tau\\tau$ &",
     "single top &","WW,WZ,ZZ &"
   };
+
 
   fprintf(f,"\\hline \n");
   fprintf(f,"\\hline \n");
@@ -3043,6 +3164,7 @@ namespace tableutils{
     double signal_plus_0=(dMC_plus[e0]+dMC_plus[mu0]);             double signal_minus_0= (dMC_minus[e0]+dMC_minus[mu0]);
     double signal_uncplus_0(dMC_uncplus[e0]+dMC_uncplus[mu0]);     double signal_uncminus_0(dMC_uncminus[e0]+dMC_uncminus[mu0]);
     double signal_jerplus_0(dMC_jerplus[e0]+dMC_jerplus[mu0]);     double signal_jerminus_0(dMC_jerminus[e0]+dMC_jerminus[mu0]);
+    double signal_tesplus_0(dMC_tesplus[e0]+dMC_tesplus[mu0]);     double signal_tesminus_0(dMC_tesminus[e0]+dMC_tesminus[mu0]);
     double signal_bplus_0(dMC_bplus[e0]+dMC_bplus[mu0]);           double signal_bminus_0(dMC_bminus[e0]+dMC_bminus[mu0]);
     double signal_trigger = sqrt( pow(dMC_trigger[e0],2)+pow(dMC_trigger[mu0],2) );
  
@@ -3050,6 +3172,7 @@ namespace tableutils{
     double syst_jes_0     = fabs ( signal_0 - signal_plus_0);    if( fabs( signal_0 - signal_minus_0    ) > syst_jes_0 )  syst_jes_0  = fabs( signal_0 - signal_minus_0 );
     double syst_unc_0     = fabs ( signal_0 - signal_uncplus_0); if( fabs( signal_0 - signal_uncminus_0 ) > syst_unc_0 )  syst_unc_0  = fabs( signal_0 - signal_uncminus_0 );
     double syst_jer_0     = fabs ( signal_0 - signal_jerplus_0); if( fabs( signal_0 - signal_jerminus_0 ) > syst_jer_0 )  syst_jer_0  = fabs( signal_0 - signal_jerminus_0 );
+    double syst_tes_0     = fabs ( signal_0 - signal_tesplus_0); if( fabs( signal_0 - signal_tesminus_0 ) > syst_tes_0 )  syst_tes_0  = fabs( signal_0 - signal_tesminus_0 );
     double syst_btag_0    = fabs ( signal_0 - signal_bplus_0);   if( fabs( signal_0 - signal_bminus_0   ) > syst_btag_0 ) syst_btag_0 = fabs( signal_0 - signal_bminus_0 );
 
     double syst_tauid_0   = TAU_ID_ERR*signal_0; 
@@ -3059,22 +3182,23 @@ namespace tableutils{
 
     double syst_theory_0  = SIGNAL_EFF_ERR*signal_0;
 
-    if(systset1){ syst_lum_0=0; syst_tauid_0=0; syst_ttbar_0=0; syst_eff_lep_0=0; syst_btag_0=0;  syst_theory_0=0; signal_trigger=0;} 
+    if(systset1){ syst_lum_0=0; syst_tauid_0=0; syst_ttbar_0=0; syst_eff_lep_0=0; syst_btag_0=0;  syst_theory_0=0; signal_trigger=0; syst_tes_0=0;} 
     if(systset2){
       syst_lum_0=0; syst_tauid_0=0; syst_ttbar_0=0; syst_eff_lep_0=0; 
       syst_jes_0=0; syst_unc_0=0; syst_jer_0=0;
       syst_theory_0=0; signal_trigger=0;
+      syst_tes_0=0;
     }
     if(systset3){
       syst_lum_0=0; syst_tauid_0=0; syst_ttbar_0=0; syst_eff_lep_0=0; syst_btag_0=0;
       syst_jes_0=0; syst_unc_0=0; syst_jer_0=0;
-      syst_theory_0=0; 
+      syst_theory_0=0; // syst_tes_0=0; 
     }
 
 
     double temp_0 = pow(syst_tauid_0,2) + pow(syst_ttbar_0,2) + pow(syst_lum_0,2) + pow(syst_eff_lep_0,2)+pow(syst_theory_0,2);
 
-    double syst_0  = sqrt( pow(syst_jes_0,2)+ pow(syst_unc_0,2) + pow(syst_jer_0,2) + pow(syst_btag_0,2)+ temp_0 );
+    double syst_0  = sqrt( pow(syst_jes_0,2)+ pow(syst_unc_0,2) + pow(syst_jer_0,2) + pow(syst_tes_0,2) + pow(syst_btag_0,2)+ temp_0 );
     
     //FORCED :: Need to recheck
     //syst_0=11.9;
@@ -3082,14 +3206,16 @@ namespace tableutils{
 
     
     cout<<endl<<"\n systematics on tau-dilepton : "
-              <<"\n jes        : "<<syst_jes_0
-              <<"\n unc        : "<<syst_unc_0
-              <<"\n btag       : "<<syst_btag_0
-              <<"\n tau id     : "<<syst_tauid_0
-              <<"\n ttbar xsec : "<<syst_ttbar_0
-              <<"\n lum        : "<<syst_lum_0
-              <<"\n lepton eff : "<<syst_eff_lep_0
-              <<"\n theory unc : "<<syst_theory_0<<endl;
+	<<"\n jes        : "<<syst_jes_0
+	<<"\n jer        : "<<syst_jer_0
+	<<"\n tes        : "<<syst_tes_0
+	<<"\n unc        : "<<syst_unc_0
+	<<"\n btag       : "<<syst_btag_0
+	<<"\n tau id     : "<<syst_tauid_0
+	<<"\n ttbar xsec : "<<syst_ttbar_0
+	<<"\n lum        : "<<syst_lum_0
+	<<"\n lepton eff : "<<syst_eff_lep_0
+	<<"\n theory unc : "<<syst_theory_0<<endl;
 
 
 
@@ -3157,7 +3283,12 @@ namespace tableutils{
 
   //LEPLEP_TDCH ;ZJETS_TDCH; ZTAUTAU_TDCH; SINGLETOP_TDCH; EWKDI_TDCH
   { 
-    vector<int> codes; codes.push_back(LEPLEP_TDCH); codes.push_back(ZJETS_TDCH); codes.push_back(ZTAUTAU_TDCH); codes.push_back(SINGLETOP_TDCH); codes.push_back(EWKDI_TDCH); 
+    vector<int> codes; 
+    codes.push_back(LEPLEP_TDCH); 
+    //codes.push_back(EE_TDCH);
+    //codes.push_back(EMU_TDCH);
+    //codes.push_back(MUMU_TDCH);
+    codes.push_back(ZJETS_TDCH); codes.push_back(ZTAUTAU_TDCH); codes.push_back(SINGLETOP_TDCH); codes.push_back(EWKDI_TDCH); 
     for(uint k=0;k<codes.size();k++){
       TString line(""); line.Append(other[2+k]); 
       TString d("");
@@ -3206,6 +3337,8 @@ namespace tableutils{
     double total_uncminus_0(0);
     double total_jerplus_0(0);
     double total_jerminus_0(0);
+    double total_tesplus_0(0);
+    double total_tesminus_0(0);
     double total_bplus_0(0);
     double total_bminus_0(0);
     double total_trigger_0(0);
@@ -3233,12 +3366,13 @@ namespace tableutils{
       total_plus_0     += dMC_plus[r_0];       total_minus_0    += dMC_minus[r_0];             
       total_uncplus_0  += dMC_uncplus[r_0];    total_uncminus_0 += dMC_uncminus[r_0];           
       total_jerplus_0  += dMC_jerplus[r_0];    total_jerminus_0 += dMC_jerminus[r_0];   
+      total_tesplus_0  += dMC_tesplus[r_0];    total_tesminus_0 += dMC_tesminus[r_0];   
       total_bplus_0    += dMC_bplus[r_0];      total_bminus_0   += dMC_bminus[r_0];   
       total_trigger_0  += dMC_trigger[r_0];
 
       if( ETAU_TDCH || y==MUTAU_TDCH) total_signal_0 += dMC[r_0];
 
-      if( y==ETAU_TDCH || y==MUTAU_TDCH || y==LEPJETS_TDCH || y==LEPLEP_TDCH || y==TAUJETS_TDCH || y==TAUTAU_TDCH || y==ALLJETS_TDCH ){ 
+      if( y==ETAU_TDCH || y==MUTAU_TDCH || y==LEPJETS_TDCH || /*y==EE_TDCH || y==EMU_TDCH || y==MUMU_TDCH*/ y==LEPLEP_TDCH || y==TAUJETS_TDCH || y==TAUTAU_TDCH || y==ALLJETS_TDCH ){ 
                                                     total_ttbaronly_0      += dMC[r_0]; 
       }
       else if( y==WJETS_TDCH                      ){ total_wjetsonly_0     += dMC[r_0];}
@@ -3254,6 +3388,7 @@ namespace tableutils{
     double syst_0       = fabs( total_0-total_plus_0);     if(  fabs( total_0 - total_minus_0    ) > syst_0     ){ syst_0     = fabs( total_0 - total_minus_0 ); }  
     double syst_unc0    = fabs( total_0-total_uncplus_0);  if(  fabs( total_0 - total_uncminus_0 ) > syst_unc0  ){ syst_unc0  = fabs( total_0 - total_uncminus_0 ); }
     double syst_jer0    = fabs( total_0-total_jerplus_0);  if(  fabs( total_0 - total_jerminus_0 ) > syst_jer0  ){ syst_jer0  = fabs( total_0 - total_jerminus_0 ); }
+    double syst_tes0    = fabs( total_0-total_tesplus_0);  if(  fabs( total_0 - total_tesminus_0 ) > syst_tes0  ){ syst_tes0  = fabs( total_0 - total_tesminus_0 ); }
     double syst_btag0   = fabs( total_0-total_bplus_0);    if(  fabs( total_0 - total_bminus_0   ) > syst_btag0 ){ syst_btag0 = fabs( total_0 - total_bminus_0 ); }
     double syst_trigger = total_trigger_0;
    
@@ -3263,14 +3398,15 @@ namespace tableutils{
                     
                     
    
-    if(systset1){ temp_0=0; syst_btag0 =0; syst_trigger=0;} 
-    if(systset2){ temp_0=0; syst_0 = 0; syst_unc0=0; syst_jer0=0; syst_trigger=0;}
-    if(systset3){ temp_0=0; syst_btag0 =0; syst_0 = 0; syst_unc0=0; syst_jer0=0;}
-
-
-    syst_0 = sqrt( pow(syst_0,2)+pow(syst_unc0,2)+pow(syst_jer0,2)+pow(syst_btag0,2) +pow(syst_trigger,2)+ temp_0); 
-
-
+    if(systset1){ temp_0=0; syst_btag0 =0; syst_trigger=0; syst_tes0=0;} 
+    if(systset2){ temp_0=0; syst_0 = 0; syst_unc0=0; syst_jer0=0; syst_trigger=0; syst_tes0=0;}
+    if(systset3){ temp_0=0; syst_btag0 =0; syst_0 = 0; syst_unc0=0; syst_jer0=0;// syst_tes0=0;
+    }
+    
+    
+    syst_0 = sqrt( pow(syst_0,2)+pow(syst_unc0,2)+pow(syst_jer0,2)+pow(syst_tes0,2)+pow(syst_btag0,2) +pow(syst_trigger,2)+ temp_0); 
+    
+    
     //NEED TO RECHECK ============================================>
     // note systematics need to supress w+jets and qcde erro
     //syst_0 = 
@@ -3405,7 +3541,7 @@ namespace tableutils{
 
   void TauDileptonTableBuilder::doDatacards(vector<double> data, vector<vector<double> > tbh, vector<vector<double> > htb, vector<vector<double> > sm, vector<double> fakes, bool withShapes, bool withStatShapes, string tauType){
     
-    
+    // FIXME: add TES to datacards
     
     
     /// light charged ///     double vHHm80, sErHHm80, jesPHHm80, jesNHHm80, buPHHm80, buNHHm80, trPHHm80, trNHHm80, puHHm80; //yield, stat error, jer uncert. 

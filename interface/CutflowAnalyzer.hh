@@ -65,8 +65,8 @@ private:
 /// test ///  // NEW Event analysis:
 /// test ///  event::MiniEvent_t* ev_;
   TString myKey_;
-  double JER_, JES_, UNC_, BTAGUNC_, UNBTAGUNC_; // unceretainties applied
-  double jer_, jes_, unc_, btagunc_, unbtagunc_; // unceretainties applied
+  double JER_, JES_, UNC_, BTAGUNC_, UNBTAGUNC_, TES_; // uncertainties applied
+  double jer_, jes_, unc_, btagunc_, unbtagunc_, tes_; // uncertainties applied
   bool sys_;
   /// test ///  JetCorrectionUncertainty* junc_;
 /// test ///  std::vector<PhysicsObject> vertices_                 ;
@@ -94,7 +94,7 @@ private:
 /// test ///  void CleanStoreObjects();
 /// test ///   void eventAnalysis(bool, double, double, double, double, double); // FIXME: move TString to TString&
 /// test ///   void tauDileptonSelection(bool, vector<int> &,int);
-  void eventAnalysis(bool, TString, event::MiniEvent_t*, double, double, double, double, double);
+  void eventAnalysis(bool, TString, event::MiniEvent_t*, double, double, double, double, double, double);
   void tauDileptonSelection(
 			    bool,
 			    std::vector<PhysicsObject>&,
@@ -110,8 +110,8 @@ private:
   // TAU DILEPTON ANALYSIS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // FIXME: switch to const for parameters
 
-  void dileptonAnalysis( bool, TString, event::MiniEvent_t*, double, double, double, double, double);
-  void    wPlusJetAnalysis( TString, event::MiniEvent_t*,double, double, double, double, double);
+  void dileptonAnalysis( bool, TString, event::MiniEvent_t*, double, double, double, double, double, double);
+  void    wPlusJetAnalysis( TString, event::MiniEvent_t*,double, double, double, double, double, double);
   
   
 void dileptonEventAnalysis(

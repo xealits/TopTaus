@@ -82,6 +82,7 @@ void FileParser::clear(){
   mapIdXtitle_.clear();
   mapIdYtitle_.clear();
   mapIdtitle_.clear(); 
+  mapIdXrebin_.clear();
   mapIdXrange_.clear();
   mapIdYrange_.clear();
   mapIdlogy_.clear();

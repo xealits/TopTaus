@@ -32,6 +32,11 @@ HistogramPlotter::HistogramPlotter(): PlotStyle() {
   LUM_ERR = 0.022;
   
   setTDRStyle();
+  gStyle->SetPadTopMargin   (0.06);
+  gStyle->SetPadBottomMargin(0.20);
+  gStyle->SetPadRightMargin (0.16);
+  gStyle->SetPadLeftMargin  (0.14);
+
 }
 
 //HistogramPlotter(){ c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=false; LUM_ERR = 0.022;}
@@ -53,7 +58,8 @@ void HistogramPlotter::processCanvas(){
 
   for(int i=0; i<= idNumber_;i++){
 
-    c_ = new TCanvas("name","title",1);
+    //c_ = new TCanvas("name","title",1);
+    c_ = new TCanvas("c1","c1",800,800);// fianco
 
     // Set canvas as id name  ///
     c_->SetName( mapIdtag_[i]);
@@ -107,6 +113,12 @@ void HistogramPlotter::processPlots(int i){
     p->SetBottomMargin(0);
     p->SetPad(xpad[0],ypad[2],xpad[1],ypad[3]);
   }
+  else{
+    c_->SetWindowSize(800,800);
+    c_->SetCanvasSize(800,800);
+    TPad* p = (TPad*) c_->cd();
+    p->SetPad(0,0,1,1);
+  }
   // See if log is enabled /////////////////////////////////////////////////////// 
   it = mapIdlogy_.find(i); 
   if(it != mapIdlogy_.end()){ bool logy = mapIdlogy_[i]; c_->cd(1)->SetLogy( (int) logy);}
@@ -146,9 +158,9 @@ void HistogramPlotter::processPlots(int i){
       //cout<<endl<<" adding stack... "<<u<<endl;
       int ind = stackSamples[u];
       TString plotName = mapIdFolder_[i]+TString("/")+mapIdHistoName_[i];
-
+      cout << "plotName " << plotName << endl;
       TH1 * histo         = ( TH1 * ) mapFiles_[ind]->Get(plotName);
-
+      cout << "1: histo bins " << histo->GetXaxis()->GetNbins() << endl;
       TH1 * histoForHiggs = 0; 
  
 	
@@ -157,9 +169,11 @@ void HistogramPlotter::processPlots(int i){
       itopt = mapLegopt_.find(ind); if(itopt != mapLegopt_.end()){ opt = mapLegopt_[ind]; }
 	  
       setHistoSampleProperties(histo,ind); 
+      cout << "2: histo bins " << histo->GetXaxis()->GetNbins() << endl;
       setHistoIdProperties(histo,i,firstPlot);
+      cout << "3: histo bins " << histo->GetXaxis()->GetNbins() << endl;
       stack->Add(histo, "hist");
-
+      
       
       // Build Histo with errors //////////////////////////////////////////////////////////////////////////////////////////
       if(includeErrors_){
@@ -167,8 +181,11 @@ void HistogramPlotter::processPlots(int i){
           TString errorName("systematics");
 	  errorH = ( TH1 * ) histo->Clone(errorName); errorH->Sumw2(); 
           int numberOfBins = errorH->GetNbinsX();
+	  cout << "number of bins: errorH: " << numberOfBins << endl;
           for(int n=1;n<=numberOfBins; n++){
+	    cout << " bin number " << n ;
             double value    = errorH->GetBinContent(n);
+	    cout << ", value " << value << endl;
             double errorN   = errorH->GetBinError(n);
 
             TString sampName(mapName_[ind]);
@@ -181,8 +198,11 @@ void HistogramPlotter::processPlots(int i){
         else {
           TH1 * temp = (TH1 *) histo->Clone();  
           int numberOfBins = temp->GetNbinsX();
+	  cout << "number of bins: temp: " << numberOfBins << endl;
           for(int n=1;n<=numberOfBins; n++){
+	    cout << " bin number " << n ;
             double value  = temp->GetBinContent(n);
+	    cout << ", value " << value << endl;
             double errorN = temp->GetBinError(n);
 
 	    double graphBinError = myError->GetErrorY(n);
@@ -231,8 +251,14 @@ void HistogramPlotter::processPlots(int i){
 	
     }
     normalize(stack, i);
+
     c_->cd(1);
+
     stack->Draw("hist");
+    if(!ratioOptions.first) stack->GetHistogram()->GetXaxis()->SetTitleOffset(0.9);
+
+
+    
     setStackIdProperties(stack,i);
 
 
@@ -365,7 +391,8 @@ void HistogramPlotter::processPlots(int i){
   
   
   //TLegend *leg = new TLegend(0.7181208,0.6451049,0.9479866,0.9001399,NULL,"brNDC");
-   TLegend *leg = new TLegend(0.7147651,0.6346154,0.9446309,0.9353147,NULL,"brNDC");
+  //   TLegend *leg = new TLegend(0.7147651,0.6346154,0.9446309,0.9353147,NULL,"brNDC");
+   TLegend *leg = new TLegend(0.845,0.2,0.99,0.99,NULL,"NDC"); // fianco
 
   TString title("");
   map< int , TString >::iterator ittitle ;   
@@ -424,6 +451,13 @@ void HistogramPlotter::processPlots(int i){
        	double newError( sqrt( pow(myDataClone->GetBinError(n) * denominator->GetBinContent(n),2) + pow(myDataClone->GetBinContent(n) * yError,2) )/pow(denominator->GetBinContent(n),2)  );
 	myRelError->SetPoint(n, newX, newY );
 	myRelError->SetPointError(n, xError, newError );
+
+	
+	//	map< int, float >::iterator errRenormIt = mapIdnorm_.find(i);
+	//	if( errRenormIt != mapIdnorm_.end() ){
+	//	  newError =  sqrt( pow(   (myDataClone->GetBinError(n)/myDataClone->GetBinContent(n) )* denominator->GetBinContent(n),2) + pow(myDataClone->GetBinContent(n) * yError/yValue,2) )/pow(denominator->GetBinContent(n),2);
+	//	  myRelError->SetPointError(n, xError, newError); 
+	//	}
 	
       }
     }
@@ -445,10 +479,10 @@ void HistogramPlotter::processPlots(int i){
     // iRatio->GetXaxis()->SetLabelSize(0.07 * yscale);//yields
     //    iRatio->GetXaxis()->SetBinLabel(7, "1l+ #geq 3j");
     iRatio->GetXaxis()->SetLabelOffset(0.02 * yscale);
-    iRatio->GetXaxis()->SetTitleSize(0.05 * yscale);
-    iRatio->GetXaxis()->SetTitleOffset(1.2);
+    iRatio->GetXaxis()->SetTitleSize(0.06 * yscale);
+    iRatio->GetXaxis()->SetTitleOffset(0.9);
     iRatio->GetXaxis()->SetTickLength( 0.03 * yscale );
-    iRatio->GetYaxis()->SetTitleOffset(0.8);
+    iRatio->GetYaxis()->SetTitleOffset(0.7);
     iRatio->GetYaxis()->SetLabelSize(0.04 * yscale);
     iRatio->GetYaxis()->SetTitleSize(0.04 * yscale);     
     iRatio->SetMarkerSize(1);
@@ -490,7 +524,8 @@ void HistogramPlotter::plotLegend( TH1 * higgs, TLegend *l, TString title, vecto
 
   //l->SetHeader("CMS preliminary \n#sqrt(s)=7,L=153/pb");
   
-   TLegend *leg = new TLegend(0.1627517,0.8496503,0.3020134,0.9195804,NULL,"brNDC");
+  //   TLegend *leg = new TLegend(0.1627517,0.8496503,0.3020134,0.9195804,NULL,"brNDC");
+  TLegend *leg = new TLegend(0.845,0.2,0.99,0.99,NULL,"NDC"); // fianco
 
    leg->SetBorderSize(0);
    leg->SetTextFont(132);
@@ -615,7 +650,12 @@ void HistogramPlotter::setHistoIdProperties(TH1 *h, int i, bool firstplot){
 
   if(firstplot){
     // set histo title
-    h->SetTitle(mapIdtitle_[i]); 
+    h->SetTitle(mapIdtitle_[i]);
+
+//    h->GetXaxis()->SetTitleOffset(0.8);
+//    h->GetYaxis()->SetTitleOffset(0.8);
+
+ 
     // set axis properties if present ///////////////////////////////////////////////////////////////////////////////////////////
     map<int, pair<float,float> >::iterator it1, it2;
     it1=mapIdXrange_.find(i); it2=mapIdYrange_.find(i); 
@@ -630,7 +670,7 @@ void HistogramPlotter::setHistoIdProperties(TH1 *h, int i, bool firstplot){
 
   map< int, int >::iterator it = mapIdXrebin_.find(i);
   if( it != mapIdXrebin_.end() ){ h->Rebin(mapIdXrebin_[i]); }
-
+  cout << "rebin from map: " << mapIdXrebin_[i];
   fixExtremityBins(h,i);
 
 
@@ -739,6 +779,7 @@ void HistogramPlotter::setHistoSampleProperties(TH1 *h, int i){
   h->Scale( mapWeights_[i] );
 
 
+  
   for(int i=1; i<= h->GetXaxis()->GetNbins() ; i++){
     TString label=h->GetXaxis()->GetBinLabel(i);
     if( label==TString("MET") ) h->GetXaxis()->SetBinLabel(i,"E_{T}^{miss}");

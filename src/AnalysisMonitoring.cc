@@ -87,7 +87,8 @@ void AnalysisMonitoring::buildTrees(TFile* f){
   //branchNames.push_back("pt_j");    // leading jet filled
   //branchNames.push_back("eta_j");   // leading filled
 
-  
+  // ht ratio
+  branchNames.push_back("htratio");
       
   // Build Trees ////////////////////////////////////////////////////////////////////////////  
   for(size_t c=0;c<channels.size();c++){
@@ -98,6 +99,10 @@ void AnalysisMonitoring::buildTrees(TFile* f){
 
     TString selectedJerPlusTreeName   = channels[c]+TString("_Selected_jerplus");
     TString selectedJerMinusTreeName  = channels[c]+TString("_Selected_jerminus");
+
+
+    TString selectedTesPlusTreeName   = channels[c]+TString("_Selected_tesplus");
+    TString selectedTesMinusTreeName  = channels[c]+TString("_Selected_tesminus");
 
     TString selectedBPlusTreeName     = channels[c]+TString("_Selected_bplus");   
     TString selectedBMinusTreeName    = channels[c]+TString("_Selected_bminus");   
@@ -132,6 +137,15 @@ void AnalysisMonitoring::buildTrees(TFile* f){
     // Tree JER minus
     TTree * selectedJerMinusTree        = new TTree(selectedJerMinusTreeName.Data(),selectedJerMinusTreeName.Data());
     treeMap_[selectedJerMinusTreeName]  = selectedJerMinusTree;
+
+
+    // Tree TES plus
+    TTree * selectedTesPlusTree        = new TTree(selectedTesPlusTreeName.Data(),selectedTesPlusTreeName.Data());
+    treeMap_[selectedTesPlusTreeName]  = selectedTesPlusTree;
+
+    // Tree TES minus
+    TTree * selectedTesMinusTree        = new TTree(selectedTesMinusTreeName.Data(),selectedTesMinusTreeName.Data());
+    treeMap_[selectedTesMinusTreeName]  = selectedTesMinusTree;
 
     
     // Tree b plus
