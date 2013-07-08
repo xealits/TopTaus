@@ -196,12 +196,12 @@ int main(int argc, char* argv[])
     HistogramPlotter a; // Move to input line or cfg file the choice of what to plot
     a.parse(samples,vertex,outFolder);
     a.parse(samples,met,outFolder);      
-    //    a.parse(samples,met,outFolder);      
     a.parse(samples,leptons,outFolder);  
-    //a.parse(samples,limits,outFolder);      
     a.parse(samples,mt,outFolder);      
-    a.parse(samples,yields,outFolder);
     a.parse(samples,jets,outFolder); 
+    a.parse(samples,yields,outFolder);
+
+    //a.parse(samples,limits,outFolder);      
     //a.parse(samples,debug,outFolder);  
     //a.parse(samples,afterR,outFolder);
     //
