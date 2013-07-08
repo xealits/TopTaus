@@ -370,7 +370,7 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	    PreSelectMuons( evReader,&m_init,muons, primaryVertex ); 
 	    PreSelectElectrons(  evReader,&e_init,electrons, primaryVertex );
 	    PreSelectJets(false, jerFactors, JES_, junc, jetAlgo,&j_init,jets);
-	    PreSelectTaus( &t_init,taus, TAUPRONGS_, myKey, primaryVertex);
+	    PreSelectTaus( &t_init,taus, TAUPRONGS_, myKey, primaryVertex, 0.);
 	    //////////////////////////////////////////////////////
 	    
 	    // only accept jets if dr > drmin in respect to electrons and muons /////////////////////
@@ -584,7 +584,7 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	  PreSelectMuons( evReader,&m_init,muons, primaryVertex ); 
 	  PreSelectElectrons(  evReader,&e_init,electrons, primaryVertex );
 	  PreSelectJets(isDATA, jerFactors, JES_, junc, jetAlgo,&j_init,jets);
-	  PreSelectTaus( &t_init,taus, TAUPRONGS_, myKey, primaryVertex);
+	  PreSelectTaus( &t_init,taus, TAUPRONGS_, myKey, primaryVertex, 0.);
 	  //////////////////////////////////////////////////////
 	  
 	  if(qualifier_ != QCDDATA){

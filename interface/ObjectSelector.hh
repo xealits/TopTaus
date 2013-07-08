@@ -65,7 +65,7 @@ class ObjectSelector{
   void PreSelectElectrons(event::Reader*, vector<int>*, const vector<PhysicsObject>&, PhysicsObject&);
   void PreSelectMuons(    event::Reader*, vector<int>*, const vector<PhysicsObject>&, PhysicsObject&);
   void PreSelectJets( bool, vector<double>&,  double, JetCorrectionUncertainty*, int, vector<int>*, const vector<PhysicsObject>&);
-  void PreSelectTaus( vector<int>*, const vector<PhysicsObject>&, int , TString&, PhysicsObject&);
+  void PreSelectTaus( vector<int>*, const vector<PhysicsObject>&, int , TString&, PhysicsObject&, double);
   
   inline int GetNumbProngs( PhysicsObject& v){
     int numbProngs = v[3]; // check if this and decay mode give the same result for HPS

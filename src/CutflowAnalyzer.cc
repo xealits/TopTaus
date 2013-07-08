@@ -87,7 +87,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   TAUPRONGS_ = 1;    
   
   // Uncertainties //////////////////////////////////////////////////// FIXME: update this
-  JES_ = 0.05; UNC_ = 0.10; JER_ = 1; BTAGUNC_= 0.10; UNBTAGUNC_=0.10;
+  JES_ = 0.05; UNC_ = 0.10; JER_ = 1; BTAGUNC_= 0.10; UNBTAGUNC_=0.10; TES_ = 0.03;
   ////////////////////////////////////////////////////////////////////
   
   
@@ -217,25 +217,27 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
     for(it=keys.begin();it!=keys.end();++it){   
       // tau dilepton analysis (newphys,tau algo, miniEvent, jes, unc, jer )
       myKey_ = (*it);
-      eventAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0); 
+      eventAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0,         0); 
       if(!isData_)
 	if(!noUncertainties_){
-	  eventAnalysis( false, (*it),ev,      JES_ ,        0,        0  ,             0,                0);        
-	  eventAnalysis( false, (*it),ev, (-1)*JES_ ,        0,        0  ,             0,                0);
-	  eventAnalysis( false, (*it),ev,        0  ,     UNC_,        0  ,             0,                0);
-	  eventAnalysis( false, (*it),ev,        0  ,(-1)*UNC_,        0  ,             0,                0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,      JER_ ,             0,                0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0, (-1)*JER_ ,             0,                0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,      BTAGUNC_,                0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  , (-1)*BTAGUNC_,                0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,       UNBTAGUNC_);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_);
+	  eventAnalysis( false, (*it),ev,      JES_ ,        0,        0  ,             0,                0,           0);        
+	  eventAnalysis( false, (*it),ev, (-1)*JES_ ,        0,        0  ,             0,                0,           0);
+	  eventAnalysis( false, (*it),ev,        0  ,     UNC_,        0  ,             0,                0,           0);
+	  eventAnalysis( false, (*it),ev,        0  ,(-1)*UNC_,        0  ,             0,                0,           0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,      JER_ ,             0,                0,           0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0, (-1)*JER_ ,             0,                0,           0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,      BTAGUNC_,                0,           0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  , (-1)*BTAGUNC_,                0,           0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,       UNBTAGUNC_,           0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_,           0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,        TES_);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,   (-1)*TES_);
 	  
 	}
       
       // WARNING : we only store WplusJets info for PFlow (HPS Pftopat based jets) 
       //      if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev_, 0,0,0,0,0); }
-      if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev, 0,0,0,0,0); }
+      if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev, 0,0,0,0,0,0); }
     }
     //////////////////////////////////////////////////////////////////////////////////
 
@@ -278,14 +280,16 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
 				    double unc, 
 				    double jer, 
 				    double btagunc, 
-				    double unbtagunc){
+				    double unbtagunc,
+				    double tes
+				    ){
 
 
-  jes_=jes; unc_=unc; jer_=jer, btagunc_=btagunc; unbtagunc_=unbtagunc;
+  jes_=jes; unc_=unc; jer_=jer, btagunc_=btagunc; unbtagunc_=unbtagunc, tes_=tes;
 
 
   // see if we run with systematics...////////////////////////////////////////// 
-  if( jes_|| unc_|| jer_|| btagunc_|| unbtagunc_) sys_ = true; else sys_= false;
+  if( jes_|| unc_|| jer_|| btagunc_|| unbtagunc_ || tes_) sys_ = true; else sys_= false;
   ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -434,7 +438,7 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   DisableLtkCutOnJets(); 
   Pt_Jet( JET_PT_CUT_ );     
   PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&j_init,jets );
-  PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex );
+  PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex, tes );
   ////////////////////////////////////////////////////////////////////////
 
   
@@ -544,7 +548,7 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   TVectorD * classifMC(0);
   // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////
   // fill weighted events and reset selected events vector weights
-  if( !isData_ && pdfweights_ && !jes && !unc && !jer && !btagunc){
+  if( !isData_ && pdfweights_ && !jes && !unc && !jer && !btagunc && !tes){
     event::MiniEvent_t *evMC = evRMC_->GetNewMiniEvent(i_,"mc");  if( evMC == 0 ){ cout<<"\n empty event"<<endl; return;}
     classifMC = (TVectorD *)evMC->eventClassif->At(0);
     //originalPDFEvents_ += 1.*w_;
@@ -600,10 +604,10 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
 
 
 
-void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniEvent_t *ev, double jes , double unc, double jer, double btagunc, double unbtagunc){
+void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniEvent_t *ev, double jes , double unc, double jer, double btagunc, double unbtagunc, double tes){
 
 
-  jes_=jes; unc_=unc; jer_=jer, btagunc_=btagunc; unbtagunc_=unbtagunc;
+  jes_=jes; unc_=unc; jer_=jer, btagunc_=btagunc; unbtagunc_=unbtagunc; tes_=tes;
 
 
   // see if we run with systematics...////////////////////////////////////////// 
@@ -729,7 +733,7 @@ void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniE
   DisableLtkCutOnJets(); 
   Pt_Jet( JET_PT_CUT_ );     
   PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&j_init,jets );
-  PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex );
+  PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex, tes );
   ////////////////////////////////////////////////////////////////////////
   
 
@@ -892,7 +896,7 @@ void CutflowAnalyzer::tauDileptonSelection(
   if(isData_) applybtagweight_ =false;
 
   // only compute uncertainty due to the trigger when others unc are switched off /////////////////
-  bool terr(false); if ( jes_== 0 && unc_== 0 && jer_==0 && btagunc_== 0 && unbtagunc_ ) terr=true;
+  bool terr(false); if ( jes_== 0 && unc_== 0 && jer_==0 && btagunc_== 0 && unbtagunc_ && tes_==0) terr=true;
   TString triggErr   = TString("cutflow_triggErr");
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -901,7 +905,7 @@ void CutflowAnalyzer::tauDileptonSelection(
   if( jer_       > 0 ){ add = TString("_jerplus");    }if( jer_       < 0 ){ add = TString("_jerminus");   }
   if( btagunc_   > 0 ){ add = TString("_bplus");      }if( btagunc_   < 0 ){ add = TString("_bminus");     }
   if( unbtagunc_ > 0 ){ add = TString("_unbplus");    }if( unbtagunc_ < 0 ){ add = TString("_unbminus");   }
-  
+  if( tes_       > 0 ){ add = TString("_tesplus");    }if( tes_       < 0 ){ add = TString("_tesminus");   }
   
   TString evYields          = TString("cutflow_yields")    + add;     
   TString evYieldsMC        = TString("cutflow_yields_mc") + add;   
@@ -958,6 +962,8 @@ void CutflowAnalyzer::tauDileptonSelection(
     // tau dilepton analysis //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
            if(  ttbarLike_ == ETAU_  && channel != ETAU_CH  )                                                                             { return; }
       else if(  ttbarLike_ == MUTAU_ && channel != MUTAU_CH )                                                                             { return; }
+      else if(  ttbarLike_ == MUMU_  && channel != MUMU_CH  )                                                                             { return; }
+      else if(  ttbarLike_ == EMU_   && channel != EMU_CH  )                                                                              { return; }
       else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
       else if(  ttbarLike_ == TTBAR_DDBKG_ && (channel != EJETS_CH && channel!= MUJETS_CH ) )                                             { return; }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1014,7 +1020,7 @@ void CutflowAnalyzer::tauDileptonSelection(
     tau_obj = &(taus[tau_i]); }
   
   // Muon trigger/ID/Iso scale factors for efficiency from https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceEffs 
-  LeadMuonTriggerEfficiency(muons, lepton_ind, muontriggerefficiency_);
+  if(!eChONmuChOFF_) LeadMuonTriggerEfficiency(muons, lepton_ind, muontriggerefficiency_);
 
   // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
   // on MC   : we apply a trigger efficiency
@@ -1447,6 +1453,7 @@ void CutflowAnalyzer::tauDileptonSelection(
   int numbProngs(0);
   double tauP(0),tauE,r(0);
   tauR_ = -1;
+  
 
   if( taucut ){ 
     numbProngs = GetNumbProngs(taus[tau_i]);
@@ -1467,13 +1474,18 @@ void CutflowAnalyzer::tauDileptonSelection(
 
 
   // 1 btag option ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // hack
+  int BTAG1_NOMT;
+  if(!APPLY_MT_CUT_) BTAG1_NOMT = BTAG1_STEP2 -1;
+  else               BTAG1_NOMT = BTAG1_STEP2;
+  // end hack
   if( nbtag1 ) {
-    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    BTAG1_STEP2, w_); 
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    BTAG1_NOMT, w_); 
     if (terr){
-      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),BTAG1_STEP2, errorOnEff);  
-      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,BTAG1_STEP2,tauDilCh,errorOnEff); }
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),BTAG1_NOMT, errorOnEff);  
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,BTAG1_NOMT,tauDilCh,errorOnEff); }
     }
-    if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,BTAG1_STEP2,tauDilCh,w_); } 
+    if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,BTAG1_NOMT,tauDilCh,w_); } 
     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"1 btag",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1482,14 +1494,32 @@ void CutflowAnalyzer::tauDileptonSelection(
 
 
   // TAU ID selection step //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // hack
+  int TAU_NOMT;
+  if(!APPLY_MT_CUT_) TAU_NOMT = TAU_STEP2 -1;
+  else               TAU_NOMT = TAU_STEP2;
+  // end hack
+
+  
+  
+
+
+
+
   if(nbtag1 && taucut){
-    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    TAU_STEP2,w_);  
+    // diocane //    // l->tau fakes rescaling
+    // diocane //    if(!isData_ &&   (  evType_==MUTAU && (channel==EMU_CH || channel==EE_CH) || evType_==ETAU && channel==EE_CH )){
+    // diocane //      if(fabs(taus[tau_i].Eta()) < 1.442)      w_ *= 0.85;
+    // diocane //      else if (fabs(taus[tau_i].Eta()) > 1.566) w_ *= 0.65;
+    // diocane //    }
+    
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    TAU_NOMT,w_);  
     if (terr){
-      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),TAU_STEP2, errorOnEff); 
-      if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,TAU_STEP2,tauDilCh,errorOnEff); }
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),TAU_NOMT, errorOnEff); 
+      if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,TAU_NOMT,tauDilCh,errorOnEff); }
     }
 
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,TAU_STEP2,tauDilCh,w_); }
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,TAU_NOMT,tauDilCh,w_); }
     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"1 Tau",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
 
     
@@ -1517,16 +1547,21 @@ void CutflowAnalyzer::tauDileptonSelection(
    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+  // hack
+  int OS_NOMT;
+  if(!APPLY_MT_CUT_) OS_NOMT = OS_STEP2 -1;
+  else               OS_NOMT = OS_STEP2;
+  // end hack
 
   if(  nbtag1 && taucut && oscut ){
 
-    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),OS_STEP2,w_);
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),OS_NOMT,w_);
     if (terr){
-      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),OS_STEP2, errorOnEff);
-      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,OS_STEP2,tauDilCh,errorOnEff); }
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),OS_NOMT, errorOnEff);
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,OS_NOMT,tauDilCh,errorOnEff); }
     }
 
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,OS_STEP2,tauDilCh,w_); }
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,OS_NOMT,tauDilCh,w_); }
     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"OS",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
 
     //SPY AFTER TAU ID AND OS /////////////////////////////////////////////////////////////////////////
@@ -2414,6 +2449,24 @@ void CutflowAnalyzer::fillTauDileptonObjTree(
   }
   ////////////////////////////////////////////////////////////////////////////////
 
+  //HTratio
+  double htssm_(0.), htosm_(0.), htratiom_(0.);
+
+  for (unsigned int i =0; i<j_v.size(); ++i){
+
+    //float dPhiM = getdphi( metphi, j_v().at(i).phi() );
+    int i_ind = j_v[i];
+
+    double dPhiM = jets[i_ind].DeltaPhi(metObj);
+
+    if ( dPhiM  < (TMath::Pi()/2) ) htssm_=htssm_+jets[i_ind].Pt();
+    else htosm_=htosm_+jets[i_ind].Pt();
+  }
+
+  htratiom_   = htssm_ / (htosm_ + htssm_);
+  //  cout << "htosm_ = " << htosm_ << "   -   htssm_ = " << htssm_ << endl;
+
+  ////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -2513,6 +2566,9 @@ void CutflowAnalyzer::fillTauDileptonObjTree(
 
   //bjet multiplicity
   TBranch * numb_bJetsB = t->GetBranch("btagmultiplicity_j");  Double_t *  numb_bJets = (Double_t *) numb_bJetsB->GetAddress();  *numb_bJets  = nbtags_taus;  
+
+  // HT ratio
+  TBranch* htratioB = t->GetBranch("htratio"); Double_t* htratio = (Double_t*) htratioB->GetAddress(); *htratio=htratiom_;
 
   
   //tree multiplicity
@@ -3286,7 +3342,7 @@ void CutflowAnalyzer::fillDebugHistograms(
 
 }
 
-void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,double jes, double unc, double jer , double btagunc, double unbtagunc){
+void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,double jes, double unc, double jer , double btagunc, double unbtagunc, double tes){
   
 
    // see if we are processing electron channel or muon channel /////////////////////////////////
@@ -3296,10 +3352,10 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
 
   if(isData_) applybtagweight_ =false;
 
-  jes_=jes; unc_=unc; jer_=jer; btagunc_=btagunc; unbtagunc_=unbtagunc;
+  jes_=jes; unc_=unc; jer_=jer; btagunc_=btagunc; unbtagunc_=unbtagunc; tes_ = tes;
 
   // see if we run with systematics...///////////////////////////// 
-  if( jes_|| unc_|| jer_|| btagunc_|| unbtagunc_) sys_ = true; else sys_= false;
+  if( jes_|| unc_|| jer_|| btagunc_|| unbtagunc_ || tes_) sys_ = true; else sys_= false;
   /////////////////////////////////////////////////////////////////
 
   if(sys_ ) return;
@@ -3447,7 +3503,7 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   vector<int> e_init, m_init, j_init,t_init;
   PreSelectMuons(      evR_,&m_init,muons, primaryVertex);
   PreSelectElectrons(  evR_,&e_init,electrons, primaryVertex);
-  PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex ); // this is needed to clean taus from triggering jets
+  PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex, tes ); // this is needed to clean taus from triggering jets
   PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&j_init,jets);
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

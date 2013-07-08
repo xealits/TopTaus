@@ -218,7 +218,7 @@ void ObjectSelector::PreSelectElectrons( event::Reader* reader, vector<int>* e_i
     if( !leptonPlusJetsSelection_ && ePt < E_PT_MIN_ ){ continue; }
     
     
-    if(id && d0 < E_D0_MAX_ && eEta < E_ETA_MAX_ && eRelIso < E_RELISO_MAX_ && minDR2mu >0.1){ e_i->push_back(i);}
+    if(id && eEta < E_ETA_MAX_ && eRelIso < E_RELISO_MAX_ && minDR2mu >0.1){ e_i->push_back(i);}
     
   }
   
@@ -298,7 +298,7 @@ void ObjectSelector::PreSelectJets( bool isData, vector<double>& jerFactors, dou
   
 }
 
-void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject>& vT, int requiredProngs, TString& myKey, PhysicsObject& vertex){
+void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject>& vT, int requiredProngs, TString& myKey, PhysicsObject& vertex, double tes){
   
   // cout<<endl<<" tau collection size is : "<<vT.size()<<endl;
   
@@ -321,7 +321,7 @@ void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject
     
     
     double tauEta            = TMath::Abs(vT[i].Eta());
-    double tauPt             = TMath::Abs(vT[i].Pt());
+    double tauPt             = TMath::Abs(vT[i].Pt())*(1+tes);
     double tauLtk            = vT[i][4];   // LEAD track /charged hadron pt
     double tauLeadPF         = vT[i][5];   // LEAD PF PT
     double tauEmf            = vT[i][15];  // EMF
