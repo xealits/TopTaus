@@ -29,6 +29,8 @@ namespace tableutils{
 
     for(size_t i=0; i<brHtaunu_.size(); ++i)
       brHtaunu_[i] = 5./234.;
+    for(size_t i=0; i<brHtb_.size(); ++i)
+      brHtb_[i] = 5./234.;
     
     bool triggerunc(true);  //enable/disable syst on trigger
     
@@ -1752,14 +1754,14 @@ namespace tableutils{
           if(        detailed == D2 )  {dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f \\\\ \n");}
           else  if(  detailed == D3 )  {dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f \\\\ \n");}
           line.Append(dtemp); const char * data = line.Data();
-          fprintf(f,data,brHtaunu_[k]*(htb_e[k])[COL2],brHtaunu_[k]*(htb_e[k])[COL3],brHtaunu_[k]*(htb_e[k])[COL4],brHtaunu_[k]*(htb_e[k])[COL5],brHtaunu_[k]*(htb_e[k])[COL6],brHtaunu_[k]*(htb_e[k])[COL7],brHtaunu_[k]*(htb_e[k])[COL8],brHtaunu_[k]*(htb_e[k])[COL9]);
+          fprintf(f,data,brHtb_[k]*(htb_e[k])[COL2],brHtb_[k]*(htb_e[k])[COL3],brHtb_[k]*(htb_e[k])[COL4],brHtb_[k]*(htb_e[k])[COL5],brHtb_[k]*(htb_e[k])[COL6],brHtb_[k]*(htb_e[k])[COL7],brHtb_[k]*(htb_e[k])[COL8],brHtb_[k]*(htb_e[k])[COL9]);
         }
         else if ( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){
           dtemp = TString(" & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n"); 
           if     ( detailed == D2 )  {dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f  \\\\ \n");  }
           else if( detailed == D3 )  {dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f  \\\\ \n");  }
           line.Append(dtemp); const char * data = line.Data();
-          fprintf(f, data, brHtaunu_[k]*(htb_e[k])[COL2] , brHtaunu_[k]*(htb_e[k])[COL3] ,brHtaunu_[k]*(htb_e[k])[COL4], brHtaunu_[k]*(htb_e[k])[COL5], brHtaunu_[k]*(htb_e[k])[COL6], brHtaunu_[k]*(htb_e[k])[COL7], brHtaunu_[k]*(htb_e[k])[COL8]);
+          fprintf(f, data, brHtb_[k]*(htb_e[k])[COL2] , brHtb_[k]*(htb_e[k])[COL3] ,brHtb_[k]*(htb_e[k])[COL4], brHtb_[k]*(htb_e[k])[COL5], brHtb_[k]*(htb_e[k])[COL6], brHtb_[k]*(htb_e[k])[COL7], brHtb_[k]*(htb_e[k])[COL8]);
         }
 
         if(printAllErrors){
@@ -1774,14 +1776,14 @@ namespace tableutils{
             lx.Append(dx); datax= lx.Data();
           
             fprintf(f, datax, 
-              brHtaunu_[k]*htb_e_err[k][COL2], brHtaunu_[k]*htb_e_syst_plus[k][COL2], brHtaunu_[k]*htb_e_syst_minus[k][COL2],
-              brHtaunu_[k]*htb_e_err[k][COL3], brHtaunu_[k]*htb_e_syst_plus[k][COL3], brHtaunu_[k]*htb_e_syst_minus[k][COL3],    
-              brHtaunu_[k]*htb_e_err[k][COL4], brHtaunu_[k]*htb_e_syst_plus[k][COL4], brHtaunu_[k]*htb_e_syst_minus[k][COL4],
-              brHtaunu_[k]*htb_e_err[k][COL5], brHtaunu_[k]*htb_e_syst_plus[k][COL5], brHtaunu_[k]*htb_e_syst_minus[k][COL5],
-              brHtaunu_[k]*htb_e_err[k][COL6], brHtaunu_[k]*htb_e_syst_plus[k][COL6], brHtaunu_[k]*htb_e_syst_minus[k][COL6],
-              brHtaunu_[k]*htb_e_err[k][COL7], brHtaunu_[k]*htb_e_syst_plus[k][COL7], brHtaunu_[k]*htb_e_syst_minus[k][COL7],              
-              brHtaunu_[k]*htb_e_err[k][COL8], brHtaunu_[k]*htb_e_syst_plus[k][COL8], brHtaunu_[k]*htb_e_syst_minus[k][COL8],
-              brHtaunu_[k]*htb_e_err[k][COL9], brHtaunu_[k]*htb_e_syst_plus[k][COL9], brHtaunu_[k]*htb_e_syst_minus[k][COL9]); 
+              brHtb_[k]*htb_e_err[k][COL2], brHtb_[k]*htb_e_syst_plus[k][COL2], brHtb_[k]*htb_e_syst_minus[k][COL2],
+              brHtb_[k]*htb_e_err[k][COL3], brHtb_[k]*htb_e_syst_plus[k][COL3], brHtb_[k]*htb_e_syst_minus[k][COL3],    
+              brHtb_[k]*htb_e_err[k][COL4], brHtb_[k]*htb_e_syst_plus[k][COL4], brHtb_[k]*htb_e_syst_minus[k][COL4],
+              brHtb_[k]*htb_e_err[k][COL5], brHtb_[k]*htb_e_syst_plus[k][COL5], brHtb_[k]*htb_e_syst_minus[k][COL5],
+              brHtb_[k]*htb_e_err[k][COL6], brHtb_[k]*htb_e_syst_plus[k][COL6], brHtb_[k]*htb_e_syst_minus[k][COL6],
+              brHtb_[k]*htb_e_err[k][COL7], brHtb_[k]*htb_e_syst_plus[k][COL7], brHtb_[k]*htb_e_syst_minus[k][COL7],              
+              brHtb_[k]*htb_e_err[k][COL8], brHtb_[k]*htb_e_syst_plus[k][COL8], brHtb_[k]*htb_e_syst_minus[k][COL8],
+              brHtb_[k]*htb_e_err[k][COL9], brHtb_[k]*htb_e_syst_plus[k][COL9], brHtb_[k]*htb_e_syst_minus[k][COL9]); 
           } 
           else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){
             if      ( detailed == D2 ){ dx = TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
@@ -1791,13 +1793,13 @@ namespace tableutils{
             lx.Append(dx); datax= lx.Data();
           
             fprintf(f, datax, 
-              brHtaunu_[k]*htb_e_err[k][COL2], brHtaunu_[k]*htb_e_syst_plus[k][COL2], brHtaunu_[k]*htb_e_syst_minus[k][COL2],
-              brHtaunu_[k]*htb_e_err[k][COL3], brHtaunu_[k]*htb_e_syst_plus[k][COL3], brHtaunu_[k]*htb_e_syst_minus[k][COL3],    
-              brHtaunu_[k]*htb_e_err[k][COL4], brHtaunu_[k]*htb_e_syst_plus[k][COL4], brHtaunu_[k]*htb_e_syst_minus[k][COL4],
-              brHtaunu_[k]*htb_e_err[k][COL5], brHtaunu_[k]*htb_e_syst_plus[k][COL5], brHtaunu_[k]*htb_e_syst_minus[k][COL5],
-              brHtaunu_[k]*htb_e_err[k][COL6], brHtaunu_[k]*htb_e_syst_plus[k][COL6], brHtaunu_[k]*htb_e_syst_minus[k][COL6],
-              brHtaunu_[k]*htb_e_err[k][COL7], brHtaunu_[k]*htb_e_syst_plus[k][COL7], brHtaunu_[k]*htb_e_syst_minus[k][COL7],
-              brHtaunu_[k]*htb_e_err[k][COL8], brHtaunu_[k]*htb_e_syst_plus[k][COL8], brHtaunu_[k]*htb_e_syst_minus[k][COL8]);
+              brHtb_[k]*htb_e_err[k][COL2], brHtb_[k]*htb_e_syst_plus[k][COL2], brHtb_[k]*htb_e_syst_minus[k][COL2],
+              brHtb_[k]*htb_e_err[k][COL3], brHtb_[k]*htb_e_syst_plus[k][COL3], brHtb_[k]*htb_e_syst_minus[k][COL3],    
+              brHtb_[k]*htb_e_err[k][COL4], brHtb_[k]*htb_e_syst_plus[k][COL4], brHtb_[k]*htb_e_syst_minus[k][COL4],
+              brHtb_[k]*htb_e_err[k][COL5], brHtb_[k]*htb_e_syst_plus[k][COL5], brHtb_[k]*htb_e_syst_minus[k][COL5],
+              brHtb_[k]*htb_e_err[k][COL6], brHtb_[k]*htb_e_syst_plus[k][COL6], brHtb_[k]*htb_e_syst_minus[k][COL6],
+              brHtb_[k]*htb_e_err[k][COL7], brHtb_[k]*htb_e_syst_plus[k][COL7], brHtb_[k]*htb_e_syst_minus[k][COL7],
+              brHtb_[k]*htb_e_err[k][COL8], brHtb_[k]*htb_e_syst_plus[k][COL8], brHtb_[k]*htb_e_syst_minus[k][COL8]);
           } 
         }
          ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1806,8 +1808,8 @@ namespace tableutils{
         // Muon contribution //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
         TString line2(" & "); line2.Append(Tcolumn_mc[1]); line2.Append(dtemp); const char * data2 = line2.Data();
     
-        if(      STARTINGPOINT == STARTING_AT_LJETS_        ){ fprintf(f, data2,  brHtaunu_[k]*htb_m[k][COL2], brHtaunu_[k]*htb_m[k][COL3], brHtaunu_[k]*htb_m[k][COL4], brHtaunu_[k]*htb_m[k][COL5], brHtaunu_[k]*htb_m[k][COL6], brHtaunu_[k]*htb_m[k][COL7],brHtaunu_[k]*htb_m[k][COL8], brHtaunu_[k]*htb_m[k][COL9] ); }
-        else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){ fprintf(f, data2,  brHtaunu_[k]*htb_m[k][COL2], brHtaunu_[k]*htb_m[k][COL3], brHtaunu_[k]*htb_m[k][COL4], brHtaunu_[k]*htb_m[k][COL5], brHtaunu_[k]*htb_m[k][COL6], brHtaunu_[k]*htb_m[k][COL7], brHtaunu_[k]*htb_m[k][COL8]); }
+        if(      STARTINGPOINT == STARTING_AT_LJETS_        ){ fprintf(f, data2,  brHtb_[k]*htb_m[k][COL2], brHtb_[k]*htb_m[k][COL3], brHtb_[k]*htb_m[k][COL4], brHtb_[k]*htb_m[k][COL5], brHtb_[k]*htb_m[k][COL6], brHtb_[k]*htb_m[k][COL7],brHtb_[k]*htb_m[k][COL8], brHtb_[k]*htb_m[k][COL9] ); }
+        else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){ fprintf(f, data2,  brHtb_[k]*htb_m[k][COL2], brHtb_[k]*htb_m[k][COL3], brHtb_[k]*htb_m[k][COL4], brHtb_[k]*htb_m[k][COL5], brHtb_[k]*htb_m[k][COL6], brHtb_[k]*htb_m[k][COL7], brHtb_[k]*htb_m[k][COL8]); }
         
 
         if(printAllErrors){
@@ -1821,14 +1823,14 @@ namespace tableutils{
         
             lx.Append(dx);  datax = lx.Data();
             fprintf(f, datax, 
-              brHtaunu_[k]*htb_m_err[k][COL2], brHtaunu_[k]*htb_m_syst_plus[k][COL2], brHtaunu_[k]*htb_m_syst_minus[k][COL2],
-              brHtaunu_[k]*htb_m_err[k][COL3], brHtaunu_[k]*htb_m_syst_plus[k][COL3], brHtaunu_[k]*htb_m_syst_minus[k][COL3],    
-              brHtaunu_[k]*htb_m_err[k][COL4], brHtaunu_[k]*htb_m_syst_plus[k][COL4], brHtaunu_[k]*htb_m_syst_minus[k][COL4], 
-              brHtaunu_[k]*htb_m_err[k][COL5], brHtaunu_[k]*htb_m_syst_plus[k][COL5], brHtaunu_[k]*htb_m_syst_minus[k][COL5],
-              brHtaunu_[k]*htb_m_err[k][COL6], brHtaunu_[k]*htb_m_syst_plus[k][COL6], brHtaunu_[k]*htb_m_syst_minus[k][COL6],
-              brHtaunu_[k]*htb_m_err[k][COL7], brHtaunu_[k]*htb_m_syst_plus[k][COL7], brHtaunu_[k]*htb_m_syst_minus[k][COL7],
-              brHtaunu_[k]*htb_m_err[k][COL8], brHtaunu_[k]*htb_m_syst_plus[k][COL8], brHtaunu_[k]*htb_m_syst_minus[k][COL8],
-              brHtaunu_[k]*htb_m_err[k][COL9], brHtaunu_[k]*htb_m_syst_plus[k][COL9], brHtaunu_[k]*htb_m_syst_minus[k][COL9]);
+              brHtb_[k]*htb_m_err[k][COL2], brHtb_[k]*htb_m_syst_plus[k][COL2], brHtb_[k]*htb_m_syst_minus[k][COL2],
+              brHtb_[k]*htb_m_err[k][COL3], brHtb_[k]*htb_m_syst_plus[k][COL3], brHtb_[k]*htb_m_syst_minus[k][COL3],    
+              brHtb_[k]*htb_m_err[k][COL4], brHtb_[k]*htb_m_syst_plus[k][COL4], brHtb_[k]*htb_m_syst_minus[k][COL4], 
+              brHtb_[k]*htb_m_err[k][COL5], brHtb_[k]*htb_m_syst_plus[k][COL5], brHtb_[k]*htb_m_syst_minus[k][COL5],
+              brHtb_[k]*htb_m_err[k][COL6], brHtb_[k]*htb_m_syst_plus[k][COL6], brHtb_[k]*htb_m_syst_minus[k][COL6],
+              brHtb_[k]*htb_m_err[k][COL7], brHtb_[k]*htb_m_syst_plus[k][COL7], brHtb_[k]*htb_m_syst_minus[k][COL7],
+              brHtb_[k]*htb_m_err[k][COL8], brHtb_[k]*htb_m_syst_plus[k][COL8], brHtb_[k]*htb_m_syst_minus[k][COL8],
+              brHtb_[k]*htb_m_err[k][COL9], brHtb_[k]*htb_m_syst_plus[k][COL9], brHtb_[k]*htb_m_syst_minus[k][COL9]);
           }
           else if(STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){        
             if     (detailed == D2 ){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
@@ -1838,13 +1840,13 @@ namespace tableutils{
             lx.Append(dx);  datax = lx.Data();
 
             fprintf(f, datax, 
-              brHtaunu_[k]*htb_m_err[k][COL2], brHtaunu_[k]*htb_m_syst_plus[k][COL2], brHtaunu_[k]*htb_m_syst_minus[k][COL2],
-              brHtaunu_[k]*htb_m_err[k][COL3], brHtaunu_[k]*htb_m_syst_plus[k][COL3], brHtaunu_[k]*htb_m_syst_minus[k][COL3],    
-              brHtaunu_[k]*htb_m_err[k][COL4], brHtaunu_[k]*htb_m_syst_plus[k][COL4], brHtaunu_[k]*htb_m_syst_minus[k][COL4], 
-              brHtaunu_[k]*htb_m_err[k][COL5], brHtaunu_[k]*htb_m_syst_plus[k][COL5], brHtaunu_[k]*htb_m_syst_minus[k][COL5],
-              brHtaunu_[k]*htb_m_err[k][COL6], brHtaunu_[k]*htb_m_syst_plus[k][COL6], brHtaunu_[k]*htb_m_syst_minus[k][COL6], 
-              brHtaunu_[k]*htb_m_err[k][COL7], brHtaunu_[k]*htb_m_syst_plus[k][COL7], brHtaunu_[k]*htb_m_syst_minus[k][COL7],
-              brHtaunu_[k]*htb_m_err[k][COL8], brHtaunu_[k]*htb_m_syst_plus[k][COL8], brHtaunu_[k]*htb_m_syst_minus[k][COL8]);
+              brHtb_[k]*htb_m_err[k][COL2], brHtb_[k]*htb_m_syst_plus[k][COL2], brHtb_[k]*htb_m_syst_minus[k][COL2],
+              brHtb_[k]*htb_m_err[k][COL3], brHtb_[k]*htb_m_syst_plus[k][COL3], brHtb_[k]*htb_m_syst_minus[k][COL3],    
+              brHtb_[k]*htb_m_err[k][COL4], brHtb_[k]*htb_m_syst_plus[k][COL4], brHtb_[k]*htb_m_syst_minus[k][COL4], 
+              brHtb_[k]*htb_m_err[k][COL5], brHtb_[k]*htb_m_syst_plus[k][COL5], brHtb_[k]*htb_m_syst_minus[k][COL5],
+              brHtb_[k]*htb_m_err[k][COL6], brHtb_[k]*htb_m_syst_plus[k][COL6], brHtb_[k]*htb_m_syst_minus[k][COL6], 
+              brHtb_[k]*htb_m_err[k][COL7], brHtb_[k]*htb_m_syst_plus[k][COL7], brHtb_[k]*htb_m_syst_minus[k][COL7],
+              brHtb_[k]*htb_m_err[k][COL8], brHtb_[k]*htb_m_syst_plus[k][COL8], brHtb_[k]*htb_m_syst_minus[k][COL8]);
            }
 
            //DEBUG 
