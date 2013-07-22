@@ -120,6 +120,9 @@ root -l -b bin/macros/teenyWeenyHeavyChHiggsSignalCutsComparison.C
 
 Datacards
 ---------
+physicsAnalysis test/physicsAnalysisParSets_cfg.py doDatacards
+
+For versioning them:
 Install repository (CMS members only):
 svn co svn+ssh://vischia@svn.cern.ch/reps/lipcms/Physics/datacards lipcms/Physics/datacards
 chiggs datacards are in lipcms/Physics/datacards/chiggs/
