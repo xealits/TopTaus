@@ -10,7 +10,7 @@ LandSShapesProducerParSet = cms.PSet(
     #    outFolder        = cms.string("testMultiDimensionalShapes/"),
     outputFileName  = cms.string("shapes"),
 #    massPointName   = cms.vstring("m180", "m190", "m200", "m220", "m250", "m300"),
-    massPointName   = cms.vstring("m180","m220","m240","m250","m260","m280","m300"),
+    massPointName   = cms.vstring("m180","m200","m220","m240","m250","m260","m280","m300"),
 
     
     #    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
