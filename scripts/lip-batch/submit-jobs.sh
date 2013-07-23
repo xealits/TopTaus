@@ -68,5 +68,21 @@ qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_from50.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_10to50.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-tbh-higgs.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-tbh-higgs-bychannel.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs-bychannel.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs_180.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs_200.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs_220.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs_240.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs_250.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs_260.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs_280.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs_300.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs-bychannel_180.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs-bychannel_200.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs-bychannel_220.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs-bychannel_240.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs-bychannel_250.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs-bychannel_260.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs-bychannel_280.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs-bychannel_300.sh
+
+

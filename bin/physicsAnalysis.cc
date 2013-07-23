@@ -149,27 +149,41 @@ int main(int argc, char* argv[])
   else if(runOn == "wh_higgs")            analyzer->process_wh_higgs()           ;
   else if(runOn == "tbh_higgs_bychannel") analyzer->process_tbh_higgs_bychannel() ;
   else if(runOn == "tbh_higgs")           analyzer->process_tbh_higgs()           ;
-  else if(runOn == "htb_higgs_bychannel") analyzer->process_htb_higgs_bychannel() ;
-  else if(runOn == "htb_higgs")           analyzer->process_htb_higgs()           ;
+  else if(runOn == "htb_higgs_bychannel_180") analyzer->process_htb_higgs_bychannel(180) ;
+  else if(runOn == "htb_higgs_bychannel_200") analyzer->process_htb_higgs_bychannel(200) ;
+  else if(runOn == "htb_higgs_bychannel_220") analyzer->process_htb_higgs_bychannel(220) ;
+  else if(runOn == "htb_higgs_bychannel_240") analyzer->process_htb_higgs_bychannel(240) ;
+  else if(runOn == "htb_higgs_bychannel_250") analyzer->process_htb_higgs_bychannel(250) ;
+  else if(runOn == "htb_higgs_bychannel_260") analyzer->process_htb_higgs_bychannel(260) ;
+  else if(runOn == "htb_higgs_bychannel_280") analyzer->process_htb_higgs_bychannel(280) ;
+  else if(runOn == "htb_higgs_bychannel_300") analyzer->process_htb_higgs_bychannel(300) ;
+  else if(runOn == "htb_higgs_180")           analyzer->process_htb_higgs(180)           ;
+  else if(runOn == "htb_higgs_200")           analyzer->process_htb_higgs(200)           ;
+  else if(runOn == "htb_higgs_220")           analyzer->process_htb_higgs(220)           ;
+  else if(runOn == "htb_higgs_240")           analyzer->process_htb_higgs(240)           ;
+  else if(runOn == "htb_higgs_250")           analyzer->process_htb_higgs(250)           ;
+  else if(runOn == "htb_higgs_260")           analyzer->process_htb_higgs(260)           ;
+  else if(runOn == "htb_higgs_280")           analyzer->process_htb_higgs(280)           ;
+  else if(runOn == "htb_higgs_300")           analyzer->process_htb_higgs(300)           ;
   else if(runOn == "wjets")               analyzer->process_wjets()              ;
   else if(runOn == "zjets_from50")        analyzer->process_zjets_from50()       ;
   else if(runOn == "zjets_10to50")        analyzer->process_zjets_10to50()       ;
   // FIXME: manage with --blah for having parameters like "withHiggs" and so on
   else if(runOn == "doTables"){
     cout << "Doing tables" << endl;
-    bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false), produceDatacards(false), withShapes(true), withStatShapes(false);
+    bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false), produceDatacards(false), withShapes(true), withStatShapes(false), unsplit(false);
     int detailed(2), notDetailed(1);      
     analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, sm, "PFlow", "yields-mc-", false, false, false); 
     cout << "Done SM table" << endl;
     analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false); 
     cout << "Done TBH table" << endl;
-    analyzer->summaryTable( notDetailed, true, false, false, false, produceDatacards, withShapes, withStatShapes);
+    analyzer->summaryTable( notDetailed, true, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
     cout << "Done summary table" << endl;
   }
   else if(runOn == "doDatacards"){
-    bool produceDatacards(true), withShapes(true), withStatShapes(false);
+    bool produceDatacards(true), withShapes(true), withStatShapes(false), unsplit(false);
     int detailed(2), notDetailed(1); 
-    analyzer->summaryTable( notDetailed, true, false, false, false, produceDatacards, withShapes, withStatShapes);
+    analyzer->summaryTable( notDetailed, true, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
   }
   else if(runOn == "doPlots"){
 //    PlotStyle sty();
