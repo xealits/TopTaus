@@ -552,6 +552,8 @@ void HistogramBuilder::buildYieldsHistograms( TFile * outFile, map< TString, Sel
   TH1D * h9  = new TH1D("cutflow_yields_bminus",  "Cut Flow; Step;N",nsteps,0,nsteps); addHistoToMonitors(h9,h9->GetName(), yieldsMons, keys);  
   TH1D * h10 = new TH1D("cutflow_yields_unbplus", "Cut Flow; Step;N",nsteps,0,nsteps); addHistoToMonitors(h10,h10->GetName(), yieldsMons, keys); 
   TH1D * h11 = new TH1D("cutflow_yields_unbminus","Cut Flow; Step;N",nsteps,0,nsteps); addHistoToMonitors(h11,h11->GetName(), yieldsMons, keys);
+  TH1D * h12 = new TH1D("cutflow_yields_tesplus", "Cut Flow; Step;N",nsteps,0,nsteps); addHistoToMonitors(h12,h12->GetName(), yieldsMons, keys);
+  TH1D * h13 = new TH1D("cutflow_yields_tesminus","Cut Flow; Step;N",nsteps,0,nsteps); addHistoToMonitors(h13,h13->GetName(), yieldsMons, keys);
 
   for(int ibin=1; ibin<=nsteps; ibin++) { 
     h0->GetXaxis()->SetBinLabel(ibin,steps[ibin-1]);
@@ -559,6 +561,7 @@ void HistogramBuilder::buildYieldsHistograms( TFile * outFile, map< TString, Sel
     h4->GetXaxis()->SetBinLabel(ibin,steps[ibin-1]);  h5->GetXaxis()->SetBinLabel(ibin,steps[ibin-1]); h6->GetXaxis()->SetBinLabel(ibin,steps[ibin-1]); 
     h7->GetXaxis()->SetBinLabel(ibin,steps[ibin-1]);  h8->GetXaxis()->SetBinLabel(ibin,steps[ibin-1]); h9->GetXaxis()->SetBinLabel(ibin,steps[ibin-1]);
     h10->GetXaxis()->SetBinLabel(ibin,steps[ibin-1]); h11->GetXaxis()->SetBinLabel(ibin,steps[ibin-1]);
+    h12->GetXaxis()->SetBinLabel(ibin,steps[ibin-1]); h13->GetXaxis()->SetBinLabel(ibin,steps[ibin-1]);
   }
 
 
@@ -647,6 +650,10 @@ void HistogramBuilder::buildMCYieldsHistograms( TFile * outFile, map< TString, S
   addHistoToMonitors(mc_h2d_10,mc_h2d_10->GetName(), yieldsMons,keys);
   TH2D * mc_h2d_11  = new TH2D("cutflow_yields_mc_unbminus", "cut flow;Step;Event type;N_{events}",nsteps,0,nsteps,ysteps,0,ysteps); 
   addHistoToMonitors(mc_h2d_11,mc_h2d_11->GetName(), yieldsMons,keys);
+  TH2D * mc_h2d_12  = new TH2D("cutflow_yields_mc_tesplus", "cut flow;Step;Event type;N_{events}",nsteps,0,nsteps,ysteps,0,ysteps); 
+  addHistoToMonitors(mc_h2d_12,mc_h2d_12->GetName(), yieldsMons,keys);
+  TH2D * mc_h2d_13  = new TH2D("cutflow_yields_mc_tesminus", "cut flow;Step;Event type;N_{events}",nsteps,0,nsteps,ysteps,0,ysteps); 
+  addHistoToMonitors(mc_h2d_13,mc_h2d_13->GetName(), yieldsMons,keys);
 
 
   for( int xsteps_i=1; xsteps_i <= nsteps; xsteps_i++ ){ 
