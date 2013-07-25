@@ -32,6 +32,7 @@ LandSShapesProducerParSet = cms.PSet(
 
     #    inputFileName      = cms.vstring( "out-data.root", "out-htb-pythia-", "out-data_rescaled.root", "out-ttbar_mutau.root", "out-ttbar_mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
     inputFileName      = cms.vstring( "out-data.root", "out-heavyHiggs-pythia-", "out-data_rescaled.root", "out-ttbar_mutau.root", "out-ttbar_mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
+
     # is it *really* needed that "3" that was told it is necessary in the lands framework?
     #    sampleName      = cms.vstring( "data_obs", "WH3", "HH3", "tau_fake3", "tt_ltau3", "tt_ll3", "singleTop3","di_boson3", "Z_tautau3",  "Z_eemumu3" ),
     sampleName      = cms.vstring( "data_obs", "HTB", "tau_fake", "tt_ltau", "tt_ll", "singleTop","di_boson", "Z_tautau",  "Z_eemumu" ),
@@ -45,6 +46,10 @@ LandSShapesProducerParSet = cms.PSet(
     
     doMultiDimensionalShapes = cms.bool(False),
     unsplitUncertainties = cms.bool(False),
+
+    signalNormFactor = cms.double(1./0.11601),
+    #signalNormFactor = cms.double(1.),
+
     
     minitree = cms.vstring("m_tau_Selected",
                            "m_tau_Selected",

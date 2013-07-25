@@ -88,6 +88,9 @@ void LandSShapesProducer::Init(){
   massPointName_  = mFitPars.getParameter<vector<std::string> >("massPointName");
   nMassPoints_ = massPointName_.size();
 
+  signalNormFactor_ = mFitPars.getParameter<double>("signalNormFactor");
+
+
   vector<string>baseDirTemp = mFitPars.getParameter<vector<std::string> >("baseDir");
   for(size_t f=0; f<baseDirTemp.size(); f++)
     baseDir_.push_back( baseDirTemp[f] );
@@ -1371,6 +1374,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   
   // Rescale stat plots - they must have the same integral as the base ones
   for(size_t f=0; f<nSamples_+2; f++){
+
+    if(isSignal_[f]) hist_[f]->Scale( signalNormFactor_  );
     histStatUp_[f]->Scale(hist_[f]->Integral()/histStatUp_[f]->Integral());
     histStatDown_[f]->Scale(hist_[f]->Integral()/histStatDown_[f]->Integral());
   }
