@@ -95,7 +95,7 @@ public :
   void process_hh_higgs_bychannel();
   void process_wh_higgs();
   void process_wh_higgs_bychannel();
-  void process_dibosons();
+  void process_dibosons(int);
   void process_tbh_higgs();
   void process_tbh_higgs_bychannel();
   void process_htb_higgs(int);

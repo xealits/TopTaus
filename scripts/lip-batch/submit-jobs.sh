@@ -6,7 +6,9 @@ myFolder=${LIPCMS_BASE}/scripts/lip-batch/
 cd $myFolder;
 
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-dibosons.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ww.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wz.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zz.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunA.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunAr.sh

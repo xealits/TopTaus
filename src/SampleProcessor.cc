@@ -839,13 +839,23 @@ void SampleProcessor::process_qcd(){
  
 }
 
-void SampleProcessor::process_dibosons(){
+void SampleProcessor::process_dibosons(int i){
 
   //iFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/mc/mTrees-v3/");  
-
-  url_= WW_URL; process(false, url_, iFolder_ + TString("WW.root"), oFolder_+TString("out-ww.root"),keys_); 
-  url_= WZ_URL; process(false, url_, iFolder_ + TString("WZ.root"), oFolder_+TString("out-wz.root"),keys_);
-  url_= ZZ_URL; process(false, url_, iFolder_ + TString("ZZ.root"), oFolder_+TString("out-zz.root"),keys_);
+  switch(i){
+  case 0:
+    url_= WW_URL; process(false, url_, iFolder_ + TString("WW.root"), oFolder_+TString("out-ww.root"),keys_); 
+    break;
+  case 1:
+    url_= WZ_URL; process(false, url_, iFolder_ + TString("WZ.root"), oFolder_+TString("out-wz.root"),keys_);
+    break;
+  case 2:
+    url_= ZZ_URL; process(false, url_, iFolder_ + TString("ZZ.root"), oFolder_+TString("out-zz.root"),keys_);
+    break;
+  default:
+    cout << "ERROR CODE - must be among [180,200,220,240,250,260,280,300]" << endl;
+    break;
+  }
 
 }
 

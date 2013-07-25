@@ -131,7 +131,9 @@ int main(int argc, char* argv[])
   else if(runOn == "data_muonD_11")        analyzer->process_data_RunD(11)         ;
   else if(runOn == "data_muonD_12")        analyzer->process_data_RunD(12)         ;
   else if(runOn == "data_muonD_13")        analyzer->process_data_RunD(13)         ;
-  else if(runOn == "dibosons")            analyzer->process_dibosons()           ;
+  else if(runOn == "WW")            analyzer->process_dibosons(0)           ;
+  else if(runOn == "WZ")            analyzer->process_dibosons(1)           ;
+  else if(runOn == "ZZ")            analyzer->process_dibosons(2)           ;
   else if(runOn == "hh_higgs_bychannel")  analyzer->process_hh_higgs_bychannel() ;
   else if(runOn == "hh_higgs")            analyzer->process_hh_higgs()           ;
   else if(runOn == "qcd")                 analyzer->process_qcd()                ;
