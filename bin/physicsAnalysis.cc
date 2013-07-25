@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
     cout << "Done summary table" << endl;
   }
   else if(runOn == "doDatacards"){
-    bool produceDatacards(true), withShapes(true), withStatShapes(false), unsplit(false);
+    bool produceDatacards(true), withShapes(true), withStatShapes(false), unsplit(true);
     int detailed(2), notDetailed(1); 
     analyzer->summaryTable( notDetailed, true, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
   }
