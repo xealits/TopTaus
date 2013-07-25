@@ -337,11 +337,21 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   
   // btag //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   h = new TH1D("btag_j",              "j;btag; Entries",200,-20,20);            addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h = new TH1D("btagmultiplicity_j",  "j;N_{b-tags}; Entries",4,0,4);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h->GetXaxis()->SetBinLabel(1,"0"); h->GetXaxis()->SetBinLabel(2,"1"); h->GetXaxis()->SetBinLabel(3,"2"); h->GetXaxis()->SetBinLabel(4,"#geq3");
+  h = new TH1D("btagmultiplicity_j",  "j;N_{b-tags}; Entries",6,0,6);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"0");
+  h->GetXaxis()->SetBinLabel(2,"1");
+  h->GetXaxis()->SetBinLabel(3,"2");
+  h->GetXaxis()->SetBinLabel(4,"3");
+  h->GetXaxis()->SetBinLabel(5,"4");
+  h->GetXaxis()->SetBinLabel(6,"#geq5");
 
-  h = new TH1D("corrected_btagmultiplicity_j",  "j;N_{b-tags}; Entries",4,0,4);       addHistoToMonitors(h,h->GetName(), stepsMons, keys);
-  h->GetXaxis()->SetBinLabel(1,"0"); h->GetXaxis()->SetBinLabel(2,"1"); h->GetXaxis()->SetBinLabel(3,"2"); h->GetXaxis()->SetBinLabel(4,"#geq3");
+  h = new TH1D("corrected_btagmultiplicity_j",  "j;N_{b-tags}; Entries",6,0,6);       addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"0");
+  h->GetXaxis()->SetBinLabel(2,"1");
+  h->GetXaxis()->SetBinLabel(3,"2");
+  h->GetXaxis()->SetBinLabel(4,"3");
+  h->GetXaxis()->SetBinLabel(5,"4");
+  h->GetXaxis()->SetBinLabel(6,"#geq5");
 
 
   // btag efficiency plots 
