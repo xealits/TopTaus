@@ -27,8 +27,12 @@ if [ "${2}" = "hadd" ]; then
     # data driven bkg, using mc
     hadd -f $DATAPLACE/out-ddbkg.root $DATAPLACE/out-qcd.root $DATAPLACE/out-wjets.root $DATAPLACE/out-ttbar_ddbkg.root
 
+    ## no ##    # ttbar mc for shapes?
+    ## no ##    hadd -f $DATAPLACE/out-ttbar_mcbkg_shapes.root $DATAPLACE/out-ttbar_mcbkg.root $DATAPLACE/out-ttbar_emu.root $DATAPLACE/out-ttbar_mumu.root
+
     # mc bkg (w.r.t. top xsec measurement: ttbar is signal for this)
     hadd -f $DATAPLACE/out-mcbkg.root $DATAPLACE/out-zjets.root $DATAPLACE/out-singletop.root $DATAPLACE/out-dibosons.root $DATAPLACE/out-ttbar_mcbkg.root
+    ## no ## $DATAPLACE/out-ttbar_emu.root $DATAPLACE/out-ttbar_mumu.root
 
     # other cont
     hadd -f $DATAPLACE/out-ttbar_other.root  $DATAPLACE/out-ttbar_ddbkg.root $DATAPLACE/out-ttbar_mcbkg.root &
