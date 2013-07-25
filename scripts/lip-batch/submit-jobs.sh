@@ -52,8 +52,8 @@ qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunD_12.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunD_13.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh
-#qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh
-#qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh
 #qsub -v LIPCMS_BASE${LIPCMS_BASE}/    ./job-ttbar-unc.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-hh-higgs-bychannel.sh

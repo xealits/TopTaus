@@ -240,8 +240,7 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
       if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev, 0,0,0,0,0,0); }
     }
     //////////////////////////////////////////////////////////////////////////////////
-
-
+    
   }
 
   //SPY /////////////// FIXME: examine this
@@ -947,67 +946,71 @@ void CutflowAnalyzer::tauDileptonSelection(
   //  mon.fillHisto(evYields, myKey+TString(" m_e yields"),  MINITREE_STEP2,w_);  // dilepton yields (preparation)
   //  mon.fillHisto(evYields, myKey+TString(" e_e yields"),  MINITREE_STEP2,w_);  // dilepton yields (preparation)
   
-
+  
   ///////////////////////////////////////////////////////////////////////////////////
-
-
-
-
+  
+  
+  
+  
   //debug
   if( ! lepReq ){ return; }
-
+  
   // in case we are processing MC see if we require a specific channel //////////////////////////////
   // TODO INCLUDE TTBAR LIKE EMU_???????
   if( !isData_ ){
     // tau dilepton analysis //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-           if(  ttbarLike_ == ETAU_  && channel != ETAU_CH  )                                                                             { return; }
-      else if(  ttbarLike_ == MUTAU_ && channel != MUTAU_CH )                                                                             { return; }
-      else if(  ttbarLike_ == MUMU_  && channel != MUMU_CH  )                                                                             { return; }
-      else if(  ttbarLike_ == EMU_   && channel != EMU_CH  )                                                                              { return; }
-      else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
-      else if(  ttbarLike_ == TTBAR_DDBKG_ && (channel != EJETS_CH && channel!= MUJETS_CH ) )                                             { return; }
+    if(  ttbarLike_ == ETAU_  && channel != ETAU_CH  )                                                                             { return; }
+    else if(  ttbarLike_ == MUTAU_ && channel != MUTAU_CH )                                                                             { return; }
+    else if(  ttbarLike_ == MUMU_  && channel != MUMU_CH  )                                                                             { return; }
+    else if(  ttbarLike_ == EMU_   && channel != EMU_CH  )                                                                              { return; }
+    else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
+    else if(  ttbarLike_ == TTBAR_DDBKG_ && (channel != EJETS_CH && channel!= MUJETS_CH ) )                                             { return; }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-   if( checkleptonsFromTauDecay_ ){
-     event::MiniEvent_t *evmc = evRMC_->GetNewMiniEvent(i_,"mc");  if( evmc == 0 ){ cout<<"\n empty event"<<endl; return;}
-     std::vector<PhysicsObject> mctausColl = evRMC_->GetPhysicsObjectsFrom(evmc,event::CHLEPTON);
-     //get the charged lepton from tau //////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    
+    if( checkleptonsFromTauDecay_ ){
+      event::MiniEvent_t *evmc = evRMC_->GetNewMiniEvent(i_,"mc");  if( evmc == 0 ){ cout<<"\n empty event"<<endl; return;}
+      std::vector<PhysicsObject> mctausColl = evRMC_->GetPhysicsObjectsFrom(evmc,event::CHLEPTON);
+      //get the charged lepton from tau //////////////////////////////////////////////////////////////////////////////////////////////////
      std::vector<PhysicsObject> mcleps;  mcleps.clear();
      for(size_t igtau = 0; igtau < mctausColl.size(); ++igtau){
        if(fabs(mctausColl[igtau][1]) != double(11) && fabs(mctausColl[igtau][1]) != double(13)) continue; // if it is not electron or muon
-	 if(mctausColl[igtau].Pt() < 20 || fabs(mctausColl[igtau].Eta()) > 2.1) continue;
-	 if(fabs(mctausColl[igtau][2]) != double(15)) continue; // check if lepton is from a tau decay
-	 mcleps.push_back(mctausColl[igtau]);
-       }
+       if(mctausColl[igtau].Pt() < 20 || fabs(mctausColl[igtau].Eta()) > 2.1) continue;
+       if(fabs(mctausColl[igtau][2]) != double(15)) continue; // check if lepton is from a tau decay
+       mcleps.push_back(mctausColl[igtau]);
+     }
      if( !( mcleps.size() == 1 && mcleps[0].Pt() > 20) )return ;
      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-   }
-
+    }
+    
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////
-
+  
   // Fill debug info ///////////////////////////////////////////////////
   fillDebugHistograms(myKey,m_init,muons,e_init,electrons,j_final,jets); 
   //////////////////////////////////////////////////////////////////////
-
+  
   PhysicsObject met = mets[0]; 
-
+  
   // finding leading lepton and qualify tag ////////////////////////////////////////////////////////////////////////////////////////////////
   double lepton_pt(0); double lepton_charge(0); uint lepton_ind(0);
   vector<int> * p_i ; vector<PhysicsObject> * p_obj; PhysicsObject * lep_obj;
-
+  
   if     ( evType_ == MUTAU_ ){ p_i = & m_init ; p_obj = &muons;    }
   else if( evType_ == ETAU_  ){ p_i = & e_init ; p_obj = &electrons;}
-   
+  else if( evType_ == MUMU_  ){ p_i = & m_init ; p_obj = &muons;    }
+  else if( evType_ == EMU_   ){ p_i = & e_init ; p_obj = &electrons; for(unsigned int si=0; si<m_init.size(); ++si){ (*p_i).push_back(m_init[si]); (*p_obj).push_back(muons[si]); } }
+  
   for(uint myi=0; myi < (*p_i).size(); ++myi){
     int ind = (*p_i)[myi]; double lPt = TMath::Abs((*p_obj)[ind].Pt()); double charge = (*p_obj)[ind][0]; PhysicsObject * tmp_obj= &( (*p_obj)[ind] );
     if( lPt > lepton_pt ){ lepton_pt = lPt; lepton_charge = charge; lepton_ind = ind; lep_obj = tmp_obj;}                                   
   }
-
+  
   std::vector<TString> evTags; 
   if     (evType_ == ETAU_  ){ evTags.push_back(myKey+TString(" lep_tau"));  evTags.push_back(myKey+TString(" e_tau")); }
   else if(evType_ == MUTAU_ ){ evTags.push_back(myKey+TString(" lep_tau")); evTags.push_back(myKey+TString(" m_tau"));  }
+  else if(evType_ == MUMU_  ){ evTags.push_back(myKey+TString(" lep_lep")); evTags.push_back(myKey+TString(" mu_mu")); }
+  else if(evType_ == EMU_   ){ evTags.push_back(myKey+TString(" lep_lep")); evTags.push_back(myKey+TString(" e_mu")); }
  
   // WORKING HERE
   double metValue = met.Pt(); 
@@ -1499,19 +1502,14 @@ void CutflowAnalyzer::tauDileptonSelection(
   if(!APPLY_MT_CUT_) TAU_NOMT = TAU_STEP2 -1;
   else               TAU_NOMT = TAU_STEP2;
   // end hack
-
   
   
-
-
-
-
   if(nbtag1 && taucut){
-    // diocane //    // l->tau fakes rescaling
-    // diocane //    if(!isData_ &&   (  evType_==MUTAU && (channel==EMU_CH || channel==EE_CH) || evType_==ETAU && channel==EE_CH )){
-    // diocane //      if(fabs(taus[tau_i].Eta()) < 1.442)      w_ *= 0.85;
-    // diocane //      else if (fabs(taus[tau_i].Eta()) > 1.566) w_ *= 0.65;
-    // diocane //    }
+    // l->tau fakes rescaling
+    if(!isData_ &&   channel==EMU_CH ){
+      if(fabs(taus[tau_i].Eta()) < 1.442)      w_ *= 0.85;
+      else if (fabs(taus[tau_i].Eta()) > 1.566) w_ *= 0.65;
+    }
     
     for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    TAU_NOMT,w_);  
     if (terr){
@@ -1647,8 +1645,8 @@ void CutflowAnalyzer::tauDileptonSelection(
 }
 
 
-void CutflowAnalyzer::dileptonEventAnalysis(
-					    bool lepReq,
+  void CutflowAnalyzer::dileptonEventAnalysis(
+					      bool lepReq,
 					    std::vector<PhysicsObject> & v, 
 					    std::vector<PhysicsObject> & muons,     vector<int>  & m_init,  
 					    std::vector<PhysicsObject> & electrons, vector<int>  & e_init,
@@ -1744,7 +1742,7 @@ void CutflowAnalyzer::dileptonEventAnalysis(
     else if(  ttbarLike_ == MUMU_ && channel != MUMU_CH )                                                                             { return; }
     else if(  ttbarLike_ == EMU_ && channel != EMU_CH )                                                                             { return; }
     //else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel == MUMU_CH || channel == EMU_CH || channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
-else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
+    else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
     else if(  ttbarLike_ == TTBAR_DDBKG_ && (channel != EJETS_CH && channel!= MUJETS_CH ) )                                             { return; }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -1795,13 +1793,12 @@ else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_
   if     ( evType_ == MUTAU_ ){ p_i = & m_init ; p_obj = &muons;    }
   else if( evType_ == ETAU_  ){ p_i = & e_init ; p_obj = &electrons;}
   else if( evType_ == MUMU_ ){  p_i = & m_init ; p_obj = &muons;    }
-  else if( evType_ == EMU_  ){ p_i = & e_init ; p_obj = &electrons; for(unsigned int si=0; si<m_init.size(); si++){ (*p_i).push_back(m_init[si]); (*p_obj).push_back(muons[si]); }    }
+  else if( evType_ == EMU_  ){ p_i = & e_init ; p_obj = &electrons; for(unsigned int si=0; si<m_init.size(); ++si){ (*p_i).push_back(m_init[si]); (*p_obj).push_back(muons[si]); }}
   
-
-   
+  
   for(uint myi=0; myi < (*p_i).size(); myi++){
     int ind = (*p_i)[myi]; double lPt = TMath::Abs((*p_obj)[ind].Pt()); double charge = (*p_obj)[ind][0]; PhysicsObject * tmp_obj= &( (*p_obj)[ind] );
-    if( (*p_i).size() > 1 && lPt > lepton2_pt && !( lPt>lepton_pt ) ){ lepton2_pt = lPt; lepton2_charge = charge; lepton2_ind = ind; lep2_obj = tmp_obj;}                                   
+    if( (*p_i).size() > 1 && lPt > lepton2_pt && !( lPt>lepton_pt ) ){ lepton2_pt = lPt; lepton2_charge = charge; lepton2_ind = ind; lep2_obj = tmp_obj;}                             
     if( lPt > lepton_pt ){ lepton_pt = lPt; lepton_charge = charge; lepton_ind = ind; lep_obj = tmp_obj;}                                   
   }
   
@@ -1815,8 +1812,8 @@ else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_
   //  double metValue = jetMETScaling( jerFactors, jes_, junc , jets ,met.Px(), met.Py());
   double metValue = jetMETScalingTest( jerFactors, jes_, junc, jets  , met);
   // rescaling of met based on unclustered energy ////////////////////////////////////////////////
-//  if( unc_ ){ metValue = jetMETUnclustered( jerFactors, lep_obj, unc_, jets, met.Px(), met.Py());}
-//  if( jer_ ){ metValue = jetMETResolution( jerFactors, jets, met.Px(), met.Py());}
+  //  if( unc_ ){ metValue = jetMETUnclustered( jerFactors, lep_obj, unc_, jets, met.Px(), met.Py());}
+  //  if( jer_ ){ metValue = jetMETResolution( jerFactors, jets, met.Px(), met.Py());}
   ////////////////////////////////////////////////////////////////////////////////////////////////
   
   double tau_charge(0);// , tau_pt(0); // unused

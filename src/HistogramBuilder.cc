@@ -623,7 +623,8 @@ void HistogramBuilder::buildMCYieldsHistograms( TFile * outFile, map< TString, S
   int nsteps = sizeof(steps)/sizeof(TString);
 
   // Add MC true for each reco channel 
-  TString ttch[]= {"e#tau","#mu#tau","l(qq)","ll","#tau(qq)","#tau#tau","full had.","W+jets","Z+jets","Z(#tau#tau)","single top","qcd","diboson"};
+  //  TString ttch[]= {"e#tau","#mu#tau","l(qq)","ll","#tau(qq)","#tau#tau","full had.","W+jets","Z+jets","Z(#tau#tau)","single top","qcd","diboson"};
+  TString ttch[]= {"e#tau","#mu#tau","l(qq)","ee","e#mu","#mu#mu","#tau(qq)","#tau#tau","full had.","W+jets","Z+jets","Z(#tau#tau)","single top","qcd","diboson"};
 
   int  ysteps = sizeof(ttch)/sizeof(TString);
   TH2D * mc_h2d_0  = new TH2D("cutflow_mc_triggErr", "cut flow;Step;Event type;N_{events}",nsteps,0,nsteps,ysteps,0,ysteps); 

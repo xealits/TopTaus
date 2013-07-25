@@ -455,7 +455,10 @@ int SampleProcessor::tdChannel(int i){
   if     ( i == ETAU_CH                              ){  ret = ETAU_TDCH;      } 
   else if( i == MUTAU_CH                             ){  ret = MUTAU_TDCH;     } 
   else if( i == EJETS_CH || i == MUJETS_CH           ){  ret = LEPJETS_TDCH;   }
-  else if( i == EE_CH || i == EMU_CH || i == MUMU_CH ){  ret = LEPLEP_TDCH;    }
+  //  else if( i == EE_CH || i == EMU_CH || i == MUMU_CH ){  ret = LEPLEP_TDCH;    }
+  else if( i == EE_CH                                ){  ret = EE_TDCH;    }
+  else if( i == EMU_CH                               ){  ret = EMU_TDCH;    }
+  else if( i == MUMU_CH                              ){  ret = MUMU_TDCH;    }
   else if( i == TAUJETS_CH                           ){  ret = TAUJETS_TDCH;   }
   else if( i == TAUTAU_CH                            ){  ret = TAUTAU_TDCH;    }
   else if( i == ALLJETS_CH                           ){  ret = ALLJETS_TDCH;   }

@@ -170,8 +170,7 @@ namespace commondefinitions{
   
   enum taudilCh{ 
     ETAU_TDCH,  MUTAU_TDCH, LEPJETS_TDCH, 
-    LEPLEP_TDCH,
-    //    EE_TDCH, EMU_TDCH, MUMU_TDCH,
+    EE_TDCH, EMU_TDCH, MUMU_TDCH,
     TAUJETS_TDCH, TAUTAU_TDCH, ALLJETS_TDCH, 
     WJETS_TDCH,
     ZJETS_TDCH, 
@@ -181,7 +180,7 @@ namespace commondefinitions{
     EWKDI_TDCH,   
     WQQ_TDCH,WENU_TDCH, WMUNU_TDCH, WTAUNU_TDCH, 
     CTRLWW_TDCH,
-    HIGGS_TDCH
+    HIGGS_TDCH, LEPLEP_TDCH
   };
   
   
