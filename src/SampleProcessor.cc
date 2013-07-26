@@ -124,22 +124,23 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       
       // This yields include branching ratio (which for the light charged higgs was identically 1 and thus not included)
       // Must fix in the tables (which currently use a mismatched normalization assuming 234 as a start)
-      defaultXSections_[TBH180_URL]             = 0.11601 * 0.831852  ; 
-      defaultXSections_[TBH190_URL]             = 0.11601 * 0.407966  ;   
-      defaultXSections_[TBH200_URL]             = 0.11601 * 0.228564  ;   
-      defaultXSections_[TBH220_URL]             = 0.11601 * 0.106446  ;  
-      defaultXSections_[TBH250_URL]             = 0.11601 * 0.04129783; 
-      defaultXSections_[TBH300_URL]             = 0.11601 * 0.02514242; 
-    
-      defaultXSections_[HTB180_URL]             = 0.11601 * (1 - 0.831852   ); 
-      defaultXSections_[HTB190_URL]             = 0.11601 * (1 - 0.407966   );   
-      defaultXSections_[HTB200_URL]             = 0.11601 * (1 - 0.228564   );   
-      defaultXSections_[HTB220_URL]             = 0.11601 * (1 - 0.106446   );  
-      defaultXSections_[HTB240_URL]             = 0.11601 * (1 - 0.04902523 ); 
-      defaultXSections_[HTB250_URL]             = 0.11601 * (1 - 0.04129783 ); 
-      defaultXSections_[HTB260_URL]             = 0.11601 * (1 - 0.0361988  );  
-      defaultXSections_[HTB280_URL]             = 0.11601 * (1 - 0.02984434 ); 
-      defaultXSections_[HTB300_URL]             = 0.11601 * (1 - 0.02514242 ); 
+      defaultXSections_[TBH180_URL]             = 22.6975  * 0.831852  ; 
+      defaultXSections_[TBH190_URL]             = 20.4088  * 0.407966  ;   
+      defaultXSections_[TBH200_URL]             = 18.4811  * 0.228564  ;   
+      defaultXSections_[TBH220_URL]             = 15.4027  * 0.106446  ;  
+      defaultXSections_[TBH250_URL]             = 11.9413  * 0.04129783; 
+      defaultXSections_[TBH300_URL]             = 07.91902 * 0.02514242; 
+
+
+      defaultXSections_[HTB180_URL]             = 22.6975  * (1 - 0.831852   ); 
+      defaultXSections_[HTB190_URL]             = 20.4088  * (1 - 0.407966   );   
+      defaultXSections_[HTB200_URL]             = 18.4811  * (1 - 0.228564   );   
+      defaultXSections_[HTB220_URL]             = 15.4027  * (1 - 0.106446   );  
+      defaultXSections_[HTB240_URL]             = 12.9842  * (1 - 0.04902523 ); 
+      defaultXSections_[HTB250_URL]             = 11.9413  * (1 - 0.04129783 ); 
+      defaultXSections_[HTB260_URL]             = 10.9879  * (1 - 0.0361988  );  
+      defaultXSections_[HTB280_URL]             = 09.31608 * (1 - 0.02984434 ); 
+      defaultXSections_[HTB300_URL]             = 07.91902 * (1 - 0.02514242 ); 
    
 	
     } else {
