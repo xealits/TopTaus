@@ -345,6 +345,19 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   h->GetXaxis()->SetBinLabel(5,"4");
   h->GetXaxis()->SetBinLabel(6,"#geq5");
 
+  h = new TH1D("btagmultiplicity0_j",  "j;N_{b-tags}; Entries",1,0,1);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"0 btags");
+  h = new TH1D("btagmultiplicity1_j",  "j;N_{b-tags}; Entries",1,0,1);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"1 btags");
+  h = new TH1D("btagmultiplicity2_j",  "j;N_{b-tags}; Entries",1,0,1);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"2 btags");
+  h = new TH1D("btagmultiplicity3_j",  "j;N_{b-tags}; Entries",1,0,1);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"3 btags");
+  h = new TH1D("btagmultiplicity4_j",  "j;N_{b-tags}; Entries",1,0,1);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"4 btags");
+  h = new TH1D("btagmultiplicity5_j",  "j;N_{b-tags}; Entries",1,0,1);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"#geq5 btags");
+
   h = new TH1D("corrected_btagmultiplicity_j",  "j;N_{b-tags}; Entries",6,0,6);       addHistoToMonitors(h,h->GetName(), stepsMons, keys);
   h->GetXaxis()->SetBinLabel(1,"0");
   h->GetXaxis()->SetBinLabel(2,"1");
@@ -352,6 +365,18 @@ void HistogramBuilder::buildRecoStepHistograms( TFile * outFile, map< TString, S
   h->GetXaxis()->SetBinLabel(4,"3");
   h->GetXaxis()->SetBinLabel(5,"4");
   h->GetXaxis()->SetBinLabel(6,"#geq5");
+  h = new TH1D("corrected_btagmultiplicity0_j",  "j;N_{b-tags}; Entries",1,0,1);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"0 btags");
+  h = new TH1D("corrected_btagmultiplicity1_j",  "j;N_{b-tags}; Entries",1,0,1);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"1 btags");
+  h = new TH1D("corrected_btagmultiplicity2_j",  "j;N_{b-tags}; Entries",1,0,1);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"2 btags");
+  h = new TH1D("corrected_btagmultiplicity3_j",  "j;N_{b-tags}; Entries",1,0,1);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"3 btags");
+  h = new TH1D("corrected_btagmultiplicity4_j",  "j;N_{b-tags}; Entries",1,0,1);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"4 btags");
+  h = new TH1D("corrected_btagmultiplicity5_j",  "j;N_{b-tags}; Entries",1,0,1);                 addHistoToMonitors(h,h->GetName(), stepsMons, keys);
+  h->GetXaxis()->SetBinLabel(1,"#geq5 btags");
 
 
   // btag efficiency plots 

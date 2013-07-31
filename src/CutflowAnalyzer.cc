@@ -2965,6 +2965,25 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   // Fill btag multiplicity  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   mon.fillHisto("btagmultiplicity_j",extra1+step, btagmul,w_);                   mon.fillHisto("btagmultiplicity_j", extra2+step, btagmul,w_);
   mon.fillHisto("corrected_btagmultiplicity_j",extra1+step, btagscorrected,w_);  mon.fillHisto("corrected_btagmultiplicity_j", extra2+step, btagscorrected,w_);   
+
+
+  // Categorized cutflow
+
+  if(btagmul==0) {mon.fillHisto("btagmultiplicity0_j",extra1+step, 0,w_); mon.fillHisto("btagmultiplicity0_j", extra2+step, 0,w_);}
+  if(btagmul==1) {mon.fillHisto("btagmultiplicity1_j",extra1+step, 0,w_); mon.fillHisto("btagmultiplicity1_j", extra2+step, 0,w_);}
+  if(btagmul==2) {mon.fillHisto("btagmultiplicity2_j",extra1+step, 0,w_); mon.fillHisto("btagmultiplicity2_j", extra2+step, 0,w_);}
+  if(btagmul==3) {mon.fillHisto("btagmultiplicity3_j",extra1+step, 0,w_); mon.fillHisto("btagmultiplicity3_j", extra2+step, 0,w_);}
+  if(btagmul==4) {mon.fillHisto("btagmultiplicity4_j",extra1+step, 0,w_); mon.fillHisto("btagmultiplicity4_j", extra2+step, 0,w_);}
+  if(btagmul>=5) {mon.fillHisto("btagmultiplicity5_j",extra1+step, 0,w_); mon.fillHisto("btagmultiplicity5_j", extra2+step, 0,w_);}
+
+
+  if(btagscorrected==0){ mon.fillHisto("corrected_btagmultiplicity0_j",extra1+step, 0,w_); mon.fillHisto("corrected_btagmultiplicity0_j", extra2+step, 0,w_);}
+  if(btagscorrected==1){ mon.fillHisto("corrected_btagmultiplicity1_j",extra1+step, 0,w_); mon.fillHisto("corrected_btagmultiplicity1_j", extra2+step, 0,w_);}
+  if(btagscorrected==2){ mon.fillHisto("corrected_btagmultiplicity2_j",extra1+step, 0,w_); mon.fillHisto("corrected_btagmultiplicity2_j", extra2+step, 0,w_);}
+  if(btagscorrected==3){ mon.fillHisto("corrected_btagmultiplicity3_j",extra1+step, 0,w_); mon.fillHisto("corrected_btagmultiplicity3_j", extra2+step, 0,w_);}
+  if(btagscorrected==4){ mon.fillHisto("corrected_btagmultiplicity4_j",extra1+step, 0,w_); mon.fillHisto("corrected_btagmultiplicity4_j", extra2+step, 0,w_);}
+  if(btagscorrected>=5){ mon.fillHisto("corrected_btagmultiplicity5_j",extra1+step, 0,w_); mon.fillHisto("corrected_btagmultiplicity5_j", extra2+step, 0,w_);}
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
