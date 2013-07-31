@@ -711,13 +711,22 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   
 
   if(!produceOnly_){ // For now raw indexes. This will improve.
+
+    // This numbering changed.
     // 0: data
     // 1: WH
     // 2: HH
     // 3: DD
     // 4: other MCs
+    // Now it's
+    // 0: data
+    // 1: TBH
+    // 2: DD
+    // 3: other MCs
+    
+
     TGraphAsymmErrors ddbkgBands;
-    getErrorBands(*(hist_[3]), *ddbkgHistUp_, *ddbkgHistDown_, ddbkgBands);
+    getErrorBands(*(hist_[3-1]), *ddbkgHistUp_, *ddbkgHistDown_, ddbkgBands);
 
     ddbkgBands.SetFillColor(1);
     ddbkgBands.SetFillStyle(3004);
@@ -1148,12 +1157,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
 
     // Because colour printer is a nobrainer
-    leg_->AddEntry(hist_[3],fancySampleName_[3].c_str(),"f");
-    leg_->AddEntry(hist_[8],fancySampleName_[8].c_str(),"f");
-    leg_->AddEntry(hist_[7],fancySampleName_[7].c_str(),"f");
-    leg_->AddEntry(hist_[6],fancySampleName_[6].c_str(),"f");
-    leg_->AddEntry(hist_[5],fancySampleName_[5].c_str(),"f");
-    leg_->AddEntry(hist_[4],fancySampleName_[4].c_str(),"f");
+    leg_->AddEntry(hist_[3-1],fancySampleName_[3-1].c_str(),"f");
+    leg_->AddEntry(hist_[8-1],fancySampleName_[8-1].c_str(),"f");
+    leg_->AddEntry(hist_[7-1],fancySampleName_[7-1].c_str(),"f");
+    leg_->AddEntry(hist_[6-1],fancySampleName_[6-1].c_str(),"f");
+    leg_->AddEntry(hist_[5-1],fancySampleName_[5-1].c_str(),"f");
+    leg_->AddEntry(hist_[4-1],fancySampleName_[4-1].c_str(),"f");
 
 //    leg_->AddEntry(hist_[3],fancySampleName_[3].c_str(),"f");
 //    for(size_t f=4; f<nSamples_+2; f++) leg_->AddEntry(hist_[f],fancySampleName_[f].c_str(),"f");
@@ -1198,8 +1207,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
     THStack hs("hs","stacked");
     
-    hist_[2]->DrawNormalized("histsame");
-    for(size_t f=3; f<nSamples_+2; f++){
+    hist_[2-1]->DrawNormalized("histsame");
+    for(size_t f=3-1; f<nSamples_+2-1; f++){
       // for fig7 // for(size_t f=0; f<nMcSamples_; f++){
       hist_[f]->GetYaxis()->SetTitle("a.u.");
       hist_[f]->GetYaxis()->SetTitleOffset(0.85);
@@ -1211,7 +1220,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       if(isDDbkg_[f] == 0) hs.Add(hist_[f],"hist");
     }
     
-    for(size_t f=3; f<nSamples_+2; f++){
+    for(size_t f=3-1; f<nSamples_+2-1; f++){
       if(isDDbkg_[f]) hs.Add(hist_[f],"hist");
     }
     
