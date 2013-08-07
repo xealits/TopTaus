@@ -338,6 +338,7 @@ namespace event{
 	 @return a pointer to the mini event (don't delete it!)
       */
       event::MiniEvent_t *GetNewMiniEvent(unsigned int ientry,TString tag="data");
+      void GetNewMiniEvent_try(event::MiniEvent_t*& ev, unsigned int ientry,TString tag="data");
 
       /**
 	 @short returns mini event for a given run/event/ls

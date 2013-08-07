@@ -207,7 +207,12 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
   // Main event loop ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   for(i_=0; i_< nevents_; ++i_){
     
-    event::MiniEvent_t*  ev   = evR_->GetNewMiniEvent(i_,"data");  if( ev == 0 ) continue;
+    //    event::MiniEvent_t*  ev   = evR_->GetNewMiniEvent(i_,"data");  if( ev == 0 ) continue;
+    event::MiniEvent_t*  ev(0);
+    evR_->GetNewMiniEvent_try(ev, i_,"data");  if( ev == 0 ) continue;
+
+
+
     is_os_=0.; // Stored in tree for fitters // Reset for each event
     tauR_=-1; // Reset for each event
     if( ! (i_% 1000 ) ){cout<<" -> Processing ... : "<<(i_+1)<<endl;}
@@ -240,7 +245,6 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
       if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev, 0,0,0,0,0,0); }
     }
     //////////////////////////////////////////////////////////////////////////////////
-    
   }
 
   //SPY /////////////// FIXME: examine this

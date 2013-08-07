@@ -79,6 +79,26 @@ namespace event
   }
 
   //
+  void Reader::GetNewMiniEvent_try(MiniEvent_t*& ev, unsigned int ientry,TString tag)
+  {
+    //check if structures have been created
+    if( m_evHandler.miniTrees.find(tag) == m_evHandler.miniTrees.end()
+	|| m_evHandler.miniEvents.find(tag) == m_evHandler.miniEvents.end() ) return;
+    
+    TTree *t = m_evHandler.miniTrees[tag];
+    ev = m_evHandler.miniEvents[tag];
+    if(t==0 || ev==0) return;
+
+    //check number of entries in tree
+    if(ientry >= t->GetEntriesFast()) return;
+
+    //fill the mini event
+    t->GetEntry(ientry);
+    return;
+  }
+
+
+  //
   PhysicsObjectCollection Reader::GetPhysicsObjectsFrom(MiniEvent_t *ev, unsigned int type, unsigned int algo, bool sortObjects)
   {
     PhysicsObjectCollection objColl;
