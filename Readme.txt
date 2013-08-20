@@ -230,7 +230,8 @@ CHANGELOG for major updates:
 2012-09-21: shapes producer for lands and multiple likelihood fit for fake rates are ready to use.
 
 FIXED TAGS:
-- V13-08-20: tag for use with first production (AB-rereco, CD-promptReco) in CMSSW_5_3_7_patch4
+- V13-08-20-def: tag for use with first production (ABC1-rereco, C2D-promptReco) in CMSSW_5_3_7_patch4
+- V13-08-20/V13-08-20_fix: forget.
 - V13-03-07: full working heavy charged higgs tag
 - V12-12-21 / V12-12-17: 2011 code.
 
