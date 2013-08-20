@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LIPCMS_BASE=/exper-sw/cmst3/cmssw/users/vischia/chiggs/CMSSW_5_3_7_patch4/src/LIP/TopTaus/
+LIPCMS_BASE=/exper-sw/cmst3/cmssw/users/vischia/chiggs/CMSSW_5_3_9/src/LIP/TopTaus/
 myFolder=${LIPCMS_BASE}/scripts/lip-batch/
 
 cd $myFolder;
