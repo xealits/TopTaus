@@ -183,9 +183,9 @@ int main(int argc, char* argv[])
     cout << "Done summary table" << endl;
   }
   else if(runOn == "doDatacards"){
-    bool produceDatacards(true), withShapes(true), withStatShapes(false), unsplit(true);
+    bool produceDatacards(true), withShapes(true), withStatShapes(false), unsplit(true), heavyhiggs(false);
     int detailed(2), notDetailed(1); 
-    analyzer->summaryTable( notDetailed, true, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
+    analyzer->summaryTable( notDetailed, true, heavyhiggs, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
   }
   else if(runOn == "doPlots"){
 //    PlotStyle sty();
