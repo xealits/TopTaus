@@ -12,6 +12,7 @@
 
 // System includes	
 #include <string>
+#include <sstream>
 
 // CMSSW includes
 #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
@@ -87,51 +88,20 @@ int main(int argc, char* argv[])
   CutflowAnalyzer* analyzer = new CutflowAnalyzer( tauPtCut, noUncertainties, doWPlusJetsAnalysis, inputArea, outputArea, puFileName, runRange, brHtaunu, brHtb /*parSet*/ );
   
   std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;
-  
-  
-  if(runOn ==      "data_muonA")          analyzer->process_data_RunA()         ;
-  else if(runOn == "data_muonAr")         analyzer->process_data_RunAr()        ;
-  else if(runOn == "data_muonB_1")        analyzer->process_data_RunB(1)         ;
-  else if(runOn == "data_muonB_2")        analyzer->process_data_RunB(2)         ;
-  else if(runOn == "data_muonB_3")        analyzer->process_data_RunB(3)         ;
-  else if(runOn == "data_muonB_4")        analyzer->process_data_RunB(4)         ;
-  else if(runOn == "data_muonB_5")        analyzer->process_data_RunB(5)         ;
-  else if(runOn == "data_muonB_6")        analyzer->process_data_RunB(6)         ;
-  else if(runOn == "data_muonB_7")        analyzer->process_data_RunB(7)         ;
-  else if(runOn == "data_muonB_8")        analyzer->process_data_RunB(8)         ;
-  else if(runOn == "data_muonB_9")        analyzer->process_data_RunB(9)         ;
-  else if(runOn == "data_muonB_10")       analyzer->process_data_RunB(10)         ;
-  else if(runOn == "data_muonB_11")       analyzer->process_data_RunB(11)         ;
-  else if(runOn == "data_muonB_12")       analyzer->process_data_RunB(12)         ;
-  else if(runOn == "data_muonB_13")       analyzer->process_data_RunB(13)         ;
-  else if(runOn == "data_muonC1")         analyzer->process_data_RunC1()        ;
-  else if(runOn == "data_muonC2_1")       analyzer->process_data_RunC2(1)        ;
-  else if(runOn == "data_muonC2_2")       analyzer->process_data_RunC2(2)        ;
-  else if(runOn == "data_muonC2_3")       analyzer->process_data_RunC2(3)        ;
-  else if(runOn == "data_muonC2_4")       analyzer->process_data_RunC2(4)        ;
-  else if(runOn == "data_muonC2_5")       analyzer->process_data_RunC2(5)        ;
-  else if(runOn == "data_muonC2_6")       analyzer->process_data_RunC2(6)        ;
-  else if(runOn == "data_muonC2_7")       analyzer->process_data_RunC2(7)        ;
-  else if(runOn == "data_muonC2_8")       analyzer->process_data_RunC2(8)        ;
-  else if(runOn == "data_muonC2_9")       analyzer->process_data_RunC2(9)        ;
-  else if(runOn == "data_muonC2_10")      analyzer->process_data_RunC2(10)        ;
-  else if(runOn == "data_muonC2_11")      analyzer->process_data_RunC2(11)        ;
-  else if(runOn == "data_muonC2_12")      analyzer->process_data_RunC2(12)        ;
-  else if(runOn == "data_muonC2_13")      analyzer->process_data_RunC2(13)        ;
-  else if(runOn == "data_muonD_1")        analyzer->process_data_RunD(1)         ;
-  else if(runOn == "data_muonD_2")        analyzer->process_data_RunD(2)         ;
-  else if(runOn == "data_muonD_3")        analyzer->process_data_RunD(3)         ;
-  else if(runOn == "data_muonD_4")        analyzer->process_data_RunD(4)         ;
-  else if(runOn == "data_muonD_5")        analyzer->process_data_RunD(5)         ;
-  else if(runOn == "data_muonD_6")        analyzer->process_data_RunD(6)         ;
-  else if(runOn == "data_muonD_7")        analyzer->process_data_RunD(7)         ;
-  else if(runOn == "data_muonD_8")        analyzer->process_data_RunD(8)         ;
-  else if(runOn == "data_muonD_9")        analyzer->process_data_RunD(9)         ;
-  else if(runOn == "data_muonD_10")        analyzer->process_data_RunD(10)         ;
-  else if(runOn == "data_muonD_11")        analyzer->process_data_RunD(11)         ;
-  else if(runOn == "data_muonD_12")        analyzer->process_data_RunD(12)         ;
-  else if(runOn == "data_muonD_13")        analyzer->process_data_RunD(13)         ;
-  else if(runOn == "WW")            analyzer->process_dibosons(0)           ;
+
+
+  for(int i=0; i<50; ++i){
+    stringstream sidx;
+    sidx<<i;
+    string idx=sidx.str();
+    if      (runOn == "data_muonA_"+idx)  analyzer->process_data_RunA( i);
+    else if (runOn == "data_muonB_"+idx)  analyzer->process_data_RunB( i);
+    else if (runOn == "data_muonC1_"+idx) analyzer->process_data_RunC1(i);
+    else if (runOn == "data_muonC2_"+idx) analyzer->process_data_RunC2(i);
+    else if (runOn == "data_muonD1_"+idx) analyzer->process_data_RunD1(i);
+    else if (runOn == "data_muonD2_"+idx) analyzer->process_data_RunD2(i);
+  }  
+  if     (runOn == "WW")            analyzer->process_dibosons(0)           ;
   else if(runOn == "WZ")            analyzer->process_dibosons(1)           ;
   else if(runOn == "ZZ")            analyzer->process_dibosons(2)           ;
   else if(runOn == "hh_higgs_bychannel")  analyzer->process_hh_higgs_bychannel() ;

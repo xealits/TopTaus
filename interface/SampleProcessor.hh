@@ -70,12 +70,12 @@ public :
 
   // FIXME: parametrize with hadd on a per-10 basis (quicker in lip batch)
   
-  void process_data_RunA();
-  void process_data_RunAr();
+  void process_data_RunA(int);
   void process_data_RunB(int);
-  void process_data_RunC1();
+  void process_data_RunC1(int);
   void process_data_RunC2(int);
-  void process_data_RunD(int);
+  void process_data_RunD1(int);
+  void process_data_RunD2(int);
 
   
   void process_ttbar();

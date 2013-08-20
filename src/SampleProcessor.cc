@@ -3,6 +3,7 @@
 // System headers
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 
 // ROOT headers
 
@@ -863,58 +864,21 @@ void SampleProcessor::process_dibosons(int i){
 
 
 
-void SampleProcessor::process_data_RunA(){
+void SampleProcessor::process_data_RunA(int i){
 
   url_ = DATA_URL;
-
-  // DON't FORGET TO SET MUTAU ON
-  if( ! eChONmuChOFF_ && ! run2012_){ 
-    process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
+    return;
   }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
 
-  if( ! eChONmuChOFF_ && run2012_){ 
-    process(true,url_,iDFolder_+TString("Muon_RunA.root"),oDFolder_+TString("out-Muon_RunA.root"),keys_);
-  }
-/*
-  else{ 
-    // inclusive electron trigger
-    process(true,url_,iDFolder_+TString("Electron_1.root"), oDFolder_+TString("out-Electron_1.root"),keys_);
-  }
-*/
-/*
-  else if(! eChONmuChOFF_ && ! run2012_ ) {
-  electron+2jets+mht samples
-  process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
-  }
-*/  
-}
+  if( ! eChONmuChOFF_ && run2012_) 
+    process(true,url_,iDFolder_+TString("Muon_RunA_"+idx+".root"),oDFolder_+TString("out-Muon_RunA_"+idx+".root"),keys_);
 
-
-
-void SampleProcessor::process_data_RunAr(){
-
-  url_ = DATA_URL;
-
-  // DON't FORGET TO SET MUTAU ON
-  if( ! eChONmuChOFF_ && ! run2012_){ 
-    process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
-  }
-
-  if( ! eChONmuChOFF_ && run2012_){ 
-    process(true,url_,iDFolder_+TString("Muon_RunA_06AugRecover.root"),oDFolder_+TString("out-Muon_RunA_06AugRecover.root"),keys_);
-  }
-/*
-  else{ 
-    // inclusive electron trigger
-    process(true,url_,iDFolder_+TString("Electron_1.root"), oDFolder_+TString("out-Electron_1.root"),keys_);
-  }
-*/
-/*
-  else if(! eChONmuChOFF_ && ! run2012_ ) {
-  electron+2jets+mht samples
-  process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
-  }
-*/  
 }
 
 
@@ -922,101 +886,68 @@ void SampleProcessor::process_data_RunAr(){
 void SampleProcessor::process_data_RunB(int i){
 
   url_ = DATA_URL;
+  
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
 
   // DON't FORGET TO SET MUTAU ON
-  if( ! eChONmuChOFF_ && ! run2012_){ 
-    process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
-  }
-
-  if( ! eChONmuChOFF_ && run2012_){
-    switch(i){
-    case 1:
-      process(true,url_,iDFolder_+TString("Muon_RunB_1.root"),oDFolder_+TString("out-Muon_RunB_1.root"),keys_);
-      break;
-    case 2:
-      process(true,url_,iDFolder_+TString("Muon_RunB_2.root"),oDFolder_+TString("out-Muon_RunB_2.root"),keys_);
-      break;
-    case 3:
-      process(true,url_,iDFolder_+TString("Muon_RunB_3.root"),oDFolder_+TString("out-Muon_RunB_3.root"),keys_);
-      break;
-    case 4:
-      process(true,url_,iDFolder_+TString("Muon_RunB_4.root"),oDFolder_+TString("out-Muon_RunB_4.root"),keys_);
-      break;
-    case 5:
-      process(true,url_,iDFolder_+TString("Muon_RunB_5.root"),oDFolder_+TString("out-Muon_RunB_5.root"),keys_);
-      break;
-    case 6:
-      process(true,url_,iDFolder_+TString("Muon_RunB_6.root"),oDFolder_+TString("out-Muon_RunB_6.root"),keys_);
-      break;
-    case 7:
-      process(true,url_,iDFolder_+TString("Muon_RunB_7.root"),oDFolder_+TString("out-Muon_RunB_7.root"),keys_);
-      break;
-    case 8:
-      process(true,url_,iDFolder_+TString("Muon_RunB_8.root"),oDFolder_+TString("out-Muon_RunB_8.root"),keys_);
-      break;
-    case 9:
-      process(true,url_,iDFolder_+TString("Muon_RunB_9.root"),oDFolder_+TString("out-Muon_RunB_9.root"),keys_);
-      break;
-    case 10:
-      process(true,url_,iDFolder_+TString("Muon_RunB_10.root"),oDFolder_+TString("out-Muon_RunB_10.root"),keys_);
-      break;
-    case 11:
-      process(true,url_,iDFolder_+TString("Muon_RunB_11.root"),oDFolder_+TString("out-Muon_RunB_11.root"),keys_);
-      break;
-    case 12:
-      process(true,url_,iDFolder_+TString("Muon_RunB_12.root"),oDFolder_+TString("out-Muon_RunB_12.root"),keys_);
-      break;
-    case 13:
-      process(true,url_,iDFolder_+TString("Muon_RunB_13.root"),oDFolder_+TString("out-Muon_RunB_13.root"),keys_);
-      break;
-    default:
-      cout << "ERROR CODE - must be in the range [1,13]" << endl;
-      break;
-    }
-    
-  }
-
-
-/*
-  else{ 
+  //if( ! eChONmuChOFF_ && ! run2012_){ 
+  //  //
+  //}
+  
+  
+  if( ! eChONmuChOFF_ && run2012_)
+    process(true,url_,iDFolder_+TString("Muon_RunB_"+idx+".root"),oDFolder_+TString("out-Muon_RunB_"+idx+".root"),keys_);
+  
+  
+  
+  
+  /*
+    else{ 
     // inclusive electron trigger
     process(true,url_,iDFolder_+TString("Electron_1.root"), oDFolder_+TString("out-Electron_1.root"),keys_);
-  }
-*/
-/*
-  else if(! eChONmuChOFF_ && ! run2012_ ) {
-  electron+2jets+mht samples
-  process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
-  }
-*/  
+    }
+  */
+  /*
+    else if(! eChONmuChOFF_ && ! run2012_ ) {
+    electron+2jets+mht samples
+    process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
+    }
+  */  
 }
 
 
 
-void SampleProcessor::process_data_RunC1(){
+void SampleProcessor::process_data_RunC1(int i){
 
   url_ = DATA_URL;
 
-  // DON't FORGET TO SET MUTAU ON
-  if( ! eChONmuChOFF_ && ! run2012_){ 
-    process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
+    return;
   }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
 
-  if( ! eChONmuChOFF_ && run2012_){ 
-    process(true,url_,iDFolder_+TString("Muon_RunC1.root"),oDFolder_+TString("out-Muon_RunC1.root"),keys_);
-  }
-/*
-  else{ 
-    // inclusive electron trigger
-    process(true,url_,iDFolder_+TString("Electron_1.root"), oDFolder_+TString("out-Electron_1.root"),keys_);
-  }
-*/
-/*
-  else if(! eChONmuChOFF_ && ! run2012_ ) {
-  electron+2jets+mht samples
-  process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
-  }
-*/  
+  // DON't FORGET TO SET MUTAU ON
+  //if( ! eChONmuChOFF_ && ! run2012_){ 
+  //  //
+  //}
+  
+  
+  if( ! eChONmuChOFF_ && run2012_)
+    process(true,url_,iDFolder_+TString("Muon_RunC_1_"+idx+".root"),oDFolder_+TString("out-Muon_RunC_1_"+idx+".root"),keys_);
+  
+
+
 }
 
 
@@ -1025,144 +956,82 @@ void SampleProcessor::process_data_RunC2(int i){
 
   url_ = DATA_URL;
 
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
   // DON't FORGET TO SET MUTAU ON
-  if( ! eChONmuChOFF_ && ! run2012_){ 
-    process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
-  }
+  //if( ! eChONmuChOFF_ && ! run2012_){ 
+  //  //
+  //}
+  
+  
+  if( ! eChONmuChOFF_ && run2012_)
+    process(true,url_,iDFolder_+TString("Muon_RunC_2_"+idx+".root"),oDFolder_+TString("out-Muon_RunC_2_"+idx+".root"),keys_);
+  
 
-  if( ! eChONmuChOFF_ && run2012_){ 
-    //    process(true,url_,iDFolder_+TString("Muon_RunC2.root"),oDFolder_+TString("out-Muon_RunC2.root"),keys_);
-    switch(i){
-    case 1:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_1.root"),oDFolder_+TString("out-Muon_RunC2_1.root"),keys_);
-      break;
-    case 2:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_2.root"),oDFolder_+TString("out-Muon_RunC2_2.root"),keys_);
-      break;
-    case 3:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_3.root"),oDFolder_+TString("out-Muon_RunC2_3.root"),keys_);
-      break;
-    case 4:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_4.root"),oDFolder_+TString("out-Muon_RunC2_4.root"),keys_);
-      break;
-    case 5:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_5.root"),oDFolder_+TString("out-Muon_RunC2_5.root"),keys_);
-      break;
-    case 6:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_6.root"),oDFolder_+TString("out-Muon_RunC2_6.root"),keys_);
-      break;
-    case 7:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_7.root"),oDFolder_+TString("out-Muon_RunC2_7.root"),keys_);
-      break;
-    case 8:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_8.root"),oDFolder_+TString("out-Muon_RunC2_8.root"),keys_);
-      break;
-    case 9:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_9.root"),oDFolder_+TString("out-Muon_RunC2_9.root"),keys_);
-      break;
-    case 10:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_10.root"),oDFolder_+TString("out-Muon_RunC2_10.root"),keys_);
-      break;
-    case 11:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_11.root"),oDFolder_+TString("out-Muon_RunC2_11.root"),keys_);
-      break;
-    case 12:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_12.root"),oDFolder_+TString("out-Muon_RunC2_12.root"),keys_);
-      break;
-    case 13:
-      process(true,url_,iDFolder_+TString("Muon_RunC2_13.root"),oDFolder_+TString("out-Muon_RunC2_13.root"),keys_);
-      break;
-    default:
-      cout << "ERROR CODE - must be in the range [1,13]" << endl;
-      break;
-    }
 
-  }
-/*
-  else{ 
-    // inclusive electron trigger
-    process(true,url_,iDFolder_+TString("Electron_1.root"), oDFolder_+TString("out-Electron_1.root"),keys_);
-  }
-*/
-/*
-  else if(! eChONmuChOFF_ && ! run2012_ ) {
-  electron+2jets+mht samples
-  process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
-  }
-*/  
 }
 
 
 
-void SampleProcessor::process_data_RunD(int i){
+void SampleProcessor::process_data_RunD1(int i){
 
   url_ = DATA_URL;
 
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
   // DON't FORGET TO SET MUTAU ON
-  if( ! eChONmuChOFF_ && ! run2012_){ 
-    process(true,url_,iDFolder_+TString("Muon_RunA_ReReco.root"),oDFolder_+TString("out-Muon_RunA_ReReco.root"),keys_);
-  }
+  //if( ! eChONmuChOFF_ && ! run2012_){ 
+  //  //
+  //}
+  
+  
+  if( ! eChONmuChOFF_ && run2012_)
+    process(true,url_,iDFolder_+TString("Muon_RunD_1_"+idx+".root"),oDFolder_+TString("out-Muon_RunD_1_"+idx+".root"),keys_);
+  
 
-  if( ! eChONmuChOFF_ && run2012_){ 
-    //    process(true,url_,iDFolder_+TString("Muon_RunD.root"),oDFolder_+TString("out-Muon_RunD.root"),keys_);
-    switch(i){
-    case 1:
-      process(true,url_,iDFolder_+TString("Muon_RunD_1.root"),oDFolder_+TString("out-Muon_RunD_1.root"),keys_);
-      break;
-    case 2:
-      process(true,url_,iDFolder_+TString("Muon_RunD_2.root"),oDFolder_+TString("out-Muon_RunD_2.root"),keys_);
-      break;
-    case 3:
-      process(true,url_,iDFolder_+TString("Muon_RunD_3.root"),oDFolder_+TString("out-Muon_RunD_3.root"),keys_);
-      break;
-    case 4:
-      process(true,url_,iDFolder_+TString("Muon_RunD_4.root"),oDFolder_+TString("out-Muon_RunD_4.root"),keys_);
-      break;
-    case 5:
-      process(true,url_,iDFolder_+TString("Muon_RunD_5.root"),oDFolder_+TString("out-Muon_RunD_5.root"),keys_);
-      break;
-    case 6:
-      process(true,url_,iDFolder_+TString("Muon_RunD_6.root"),oDFolder_+TString("out-Muon_RunD_6.root"),keys_);
-      break;
-    case 7:
-      process(true,url_,iDFolder_+TString("Muon_RunD_7.root"),oDFolder_+TString("out-Muon_RunD_7.root"),keys_);
-      break;
-    case 8:
-      process(true,url_,iDFolder_+TString("Muon_RunD_8.root"),oDFolder_+TString("out-Muon_RunD_8.root"),keys_);
-      break;
-    case 9:
-      process(true,url_,iDFolder_+TString("Muon_RunD_9.root"),oDFolder_+TString("out-Muon_RunD_9.root"),keys_);
-      break;
-    case 10:
-      process(true,url_,iDFolder_+TString("Muon_RunD_10.root"),oDFolder_+TString("out-Muon_RunD_10.root"),keys_);
-      break;
-    case 11:
-      process(true,url_,iDFolder_+TString("Muon_RunD_11.root"),oDFolder_+TString("out-Muon_RunD_11.root"),keys_);
-      break;
-    case 12:
-      process(true,url_,iDFolder_+TString("Muon_RunD_12.root"),oDFolder_+TString("out-Muon_RunD_12.root"),keys_);
-      break;
-    case 13:
-      process(true,url_,iDFolder_+TString("Muon_RunD_13.root"),oDFolder_+TString("out-Muon_RunD_13.root"),keys_);
-      break;
-    default:
-      cout << "ERROR CODE - must be in the range [1,13]" << endl;
-      break;
-    }
+}
 
+
+
+
+
+void SampleProcessor::process_data_RunD2(int i){
+
+  url_ = DATA_URL;
+
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
+    return;
   }
-/*
-  else{ 
-    // inclusive electron trigger
-    process(true,url_,iDFolder_+TString("Electron_1.root"), oDFolder_+TString("out-Electron_1.root"),keys_);
-  }
-*/
-/*
-  else if(! eChONmuChOFF_ && ! run2012_ ) {
-  electron+2jets+mht samples
-  process(true,url_,iDFolder_+TString("Ele_Met_eJTrigMatch_4.root"), oDFolder_+TString("out-eJTrigMatch_4.root"),keys_);
-  }
-*/  
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+  // DON't FORGET TO SET MUTAU ON
+  //if( ! eChONmuChOFF_ && ! run2012_){ 
+  //  //
+  //}
+  
+  
+  if( ! eChONmuChOFF_ && run2012_)
+    process(true,url_,iDFolder_+TString("Muon_RunD_2_"+idx+".root"),oDFolder_+TString("out-Muon_RunD_2_"+idx+".root"),keys_);
+  
+
 }
 
 
