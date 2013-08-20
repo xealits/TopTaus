@@ -131,6 +131,9 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-08-07: Switcher for light/heavy H+ in tablebuilder
+2013-07-XX: Fixes to datacards
+	    b-tags categorization
 2013-07-08: Tau energy scale
 	    Plots legend in a proper place (fancy plots <3 )
 2013-07-02: Removed obsolete syst components

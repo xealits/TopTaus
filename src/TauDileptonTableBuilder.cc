@@ -25,7 +25,7 @@ namespace tableutils{
   
   // systset1 -> if enabled include only JES + MET +JER ,  systset2 -> if enabled include only btag unc ,  systset3 -> if enabled only trigger
   // detailed -> select between 1 or 2 floating points
-  void TauDileptonTableBuilder::mcTable( int detailed, bool includeSoverB , bool printAllErrors, bool higgs, TString key, TString name, bool systset1, bool systset2, bool systset3){ 
+  void TauDileptonTableBuilder::mcTable( int detailed, bool includeSoverB , bool printAllErrors, bool higgs, bool lightH, TString key, TString name, bool systset1, bool systset2, bool systset3){ 
 
     // Multiplier for yields // Must modify and make it clear from python file
     for(size_t i=0; i<brHtaunu_.size(); ++i)
@@ -69,11 +69,18 @@ namespace tableutils{
     
     if(higgs)
       { 
-	hh_contrib = false; // now doing heavy
-	hw_contrib = false; // now doing heavy 
-	tbh_contrib = true;
-	htb_contrib = true;
-	includeSM = false;
+	if(lightH){
+	  hh_contrib = true;
+	  hw_contrib = true;
+	  tbh_contrib = false;
+	  htb_contrib = false;
+	} else{
+	  hh_contrib = false;
+	  hw_contrib = false;
+	  tbh_contrib = true;
+	  htb_contrib = true;
+	}
+	  includeSM = false;
       }
     else
       { 
@@ -2140,7 +2147,7 @@ namespace tableutils{
 // systset1 -> if enabled include only JES + MET +JER
 // systset2 -> if enabled include only btag unc
 // systset3 -> if enabled include only trigger
-  void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool systset1, bool systset2, bool systset3, bool produceDatacards, bool withShapes, bool withStatShapes, bool unsplit){ 
+  void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool lightH, bool systset1, bool systset2, bool systset3, bool produceDatacards, bool withShapes, bool withStatShapes, bool unsplit){ 
 
 
     //    if(!doTheDatacards) // For datacards we want 234., for tables we want 1.1 // This does not need conditional, because of the default values
@@ -2223,8 +2230,19 @@ namespace tableutils{
 
   // table options /////////////////////////////////////////////////////////////////
   bool incDocument(true);
-  bool showAllHiggs(true), processHH(false),processHW(false),processTBH(true),processHTB(true);
-  if(!higgs){ showAllHiggs=false; processTBH=false; processHTB=false;}
+  bool showAllHiggs(true), processHH(false),processHW(false),processTBH(false),processHTB(false);
+  if(higgs){
+    if(lightH){
+      processHH = true;
+      processHW = true;
+    }
+    else{
+      processTBH = true;
+      processHTB = true;
+    }
+  } else
+    showAllHiggs=false;
+  
   bool addXsection; if(XSECMEASUREMENT){ addXsection=true; } else addXsection=false;
   //////////////////////////////////////////////////////////////////////////////////
   
@@ -3550,8 +3568,8 @@ namespace tableutils{
   if(incDocument) fprintf(f,"\\end{document} \n"); //COMMENT
   fclose(f);
 
-  if(higgs && produceDatacards) doDatacards(data_datacards, tbh_datacards, htb_datacards, sm_datacards, taufakes_datacards, withShapes, withStatShapes, unsplit, string("PFlow"));
-
+  if(higgs && !lightH && produceDatacards) doDatacards(data_datacards, tbh_datacards, htb_datacards, sm_datacards, taufakes_datacards, withShapes, withStatShapes, unsplit, string("PFlow")); // Must integrate lightHiggs
+  
 
   processedMCFile->Close();
   processedDataFile->Close();

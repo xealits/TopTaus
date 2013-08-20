@@ -173,19 +173,19 @@ int main(int argc, char* argv[])
   // FIXME: manage with --blah for having parameters like "withHiggs" and so on
   else if(runOn == "doTables"){
     cout << "Doing tables" << endl;
-    bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false), produceDatacards(false), withShapes(true), withStatShapes(false), unsplit(false);
+    bool onlyhiggs(true), heavyhiggs(false), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false), produceDatacards(false), withShapes(true), withStatShapes(false), unsplit(false);
     int detailed(2), notDetailed(1);      
-    analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, sm, "PFlow", "yields-mc-", false, false, false); 
+    analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, heavyhiggs, sm, "PFlow", "yields-mc-", false, false, false); 
     cout << "Done SM table" << endl;
-    analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false); 
+    analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, heavyhiggs, "PFlow", "yields-mc-", false, false, false); 
     cout << "Done TBH table" << endl;
-    analyzer->summaryTable( notDetailed, true, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
+    analyzer->summaryTable( notDetailed, true, heavyhiggs, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
     cout << "Done summary table" << endl;
   }
   else if(runOn == "doDatacards"){
-    bool produceDatacards(true), withShapes(true), withStatShapes(false), unsplit(true);
+    bool produceDatacards(true), withShapes(true), withStatShapes(false), unsplit(true), heavyhiggs(false);
     int detailed(2), notDetailed(1); 
-    analyzer->summaryTable( notDetailed, true, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
+    analyzer->summaryTable( notDetailed, true, heavyhiggs, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
   }
   else if(runOn == "doPlots"){
 //    PlotStyle sty();
