@@ -105,10 +105,10 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   
   // Files for jet correction uncertainties /////////////////////////////////////////////////////////////////////
   // How to instantiate uncertainty sources: https://twiki.cern.ch/twiki/bin/view/CMS/JECUncertaintySources#Example_implementation
-  cout<<endl<<" FILE 1 : "<<(analysisFolder+string("/Fall12_V7_DATA_UncertaintySources_AK5PFchs.txt"))<<endl;
+  cout<<endl<<" FILE 1 : "<<(analysisFolder+string("/Summer13_V4_DATA_UncertaintySources_AK5PFchs.txt"))<<endl;
   cout<<endl<<" FILE 2 : "<<(jerFolder+string("/Spring10_PtResolution_AK5PF.txt"))<<endl;
   
-  JetCorrectorParameters* jcp = new JetCorrectorParameters(analysisFolder+string("/Fall12_V7_DATA_UncertaintySources_AK5PFchs.txt"), "Total"); // Must implement splitting by sources
+  JetCorrectorParameters* jcp = new JetCorrectorParameters(analysisFolder+string("/Summer13_V4_DATA_UncertaintySources_AK5PFchs.txt"), "Total"); // Must implement splitting by sources
   jecUnc_ak5_pf_ = new JetCorrectionUncertainty( *jcp );
   cout<<endl<<"JetCorrectorParameters acquired"<<endl;
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
