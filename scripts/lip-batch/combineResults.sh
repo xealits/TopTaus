@@ -10,10 +10,10 @@ if [ "${2}" = "hadd" ]; then
 
     
     # QCD
-    hadd -f $DATAPLACE/out-qcd.root $DATAPLACE/out-qcd_*root $DATAPLACE/out-qcdmu*.root $DATAPLACE/out-PhotonJets*root
+    hadd -f $DATAPLACE/out-qcd.root $DATAPLACE/out-qcd_*root $DATAPLACE/out-qcdmu15*.root $DATAPLACE/out-PhotonJets*root
 
     # zjets
-    hadd -f $DATAPLACE/out-zjets.root $DATAPLACE/out-dy*root
+    hadd -f $DATAPLACE/out-zjets.root $DATAPLACE/out-dy_from50_*root $DATAPLACE/out-dy_10to50_*.root
 
     # single top
     hadd -f $DATAPLACE/out-singletop.root $DATAPLACE/out-stop*.root
@@ -31,9 +31,10 @@ if [ "${2}" = "hadd" ]; then
     hadd -f $DATAPLACE/out-ttbar-mumu.root $DATAPLACE/out-ttbar-mumu_*.root
     hadd -f $DATAPLACE/out-ttbar-emu.root $DATAPLACE/out-ttbar-emu_*.root
 
+    
     # mc total
     hadd -f $DATAPLACE/out-mc.root $DATAPLACE/out-qcd.root $DATAPLACE/out-wjets.root $DATAPLACE/out-zjets.root $DATAPLACE/out-dibosons.root $DATAPLACE/out-ttbar.root $DATAPLACE/out-singletop.root &
-
+    
     # data driven bkg, using mc
     hadd -f $DATAPLACE/out-ddbkg.root $DATAPLACE/out-qcd.root $DATAPLACE/out-wjets.root $DATAPLACE/out-ttbar-ddbkg.root
 
@@ -45,7 +46,7 @@ if [ "${2}" = "hadd" ]; then
     ## no ## $DATAPLACE/out-ttbar_emu.root $DATAPLACE/out-ttbar_mumu.root
 
     # other cont
-    hadd -f $DATAPLACE/out-ttbar_other.root  $DATAPLACE/out-ttbar_ddbkg.root $DATAPLACE/out-ttbar_mcbkg.root &
+    hadd -f $DATAPLACE/out-ttbar-other.root  $DATAPLACE/out-ttbar-ddbkg.root $DATAPLACE/out-ttbar-mcbkg.root &
 
     # allmcmkg (w.r.t. charged higgs search: ttbar is includes as irreducible background)
     hadd -f $DATAPLACE/out-allmcbkg.root $DATAPLACE/out-ttbar.root $DATAPLACE/out-mcbkg.root &

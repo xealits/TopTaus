@@ -614,7 +614,7 @@ void SampleProcessor::process_ttbar_emu(int i){
   sidx<<i;
   string idx=sidx.str();
 
-  process(false, url_, iFolder_ + TString("ttbar_"+idx+".root"), oFolder_+TString("out-ttbar-emu"+idx+".root"),keys_, EMU_ ); 
+  process(false, url_, iFolder_ + TString("ttbar_"+idx+".root"), oFolder_+TString("out-ttbar-emu_"+idx+".root"),keys_, EMU_ ); 
 }
 
 
@@ -634,7 +634,7 @@ void SampleProcessor::process_ttbar_ddbkg(int i){
   // dd bkg
   //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_ddbkg.root"),keys_, TTBAR_DDBKG_);   
   //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_ddbkg.root"),keys_, TTBAR_DDBKG_);   
-  process(false, url_, iFolder_ + TString("ttbar_"+idx+".root"), oFolder_+TString("out-ttbar-ddbkg"+idx+".root"),keys_, TTBAR_DDBKG_);   
+  process(false, url_, iFolder_ + TString("ttbar_"+idx+".root"), oFolder_+TString("out-ttbar-ddbkg_"+idx+".root"),keys_, TTBAR_DDBKG_);   
 
 
 }
