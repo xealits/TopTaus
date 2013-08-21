@@ -94,29 +94,36 @@ int main(int argc, char* argv[])
     stringstream sidx;
     sidx<<i;
     string idx=sidx.str();
+    // 50 from 0
     if      (runOn == "data_muonA_"+idx)  analyzer->process_data_RunA( i);
     else if (runOn == "data_muonB_"+idx)  analyzer->process_data_RunB( i);
     else if (runOn == "data_muonC1_"+idx) analyzer->process_data_RunC1(i);
     else if (runOn == "data_muonC2_"+idx) analyzer->process_data_RunC2(i);
     else if (runOn == "data_muonD1_"+idx) analyzer->process_data_RunD1(i);
     else if (runOn == "data_muonD2_"+idx) analyzer->process_data_RunD2(i);
+    // 27 from 1
+    else if(runOn == "diboson_"+idx)            analyzer->process_dibosons(i);
+    // 18 from 1
+    else if(runOn == "ttbar_mutau_"+idx)         analyzer->process_ttbar_mutau(i)    ;
+    else if(runOn == "ttbar_mumu_"+idx)          analyzer->process_ttbar_mumu(i)    ;
+    else if(runOn == "ttbar_emu_"+idx)           analyzer->process_ttbar_emu(i)    ;
+    else if(runOn == "ttbar_ddbkg_"+idx)         analyzer->process_ttbar_ddbkg(i)    ;
+    else if(runOn == "ttbar_mcbkg_"+idx)         analyzer->process_ttbar_mcbkg(i)    ;
+    else if(runOn == "ttbar_"+idx)               analyzer->process_ttbar(i)              ;
+    else if(runOn == "wjets_"+idx)               analyzer->process_wjets(i)              ;
+    // 9 from 1
+    else if(runOn == "zjets_from50_"+idx)        analyzer->process_zjets_from50(i)       ;
+    else if(runOn == "zjets_10to50_"+idx)        analyzer->process_zjets_10to50(i)       ;
+
   }  
-  if     (runOn == "WW")            analyzer->process_dibosons(0)           ;
-  else if(runOn == "WZ")            analyzer->process_dibosons(1)           ;
-  else if(runOn == "ZZ")            analyzer->process_dibosons(2)           ;
-  else if(runOn == "hh_higgs_bychannel")  analyzer->process_hh_higgs_bychannel() ;
+
+    
+  if     (runOn == "hh_higgs_bychannel")  analyzer->process_hh_higgs_bychannel() ;
   else if(runOn == "hh_higgs")            analyzer->process_hh_higgs()           ;
   else if(runOn == "qcd")                 analyzer->process_qcd()                ;
   else if(runOn == "singletop")           analyzer->process_singletop()          ;
-  //  else if(runOn == "trigger_mht")         analyzer->process_trigger_mht()        ;
-  //  else if(runOn == "trigger_mhtjets")     analyzer->process_trigger_mhtjets()    ;
-  else if(runOn == "ttbar_mutau")         analyzer->process_ttbar_mutau()    ;
-  else if(runOn == "ttbar_mumu")          analyzer->process_ttbar_mumu()    ;
-  else if(runOn == "ttbar_emu")           analyzer->process_ttbar_emu()    ;
-  else if(runOn == "ttbar_ddbkg")         analyzer->process_ttbar_ddbkg()    ;
-  else if(runOn == "ttbar_mcbkg")         analyzer->process_ttbar_mcbkg()    ;
   else if(runOn == "ttbar_unc")           analyzer->process_ttbar_unc()          ;
-  else if(runOn == "ttbar")               analyzer->process_ttbar()              ;
+  
   else if(runOn == "wh_higgs_bychannel")  analyzer->process_wh_higgs_bychannel() ;
   else if(runOn == "wh_higgs")            analyzer->process_wh_higgs()           ;
   else if(runOn == "tbh_higgs_bychannel") analyzer->process_tbh_higgs_bychannel() ;
@@ -137,9 +144,10 @@ int main(int argc, char* argv[])
   else if(runOn == "htb_higgs_260")           analyzer->process_htb_higgs(260)           ;
   else if(runOn == "htb_higgs_280")           analyzer->process_htb_higgs(280)           ;
   else if(runOn == "htb_higgs_300")           analyzer->process_htb_higgs(300)           ;
-  else if(runOn == "wjets")               analyzer->process_wjets()              ;
-  else if(runOn == "zjets_from50")        analyzer->process_zjets_from50()       ;
-  else if(runOn == "zjets_10to50")        analyzer->process_zjets_10to50()       ;
+  
+
+
+
   // FIXME: manage with --blah for having parameters like "withHiggs" and so on
   else if(runOn == "doTables"){
     cout << "Doing tables" << endl;

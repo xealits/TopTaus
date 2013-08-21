@@ -2,5 +2,5 @@
 
 . $LIPCMS_BASE/scripts/lip-batch/run-batch.sh
 
-physicsAnalysis $LIPCMS_BASE/test/physicsAnalysisParSets_cfg.py ttbar
+physicsAnalysis $LIPCMS_BASE/test/physicsAnalysisParSets_cfg.py ttbar_${1}
 

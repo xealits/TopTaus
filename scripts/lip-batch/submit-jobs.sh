@@ -5,11 +5,72 @@ myFolder=${LIPCMS_BASE}/scripts/lip-batch/
 
 cd $myFolder;
 
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ww.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wz.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zz.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 1
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 2 
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 3
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 4
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 5
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 6
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 7
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 8
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 9
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 10
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 11
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 12
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 13
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 14
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 15
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 16  
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 17
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh 18
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 1
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 2
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 3
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 4
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 5
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 6
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 7
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 8
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 9
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 10
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 11
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 12
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 13
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 14
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 15
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 16
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 17
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 18
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 19
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 20
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 21
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 22
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 23
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 24
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 25
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 26
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-diboson.sh 27
+
+
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 1
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 2 
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 3
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 4
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 5
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 6
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 7
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 8
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 9
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 10
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 11
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 12
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 13
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 14
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 15
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 16  
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 17
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-ddbkg.sh 18
+
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunA.sh 0
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunA.sh 1
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunA.sh 2
@@ -319,11 +380,104 @@ qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunD2.sh 48
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-RunD2.sh 49
 
 
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 1
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 2 
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 3
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 4
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 5
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 6
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 7
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 8
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 9
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 10
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 11
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 12
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 13
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 14
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 15
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 16  
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 17
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wjets.sh 18
+
+
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 1
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 2 
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 3
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 4
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 5
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 6
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 7
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 8
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 9
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 10
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 11
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 12
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 13
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 14
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 15
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 16  
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 17
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh 18
+
+
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 1
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 2 
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 3
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 4
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 5
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 6
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 7
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 8
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 9
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 10
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 11
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 12
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 13
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 14
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 15
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 16  
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 17
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh 18
+
+
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 1
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 2 
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 3
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 4
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 5
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 6
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 7
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 8
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 9
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 10
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 11
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 12
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 13
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 14
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 15
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 16  
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 17
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh 18
+
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 1
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 2 
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 3
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 4
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 5
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 6
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 7
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 8
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 9
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 10
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 11
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 12
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 13
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 14
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 15
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 16  
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 17
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mcbkg.sh 18
+
 #qsub -v LIPCMS_BASE${LIPCMS_BASE}/    ./job-ttbar-unc.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-hh-higgs-bychannel.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-hh-higgs.sh
@@ -333,8 +487,27 @@ qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-singletop.sh
 #qsub -v LIPCMS_BASE${LIPCMS_BASE}/    ./job-trigger-mhtjets.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wh-higgs-bychannel.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-wh-higgs.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_from50.sh
-qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_10to50.sh
+
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_from50.sh 1
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_from50.sh 2 
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_from50.sh 3
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_from50.sh 4
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_from50.sh 5
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_from50.sh 6
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_from50.sh 7
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_from50.sh 8
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_from50.sh 9
+
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_10to50.sh 1
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_10to50.sh 2 
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_10to50.sh 3
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_10to50.sh 4
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_10to50.sh 5
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_10to50.sh 6
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_10to50.sh 7
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_10to50.sh 8
+qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-zjets_10to50.sh 9
+
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-tbh-higgs.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-tbh-higgs-bychannel.sh
 qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-htb-higgs_180.sh

@@ -78,19 +78,19 @@ public :
   void process_data_RunD2(int);
 
   
-  void process_ttbar();
+  void process_ttbar(int);
   //  void process_ttbar_bychannel();
-  void process_ttbar_mutau();
-  void process_ttbar_mumu();
-  void process_ttbar_emu();
+  void process_ttbar_mutau(int);
+  void process_ttbar_mumu(int );
+  void process_ttbar_emu(int );
   //  void process_ttbar_ee(); // ee and etau without electron trigger is not worth
-  void process_ttbar_ddbkg();
-  void process_ttbar_mcbkg();
+  void process_ttbar_ddbkg(int);
+  void process_ttbar_mcbkg(int);
   void process_singletop();
   void process_qcd();
-  void process_wjets();
-  void process_zjets_from50();
-  void process_zjets_10to50();
+  void process_wjets(int);
+  void process_zjets_from50(int);
+  void process_zjets_10to50(int);
   void process_hh_higgs();
   void process_hh_higgs_bychannel();
   void process_wh_higgs();

@@ -67,17 +67,17 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
 
       // xsections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat8TeV
       defaultXSections_[DATA_URL]      = 0.;         
-      defaultXSections_[TTBAR_URL]     = 234.;  //Kidonakis - approx. NNLO - Inclusive - 234+10- - Top mass: m(top)=173GeV, Default scales: muF=muR=mt, PDF: MSTW2008 NNLO 
+      defaultXSections_[TTBAR_URL]     = 245.8/18.;  //Kidonakis - approx. NNLO - Inclusive - 234+10- - Top mass: m(top)=173GeV, Default scales: muF=muR=mt, PDF: MSTW2008 NNLO 
       
-      defaultXSections_[W_ENU_URL]     = 12503.0; //NNLO 37509.0  36257.2/3 = 12085.7 - NNLO - W->lv, l=e,m,t - Inclusive W production, BR(W->lv) included, l=e,m,t, PDF error also includes alphas 
-      defaultXSections_[W_MUNU_URL]    = 12503.0;
-      defaultXSections_[W_TAUNU_URL]   = 12503.0; 
+      defaultXSections_[W_ENU_URL]     = 12503.0/18.; //NNLO 37509.0  36257.2/3 = 12085.7 - NNLO - W->lv, l=e,m,t - Inclusive W production, BR(W->lv) included, l=e,m,t, PDF error also includes alphas 
+      defaultXSections_[W_MUNU_URL]    = 12503.0/18.;
+      defaultXSections_[W_TAUNU_URL]   = 12503.0/18.; 
 
-      defaultXSections_[WJMADGRAPH_URL]  = 37509.0; // 36257.2;// 30400; //36257.2;
+      defaultXSections_[WJMADGRAPH_URL]  = 37509.0/18.; // 36257.2;// 30400; //36257.2;
       
       // for the _filter sample:     xsec: 11050.0 eff: 0.069 
-      defaultXSections_[DY_10TO50_URL]          = 11050.0; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-10To50filter_8TeV-madgraph&campid=Summer12_DR53X
-      defaultXSections_[DY_FROM50_URL]          = 2950.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball&campid=Summer12_DR53X
+      defaultXSections_[DY_10TO50_URL]          = 11050.0/9.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-10To50filter_8TeV-madgraph&campid=Summer12_DR53X
+      defaultXSections_[DY_FROM50_URL]          = 2950./9.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball&campid=Summer12_DR53X
 
       defaultXSections_[S_URL]                  = 3.79;     
       defaultXSections_[T_URL]                  = 56.4;    
@@ -103,9 +103,9 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[QCD_PHOTON120TO170_URL] = 108.0068;
       
       
-      defaultXSections_[WW_URL]                 = 54.838;
-      defaultXSections_[WZ_URL]                 = 33.72;
-      defaultXSections_[ZZ_URL]                 = 17.627;
+      defaultXSections_[WW_URL]                 = 54.838/9.;
+      defaultXSections_[WZ_URL]                 = 33.72/9.;
+      defaultXSections_[ZZ_URL]                 = 17.627/9.;
       
       defaultXSections_[CTRLWW_URL]             = 234; 
       defaultXSections_[WH80_URL]               = 234;            
@@ -483,7 +483,7 @@ int SampleProcessor::tdChannel(int i){
 
 
 
-void SampleProcessor::process_ttbar(){
+void SampleProcessor::process_ttbar(int i){
 
   //MADGRAPH
   //process(false, TTBAR_URL, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar-madgraph.root"),keys_);                          
@@ -496,7 +496,17 @@ void SampleProcessor::process_ttbar(){
   //NORMAL SAMPLE
   //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1.root"),keys_);
   //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2.root"),keys_);
-  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar.root"),keys_);
+
+  if(i>18){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+  process(false, url_, iFolder_ + TString("ttbar_"+idx+".root"), oFolder_+TString("out-ttbar_"+idx+".root"),keys_);
 
   //SAMPLE WITH WEIGHTS
   //pdfweights_=true; process(false, url_, iFolder_ + TString("ttbar-pdf.root"), oFolder_+TString("out-ttbar-pdf.root"),keys_); pdfweights_=false;
@@ -559,49 +569,92 @@ void SampleProcessor::process_ttbar_unc(){
 
 
 
-void SampleProcessor::process_ttbar_mutau(){
+void SampleProcessor::process_ttbar_mutau(int i){
 
   url_= TTBAR_URL;
+
+  if(i>18){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
 
   //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mutau.root"),keys_, MUTAU_ ); 
   //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mutau.root"),keys_, MUTAU_ ); 
-  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_mutau.root"),keys_, MUTAU_ ); 
+  process(false, url_, iFolder_ + TString("ttbar_"+idx+".root"), oFolder_+TString("out-ttbar-mutau_"+idx+".root"),keys_, MUTAU_ ); 
 }
 
-void SampleProcessor::process_ttbar_mumu(){
+void SampleProcessor::process_ttbar_mumu(int i){
+
+  url_= TTBAR_URL;
+  if(i>18){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+  process(false, url_, iFolder_ + TString("ttbar_"+idx+".root"), oFolder_+TString("out-ttbar-mumu_"+idx+".root"),keys_, MUMU_ ); 
+}
+
+void SampleProcessor::process_ttbar_emu(int i){
+
+  url_= TTBAR_URL;
+  if(i>18){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+  process(false, url_, iFolder_ + TString("ttbar_"+idx+".root"), oFolder_+TString("out-ttbar-emu"+idx+".root"),keys_, EMU_ ); 
+}
+
+
+void SampleProcessor::process_ttbar_ddbkg(int i){
 
   url_= TTBAR_URL;
 
-  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_mumu.root"),keys_, MUMU_ ); 
-}
+  if(i>18){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
 
-void SampleProcessor::process_ttbar_emu(){
-
-  url_= TTBAR_URL;
-  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_emu.root"),keys_, EMU_ ); 
-}
-
-
-void SampleProcessor::process_ttbar_ddbkg(){
-
-  url_= TTBAR_URL;
-   
   // dd bkg
   //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_ddbkg.root"),keys_, TTBAR_DDBKG_);   
   //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_ddbkg.root"),keys_, TTBAR_DDBKG_);   
-  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_ddbkg.root"),keys_, TTBAR_DDBKG_);   
+  process(false, url_, iFolder_ + TString("ttbar_"+idx+".root"), oFolder_+TString("out-ttbar-ddbkg"+idx+".root"),keys_, TTBAR_DDBKG_);   
 
 
 }
 
-void SampleProcessor::process_ttbar_mcbkg(){
+void SampleProcessor::process_ttbar_mcbkg(int i){
 
   url_= TTBAR_URL;
+  if(i>18){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
 
   // mc bkg
   //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1_mcbkg.root"),keys_, TTBAR_MCBKG_ );
   //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2_mcbkg.root"),keys_, TTBAR_MCBKG_ );
-  process(false, url_, iFolder_ + TString("ttbar.root"), oFolder_+TString("out-ttbar_mcbkg.root"),keys_, TTBAR_MCBKG_ );
+  process(false, url_, iFolder_ + TString("ttbar_"+idx+".root"), oFolder_+TString("out-ttbar-mcbkg_"+idx+".root"),keys_, TTBAR_MCBKG_ );
 
 }
 
@@ -625,7 +678,7 @@ void SampleProcessor::process_singletop(){
 }
 
 
-void SampleProcessor::process_wjets(){
+void SampleProcessor::process_wjets(int i){
 
  
 
@@ -633,7 +686,18 @@ void SampleProcessor::process_wjets(){
   url_= WJMADGRAPH_URL;
   //  process(false, url_, iFolder_ + TString("WJetsToLNu_v1.root"), oFolder_+TString("out-wjets_v1.root"),keys_);
   //  process(false, url_, iFolder_ + TString("WJetsToLNu_v2.root"), oFolder_+TString("out-wjets_v2.root"),keys_);
-  process(false, url_, iFolder_ + TString("WJetsToLNu.root"), oFolder_+TString("out-wjets.root"),keys_);
+
+  if(i>18){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+
+  process(false, url_, iFolder_ + TString("WJetsToLNu_"+idx+".root"), oFolder_+TString("out-wjets_"+idx+".root"),keys_);
 
 
   // Trigger efficiencies study //////////////////////////////////////////////////////////////////////////
@@ -645,20 +709,37 @@ void SampleProcessor::process_wjets(){
 
 }
 
-void SampleProcessor::process_zjets_from50(){
+void SampleProcessor::process_zjets_from50(int i){
 
   // MADGRAPH Z+JETS
 
   url_ = DY_FROM50_URL; 
-  process(false, url_, iFolder_ + TString("dy_from50.root"), oFolder_+TString("out-dy_from50.root"),keys_); 
+  if(i>9){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+  process(false, url_, iFolder_ + TString("dy_from50_"+idx+".root"), oFolder_+TString("out-dy_from50_"+idx+".root"),keys_); 
 
 }
 
-void SampleProcessor::process_zjets_10to50(){
+void SampleProcessor::process_zjets_10to50(int i){
   
   // MADGRAPH Z+JETS
   url_ = DY_10TO50_URL;
-  process(false, url_, iFolder_ + TString("dy_10_50.root"), oFolder_+TString("out-dy_10to50.root"),keys_);    
+  if(i>9){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+  process(false, url_, iFolder_ + TString("dy_10_50_"+idx+".root"), oFolder_+TString("out-dy_10to50_"+idx+".root"),keys_);    
 }
 
 void SampleProcessor::process_hh_higgs(){
@@ -843,20 +924,28 @@ void SampleProcessor::process_qcd(){
 
 void SampleProcessor::process_dibosons(int i){
 
-  //iFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/mc/mTrees-v3/");  
-  switch(i){
-  case 0:
-    url_= WW_URL; process(false, url_, iFolder_ + TString("WW.root"), oFolder_+TString("out-ww.root"),keys_); 
-    break;
-  case 1:
-    url_= WZ_URL; process(false, url_, iFolder_ + TString("WZ.root"), oFolder_+TString("out-wz.root"),keys_);
-    break;
-  case 2:
-    url_= ZZ_URL; process(false, url_, iFolder_ + TString("ZZ.root"), oFolder_+TString("out-zz.root"),keys_);
-    break;
-  default:
-    cout << "ERROR CODE - must be among [180,200,220,240,250,260,280,300]" << endl;
-    break;
+  if(i>27 || i<1){
+    cout << "ERROR CODE - must be in the range [1,27]" << endl;
+    return;
+  }
+  
+  stringstream sidx, sidx2, sidx3;
+  sidx<<i;
+  sidx2<<(i-9);
+  sidx3<<(i-18);
+  string idx=sidx.str();
+  string idx2=sidx2.str();
+  string idx3=sidx3.str();
+
+
+  if(i<10){
+    url_= WW_URL; process(false, url_, iFolder_ + TString("WW_"+idx+".root"), oFolder_+TString("out-ww_"+idx+".root"),keys_); 
+  }
+  else if(i>=10 && i<19 ){ 
+    url_= WZ_URL; process(false, url_, iFolder_ + TString("WZ_"+idx2+".root"), oFolder_+TString("out-wz_"+idx2+".root"),keys_);
+  }
+  else if( i>=19 ){
+  url_= ZZ_URL; process(false, url_, iFolder_ + TString("ZZ_"+idx3+".root"), oFolder_+TString("out-zz_"+idx3+".root"),keys_);
   }
 
 }

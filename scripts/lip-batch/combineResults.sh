@@ -11,7 +11,7 @@ if [ "${2}" = "hadd" ]; then
     
     # QCD
     hadd -f $DATAPLACE/out-qcd.root $DATAPLACE/out-qcd_*root $DATAPLACE/out-qcdmu*.root $DATAPLACE/out-PhotonJets*root
-    
+
     # zjets
     hadd -f $DATAPLACE/out-zjets.root $DATAPLACE/out-dy*root
 
@@ -19,19 +19,29 @@ if [ "${2}" = "hadd" ]; then
     hadd -f $DATAPLACE/out-singletop.root $DATAPLACE/out-stop*.root
     
     # diboson
-    hadd -f $DATAPLACE/out-dibosons.root $DATAPLACE/out-ww.root $DATAPLACE/out-wz.root $DATAPLACE/out-zz.root
+    hadd -f $DATAPLACE/out-dibosons.root $DATAPLACE/out-ww_*.root $DATAPLACE/out-wz_*.root $DATAPLACE/out-zz_*.root
+
+    # wjets
+    hadd -f $DATAPLACE/out-wjets.root $DATAPLACE/out-wjets_*.root
+
+    hadd -f $DATAPLACE/out-ttbar.root $DATAPLACE/out-ttbar_*.root
+    hadd -f $DATAPLACE/out-ttbar-ddbkg.root $DATAPLACE/out-ttbar-ddbkg_*.root
+    hadd -f $DATAPLACE/out-ttbar-mcbkg.root $DATAPLACE/out-ttbar-mcbkg_*.root
+    hadd -f $DATAPLACE/out-ttbar-mutau.root $DATAPLACE/out-ttbar-mutau_*.root
+    hadd -f $DATAPLACE/out-ttbar-mumu.root $DATAPLACE/out-ttbar-mumu_*.root
+    hadd -f $DATAPLACE/out-ttbar-emu.root $DATAPLACE/out-ttbar-emu_*.root
 
     # mc total
     hadd -f $DATAPLACE/out-mc.root $DATAPLACE/out-qcd.root $DATAPLACE/out-wjets.root $DATAPLACE/out-zjets.root $DATAPLACE/out-dibosons.root $DATAPLACE/out-ttbar.root $DATAPLACE/out-singletop.root &
 
     # data driven bkg, using mc
-    hadd -f $DATAPLACE/out-ddbkg.root $DATAPLACE/out-qcd.root $DATAPLACE/out-wjets.root $DATAPLACE/out-ttbar_ddbkg.root
+    hadd -f $DATAPLACE/out-ddbkg.root $DATAPLACE/out-qcd.root $DATAPLACE/out-wjets.root $DATAPLACE/out-ttbar-ddbkg.root
 
     ## no ##    # ttbar mc for shapes?
     ## no ##    hadd -f $DATAPLACE/out-ttbar_mcbkg_shapes.root $DATAPLACE/out-ttbar_mcbkg.root $DATAPLACE/out-ttbar_emu.root $DATAPLACE/out-ttbar_mumu.root
 
     # mc bkg (w.r.t. top xsec measurement: ttbar is signal for this)
-    hadd -f $DATAPLACE/out-mcbkg.root $DATAPLACE/out-zjets.root $DATAPLACE/out-singletop.root $DATAPLACE/out-dibosons.root $DATAPLACE/out-ttbar_mcbkg.root
+    hadd -f $DATAPLACE/out-mcbkg.root $DATAPLACE/out-zjets.root $DATAPLACE/out-singletop.root $DATAPLACE/out-dibosons.root $DATAPLACE/out-ttbar-mcbkg.root
     ## no ## $DATAPLACE/out-ttbar_emu.root $DATAPLACE/out-ttbar_mumu.root
 
     # other cont
@@ -63,7 +73,7 @@ if [ "${2}" = "hadd" ]; then
 #    elif ["${3}" = "ABC" ]; then
 #        hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root out-Muon_RunC1.root out-Muon_RunC2_*.root
 #    elif ["${3}" = "ABCD" ]; then
-    hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root out-Muon_RunC1.root out-Muon_RunC2_*.root out-Muon_RunD_*.root 
+    hadd -f out-data.root out-Muon_RunA_*.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root 
 #    fi
 
 elif [ "${2}" = "clean" ]; then

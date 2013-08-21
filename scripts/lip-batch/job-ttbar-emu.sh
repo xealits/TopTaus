@@ -2,4 +2,4 @@
 
 . $LIPCMS_BASE/scripts/lip-batch/run-batch.sh
 
-physicsAnalysis $LIPCMS_BASE/test/physicsAnalysisParSets_cfg.py ttbar_emu
+physicsAnalysis $LIPCMS_BASE/test/physicsAnalysisParSets_cfg.py ttbar_emu_${1}
