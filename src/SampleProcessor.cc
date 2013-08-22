@@ -69,22 +69,22 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[DATA_URL]      = 0.;         
       defaultXSections_[TTBAR_URL]     = 245.8/18.;  //Kidonakis - approx. NNLO - Inclusive - 234+10- - Top mass: m(top)=173GeV, Default scales: muF=muR=mt, PDF: MSTW2008 NNLO 
       
-      defaultXSections_[W_ENU_URL]     = 12503.0/18.; //NNLO 37509.0  36257.2/3 = 12085.7 - NNLO - W->lv, l=e,m,t - Inclusive W production, BR(W->lv) included, l=e,m,t, PDF error also includes alphas 
-      defaultXSections_[W_MUNU_URL]    = 12503.0/18.;
-      defaultXSections_[W_TAUNU_URL]   = 12503.0/18.; 
+      defaultXSections_[W_ENU_URL]     = 12503.0/50.; //NNLO 37509.0  36257.2/3 = 12085.7 - NNLO - W->lv, l=e,m,t - Inclusive W production, BR(W->lv) included, l=e,m,t, PDF error also includes alphas 
+      defaultXSections_[W_MUNU_URL]    = 12503.0/50.;
+      defaultXSections_[W_TAUNU_URL]   = 12503.0/50.; 
 
       defaultXSections_[WJMADGRAPH_URL]  = 37509.0/18.; // 36257.2;// 30400; //36257.2;
       
       // for the _filter sample:     xsec: 11050.0 eff: 0.069 
-      defaultXSections_[DY_10TO50_URL]          = 11050.0/9.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-10To50filter_8TeV-madgraph&campid=Summer12_DR53X
-      defaultXSections_[DY_FROM50_URL]          = 2950./9.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball&campid=Summer12_DR53X
+      defaultXSections_[DY_10TO50_URL]          = 11050.0/50.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-10To50filter_8TeV-madgraph&campid=Summer12_DR53X
+      defaultXSections_[DY_FROM50_URL]          = 2950./50.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball&campid=Summer12_DR53X
 
       defaultXSections_[S_URL]                  = 3.79;     
       defaultXSections_[T_URL]                  = 56.4;    
       defaultXSections_[W_URL]                  = 11.1;  
       
       
-      defaultXSections_[A_S_URL]                = 1.76;    
+      defaultXSections_[A_S_URL]                = 1.76/50.;    
       defaultXSections_[A_T_URL]                = 30.7;    
       defaultXSections_[A_W_URL]                = 11.1;
 
@@ -103,9 +103,9 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[QCD_PHOTON120TO170_URL] = 108.0068;
       
       
-      defaultXSections_[WW_URL]                 = 54.838/9.;
-      defaultXSections_[WZ_URL]                 = 33.72/9.;
-      defaultXSections_[ZZ_URL]                 = 17.627/9.;
+      defaultXSections_[WW_URL]                 = 54.838/50.;
+      defaultXSections_[WZ_URL]                 = 33.72/50.;
+      defaultXSections_[ZZ_URL]                 = 17.627/50.;
       
       defaultXSections_[CTRLWW_URL]             = 234; 
       defaultXSections_[WH80_URL]               = 234;            
@@ -133,15 +133,15 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[TBH300_URL]             = 07.91902 * 0.02514242; 
 
 
-      defaultXSections_[HTB180_URL]             = 22.6975  * (1 - 0.831852   ); 
-      defaultXSections_[HTB190_URL]             = 20.4088  * (1 - 0.407966   );   
-      defaultXSections_[HTB200_URL]             = 18.4811  * (1 - 0.228564   );   
-      defaultXSections_[HTB220_URL]             = 15.4027  * (1 - 0.106446   );  
-      defaultXSections_[HTB240_URL]             = 12.9842  * (1 - 0.04902523 ); 
-      defaultXSections_[HTB250_URL]             = 11.9413  * (1 - 0.04129783 ); 
-      defaultXSections_[HTB260_URL]             = 10.9879  * (1 - 0.0361988  );  
-      defaultXSections_[HTB280_URL]             = 09.31608 * (1 - 0.02984434 ); 
-      defaultXSections_[HTB300_URL]             = 07.91902 * (1 - 0.02514242 ); 
+      defaultXSections_[HTB180_URL]             = 22.6975  * (1 - 0.831852   ) / 30.; 
+      defaultXSections_[HTB190_URL]             = 20.4088  * (1 - 0.407966   ) / 30.;   
+      defaultXSections_[HTB200_URL]             = 18.4811  * (1 - 0.228564   ) / 30.;   
+      defaultXSections_[HTB220_URL]             = 15.4027  * (1 - 0.106446   ) / 30.;  
+      defaultXSections_[HTB240_URL]             = 12.9842  * (1 - 0.04902523 ) / 30.; 
+      defaultXSections_[HTB250_URL]             = 11.9413  * (1 - 0.04129783 ) / 30.; 
+      defaultXSections_[HTB260_URL]             = 10.9879  * (1 - 0.0361988  ) / 30.;  
+      defaultXSections_[HTB280_URL]             = 09.31608 * (1 - 0.02984434 ) / 30.; 
+      defaultXSections_[HTB300_URL]             = 07.91902 * (1 - 0.02514242 ) / 30.; 
    
 	
     } else {
@@ -670,7 +670,13 @@ void SampleProcessor::process_singletop(){
   url_= W_URL; process(false, url_, iFolder_ + TString("stop_tW-DR.root"), oFolder_ + TString("out-stop-DR_tW.root"),keys_); 
 
   //ANTI SINGLE TOP
-  url_= A_S_URL; process(false, url_, iFolder_ + TString("stopbar_s.root"),     oFolder_ + TString("out-stopbar_s.root"),keys_);   
+  
+  for(int i=0; i<50; i++){
+    stringstream sidx;
+    sidx<<i;
+    string idx=sidx.str();
+    url_= A_S_URL; process(false, url_, iFolder_ + TString("stopbar_s_"+idx+".root"),     oFolder_ + TString("out-stopbar_s_"+idx+".root"),keys_);   
+  }
   url_= A_T_URL; process(false, url_, iFolder_ + TString("stopbar_t.root"),     oFolder_ + TString("out-stopbar_t.root"),keys_);  
   url_= A_W_URL; process(false, url_, iFolder_ + TString("stopbar_tW-DR.root"), oFolder_ + TString("out-stopbar-DR_tW.root"),keys_);   
 
@@ -714,8 +720,8 @@ void SampleProcessor::process_zjets_from50(int i){
   // MADGRAPH Z+JETS
 
   url_ = DY_FROM50_URL; 
-  if(i>9){
-    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
     return;
   }
   
@@ -731,8 +737,8 @@ void SampleProcessor::process_zjets_10to50(int i){
   
   // MADGRAPH Z+JETS
   url_ = DY_10TO50_URL;
-  if(i>9){
-    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
     return;
   }
   
@@ -837,32 +843,41 @@ void SampleProcessor::process_tbh_higgs(){
 }
 
 
-void SampleProcessor::process_htb_higgs_bychannel(int i){
+void SampleProcessor::process_htb_higgs_bychannel(int sample, int i){
 
-  switch(i){
+  if(i>29){
+    cout << "ERROR CODE - must be in the range [0,29]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+  switch(sample){
   case 180:
-    url_ = HTB180_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m180.root"), oFolder_+TString("out-htb-pythia-m180_mutau.root"),keys_, MUTAU_); 
+    url_ = HTB180_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m180_"+idx+".root"), oFolder_+TString("out-htb-pythia-m180-mutau_"+idx+".root"),keys_, MUTAU_); 
     break;
   case 200:
-    url_ = HTB200_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m200.root"), oFolder_+TString("out-htb-pythia-m200_mutau.root"),keys_, MUTAU_); 
+    url_ = HTB200_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m200_"+idx+".root"), oFolder_+TString("out-htb-pythia-m200-mutau_"+idx+".root"),keys_, MUTAU_); 
     break;
   case 220:
-    url_ = HTB220_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m220.root"), oFolder_+TString("out-htb-pythia-m220_mutau.root"),keys_, MUTAU_); 
+    url_ = HTB220_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m220_"+idx+".root"), oFolder_+TString("out-htb-pythia-m220-mutau_"+idx+".root"),keys_, MUTAU_); 
     break;
   case 240:
-    url_ = HTB240_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m240.root"), oFolder_+TString("out-htb-pythia-m240_mutau.root"),keys_, MUTAU_); 
+    url_ = HTB240_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m240_"+idx+".root"), oFolder_+TString("out-htb-pythia-m240-mutau_"+idx+".root"),keys_, MUTAU_); 
     break;
   case 250:
-    url_ = HTB250_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m250.root"), oFolder_+TString("out-htb-pythia-m250_mutau.root"),keys_, MUTAU_); 
+    url_ = HTB250_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m250_"+idx+".root"), oFolder_+TString("out-htb-pythia-m250-mutau_"+idx+".root"),keys_, MUTAU_); 
     break;
   case 260:
-    url_ = HTB260_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m260.root"), oFolder_+TString("out-htb-pythia-m260_mutau.root"),keys_, MUTAU_); 
+    url_ = HTB260_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m260_"+idx+".root"), oFolder_+TString("out-htb-pythia-m260-mutau_"+idx+".root"),keys_, MUTAU_); 
     break;
   case 280:
-    url_ = HTB280_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m280.root"), oFolder_+TString("out-htb-pythia-m280_mutau.root"),keys_, MUTAU_); 
+    url_ = HTB280_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m280_"+idx+".root"), oFolder_+TString("out-htb-pythia-m280-mutau_"+idx+".root"),keys_, MUTAU_); 
     break;
   case 300:
-    url_ = HTB300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m300.root"), oFolder_+TString("out-htb-pythia-m300_mutau.root"),keys_, MUTAU_); 
+    url_ = HTB300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m300_"+idx+".root"), oFolder_+TString("out-htb-pythia-m300-mutau_"+idx+".root"),keys_, MUTAU_); 
     break;
   default:
     cout << "ERROR CODE - must be among [180,200,220,240,250,260,280,300]" << endl;
@@ -871,31 +886,41 @@ void SampleProcessor::process_htb_higgs_bychannel(int i){
 }
 
 
-void SampleProcessor::process_htb_higgs(int i){
-  switch(i){
+void SampleProcessor::process_htb_higgs(int sample, int i){
+  
+  if(i>29){
+    cout << "ERROR CODE - must be in the range [0,29]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+  
+  switch(sample){
   case 180:
-    url_ = HTB180_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m180.root"), oFolder_+TString("out-htb-pythia-m180.root"),keys_); 
+    url_ = HTB180_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m180_"+idx+".root"), oFolder_+TString("out-htb-pythia-m180_"+idx+".root"),keys_); 
     break;
   case 200:
-    url_ = HTB200_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m200.root"), oFolder_+TString("out-htb-pythia-m200.root"),keys_); 
+    url_ = HTB200_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m200_"+idx+".root"), oFolder_+TString("out-htb-pythia-m200_"+idx+".root"),keys_); 
     break;
   case 220:
-    url_ = HTB220_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m220.root"), oFolder_+TString("out-htb-pythia-m220.root"),keys_); 
+    url_ = HTB220_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m220_"+idx+".root"), oFolder_+TString("out-htb-pythia-m220_"+idx+".root"),keys_); 
     break;
   case 240:
-    url_ = HTB240_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m240.root"), oFolder_+TString("out-htb-pythia-m240.root"),keys_); 
+    url_ = HTB240_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m240_"+idx+".root"), oFolder_+TString("out-htb-pythia-m240_"+idx+".root"),keys_); 
     break;
   case 250:
-    url_ = HTB250_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m250.root"), oFolder_+TString("out-htb-pythia-m250.root"),keys_);
+    url_ = HTB250_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m250_"+idx+".root"), oFolder_+TString("out-htb-pythia-m250_"+idx+".root"),keys_);
     break;
   case 260:
-    url_ = HTB260_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m260.root"), oFolder_+TString("out-htb-pythia-m260.root"),keys_); 
+    url_ = HTB260_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m260_"+idx+".root"), oFolder_+TString("out-htb-pythia-m260_"+idx+".root"),keys_); 
     break;
   case 280:
-    url_ = HTB280_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m280.root"), oFolder_+TString("out-htb-pythia-m280.root"),keys_);  
+    url_ = HTB280_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m280_"+idx+".root"), oFolder_+TString("out-htb-pythia-m280_"+idx+".root"),keys_);  
     break;
   case 300:
-    url_ = HTB300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m300.root"), oFolder_+TString("out-htb-pythia-m300.root"),keys_); 
+    url_ = HTB300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m300_"+idx+".root"), oFolder_+TString("out-htb-pythia-m300_"+idx+".root"),keys_); 
     break;
   default:
     cout << "ERROR CODE - must be among [180,200,220,240,250,260,280,300]" << endl;
@@ -922,35 +947,34 @@ void SampleProcessor::process_qcd(){
  
 }
 
-void SampleProcessor::process_dibosons(int i){
 
-  if(i>27 || i<1){
-    cout << "ERROR CODE - must be in the range [1,27]" << endl;
+void SampleProcessor::process_diboson(int sample, int i){
+
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
     return;
   }
   
-  stringstream sidx, sidx2, sidx3;
+  stringstream sidx;
   sidx<<i;
-  sidx2<<(i-9);
-  sidx3<<(i-18);
   string idx=sidx.str();
-  string idx2=sidx2.str();
-  string idx3=sidx3.str();
-
-
-  if(i<10){
+  
+  switch(sample){
+  case 0:
     url_= WW_URL; process(false, url_, iFolder_ + TString("WW_"+idx+".root"), oFolder_+TString("out-ww_"+idx+".root"),keys_); 
+    break;
+  case 1:
+    url_= WZ_URL; process(false, url_, iFolder_ + TString("WZ_"+idx+".root"), oFolder_+TString("out-wz_"+idx+".root"),keys_);  
+    break;
+  case 2:
+    url_= ZZ_URL; process(false, url_, iFolder_ + TString("ZZ_"+idx+".root"), oFolder_+TString("out-zz_"+idx+".root"),keys_);
+    break;
+  default:
+    cout << "No Sample" << endl;
+    break;
   }
-  else if(i>=10 && i<19 ){ 
-    url_= WZ_URL; process(false, url_, iFolder_ + TString("WZ_"+idx2+".root"), oFolder_+TString("out-wz_"+idx2+".root"),keys_);
-  }
-  else if( i>=19 ){
-  url_= ZZ_URL; process(false, url_, iFolder_ + TString("ZZ_"+idx3+".root"), oFolder_+TString("out-zz_"+idx3+".root"),keys_);
-  }
-
+  
 }
-
-
 
 
 void SampleProcessor::process_data_RunA(int i){

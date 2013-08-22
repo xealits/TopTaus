@@ -95,11 +95,11 @@ public :
   void process_hh_higgs_bychannel();
   void process_wh_higgs();
   void process_wh_higgs_bychannel();
-  void process_dibosons(int);
+  void process_diboson(int, int);
   void process_tbh_higgs();
   void process_tbh_higgs_bychannel();
-  void process_htb_higgs(int);
-  void process_htb_higgs_bychannel(int);
+  void process_htb_higgs(int, int);
+  void process_htb_higgs_bychannel(int, int);
   void process_ttbar_unc();
 
   void process_triggersamples_mht();

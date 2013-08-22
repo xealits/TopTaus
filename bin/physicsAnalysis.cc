@@ -101,8 +101,31 @@ int main(int argc, char* argv[])
     else if (runOn == "data_muonC2_"+idx) analyzer->process_data_RunC2(i);
     else if (runOn == "data_muonD1_"+idx) analyzer->process_data_RunD1(i);
     else if (runOn == "data_muonD2_"+idx) analyzer->process_data_RunD2(i);
-    // 27 from 1
-    else if(runOn == "diboson_"+idx)            analyzer->process_dibosons(i);
+    else if(runOn == "zjets_from50_"+idx)        analyzer->process_zjets_from50(i)       ;
+    else if(runOn == "zjets_10to50_"+idx)        analyzer->process_zjets_10to50(i)       ;
+    else if(runOn == "ww_"+idx)            analyzer->process_diboson(0, i);
+    else if(runOn == "wz_"+idx)            analyzer->process_diboson(1, i);
+    else if(runOn == "zz_"+idx)            analyzer->process_diboson(2, i);
+    else if(runOn == "wjets_"+idx)               analyzer->process_wjets(i)              ;
+
+    // 30 from 0
+    else if(runOn == "htb_higgs_bychannel_180_"+idx) analyzer->process_htb_higgs_bychannel(180, i) ;
+    else if(runOn == "htb_higgs_bychannel_200_"+idx) analyzer->process_htb_higgs_bychannel(200, i) ;
+    else if(runOn == "htb_higgs_bychannel_220_"+idx) analyzer->process_htb_higgs_bychannel(220, i) ;
+    else if(runOn == "htb_higgs_bychannel_240_"+idx) analyzer->process_htb_higgs_bychannel(240, i) ;
+    else if(runOn == "htb_higgs_bychannel_250_"+idx) analyzer->process_htb_higgs_bychannel(250, i) ;
+    else if(runOn == "htb_higgs_bychannel_260_"+idx) analyzer->process_htb_higgs_bychannel(260, i) ;
+    else if(runOn == "htb_higgs_bychannel_280_"+idx) analyzer->process_htb_higgs_bychannel(280, i) ;
+    else if(runOn == "htb_higgs_bychannel_300_"+idx) analyzer->process_htb_higgs_bychannel(300, i) ;
+    else if(runOn == "htb_higgs_180_"+idx)           analyzer->process_htb_higgs(180, i)           ;
+    else if(runOn == "htb_higgs_200_"+idx)           analyzer->process_htb_higgs(200, i)           ;
+    else if(runOn == "htb_higgs_220_"+idx)           analyzer->process_htb_higgs(220, i)           ;
+    else if(runOn == "htb_higgs_240_"+idx)           analyzer->process_htb_higgs(240, i)           ;
+    else if(runOn == "htb_higgs_250_"+idx)           analyzer->process_htb_higgs(250, i)           ;
+    else if(runOn == "htb_higgs_260_"+idx)           analyzer->process_htb_higgs(260, i)           ;
+    else if(runOn == "htb_higgs_280_"+idx)           analyzer->process_htb_higgs(280, i)           ;
+    else if(runOn == "htb_higgs_300_"+idx)           analyzer->process_htb_higgs(300, i)           ;
+    
     // 18 from 1
     else if(runOn == "ttbar_mutau_"+idx)         analyzer->process_ttbar_mutau(i)    ;
     else if(runOn == "ttbar_mumu_"+idx)          analyzer->process_ttbar_mumu(i)    ;
@@ -110,10 +133,7 @@ int main(int argc, char* argv[])
     else if(runOn == "ttbar_ddbkg_"+idx)         analyzer->process_ttbar_ddbkg(i)    ;
     else if(runOn == "ttbar_mcbkg_"+idx)         analyzer->process_ttbar_mcbkg(i)    ;
     else if(runOn == "ttbar_"+idx)               analyzer->process_ttbar(i)              ;
-    else if(runOn == "wjets_"+idx)               analyzer->process_wjets(i)              ;
-    // 9 from 1
-    else if(runOn == "zjets_from50_"+idx)        analyzer->process_zjets_from50(i)       ;
-    else if(runOn == "zjets_10to50_"+idx)        analyzer->process_zjets_10to50(i)       ;
+
 
   }  
 
@@ -128,23 +148,6 @@ int main(int argc, char* argv[])
   else if(runOn == "wh_higgs")            analyzer->process_wh_higgs()           ;
   else if(runOn == "tbh_higgs_bychannel") analyzer->process_tbh_higgs_bychannel() ;
   else if(runOn == "tbh_higgs")           analyzer->process_tbh_higgs()           ;
-  else if(runOn == "htb_higgs_bychannel_180") analyzer->process_htb_higgs_bychannel(180) ;
-  else if(runOn == "htb_higgs_bychannel_200") analyzer->process_htb_higgs_bychannel(200) ;
-  else if(runOn == "htb_higgs_bychannel_220") analyzer->process_htb_higgs_bychannel(220) ;
-  else if(runOn == "htb_higgs_bychannel_240") analyzer->process_htb_higgs_bychannel(240) ;
-  else if(runOn == "htb_higgs_bychannel_250") analyzer->process_htb_higgs_bychannel(250) ;
-  else if(runOn == "htb_higgs_bychannel_260") analyzer->process_htb_higgs_bychannel(260) ;
-  else if(runOn == "htb_higgs_bychannel_280") analyzer->process_htb_higgs_bychannel(280) ;
-  else if(runOn == "htb_higgs_bychannel_300") analyzer->process_htb_higgs_bychannel(300) ;
-  else if(runOn == "htb_higgs_180")           analyzer->process_htb_higgs(180)           ;
-  else if(runOn == "htb_higgs_200")           analyzer->process_htb_higgs(200)           ;
-  else if(runOn == "htb_higgs_220")           analyzer->process_htb_higgs(220)           ;
-  else if(runOn == "htb_higgs_240")           analyzer->process_htb_higgs(240)           ;
-  else if(runOn == "htb_higgs_250")           analyzer->process_htb_higgs(250)           ;
-  else if(runOn == "htb_higgs_260")           analyzer->process_htb_higgs(260)           ;
-  else if(runOn == "htb_higgs_280")           analyzer->process_htb_higgs(280)           ;
-  else if(runOn == "htb_higgs_300")           analyzer->process_htb_higgs(300)           ;
-  
 
 
 

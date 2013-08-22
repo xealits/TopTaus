@@ -68,6 +68,16 @@ if [ "${2}" = "hadd" ]; then
     hadd -f $DATAPLACE/out-allmcbkg.root $DATAPLACE/out-ttbar.root $DATAPLACE/out-mcbkg.root &
 
 
+    hadd -f $DATAPLACE/out-htb-pythia-m180.root $DATAPLACE/out-htb-pythia-m180_*.root 
+    hadd -f $DATAPLACE/out-htb-pythia-m200.root $DATAPLACE/out-htb-pythia-m200_*.root 
+    hadd -f $DATAPLACE/out-htb-pythia-m220.root $DATAPLACE/out-htb-pythia-m220_*.root 
+    hadd -f $DATAPLACE/out-htb-pythia-m240.root $DATAPLACE/out-htb-pythia-m240_*.root 
+    hadd -f $DATAPLACE/out-htb-pythia-m250.root $DATAPLACE/out-htb-pythia-m250_*.root 
+    hadd -f $DATAPLACE/out-htb-pythia-m260.root $DATAPLACE/out-htb-pythia-m260_*.root 
+    hadd -f $DATAPLACE/out-htb-pythia-m280.root $DATAPLACE/out-htb-pythia-m280_*.root 
+    hadd -f $DATAPLACE/out-htb-pythia-m300.root $DATAPLACE/out-htb-pythia-m300_*.root 
+
+
     # higgs  mass points
     hadd -f $DATAPLACE/out-heavyHiggs-pythia-m180.root $DATAPLACE/out-tbh-pythia-m180.root $DATAPLACE/out-htb-pythia-m180.root &
     cp  $DATAPLACE/out-tbh-pythia-m190.root $DATAPLACE/out-heavyHiggs-pythia-m190.root                                         & 
