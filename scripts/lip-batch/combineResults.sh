@@ -4,6 +4,22 @@
 
 if [ "${2}" = "hadd" ]; then
 
+    DATAPLACE="${1}/nomt-2012-V1-data-MU-20GeV/"
+    
+     #DATAPLACE="/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"
+
+    cd $DATAPLACE
+
+#    if [ "${3}" = "AB" ]; then
+#    	hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root
+#    elif ["${3}" = "ABC" ]; then
+#        hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root out-Muon_RunC1.root out-Muon_RunC2_*.root
+#    elif ["${3}" = "ABCD" ]; then
+    hadd -f out-data.root out-Muon_RunA_*.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root &
+#    fi
+
+
+
     DATAPLACE="${1}/nomt-2012-V1-mc-MU-20GeV/"
     
     cd $DATAPLACE
@@ -53,29 +69,16 @@ if [ "${2}" = "hadd" ]; then
 
 
     # higgs  mass points
-    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m180.root $DATAPLACE/out-tbh-pythia-m180.root $DATAPLACE/out-htb-pythia-m180.root
-    cp  $DATAPLACE/out-tbh-pythia-m190.root $DATAPLACE/out-heavyHiggs-pythia-m190.root
-    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m200.root $DATAPLACE/out-tbh-pythia-m200.root $DATAPLACE/out-htb-pythia-m200.root
-    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m220.root $DATAPLACE/out-tbh-pythia-m220.root $DATAPLACE/out-htb-pythia-m220.root
-    cp  $DATAPLACE/out-htb-pythia-m240.root $DATAPLACE/out-heavyHiggs-pythia-m240.root
-    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m250.root $DATAPLACE/out-tbh-pythia-m250.root $DATAPLACE/out-htb-pythia-m250.root
-    cp  $DATAPLACE/out-htb-pythia-m260.root $DATAPLACE/out-heavyHiggs-pythia-m260.root
-    cp  $DATAPLACE/out-htb-pythia-m280.root $DATAPLACE/out-heavyHiggs-pythia-m280.root
-    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m300.root $DATAPLACE/out-tbh-pythia-m300.root $DATAPLACE/out-htb-pythia-m300.root
+    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m180.root $DATAPLACE/out-tbh-pythia-m180.root $DATAPLACE/out-htb-pythia-m180.root &
+    cp  $DATAPLACE/out-tbh-pythia-m190.root $DATAPLACE/out-heavyHiggs-pythia-m190.root                                         & 
+    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m200.root $DATAPLACE/out-tbh-pythia-m200.root $DATAPLACE/out-htb-pythia-m200.root &
+    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m220.root $DATAPLACE/out-tbh-pythia-m220.root $DATAPLACE/out-htb-pythia-m220.root &
+    cp  $DATAPLACE/out-htb-pythia-m240.root $DATAPLACE/out-heavyHiggs-pythia-m240.root                                         &  
+    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m250.root $DATAPLACE/out-tbh-pythia-m250.root $DATAPLACE/out-htb-pythia-m250.root &
+    cp  $DATAPLACE/out-htb-pythia-m260.root $DATAPLACE/out-heavyHiggs-pythia-m260.root                                         &
+    cp  $DATAPLACE/out-htb-pythia-m280.root $DATAPLACE/out-heavyHiggs-pythia-m280.root                                         &
+    hadd -f $DATAPLACE/out-heavyHiggs-pythia-m300.root $DATAPLACE/out-tbh-pythia-m300.root $DATAPLACE/out-htb-pythia-m300.root &
     
-    DATAPLACE="${1}/nomt-2012-V1-data-MU-20GeV/"
-    
-     #DATAPLACE="/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"
-
-    cd $DATAPLACE
-
-#    if [ "${3}" = "AB" ]; then
-#    	hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root
-#    elif ["${3}" = "ABC" ]; then
-#        hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root out-Muon_RunC1.root out-Muon_RunC2_*.root
-#    elif ["${3}" = "ABCD" ]; then
-    hadd -f out-data.root out-Muon_RunA_*.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root 
-#    fi
 
 elif [ "${2}" = "clean" ]; then
   # Clean processed files
