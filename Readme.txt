@@ -131,6 +131,11 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-08-22: Split code runs in 15 minutes (previous: one hour)
+	    Cleaned lip batch scripts feeding them arguments
+	    Better pileup file for ReReco ntuples
+	    Added top pt reweighting
+2013-08-20: Start CMSSW_5_3_9 cycle. Last tag for CMSSW_5_3_7_patch4: V13-08-20-def
 2013-08-07: Switcher for light/heavy H+ in tablebuilder
 2013-07-XX: Fixes to datacards
 	    b-tags categorization

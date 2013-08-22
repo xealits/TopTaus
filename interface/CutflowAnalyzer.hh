@@ -33,7 +33,7 @@ using namespace std;
 
 
 
-class CutflowAnalyzer : public UncertaintyCalculator, public AnalysisMonitoring, public ObjectSelector, public GenericUtils {
+class CutflowAnalyzer : public UncertaintyCalculator, public AnalysisMonitoring, public ObjectSelector, public GenericUtils, public PhysicsUtils {
 public:
   
   CutflowAnalyzer(double, bool, bool, TString, TString, TString, TString, vector<double>, vector<double>);

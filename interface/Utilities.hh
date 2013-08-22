@@ -18,6 +18,12 @@ class TH1;
 #endif
 
 namespace utilities{
+
+  class PhysicsUtils {
+  protected:
+    double ttbarReweight(double, double);
+
+  };
   
   class StatUtils { // FIXME: perhaps put them as inline for quick access?
 
