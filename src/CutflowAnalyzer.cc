@@ -35,13 +35,13 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   puFileName_ = puFileName ;
 
   // Default is ABCD in CommonDefinitions.cc
-  if(runRange=="ABCD")     LUM_ = 19477.225; // 2012 ABCD 539 ReReco.
+  if(runRange=="ABCD")     LUM_ = 19258.225; // 2012 ABCD 539 ReReco.
   // RunA: 876.225
-  // RunB: 4403.
-  // RunC1: 3697.
-  // RunC2: 3286.
-  // RunD1: 3029.
-  // RunD2: 4186
+  // RunB: 4311
+  // RunC1: 3598
+  // RunC2: 3283
+  // RunD1: 3061
+  // RunD2: 4129
   else if(runRange=="AB")  LUM_ = 0.; // Must update
   else if(runRange=="ABC") LUM_ = 0.; // Must update
   else if(runRange=="A")   LUM_ = 0.; // Must update
