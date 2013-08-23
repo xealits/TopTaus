@@ -237,6 +237,8 @@ void SampleProcessor::init(vector<TString> listOfurls, vector<double> listOfXSec
     cout<<endl<<"\n\n Number of files does not match number of xsections... \n\n\n"<<endl; 
     exit(0);
   }
+
+
   
   // Reset urls, xsections,files,histos, scales,reades,events ////////
   listOfurls_.clear();
@@ -252,7 +254,6 @@ void SampleProcessor::init(vector<TString> listOfurls, vector<double> listOfXSec
   listOfEventsToProcessMC_.clear();
 
   listOfEvents_.clear();
- 
   
   URLS_=listOfurls.size();
 
@@ -324,7 +325,27 @@ void SampleProcessor::init(){
 
     listOfHistos_[i] = (TH1D *) (listOfFiles_[i])->Get(cutflow);
     listOfEvents_[i] = (listOfHistos_[i])->GetBinContent(1);
-    listOfScales_[i] = (lum_*listOfXSections_[i])/listOfEvents_[i];   
+
+    double unsplitNumber(1.);
+    
+    if     (listOfurls_[i].Contains("ttbar_") ) unsplitNumber = 8228517.;
+    else if(listOfurls_[i].Contains("stopbar_s_") ) unsplitNumber = 139974.;
+    else if(listOfurls_[i].Contains("WJetsToLNu_") ) unsplitNumber = 43636521.;
+    else if(listOfurls_[i].Contains("dy_from50_") ) unsplitNumber = 6084984.;
+    else if(listOfurls_[i].Contains("dy_10_50_") ) unsplitNumber = 20751565.;
+    else if(listOfurls_[i].Contains("WW_") ) unsplitNumber = 9000414.;
+    else if(listOfurls_[i].Contains("WZ_") ) unsplitNumber = 9050268.;
+    else if(listOfurls_[i].Contains("ZZ_") ) unsplitNumber = 9022326.;
+    else if(listOfurls_[i].Contains("htb-pythia-m180_") ) unsplitNumber = 300000.;
+    else if(listOfurls_[i].Contains("htb-pythia-m200_") ) unsplitNumber = 299999.;
+    else if(listOfurls_[i].Contains("htb-pythia-m220_") ) unsplitNumber = 299999.;
+    else if(listOfurls_[i].Contains("htb-pythia-m240_") ) unsplitNumber = 300000.;
+    else if(listOfurls_[i].Contains("htb-pythia-m250_") ) unsplitNumber = 299668.;
+    else if(listOfurls_[i].Contains("htb-pythia-m260_") ) unsplitNumber = 299686.;
+    else if(listOfurls_[i].Contains("htb-pythia-m280_") ) unsplitNumber = 300000.;
+    else if(listOfurls_[i].Contains("htb-pythia-m300_") ) unsplitNumber = 300000.;
+
+    listOfScales_[i] = (lum_*listOfXSections_[i])/(listOfEvents_[i]/unsplitNumber);   
 
     if( listOfXSections_[i] == 0){ listOfScales_[i]=1;}  // Data
 
