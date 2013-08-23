@@ -3,26 +3,26 @@
 
 
    <process isstack="1" isdata="0" name="t#bar{t} #rightarrow #mu#tau_{h}" color="614" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar_mutau.root</file>
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-mutau.root</file>
    </process>
 
 <!--
    <process isstack="1" isdata="0" name="t#bar{t} #rightarrow #mu#mu" color="616" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar_mumu.root</file>
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-mumu.root</file>
    </process>
 
    <process isstack="1" isdata="0" name="t#bar{t} #rightarrow e#mu" color="618" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar_emu.root</file>
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-emu.root</file>
    </process>
 -->
 
    <process isstack="1" isdata="0" name="other t#bar{t}" color="8" width="1" fill="1001" fillcolor="8" markercolor="8" line="1"  linecolor="8" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar_other.root</file>
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-other.root</file>
    </process>
 
 <!--
    <process isstack="1" isdata="0" name="other t#bar{t}" color="8" width="1" fill="1001" fillcolor="8" markercolor="8" line="1"  linecolor="8" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar_mcbkg.root</file>
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-mcbkg.root</file>
    </process>
 -->
 
@@ -72,13 +72,12 @@
    </process  -->
 
    <process isstack="0" isdata="0"  opt="same histo" name="#splitline{H^{+}#rightarrow#tau#nu}{[250 GeV]}" color="001" width="3" fill="0" fillcolor="001" markercolor="001" line="1"  linecolor="001" linestyle="7" marker="1" >
-     <file weight="1.">nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m250.root</file>
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m250.root</file>
    </process>
 
    <process isstack="0" isdata="0"  opt="same histo" name="#splitline{H^{+}#rightarrow tb}{[250 GeV]}" color="002" width="3" fill="0" fillcolor="002" markercolor="002" line="1"  linecolor="002" linestyle="7" marker="1" >
-     <file weight="1.">nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m250.root</file>
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m250.root</file>
    </process>
-
 
 
 <!--
