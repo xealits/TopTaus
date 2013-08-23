@@ -976,7 +976,28 @@ void CutflowAnalyzer::tauDileptonSelection(
     else if(  ttbarLike_ == TTBAR_DDBKG_ && (channel != EJETS_CH && channel!= MUJETS_CH ) )                                             { return; }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    
+
+    // Top pt reweighting
+    if( url_ == TTBAR_URL){
+      double tPt(99999.), tbarPt(99999.);
+      event::MiniEvent_t *evmontecarlo = evRMC_->GetNewMiniEvent(i_,"mc");
+      if( evmontecarlo == 0 ){ cout<<"\n empty event"<<endl; }
+      else{
+	std::vector<PhysicsObject> mcquarksColl = evRMC_->GetPhysicsObjectsFrom(evmontecarlo,event::QUARK);
+	for( size_t iquark=0; iquark<mcquarksColl.size(); iquark++){
+	  if(mcquarksColl[iquark][1] == 6) tPt = mcquarksColl[iquark].Pt();
+	  if(mcquarksColl[iquark][1] == -6) tbarPt = mcquarksColl[iquark].Pt();
+	}
+	
+      }
+      
+      w_  *= ttbarReweight(tPt,tbarPt);
+
+
+    }
+    /////////////////////////////////////////////
+
+
     if( checkleptonsFromTauDecay_ ){
       event::MiniEvent_t *evmc = evRMC_->GetNewMiniEvent(i_,"mc");  if( evmc == 0 ){ cout<<"\n empty event"<<endl; return;}
       std::vector<PhysicsObject> mctausColl = evRMC_->GetPhysicsObjectsFrom(evmc,event::CHLEPTON);
@@ -2350,8 +2371,6 @@ void CutflowAnalyzer::tauDileptonSelection(
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
    
-
-
     // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////
     // fill weighted events and reset selected events vector weightsMS Emeri
     if( !isData_ && pdfweights_ && !sys_){
