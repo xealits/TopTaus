@@ -173,16 +173,20 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
   if( TAU_PT_MIN_== 20 ){
     
     //Muon with MT. FIXME: check these values 
-    BTAG_eff_R_ = 0.81376;         
-    BTAG_eff_F_ = 0.163441;
+    //BTAG_eff_R_ = 0.81376;         
+    //BTAG_eff_F_ = 0.163441;
+
+
+    // Muons without mt cut, 2013-08-24. Following twiki, gluon contribution not considered for ratios.
+    BTAG_eff_R_ = 0.656;         
+    BTAG_eff_F_ = 0.054;
     
-    //Muons
-    //BTAG_eff_R_ = 0.810935;
-    //BTAG_eff_F_ = 0.167423;
+
+
     
-  }else { // FIXME: check these values
-    BTAG_eff_R_ = 0.811112;
-    BTAG_eff_F_ = 0.172388;
+  }else { // Zeroed
+    BTAG_eff_R_ = 0.00000; //811112;
+    BTAG_eff_F_ = 0.00000; //172388;
   }
   /////////////////////////
   
@@ -1433,12 +1437,13 @@ void CutflowAnalyzer::tauDileptonSelection(
       int    j_ind     = j_final[j]; 
       double btagvalue = jets[j_ind][BTAGIND_];
       bool   isTagged = false;
-      
+      double bjpt(jets[j_ind].Pt()), bjeta(jets[j_ind].Eta()); 
+
       if( btagvalue > BTAG_CUT_) isTagged = true;
 
-      double newBTagSF     = BTagSF_;
-      double newLightJetSF = LightJetSF_;
-
+      double newBTagSF     = getSFb(bjpt, BTAGIND_);
+      double newLightJetSF = getSFlight(bjpt, bjeta, BTAGIND_);
+      
       // get flavour of the jet
 
       int jet_flavor = TMath::Abs(jets[j_ind][jetpgid_]);
@@ -1452,8 +1457,8 @@ void CutflowAnalyzer::tauDileptonSelection(
       if(unbtagunc_ > 0){ newLightJetSF = LightJetSF_ + err_LightJetSF_;}
       else              { newLightJetSF = LightJetSF_ - err_LightJetSF_;}
 
-      double BTagEff     = newBTagSF*BTAG_eff_R_;
-      double LightJeteff = newLightJetSF*BTAG_eff_F_;
+      //       double BTagEff     = newBTagSF*    BTAG_eff_R_;
+      //       double LightJeteff = newLightJetSF*BTAG_eff_F_;
 
       double jet_phi = jets[j_ind].Phi();
 
@@ -1464,7 +1469,7 @@ void CutflowAnalyzer::tauDileptonSelection(
       BTagSFUtil btsfutil(seed);
     
       //modify tags
-      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, BTagEff, newLightJetSF, LightJeteff);
+      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, /*BTagEff*/ BTAG_eff_R_, newLightJetSF, /*LightJeteff*/ BTAG_eff_F_);
 
       if(isTagged) nbtags_taus++;
 
@@ -2231,11 +2236,13 @@ void CutflowAnalyzer::tauDileptonSelection(
       int    j_ind     = j_final[j]; 
       double btagvalue = jets[j_ind][BTAGIND_];
       bool   isTagged = false;
-      
+      double bjpt(jets[j_ind].Pt()), bjeta(jets[j_ind].Eta()); 
+
       if( btagvalue > BTAG_CUT_) isTagged = true;
 
-      double newBTagSF     = BTagSF_;
-      double newLightJetSF = LightJetSF_;
+      double newBTagSF     = getSFb(bjpt, BTAGIND_);
+      double newLightJetSF = getSFlight(bjpt, bjeta, BTAGIND_);
+      
 
       // get flavour of the jet
 
@@ -2250,8 +2257,8 @@ void CutflowAnalyzer::tauDileptonSelection(
       if(unbtagunc_ > 0){ newLightJetSF = LightJetSF_ + err_LightJetSF_;}
       else              { newLightJetSF = LightJetSF_ - err_LightJetSF_;}
 
-      double BTagEff     = newBTagSF*BTAG_eff_R_;
-      double LightJeteff = newLightJetSF*BTAG_eff_F_;
+      //      double BTagEff     = newBTagSF*BTAG_eff_R_;
+      //      double LightJeteff = newLightJetSF*BTAG_eff_F_;
 
       double jet_phi = jets[j_ind].Phi();
 
@@ -2262,7 +2269,7 @@ void CutflowAnalyzer::tauDileptonSelection(
       BTagSFUtil btsfutil(seed);
     
       //modify tags
-      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, BTagEff, newLightJetSF, LightJeteff);
+      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, /*BTagEff*/ BTAG_eff_R_, newLightJetSF, /*LightJeteff*/ BTAG_eff_F_);
 
       if(isTagged) nbtags_taus++;
 
@@ -3605,15 +3612,21 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
     }
   }
   else {
+      
     for(uint j=0; j<hardJets.size(); ++j){  
       int    j_ind     = j_final[j]; 
       double btagvalue = jets[j_ind][BTAGIND_];
       bool   isTagged = false;
-      
-      if( btagvalue > BTAG_CUT_) isTagged = true;
+      double bjpt(jets[j_ind].Pt()), bjeta(jets[j_ind].Eta()); 
 
-      double newBTagSF     = BTagSF_;
-      double newLightJetSF = LightJetSF_;
+      if( btagvalue > BTAG_CUT_) isTagged = true;
+      
+      //      double newBTagSF     = BTagSF_;
+      //      double newLightJetSF = LightJetSF_;
+      
+      double newBTagSF     = getSFb(bjpt, BTAGIND_);
+      double newLightJetSF = getSFlight(bjpt, bjeta, BTAGIND_);
+      
 
       // get flavour of the jet
 
@@ -3628,8 +3641,8 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
       if(unbtagunc_ > 0){ newLightJetSF = LightJetSF_ + err_LightJetSF_;}
       else              { newLightJetSF = LightJetSF_ - err_LightJetSF_;}
 
-      double BTagEff     = newBTagSF*BTAG_eff_R_;
-      double LightJeteff = newLightJetSF*BTAG_eff_F_;
+//      double BTagEff     = newBTagSF*BTAG_eff_R_;
+//      double LightJeteff = newLightJetSF*BTAG_eff_F_;
 
       double jet_phi = jets[j_ind].Phi();
 
@@ -3637,10 +3650,10 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
       double seed = abs(static_cast<int>(sin_phi*100000));
 
       //Initialize class
-      BTagSFUtil btsfutil(seed);
-    
+      BTagSFUtil btsfutil(seed); // Seed must be the same per-event
+      
       //modify tags
-      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, BTagEff, newLightJetSF, LightJeteff);
+      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, /*BTagEff*/ BTAG_eff_R_, newLightJetSF, /*LightJeteff*/ BTAG_eff_F_);
 
       if(isTagged) { numb_btags++; index_btag = j_ind;} 
 

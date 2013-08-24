@@ -35,99 +35,29 @@ namespace commondefinitions{
   double XSEC_EXP_    = 234;//164.4;       //  was 158, 164.4  2.8 (stat.)  11.9 (syst.)  7.4
   double XSEC_EXP_ERR_= 16./234;  // FIXME: update error        // 14.29/164.4 => exp error, theoretical -> 165 +4/-9 +/-7
   
-  // SFb_error taken from https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFb-mujet_payload.txt (2011 prescription)
   
-  ///*
-  //  float ptmin[] = {30, 40, 50, 60, 70, 80, 100, 120, 160, 210, 260, 320, 400, 500};
-  //  float ptmax[] = {40, 50, 60, 70, 80,100, 120, 160, 210, 260, 320, 400, 500, 670};
-  //
-  //   Tagger: TCHEL within 30 < pt < 670 GeV, abs(eta) < 2.4, x = pt
-  //   SFb = 0.603913*((1.+(0.286361*x))/(1.+(0.170474*x)));
-  //*/
-  //   double SFb_error[] = {
-  //     0.0244956,
-  //     0.0237293,
-  //     0.0180131,
-  //     0.0182411,
-  //     0.0184592,
-  //     0.0106444,
-  //     0.011073,
-  //     0.0106296,
-  //     0.0175259,
-  //     0.0161566,
-  //     0.0158973,
-  //     0.0186782,
-  //     0.0371113,
-  //     0.0289788 
-  //   };
-
-
-  // 2012 prompt reco prescription
- 
-  /*
-    Tagger: CSVL within 30 < pt < 670 GeV, abs(eta) < 2.4, x = pt
-    SFb = 1.02658*((1.+(0.0195388*x))/(1.+(0.0209145*x)));
-  */
-  double SFb_error[] = {
-    0.0188743,
-    0.0161816,
-    0.0139824,
-    0.0152644,
-    0.0161226,
-    0.0157396,
-    0.0161619,
-    0.0168747,
-    0.0257175,
-    0.026424,
-    0.0264928,
-    0.0315127,
-    0.030734,
-    0.0438259 };
-  
-
-  // 22Jan2013ReReco payload: https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFb-pt_NOttbar_payload_EPS13.txt
-  // Switch when the ntuples will be ready.
+  //Payload:   https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFb-pt_WITHttbar_payload_EPS13.txt
   //  Tagger: CSVM within 20 < pt < 800 GeV, abs(eta) < 2.4, x = pt
-  //						    SFb = (0.939158+(0.000158694*x))+(-2.53962e-07*(x*x));
-  //  SFb_error[] = {
-  //    0.0415694,
-  //    0.023429,
-  //    0.0261074,
-  //    0.0239251,
-  //    0.0232416,
-  //    0.0197251,
-  //    0.0217319,
-  //    0.0198108,
-  //    0.0193,
-  //    0.0276144,
-  //    0.0205839,
-  //    0.026915,
-  //    0.0312739,
-  //    0.0415054,
-  //    0.0740561,
-  //    0.0598311 };
-  //
-  //  
-
-
-  /*  
-      double BTAG_eff_R_ = 0.812272;
-      double BTAG_eff_F_ = 0.17211;
-  */
+  //						    SFb = (0.938887+(0.00017124*x))+(-2.76366e-07*(x*x));
+  double SFb_error[] = {
+    0.0415707,
+    0.0204209,
+    0.0223227,
+    0.0206655,
+    0.0199325,
+    0.0174121,
+    0.0202332,
+    0.0182446,
+    0.0159777,
+    0.0218531,
+    0.0204688,
+    0.0265191,
+    0.0313175,
+    0.0415417,
+    0.0740446,
+    0.0596716 };
   
   
-  /*
-  // 30 GeV
-  Real Bs : numerator is : 8320.26 denominator is : 10257.8 Computed efficiency is : 0.811112 +/- 0.00278575
-  Fake 2 Bs : numerator is : 7633.33 denominator is : 44280 Computed efficiency is : 0.172388 +/- 0.00187882
-  
-  // 20 GeV
-  Real Bs : numerator is : 9635.2 denominator is : 11898.7 Computed efficiency is : 0.809769 +/- 0.00280644
-  Fake 2 Bs : numerator is : 10421.4 denominator is : 63299.4 Computed efficiency is : 0.164637 +/- 0.00147377
-  
-  */
-  
-
   // BR(H->tauNu) for the heavy tbh samples (from 180 to 300 GeV/c^2)
   std::vector<double> brHtaunu_; 
   std::vector<double> brHtb_;
@@ -145,23 +75,11 @@ namespace commondefinitions{
   
   //RUNNING CONDITIONS ////////////////////////////////////////////////
   bool run2012_         = true;
-  //  bool run2012_         = false;
   bool APPLY_MT_CUT_    = false;
-  //bool APPLY_MT_CUT_    = true;
-  bool applybtagweight_ = false;
+  bool applybtagweight_ = true; // Finally
   bool MODE_ = STARTING_AT_LJETS_; //MODE_ = STARTING_AT_LJETSPLUSMET_;
-  /*bool  eChONmuChOFF_ = true; */ 
   bool eChONmuChOFF_ = false;
-  double LUM_ = 18072.17; // 2012 ABCD final ntuples
-  //  double LUM_ = 11514.17; // 2012 ABC final ntuples
-  //  double LUM_ = 5040.32; // 2013 AB final ntuples
-
-  //  double LUM_ = 803.38; // 2012 A final ntuples
-  //  double LUM_ = 82.52; // 2012 Ar final ntuples
-  //  double LUM_ = 4154.; // 2012 B final ntuples
-  //  double LUM_ = 482.26; // 2012 C1 final ntuples
-  //  double LUM_ = 5992.; // 2012 C2 final ntuples
-  //  double LUM_ = 6558.; // 2012 D final ntuples
+  double LUM_ = 19258.225; // Full 2012 ReReco 539
   
   int BTAGIND_; double BTAG_CUT_;
   TString puFileName_;

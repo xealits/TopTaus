@@ -67,24 +67,24 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
 
       // xsections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat8TeV
       defaultXSections_[DATA_URL]      = 0.;         
-      defaultXSections_[TTBAR_URL]     = 245.8/18.;  //Kidonakis - approx. NNLO - Inclusive - 234+10- - Top mass: m(top)=173GeV, Default scales: muF=muR=mt, PDF: MSTW2008 NNLO 
+      defaultXSections_[TTBAR_URL]     = 245.8;///18.;  //Kidonakis - approx. NNLO - Inclusive - 234+10- - Top mass: m(top)=173GeV, Default scales: muF=muR=mt, PDF: MSTW2008 NNLO 
       
-      defaultXSections_[W_ENU_URL]     = 12503.0/50.; //NNLO 37509.0  36257.2/3 = 12085.7 - NNLO - W->lv, l=e,m,t - Inclusive W production, BR(W->lv) included, l=e,m,t, PDF error also includes alphas 
-      defaultXSections_[W_MUNU_URL]    = 12503.0/50.;
-      defaultXSections_[W_TAUNU_URL]   = 12503.0/50.; 
+      defaultXSections_[W_ENU_URL]     = 12503.0;///50.; //NNLO 37509.0  36257.2/3 = 12085.7 - NNLO - W->lv, l=e,m,t - Inclusive W production, BR(W->lv) included, l=e,m,t, PDF error also includes alphas 
+      defaultXSections_[W_MUNU_URL]    = 12503.0;///50.;
+      defaultXSections_[W_TAUNU_URL]   = 12503.0;///50.; 
 
-      defaultXSections_[WJMADGRAPH_URL]  = 37509.0/18.; // 36257.2;// 30400; //36257.2;
+      defaultXSections_[WJMADGRAPH_URL]  = 37509.0;///18.; // 36257.2;// 30400; //36257.2;
       
       // for the _filter sample:     xsec: 11050.0 eff: 0.069 
-      defaultXSections_[DY_10TO50_URL]          = 11050.0/50.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-10To50filter_8TeV-madgraph&campid=Summer12_DR53X
-      defaultXSections_[DY_FROM50_URL]          = 2950./50.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball&campid=Summer12_DR53X
+      defaultXSections_[DY_10TO50_URL]          = 11050.0;///50.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-10To50filter_8TeV-madgraph&campid=Summer12_DR53X
+      defaultXSections_[DY_FROM50_URL]          = 2950.;///50.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball&campid=Summer12_DR53X
 
       defaultXSections_[S_URL]                  = 3.79;     
       defaultXSections_[T_URL]                  = 56.4;    
       defaultXSections_[W_URL]                  = 11.1;  
       
       
-      defaultXSections_[A_S_URL]                = 1.76/50.;    
+      defaultXSections_[A_S_URL]                = 1.76;///50.;    
       defaultXSections_[A_T_URL]                = 30.7;    
       defaultXSections_[A_W_URL]                = 11.1;
 
@@ -103,9 +103,9 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[QCD_PHOTON120TO170_URL] = 108.0068;
       
       
-      defaultXSections_[WW_URL]                 = 54.838/50.;
-      defaultXSections_[WZ_URL]                 = 33.72/50.;
-      defaultXSections_[ZZ_URL]                 = 17.627/50.;
+      defaultXSections_[WW_URL]                 = 54.838;///50.;
+      defaultXSections_[WZ_URL]                 = 33.72;///50.;
+      defaultXSections_[ZZ_URL]                 = 17.627;///50.;
       
       defaultXSections_[CTRLWW_URL]             = 234; 
       defaultXSections_[WH80_URL]               = 234;            
@@ -133,15 +133,15 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[TBH300_URL]             = 07.91902 * 0.02514242; 
 
 
-      defaultXSections_[HTB180_URL]             = 22.6975  * (1 - 0.831852   ) / 30.; 
-      defaultXSections_[HTB190_URL]             = 20.4088  * (1 - 0.407966   ) / 30.;   
-      defaultXSections_[HTB200_URL]             = 18.4811  * (1 - 0.228564   ) / 30.;   
-      defaultXSections_[HTB220_URL]             = 15.4027  * (1 - 0.106446   ) / 30.;  
-      defaultXSections_[HTB240_URL]             = 12.9842  * (1 - 0.04902523 ) / 30.; 
-      defaultXSections_[HTB250_URL]             = 11.9413  * (1 - 0.04129783 ) / 30.; 
-      defaultXSections_[HTB260_URL]             = 10.9879  * (1 - 0.0361988  ) / 30.;  
-      defaultXSections_[HTB280_URL]             = 09.31608 * (1 - 0.02984434 ) / 30.; 
-      defaultXSections_[HTB300_URL]             = 07.91902 * (1 - 0.02514242 ) / 30.; 
+      defaultXSections_[HTB180_URL]             = 22.6975  * (1 - 0.831852   ) ;/// 30.; 
+      defaultXSections_[HTB190_URL]             = 20.4088  * (1 - 0.407966   ) ;/// 30.;   
+      defaultXSections_[HTB200_URL]             = 18.4811  * (1 - 0.228564   ) ;/// 30.;   
+      defaultXSections_[HTB220_URL]             = 15.4027  * (1 - 0.106446   ) ;/// 30.;  
+      defaultXSections_[HTB240_URL]             = 12.9842  * (1 - 0.04902523 ) ;/// 30.; 
+      defaultXSections_[HTB250_URL]             = 11.9413  * (1 - 0.04129783 ) ;/// 30.; 
+      defaultXSections_[HTB260_URL]             = 10.9879  * (1 - 0.0361988  ) ;/// 30.;  
+      defaultXSections_[HTB280_URL]             = 09.31608 * (1 - 0.02984434 ) ;/// 30.; 
+      defaultXSections_[HTB300_URL]             = 07.91902 * (1 - 0.02514242 ) ;/// 30.; 
    
 	
     } else {
@@ -326,26 +326,26 @@ void SampleProcessor::init(){
     listOfHistos_[i] = (TH1D *) (listOfFiles_[i])->Get(cutflow);
     listOfEvents_[i] = (listOfHistos_[i])->GetBinContent(1);
 
-    double unsplitNumber(1.);
+    //    double unsplitNumber(1.);
     
-    if     (listOfurls_[i].Contains("ttbar_") ) unsplitNumber = 8228517.;
-    else if(listOfurls_[i].Contains("stopbar_s_") ) unsplitNumber = 139974.;
-    else if(listOfurls_[i].Contains("WJetsToLNu_") ) unsplitNumber = 43636521.;
-    else if(listOfurls_[i].Contains("dy_from50_") ) unsplitNumber = 6084984.;
-    else if(listOfurls_[i].Contains("dy_10_50_") ) unsplitNumber = 20751565.;
-    else if(listOfurls_[i].Contains("WW_") ) unsplitNumber = 9000414.;
-    else if(listOfurls_[i].Contains("WZ_") ) unsplitNumber = 9050268.;
-    else if(listOfurls_[i].Contains("ZZ_") ) unsplitNumber = 9022326.;
-    else if(listOfurls_[i].Contains("htb-pythia-m180_") ) unsplitNumber = 300000.;
-    else if(listOfurls_[i].Contains("htb-pythia-m200_") ) unsplitNumber = 299999.;
-    else if(listOfurls_[i].Contains("htb-pythia-m220_") ) unsplitNumber = 299999.;
-    else if(listOfurls_[i].Contains("htb-pythia-m240_") ) unsplitNumber = 300000.;
-    else if(listOfurls_[i].Contains("htb-pythia-m250_") ) unsplitNumber = 299668.;
-    else if(listOfurls_[i].Contains("htb-pythia-m260_") ) unsplitNumber = 299686.;
-    else if(listOfurls_[i].Contains("htb-pythia-m280_") ) unsplitNumber = 300000.;
-    else if(listOfurls_[i].Contains("htb-pythia-m300_") ) unsplitNumber = 300000.;
+    if     (listOfurls_[i].Contains("ttbar_") )           /*unsplitNumber*/ listOfEvents_[i] =  8228517.;
+    else if(listOfurls_[i].Contains("stopbar_s_") )       /*unsplitNumber*/ listOfEvents_[i] =  139974.;
+    else if(listOfurls_[i].Contains("WJetsToLNu_") )      /*unsplitNumber*/ listOfEvents_[i] =  43636521.;
+    else if(listOfurls_[i].Contains("dy_from50_") )       /*unsplitNumber*/ listOfEvents_[i] =  6084984.;
+    else if(listOfurls_[i].Contains("dy_10_50_") )        /*unsplitNumber*/ listOfEvents_[i] =  20751565.;
+    else if(listOfurls_[i].Contains("WW_") )              /*unsplitNumber*/ listOfEvents_[i] =  9000414.;
+    else if(listOfurls_[i].Contains("WZ_") )              /*unsplitNumber*/ listOfEvents_[i] =  9050268.;
+    else if(listOfurls_[i].Contains("ZZ_") )              /*unsplitNumber*/ listOfEvents_[i] =  9022326.;
+    else if(listOfurls_[i].Contains("htb-pythia-m180_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
+    else if(listOfurls_[i].Contains("htb-pythia-m200_") ) /*unsplitNumber*/ listOfEvents_[i] =  299999.;
+    else if(listOfurls_[i].Contains("htb-pythia-m220_") ) /*unsplitNumber*/ listOfEvents_[i] =  299999.;
+    else if(listOfurls_[i].Contains("htb-pythia-m240_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
+    else if(listOfurls_[i].Contains("htb-pythia-m250_") ) /*unsplitNumber*/ listOfEvents_[i] =  299668.;
+    else if(listOfurls_[i].Contains("htb-pythia-m260_") ) /*unsplitNumber*/ listOfEvents_[i] =  299686.;
+    else if(listOfurls_[i].Contains("htb-pythia-m280_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
+    else if(listOfurls_[i].Contains("htb-pythia-m300_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
 
-    listOfScales_[i] = (lum_*listOfXSections_[i])/(listOfEvents_[i]/unsplitNumber);   
+    listOfScales_[i] = (lum_*listOfXSections_[i])/listOfEvents_[i];   
 
     if( listOfXSections_[i] == 0){ listOfScales_[i]=1;}  // Data
 

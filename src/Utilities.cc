@@ -15,12 +15,43 @@
 
 namespace utilities{
 
-  double PhysicsUtils::ttbarReweight(double genTPt, double genTbarPt){
+  double PhysicsUtils::ttbarReweight(double& genTPt, double& genTbarPt){
     return ( (genTPt>400 || genTbarPt>400) ? 1.0 : sqrt( exp( 0.148-0.00129*genTPt + 0.148-0.00129*genTbarPt ) )         );
     // dilepton values at 8 TeV (https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting#MC_SFs_Reweighting)                                                                     
   }
 
+  double PhysicsUtils::getSFb(double& pt, int& algo){
+    //Payload: https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFb-pt_WITHttbar_payload_EPS13.txt                    
+    switch(algo){
+    case 33: // CSVM within 20 < pt < 800 GeV, abs(eta) < 2.4, x = pt
+      return ( (pt<=800) ?  ( (0.938887+(0.00017124*pt))+(-2.76366e-07*(pt*pt)) ) :  ( (0.938887+(0.00017124*800.))+(-2.76366e-07*(800.*800.)) ) );
+      break;
+    default:
+      return 999999999.;
+      break;
+    }
 
+    return 9999999999.;    
+  }
+
+  double PhysicsUtils::getSFlight(double& pt, double& eta, int& algo){
+    // Payload: https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFlightFuncs_EPS2013.C
+    double aeta=fabs(eta);
+    switch(algo){
+    case 33:
+      if      (aeta >=0 && aeta < 0.8)
+	return ( ((1.07541+(0.00231827*pt))+(-4.74249e-06*(pt*pt)))+(2.70862e-09*(pt*(pt*pt))) );
+      else if (aeta >= 0.8 && aeta < 1.6)
+	return ( ((1.05613+(0.00114031*pt))+(-2.56066e-06*(pt*pt)))+(1.67792e-09*(pt*(pt*pt))) );
+      else if (aeta >=1.6 && aeta < 2.4)
+	return ( ((1.05625+(0.000487231*pt))+(-2.22792e-06*(pt*pt)))+(1.70262e-09*(pt*(pt*pt))) );
+      break;
+    default:
+      return 999999999.;
+      break;
+    }
+    return 9999999999.;
+  }
   
   double StatUtils::getErrorFraction( double a,double b){
     double ret(0);

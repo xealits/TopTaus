@@ -21,8 +21,9 @@ namespace utilities{
 
   class PhysicsUtils {
   protected:
-    double ttbarReweight(double, double);
-
+    double ttbarReweight(double&, double&);
+    double getSFb(double&, int&);
+    double getSFlight(double&, double&, int&);
   };
   
   class StatUtils { // FIXME: perhaps put them as inline for quick access?
