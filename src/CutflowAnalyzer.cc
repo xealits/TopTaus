@@ -3606,14 +3606,14 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
 
   if( isData_ || !  applybtagweight_){
     for(uint j=0; j<j_final.size(); ++j){  
-      int j_ind = hardJets[j]; 
+      int j_ind = j_final[j]; 
       double btagvalue = jets[j_ind][BTAGIND_] ;
       if( btagvalue>BTAG_CUT_){numb_btags++; index_btag = j_ind;} 
     }
   }
   else {
       
-    for(uint j=0; j<hardJets.size(); ++j){  
+    for(uint j=0; j<j_final.size(); ++j){  
       int    j_ind     = j_final[j]; 
       double btagvalue = jets[j_ind][BTAGIND_];
       bool   isTagged = false;
