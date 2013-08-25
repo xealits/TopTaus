@@ -28,12 +28,12 @@ namespace commondefinitions{
   
   double SIGNAL_EFF_ERR     = 0.04;  
   
-  double BTAG_eff_R_ = 0.809769;
-  double BTAG_eff_F_ = 0.164637;
+  double BTAG_eff_R_ = 0.656; // 2013-08-24 ttbar.
+  double BTAG_eff_F_ = 0.054;
   
   
-  double XSEC_EXP_    = 234;//164.4;       //  was 158, 164.4  2.8 (stat.)  11.9 (syst.)  7.4
-  double XSEC_EXP_ERR_= 16./234;  // FIXME: update error        // 14.29/164.4 => exp error, theoretical -> 165 +4/-9 +/-7
+  double XSEC_EXP_    = 245.8;//164.4;       //  was 158, 164.4 pm 2.8 (stat.) pm 11.9 (syst.)  pm 7.4
+  double XSEC_EXP_ERR_= 16./245.8;  // FIXME: update error        // 14.29/164.4 => exp error, theoretical -> 165 +4/-9 +/-7
   
   
   //Payload:   https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFb-pt_WITHttbar_payload_EPS13.txt
