@@ -154,12 +154,13 @@ void HistogramPlotter::processPlots(int i){
     float totalIntegral(0);
     float totalIntegralWithHiggs(0);
     for(uint u=0;u<stackSamples.size();u++){
-
+      cout << "stack place: " << u << endl;
       //cout<<endl<<" adding stack... "<<u<<endl;
       int ind = stackSamples[u];
       TString plotName = mapIdFolder_[i]+TString("/")+mapIdHistoName_[i];
       cout << "plotName " << plotName << endl;
       TH1 * histo         = ( TH1 * ) mapFiles_[ind]->Get(plotName);
+      cout << "file: " << mapFiles_[ind]->GetName() << endl;
       cout << "1: histo bins " << histo->GetXaxis()->GetNbins() << endl;
       TH1 * histoForHiggs = 0; 
  
@@ -266,7 +267,7 @@ void HistogramPlotter::processPlots(int i){
     if(plotHiggs_){ 
       //get HH , get WH and add to it
 
-
+      cout << "plotme?"<<endl;
 //      TFile * file1 = TFile::Open( "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m120.root");
 //      TFile * file2 = TFile::Open( "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m120.root");
 
@@ -347,7 +348,7 @@ void HistogramPlotter::processPlots(int i){
     //get plots from sample
     TString plotName = mapIdFolder_[i]+TString("/")+mapIdHistoName_[i];
     TH1 * histo = ( TH1 * )mapFiles_[ind]->Get(plotName);
-	 
+    cout << "fname: " << mapFiles_[ind]->GetName();
     setHistoSampleProperties(histo,ind);
     setHistoIdProperties(histo,i,firstPlot);	
 
@@ -579,7 +580,7 @@ void HistogramPlotter::plotLegend( TH1 * higgs, TLegend *l, TString title, vecto
 //   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  1.9 fb^{-1}  CMS ");
 //   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  4.0 fb^{-1} CMS Preliminary");
 //   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  4.7 fb^{-1} CMS Preliminary");
-   TText *text = pt->AddText("CMS Preliminary, #sqrt{s} = 8 TeV, 18.1 fb^{-1}");
+   TText *text = pt->AddText("CMS Preliminary, #sqrt{s} = 8 TeV, 19.3 fb^{-1}");
    text->SetTextAlign(11);
    pt->Draw();
 
@@ -669,7 +670,8 @@ void HistogramPlotter::setHistoIdProperties(TH1 *h, int i, bool firstplot){
   }
 
   map< int, int >::iterator it = mapIdXrebin_.find(i);
-  if( it != mapIdXrebin_.end() ){ h->Rebin(mapIdXrebin_[i]); }
+  if( it != mapIdXrebin_.end() ){ 
+    if(mapIdXrebin_[i]!=0) h->Rebin(mapIdXrebin_[i]); }
   cout << "rebin from map: " << mapIdXrebin_[i];
   fixExtremityBins(h,i);
 
@@ -775,7 +777,9 @@ void HistogramPlotter::setHistoSampleProperties(TH1 *h, int i){
   FormatHisto(h, mapColor_[i],mapLine_[i], mapLineWidth_[i], mapMarker_[i], mapFill_[i], false,true, mapLineColor_[i], mapFillColor_[i], mapMarkerColor_[i]  );
   map<int, int>::iterator it;
   it = mapLineStyle_.find(i);
-  if( it != mapLineStyle_.end() ){ h->SetLineStyle(mapLineStyle_[i]); }
+  if( it != mapLineStyle_.end() ){ 
+    cout << endl<< "mapline style " << mapLineStyle_[i] << endl << "integral " << h->Integral() << endl;
+      h->SetLineStyle(mapLineStyle_[i]); }
   h->Scale( mapWeights_[i] );
 
 
