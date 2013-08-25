@@ -2,8 +2,8 @@ void teenyWeenyCalcNewFakes(){
   
   // MC exp
   double 
-    mcExp(2690.7),
-    mcErr(77.3);
+    mcExp(2567.7+210.0),//2690.7),
+    mcErr(sqrt(39.1*39.1+60.3*60.3));//77.3);
   
   
   double
@@ -32,8 +32,8 @@ void teenyWeenyCalcNewFakes(){
   double
 // data    i1(3197.9), 
 // data    i2(2682.0); 
-    i1(3650.0), 
-    i2(2538.0); 
+    i1(2903.62),//3650.0), 
+    i2(2449.51);//2538.0); 
 
   double
     oldEst( (i1+i2)/2. ),
