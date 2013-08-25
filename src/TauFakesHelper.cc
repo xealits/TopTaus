@@ -1537,8 +1537,8 @@ void TauFakesHelper::ComputeTauFake(string type, vector<double>& finalValues, do
   //Get Residual Estimation from MC
   double fake_mc_res = 0, fake_mc_res_err = 0, fake_mc_res_btag = 0;
   
-  listOfurls_[1] = mcFolder+TString("out-ttbar_mcbkg.root");
-  listOfurls_.push_back( mcFolder+TString("out-ttbar_mutau.root"));
+  listOfurls_[1] = mcFolder+TString("out-ttbar-mcbkg.root");
+  listOfurls_.push_back( mcFolder+TString("out-ttbar-mutau.root"));
 //  listOfurls_.clear();
 //  listOfurls_.push_back( mcFolder+TString("out-ttbar_mcbkg.root") );
   
