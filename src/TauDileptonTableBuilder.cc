@@ -1038,7 +1038,7 @@ namespace tableutils{
       cout << "Name: " << hName << ", value: " << d[x][y] << ", stat error: " << e[x][y] <<endl;
 
       if( XSECMEASUREMENT && ( y==ETAU_TDCH || y==MUTAU_TDCH || y==LEPJETS_TDCH || /*y==LEPLEP_TDCH*/  y==EE_TDCH || y==EMU_TDCH || y==MUMU_TDCH || y==TAUJETS_TDCH || y==TAUTAU_TDCH || y==ALLJETS_TDCH)  ){  
-        double scalefactor( XSEC_EXP_ / 234. );  //note it should be 234
+        double scalefactor( XSEC_EXP_ / 245.8 ); 
         d[x][y]          *= scalefactor ; 
         d_plus[x][y]     *= scalefactor ;
         d_minus[x][y]    *= scalefactor ;     
@@ -2182,8 +2182,10 @@ namespace tableutils{
 
   //  double tau_fakes(2939.9*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(261.6*261.6*0.699*0.699 + 0.02*0.02*2939.9*2939.9); // Preliminar from kNN
 
-  double f_1tau(2771);
-  double fe_1tau(249.39);
+  //  New estimate (through as): 2528.11 +/- 241.416 (9.54926%) 
+
+  double f_1tau(2528.1);
+  double fe_1tau(241.4);
 
   double tau_fakes(f_1tau*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(fe_1tau*fe_1tau*0.699*0.699 + 0.02*0.02*f_1tau*f_1tau); // Preliminar from kNN
 
@@ -2968,7 +2970,7 @@ namespace tableutils{
 
         if( XSECMEASUREMENT && ( y==EE_TDCH || y==EMU_TDCH || y==MUMU_TDCH) /* y==LEPLEP_TDCH*/ ){   
           // Note : we re-scale ttbar lepton+lepton ( we get it from MC)
-          double scalefactor( XSEC_EXP_/234.); //note it should be 234
+          double scalefactor( XSEC_EXP_/245.8); //note it should be 234
           dMC[k]          *= scalefactor;
           dMC_plus[k]     *= scalefactor; 
           dMC_minus[k]    *= scalefactor;
