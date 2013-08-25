@@ -76,8 +76,8 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[WJMADGRAPH_URL]  = 37509.0;///18.; // 36257.2;// 30400; //36257.2;
       
       // for the _filter sample:     xsec: 11050.0 eff: 0.069 
-      defaultXSections_[DY_10TO50_URL]          = 11050.0;///50.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-10To50filter_8TeV-madgraph&campid=Summer12_DR53X
-      defaultXSections_[DY_FROM50_URL]          = 2950.;///50.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball&campid=Summer12_DR53X
+      defaultXSections_[DY_10TO50_URL]          = 860.5;//P. 11050.0;///50.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-10To50filter_8TeV-madgraph&campid=Summer12_DR53X
+      defaultXSections_[DY_FROM50_URL]          = 3503.71;//P. 2950.;///50.; // from http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball&campid=Summer12_DR53X
 
       defaultXSections_[S_URL]                  = 3.79;     
       defaultXSections_[T_URL]                  = 56.4;    
@@ -107,21 +107,21 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[WZ_URL]                 = 33.72;///50.;
       defaultXSections_[ZZ_URL]                 = 17.627;///50.;
       
-      defaultXSections_[CTRLWW_URL]             = 234; 
-      defaultXSections_[WH80_URL]               = 234;            
-      defaultXSections_[HH80_URL]               = 234;                                           
-      defaultXSections_[WH100_URL]              = 234;                                          
-      defaultXSections_[HH100_URL]              = 234;                                        
-      defaultXSections_[WH120_URL]              = 234;                                          
-      defaultXSections_[HH120_URL]              = 234;                                          
-      defaultXSections_[WH140_URL]              = 234;                                          
-      defaultXSections_[HH140_URL]              = 234; 
-      defaultXSections_[WH150_URL]              = 234; 
-      defaultXSections_[HH150_URL]              = 234; 
-      defaultXSections_[WH155_URL]              = 234; 
-      defaultXSections_[HH155_URL]              = 234; 
-      defaultXSections_[WH160_URL]              = 234;                                           
-      defaultXSections_[HH160_URL]              = 234;                                                                                 
+      defaultXSections_[CTRLWW_URL]             = 245.8; 
+      defaultXSections_[WH80_URL]               = 245.8;            
+      defaultXSections_[HH80_URL]               = 245.8;                                           
+      defaultXSections_[WH100_URL]              = 245.8;                                          
+      defaultXSections_[HH100_URL]              = 245.8;                                        
+      defaultXSections_[WH120_URL]              = 245.8;                                          
+      defaultXSections_[HH120_URL]              = 245.8;                                          
+      defaultXSections_[WH140_URL]              = 245.8;                                          
+      defaultXSections_[HH140_URL]              = 245.8; 
+      defaultXSections_[WH150_URL]              = 245.8; 
+      defaultXSections_[HH150_URL]              = 245.8; 
+      defaultXSections_[WH155_URL]              = 245.8; 
+      defaultXSections_[HH155_URL]              = 245.8; 
+      defaultXSections_[WH160_URL]              = 245.8;                                           
+      defaultXSections_[HH160_URL]              = 245.8;                                                                                 
       
       // This yields include branching ratio (which for the light charged higgs was identically 1 and thus not included)
       // Must fix in the tables (which currently use a mismatched normalization assuming 234 as a start)
@@ -327,15 +327,15 @@ void SampleProcessor::init(){
     listOfEvents_[i] = (listOfHistos_[i])->GetBinContent(1);
 
     //    double unsplitNumber(1.);
-    
+
     if     (listOfurls_[i].Contains("ttbar_") )           /*unsplitNumber*/ listOfEvents_[i] =  8228517.;
     else if(listOfurls_[i].Contains("stopbar_s_") )       /*unsplitNumber*/ listOfEvents_[i] =  139974.;
     else if(listOfurls_[i].Contains("WJetsToLNu_") )      /*unsplitNumber*/ listOfEvents_[i] =  43636521.;
     else if(listOfurls_[i].Contains("dy_from50_") )       /*unsplitNumber*/ listOfEvents_[i] =  6084984.;
-    else if(listOfurls_[i].Contains("dy_10_50_") )        /*unsplitNumber*/ listOfEvents_[i] =  20751565.;
-    else if(listOfurls_[i].Contains("WW_") )              /*unsplitNumber*/ listOfEvents_[i] =  9000414.;
-    else if(listOfurls_[i].Contains("WZ_") )              /*unsplitNumber*/ listOfEvents_[i] =  9050268.;
-    else if(listOfurls_[i].Contains("ZZ_") )              /*unsplitNumber*/ listOfEvents_[i] =  9022326.;
+    else if(listOfurls_[i].Contains("dy_10_50_") )        /*unsplitNumber*/ listOfEvents_[i] =  7107167.;//20751565.;
+    else if(listOfurls_[i].Contains("WW_") )              /*unsplitNumber*/ listOfEvents_[i] =  9840413.;//9000414.;
+    else if(listOfurls_[i].Contains("WZ_") )              /*unsplitNumber*/ listOfEvents_[i] =  9985267.;//9050268.;
+    else if(listOfurls_[i].Contains("ZZ_") )              /*unsplitNumber*/ listOfEvents_[i] =  9396412.;//9022326.;
     else if(listOfurls_[i].Contains("htb-pythia-m180_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
     else if(listOfurls_[i].Contains("htb-pythia-m200_") ) /*unsplitNumber*/ listOfEvents_[i] =  299999.;
     else if(listOfurls_[i].Contains("htb-pythia-m220_") ) /*unsplitNumber*/ listOfEvents_[i] =  299999.;
