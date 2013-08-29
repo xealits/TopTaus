@@ -55,9 +55,27 @@
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >btagmultiplicity_j_4</item>
   </id>
 
+  <id tag="muCh_correctedbtagmultiplicity_j" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  yrange="10,10000000" xtitle="N_{b-tags}">
+    <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet" >corrected_btagmultiplicity_j_4</item>
+  </id>
+
+
+  <id tag="muCh_btagmultiplicity_j_1b" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  yrange="0.01,10000" xrange="1,5" xtitle="N_{b-tags}">
+    <item dir="PFlow/RecoSteps/lep_tau/1 btag" >btagmultiplicity_j_7</item>
+  </id>
+
+  <id tag="muCh_correctedbtagmultiplicity_j_1b" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  yrange="0.01,10000" xrange="1,5" xtitle="N_{b-tags}">
+    <item dir="PFlow/RecoSteps/lep_tau/1 btag" >corrected_btagmultiplicity_j_7</item>
+  </id>
+
+  <id tag="muCh_corrected_btagmultiplicity_j_OS" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  yrange="0.01,10000" xrange="1,5" xtitle="N_{b-tags}">
+    <item dir="PFlow/RecoSteps/lep_tau/OS" >corrected_btagmultiplicity_j_9</item>
+  </id>
+
   <id tag="muCh_btagmultiplicity_j_OS" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  yrange="0.01,10000" xrange="1,5" xtitle="N_{b-tags}">
     <item dir="PFlow/RecoSteps/lep_tau/OS" >btagmultiplicity_j_9</item>
   </id>
+
 
 
   <id tag="muCh_btag_j" doratio="1" logy="1" cmspublic="y" oflow="1" title="" ytitle="Events"  xrange="0,1.2" xtitle="Combined Secondary Vertex b-tag" yrange="100,1000000" >
