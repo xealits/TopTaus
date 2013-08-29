@@ -27,7 +27,7 @@
     <item dir="PFlow/RecoSteps/lep_tau/OS">pt_t_9</item>
   </id> 
 
-  <id tag="muCh_eta_t_OS" doratio="1" logy="0" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events" xtitle="#eta^{#tau}" xbin="4" yrange="0,1500">
+  <id tag="muCh_eta_t_OS" doratio="1" logy="0" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events" xtitle="#eta^{#tau}" xbin="1" yrange="0,400">
     <item dir="PFlow/RecoSteps/lep_tau/OS">eta_t_9</item>
   </id> 
 
