@@ -94,7 +94,7 @@ void ObjectSelector::SetLeptonPlusJetsSelection(){
   // taus /////////////////////////////////////////////////////// 
   TAU_PF_LEADTRKPT_MIN_ = 5;  // WARNING 5;
   TAU_LEADPFPT_MIN_     = 10; // WARNING 10;  // lead track on pt
-  TAU_ETA_MAX_          = 2.4; 
+  TAU_ETA_MAX_          = 2.3; // TEST 2.3 (POG). But we usually use 2.4 for consistency with jet acceptance; 
   TAU_RELISO_           = 0.9;
   TAU_EOP_CUT_          = 0.5;
   TAU_EMF_CUT_          = 0.9;
