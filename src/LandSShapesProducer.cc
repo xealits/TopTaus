@@ -70,7 +70,9 @@ void LandSShapesProducer::Init(){
   signalShapesToCompare_.clear();
   signalShapesToCompareHH_.clear();
   signalShapesToCompareWH_.clear();
-  
+
+  signalNormFactor_.clear();
+
   // Init RooFit variables
   // unused here. It's from TauDileptonPDFBuilderFitter
 
@@ -88,7 +90,7 @@ void LandSShapesProducer::Init(){
   massPointName_  = mFitPars.getParameter<vector<std::string> >("massPointName");
   nMassPoints_ = massPointName_.size();
 
-  signalNormFactor_ = mFitPars.getParameter<double>("signalNormFactor");
+  signalNormFactor_ = mFitPars.getParameter<vector<double> >("signalNormFactor");
 
 
   vector<string>baseDirTemp = mFitPars.getParameter<vector<std::string> >("baseDir");
@@ -601,7 +603,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     cout << "DEBUG: Drawing templates." << endl;
     cout << "Sample " << sampleName_[f] << ", integral " << hist_[f]->Integral() << endl;
     if(isDDbkg_[f]){
-      hist_[f]->Scale(1936.93/hist_[f]->Integral());
+      hist_[f]->Scale(1767.14/hist_[f]->Integral());
       ddbkgHistUp_ =   (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Up") );
       ddbkgHistDown_ = (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Down") );
       
@@ -627,8 +629,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   hist_[nSamples_]  ->Sumw2();
   hist_[nSamples_+1]->Sumw2();
   
-  hist_[nSamples_]->Scale(183.38/hist_[nSamples_]->Integral());      // Normalize to sample  Ztautau  
-  hist_[nSamples_+1]->Scale(9.21/hist_[nSamples_+1]->Integral()); // Normalize to sample    Zee,mumu
+  hist_[nSamples_]->Scale(272.804/hist_[nSamples_]->Integral());      // Normalize to sample  Ztautau  
+  hist_[nSamples_+1]->Scale(11.407/hist_[nSamples_+1]->Integral()); // Normalize to sample    Zee,mumu
 
   //	  cout << "sample " << sampleName_[nSamples_] << ", integral " << hist_[nSamples_]->Integral() << endl;
   //	  cout << "sample " << sampleName_[nSamples_+1] << ", integral " << hist_[nSamples_+1]->Integral() << endl;
@@ -687,8 +689,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     systHist_[a][nSamples_]  ->Sumw2();
     systHist_[a][nSamples_+1]->Sumw2();
     
-    systHist_[a][nSamples_]  ->Scale( (183.38/systHist_[a][nSamples_]->Integral()  )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )    );
-    systHist_[a][nSamples_+1]->Scale( (9.21/systHist_[a][nSamples_+1]->Integral() )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )  );
+    systHist_[a][nSamples_]  ->Scale( (272.804/systHist_[a][nSamples_]->Integral()  )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )    );
+    systHist_[a][nSamples_+1]->Scale( (11.407/systHist_[a][nSamples_+1]->Integral() )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )  );
     
     for(size_t f=0; f<nSamples_+2; f++){
       if(f>nSamples_-1){ // Repeat colours for newly cloned histos
@@ -1229,9 +1231,10 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
  
     //    cout << "dd integral: " << hist_[3]->Integral() << endl;
-    normalize(hs, 1.);
+    // do not normalize btagmulti     normalize(hs, 1.);
     //    hs.SetMaximum(0.4);
-    hs.SetMaximum(1.2);
+    // do not normalize btagmulti    hs.SetMaximum(1.2);
+    hs.SetMaximum(20000);
     hs.Draw("hist");
     hs.GetXaxis()->SetRange(displayMin_,displayMax_);    
     hs.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
@@ -1241,12 +1244,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     hs.GetXaxis()->SetTitle("btag multiplicity");
     //  hs.GetXaxis()->SetTitleOffset(1.5);
     
-    hist_[0]->Scale(1./hist_[0]->Integral());
+    // do not normalize btagmulti     hist_[0]->Scale(1./hist_[0]->Integral());
     hist_[0]->GetXaxis()->SetRange(displayMin_,displayMax_);    
     hist_[0]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
   
     hist_[0]->Draw("same");
-    higgsH_->Scale(1./higgsH_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
+    // do not normalize btagmulti    higgsH_->Scale(1./higgsH_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
     higgsH_->GetXaxis()->SetRange(displayMin_,displayMax_);    
     higgsH_->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     higgsH_->Draw("histsame");
@@ -1325,7 +1328,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     // End normal drawing -----------------------------------
     
     leg_->Draw();
-    
+
+    gPad->SetLogy();
     canvas_->SaveAs((outFolder_+outputFileName+string(".pdf")).c_str());
     canvas_->SaveAs((outFolder_+outputFileName+string(".png")).c_str());
     canvas_->cd();
@@ -1347,8 +1351,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   for(size_t f=0; f<nSamples_+2; f++){
     for(int ibin=1; ibin<=hist_[f]->GetNbinsX(); ibin++){ // <= is for overflow
       
-      hist_[nSamples_]->Scale(183.38/hist_[nSamples_]->Integral());      // Normalize to sample
-      hist_[nSamples_+1]->Scale(9.21/hist_[nSamples_+1]->Integral()); // Normalize to sample
+      hist_[nSamples_]->Scale(272.804/hist_[nSamples_]->Integral());      // Normalize to sample
+      hist_[nSamples_+1]->Scale(11.407/hist_[nSamples_+1]->Integral()); // Normalize to sample
       
       //      if(f == 1 | f == 2)
       if(ibin==1 && hist_[f]->GetBinContent(ibin) != 0){
@@ -1384,7 +1388,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   // Rescale stat plots - they must have the same integral as the base ones
   for(size_t f=0; f<nSamples_+2; f++){
 
-    if(isSignal_[f]) hist_[f]->Scale( signalNormFactor_  );
+    if(isSignal_[f]) hist_[f]->Scale( signalNormFactor_[currentMassPoint_] );
     histStatUp_[f]->Scale(hist_[f]->Integral()/histStatUp_[f]->Integral());
     histStatDown_[f]->Scale(hist_[f]->Integral()/histStatDown_[f]->Integral());
   }
@@ -1646,8 +1650,8 @@ void LandSShapesProducer::UnrollMultiDimensionalShape(){
   }
 
     
-  unrolled_[nSamples_]->Scale(183.38/unrolled_[nSamples_]->Integral());      // Normalize to sample
-  unrolled_[nSamples_+1]->Scale(9.21/unrolled_[nSamples_+1]->Integral()); // Normalize to sample
+  unrolled_[nSamples_]->Scale(272.804/unrolled_[nSamples_]->Integral());      // Normalize to sample
+  unrolled_[nSamples_+1]->Scale(11.407/unrolled_[nSamples_+1]->Integral()); // Normalize to sample
 
   
   // Rescale stat plots - they must have the same integral as the base ones
@@ -1676,8 +1680,8 @@ void LandSShapesProducer::UnrollMultiDimensionalShape(){
 	}
       }
     }
-    unrolledSyst_[a][nSamples_]->Scale(183.38/unrolledSyst_[a][nSamples_]->Integral());      // Normalize to sample
-    unrolledSyst_[a][nSamples_+1]->Scale(9.21/unrolledSyst_[a][nSamples_+1]->Integral()); // Normalize to sample
+    unrolledSyst_[a][nSamples_]->Scale(272.804/unrolledSyst_[a][nSamples_]->Integral());      // Normalize to sample
+    unrolledSyst_[a][nSamples_+1]->Scale(11.407/unrolledSyst_[a][nSamples_+1]->Integral()); // Normalize to sample
 
   }
 

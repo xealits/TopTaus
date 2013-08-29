@@ -128,7 +128,7 @@ private:
   double displayMin_;
   double displayMax_;
 
-  double signalNormFactor_;
+  vector<double> signalNormFactor_;
 
   vector<TString> inputFileName_; // Build from mass ranges
 
