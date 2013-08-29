@@ -29,9 +29,9 @@ namespace tableutils{
 
     // Multiplier for yields // Must modify and make it clear from python file
     for(size_t i=0; i<brHtaunu_.size(); ++i)
-      brHtaunu_[i] = 100.;
+      brHtaunu_[i] = 1.; //100.;
     for(size_t i=0; i<brHtb_.size(); ++i)
-      brHtb_[i] = 100.;
+      brHtb_[i] = 1.; //100.;
     
     bool triggerunc(true);  //enable/disable syst on trigger
     
@@ -2150,24 +2150,40 @@ namespace tableutils{
   void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool lightH, bool systset1, bool systset2, bool systset3, bool produceDatacards, bool withShapes, bool withStatShapes, bool unsplit){ 
 
 
-    //    if(!doTheDatacards) // For datacards we want 234., for tables we want 1.1 // This does not need conditional, because of the default values
-
     if(!produceDatacards){ // 100 times the cross section*BR
       for(size_t i=0; i<brHtaunu_.size(); ++i)
-	brHtaunu_[i] = 100.;
+	brHtaunu_[i] = 1;//100.;
       for(size_t i=0; i<brHtb_.size(); ++i)
-	brHtb_[i] = 100.;
+	brHtb_[i] = 1;//100.;
     }
     else { // normalize to 1pb (so that the signal strength is already numerically equal to mu*sigma_exp*BR_TH
+      vector<double> scaleByTaunu, scaleByTb;
+
+      scaleByTaunu.push_back(22.6975 );
+      scaleByTaunu.push_back(20.4088 );  
+      scaleByTaunu.push_back(18.4811 );  
+      scaleByTaunu.push_back(15.4027 ); 
+      scaleByTaunu.push_back(11.9413 );
+      scaleByTaunu.push_back(07.91902);
+      
+      scaleByTb.push_back(22.6975  ); 
+      //      scaleByTb.push_back(20.4088  );   
+      scaleByTb.push_back(18.4811  );   
+      scaleByTb.push_back(15.4027  );  
+      scaleByTb.push_back(12.9842  ); 
+      scaleByTb.push_back(11.9413  ); 
+      scaleByTb.push_back(10.9879  );  
+      scaleByTb.push_back(09.31608 ); 
+      scaleByTb.push_back(07.91902 ); 
       for(size_t i=0; i<brHtaunu_.size(); ++i)
-	brHtaunu_[i] = 1./0.11601;
+	brHtaunu_[i] = 1./scaleByTaunu[i];
       for(size_t i=0; i<brHtb_.size(); ++i)
-	brHtb_[i] = 1./0.11601;
-      }
-       
-  //  double ttbar_init(20416081); //SIMPLE evt processed
-  double ttbar_init(8228517); // evt processed from debug.txt
-   
+	brHtb_[i] = 1./scaleByTb[i];
+    }
+    
+    //  double ttbar_init(20416081); //SIMPLE evt processed
+    double ttbar_init(8228517); // evt processed from debug.txt
+    
   
   // For datacards
   vector<vector<double> > tbh_datacards;
