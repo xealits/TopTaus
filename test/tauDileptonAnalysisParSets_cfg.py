@@ -17,13 +17,13 @@ LandSShapesProducerParSet = cms.PSet(
     #    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
     
     
-    baseDir = cms.vstring("/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-data-MU-20GeV/",
-                          "/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/",
-                          "/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-data-MU-20GeV/",
-                          "/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/",
-                          "/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/",
-                          "/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/",
-                          "/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_7_patch4/chiggs/nomt-2012-V1-mc-MU-20GeV/"
+    baseDir = cms.vstring("/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test2/nomt-2012-V1-data-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test2/nomt-2012-V1-mc-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test2/nomt-2012-V1-data-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test2/nomt-2012-V1-mc-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test2/nomt-2012-V1-mc-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test2/nomt-2012-V1-mc-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test2/nomt-2012-V1-mc-MU-20GeV/"
                           ),
     
     
@@ -31,7 +31,7 @@ LandSShapesProducerParSet = cms.PSet(
     #    inputFileName      = cms.vstring( "out-data.root", "out-wh-pythia-", "out-hh-pythia-", "out-data_rescaled.root", "out-ttbar_mutau.root", "out-ttbar_mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
 
     #    inputFileName      = cms.vstring( "out-data.root", "out-htb-pythia-", "out-data_rescaled.root", "out-ttbar_mutau.root", "out-ttbar_mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
-    inputFileName      = cms.vstring( "out-data.root", "out-heavyHiggs-pythia-", "out-data_rescaled.root", "out-ttbar_mutau.root", "out-ttbar_mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
+    inputFileName      = cms.vstring( "out-data.root", "out-heavyHiggs-pythia-", "out-data_rescaled.root", "out-ttbar-mutau.root", "out-ttbar-mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
 
     # is it *really* needed that "3" that was told it is necessary in the lands framework?
     #    sampleName      = cms.vstring( "data_obs", "WH3", "HH3", "tau_fake3", "tt_ltau3", "tt_ll3", "singleTop3","di_boson3", "Z_tautau3",  "Z_eemumu3" ),
@@ -47,7 +47,18 @@ LandSShapesProducerParSet = cms.PSet(
     doMultiDimensionalShapes = cms.bool(False),
     unsplitUncertainties = cms.bool(False),
 
-    signalNormFactor = cms.double(1./0.11601),
+    signalNormFactor = cms.vdouble(
+    1./22.6975  , 
+    #    1./20.4088  ,   m190
+    1./18.4811  ,   
+    1./15.4027  ,  
+    1./12.9842  , 
+    1./11.9413  , 
+    1./10.9879  ,  
+    1./09.31608 , 
+    1./07.91902 , 
+    ),
+
     #signalNormFactor = cms.double(1.),
 
     
@@ -79,7 +90,9 @@ LandSShapesProducerParSet = cms.PSet(
     
     #osCutEff               = cms.double(0.69*220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
     #    osCutEff               = cms.double(2054.99/4232.500009), #FIXME: subtract residual shape 0.699), # // FIXME: fixme 220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
-    osCutEff = cms.double(1936.929*1936.929/202.1/2045.11),
+    osCutEff = cms.double(1767.14*1767.14/202.1/2045.11),
+
+
     #2810.89/5736.58),
 
 
@@ -118,9 +131,9 @@ LandSShapesProducerParSet = cms.PSet(
 
 
 vars        = cms.vstring("btagmultiplicity_j" ),
-mins        = cms.vdouble(     0               ),
-maxs        = cms.vdouble(   4                 ),
-bins        = cms.vint32(     4                ),
+mins        = cms.vdouble(     1               ),
+maxs        = cms.vdouble(   6                 ),
+bins        = cms.vint32(     5                ),
 hmin        = cms.vdouble(     0               ),
 hmax        = cms.vdouble(   600               ),
 unbinned    = cms.vint32(      0               ),
