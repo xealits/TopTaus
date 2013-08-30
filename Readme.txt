@@ -16,6 +16,14 @@ its libraries - whoah running time is already 1/2 than before, LoL
 ------------
 Installation
 ------------
+# 539
+setenv SCRAM_ARCH slc5_amd64_gcc462
+scramv1 project CMSSW CMSSW_5_3_9
+cd CMSSW_5_3_9/src/
+cmsenv
+# must update recipe: cvs co -p UserCode/LIP/TopTaus/TAGS_2012.txt | sh
+scram b -j8
+
 
 # 537
 setenv SCRAM_ARCH slc5_amd64_gcc462
@@ -131,6 +139,8 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-08-30: Improved things for freezing.
+	    Correted bug in jes/jer/met systematics shapes
 2013-08-22: Split code runs in 15 minutes (previous: one hour)
 	    Cleaned lip batch scripts feeding them arguments
 	    Better pileup file for ReReco ntuples
