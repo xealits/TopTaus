@@ -1401,7 +1401,9 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     string nonormName = histStatUp_[f]->GetName();
     nonormName += string("_noNorm");
     histStatNoNorm_.push_back( (TH1*) histStatUp_[f]->Clone( nonormName.c_str() ) );
-    histStatUp_[f]->Scale(hist_[f]->Integral()/histStatUp_[f]->Integral());
+    if(isSignal_[f])
+      histStatNoNorm_[f]->Scale( signalNormFactor_[currentMassPoint_] );
+    histStatUp_[f]->Scale(hist_[f]->Integral()/histStatUp_[f]->Integral() );
     histStatDown_[f]->Scale(hist_[f]->Integral()/histStatDown_[f]->Integral());
   }
   
@@ -2035,6 +2037,7 @@ void LandSShapesProducer::ShapesToDatacard(){
   // Get all the syst components
 
   // Write and close datacard_
+  datacard_.close();
 
 }
 
