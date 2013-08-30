@@ -9,6 +9,7 @@ LandSShapesProducerParSet = cms.PSet(
     outFolder        = cms.string("shapes/"),
     #    outFolder        = cms.string("testMultiDimensionalShapes/"),
     outputFileName  = cms.string("shapes"),
+    datacardsBaseName  = cms.string("datacard"),
 #    massPointName   = cms.vstring("m180", "m190", "m200", "m220", "m250", "m300"),
     massPointName   = cms.vstring("m180","m200","m220","m240","m250","m260","m280","m300"),
 
@@ -79,13 +80,17 @@ LandSShapesProducerParSet = cms.PSet(
     systComponents = cms.vstring(
     "_plus"    , "_minus"    ,
     "_uncplus" , "_uncminus" ,
-    "_jerplus" , "_jerminus" 
+    "_jerplus" , "_jerminus" ,
+    "_bplus"   , "_bminus"   ,
+    "_unbplus" , "_unbminus"
     ),
-    
+
     systFancyComponents = cms.vstring(
     "_jesUp"    , "_jesDown"    ,
     "_metUp" , "_metDown" ,
-    "_jerUp" , "_jerDown" 
+    "_jerUp" , "_jerDown" ,
+    "_bUp"   , "_bDown"   ,
+    "_unbUp" , "_unbMinus"
     ),
     
     #osCutEff               = cms.double(0.69*220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
