@@ -85,6 +85,8 @@ private:
   void UnrollMultiDimensionalShape();
   void StorePerMassSignalShapes();
   void DrawSignalShapesComparison();
+
+  void ShapesToDatacard();
   
   // void BuildConstrainedModels(size_t);
   //  void DoPerVariableFit(size_t);
@@ -99,11 +101,13 @@ private:
   // Output paths
   string outFolder_;
   string outputFileName_;
+  string datacardsBaseName_;
   vector<string> massPointName_;
   string resultsFileName_; // not used. txt.
   ofstream resultsFile_;
   streambuf* streamToFile_;
 
+  ofstream datacard_;
   // Style
   TStyle* myStyle_;
 
@@ -213,9 +217,9 @@ private:
   TH1* ddbkgHistUp_;  // These are for showing the error bands. Not for LandS
   TH1* ddbkgHistDown_;// These are for showing the error bands. Not for LandS
   vector<TH1*> hist_;
-  
+  vector<TH1*> histStatNoNorm_;
   vector<TH1*> histStatUp_;
-  
+
   vector<TH1*> histStatDown_;
   
   vector<vector<TH1*> > systHist_;

@@ -1,5 +1,5 @@
 #include "LIP/TopTaus/interface/LandSShapesProducer.hh"
-
+#include "LIP/TopTaus/interface/CommonDefinitions.hh" // Purely for writing down lumi to datacards file, for reference
 
 // System includes
 #include <sstream>
@@ -16,6 +16,7 @@
 #include <TGraphAsymmErrors.h>
 #include <TText.h>
 #include <TPaveText.h>
+
 
 using namespace std;
 using namespace RooFit;
@@ -87,6 +88,8 @@ void LandSShapesProducer::Init(){
 
   outFolder_        = mFitPars.getParameter<std::string>("outFolder");
   outputFileName_  = mFitPars.getParameter<std::string>("outputFileName");
+  datacardsBaseName_ = mFitPars.getParameter<std::string>("datacardsBaseName");
+
   massPointName_  = mFitPars.getParameter<vector<std::string> >("massPointName");
   nMassPoints_ = massPointName_.size();
 
@@ -267,6 +270,7 @@ void LandSShapesProducer::InitPerVariableAmbient(size_t i){
   mySystDS_    .clear();
 
   hist_.clear();
+  histStatNoNorm_.clear();
   histStatUp_.clear();
   histStatDown_.clear();
   systHist_.clear();
@@ -1388,7 +1392,15 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   // Rescale stat plots - they must have the same integral as the base ones
   for(size_t f=0; f<nSamples_+2; f++){
 
-    if(isSignal_[f]) hist_[f]->Scale( signalNormFactor_[currentMassPoint_] );
+    if(isSignal_[f]){
+      hist_[f]->Scale( signalNormFactor_[currentMassPoint_] );
+      for(size_t a=0; a<nSysts_; a++){ // Loop on syst components
+	systHist_[a][f]->Scale( signalNormFactor_[currentMassPoint_] );
+      }
+    }
+    string nonormName = histStatUp_[f]->GetName();
+    nonormName += string("_noNorm");
+    histStatNoNorm_.push_back( (TH1*) histStatUp_[f]->Clone( nonormName.c_str() ) );
     histStatUp_[f]->Scale(hist_[f]->Integral()/histStatUp_[f]->Integral());
     histStatDown_[f]->Scale(hist_[f]->Integral()/histStatDown_[f]->Integral());
   }
@@ -1560,8 +1572,10 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   }
   // ---
   
-  if(produceOnly_ && !doMultiDimensionalShapes_)
-     outputFile->Close();
+  if(produceOnly_ && !doMultiDimensionalShapes_){
+    ShapesToDatacard(); // produce datacards - let's see   
+    outputFile->Close();
+  }
   
   cout << "File closed" << endl;
   
@@ -1803,6 +1817,225 @@ void LandSShapesProducer::DrawSignalShapesComparison(){
   }
 
     
+}
+
+void LandSShapesProducer::ShapesToDatacard(){
+
+
+  // Create txt file
+  time_t secs=time(0);
+  tm *t=localtime(&secs);
+  
+  datacard_.open (   (outFolder_+datacardsBaseName_+string("_")+massPointName_[currentMassPoint_] +string("_mutau.txt") ).c_str()     ); 
+  
+  datacard_<< fixed << showpoint <<setprecision(3); // fixed point, show 3 decimals
+  datacard_<<"Data: "<<t->tm_mday<<"/"<<t->tm_mon+1<<"/"<<t->tm_year+1900<<endl;
+  datacard_<<"Description: H+, e-tau, mass "<<massPointName_[currentMassPoint_]<<" GeV, lumi=" << commondefinitions::LUM_<<" pb-1"<<endl;
+  datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+  datacard_<<"imax   1  number of channels"<<endl;
+  datacard_<<"jmax   *  number of backgrounds"<<endl;
+  datacard_<<"kmax   *  number of nuisance parameters"<<endl;
+  datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+  datacard_<<"bin a"<<endl;
+  datacard_<<"observation    "<<  hist_[0]->Integral() <<endl; // data yield
+  datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+  datacard_<<"bin              a          a          a           a           a           a           a         a         "<<endl;
+  datacard_<<"process          "<<sampleName_[1]<<"   "<<sampleName_[3]<<"   "<<sampleName_[4]<<"   "<<sampleName_[2]<<"   "<<sampleName_[8]<<"   "<<sampleName_[7]<<"   "<<sampleName_[5]<<"   "<<sampleName_[6]<<endl; // Order matching values below
+  datacard_<<"process          0          1          2           3           4           5           6         7         "<<endl;
+  datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+  datacard_<<"rate          "<<
+    hist_[1]->Integral()<<setw(10)<<
+    hist_[3]->Integral()<<setw(10)<<
+    hist_[4]->Integral()<<setw(10)<<
+    hist_[2]->Integral()<<setw(10)<<
+    hist_[8]->Integral()<<setw(10)<<
+    hist_[7]->Integral()<<setw(10)<<
+    hist_[5]->Integral()<<setw(10)<<
+    hist_[6]->Integral()<<endl;
+  datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+  datacard_<<endl;
+  datacard_<<" tauId  lnN"<<setw(7)<<1.06<<setw(10)<<1.06<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<endl;
+  datacard_<<" jetTauMisId    lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+  datacard_<<" fakesSyst      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.10<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl; // Take from shapes?
+  datacard_<<" fakesStat      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl; // FIXME?
+  datacard_<<" jes      lnN"<<setw(7)<< 
+    systHist_[1][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[0][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+    systHist_[1][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[0][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+    systHist_[1][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[0][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+    1.00<<setw(10)<<
+    systHist_[1][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[0][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+    systHist_[1][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[0][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+    systHist_[1][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[0][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+    systHist_[1][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[0][6]->Integral()  / hist_[6]->Integral()  <<endl;
+  datacard_<<" jer      lnN"<<setw(7)<< 
+    systHist_[5][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[4][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+    systHist_[5][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[4][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+    systHist_[5][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[4][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+    1.00<<setw(10)<<
+    systHist_[5][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[4][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+    systHist_[5][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[4][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+    systHist_[5][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[4][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+    systHist_[5][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[4][6]->Integral()  / hist_[6]->Integral()  <<endl;
+  datacard_<<" met      lnN"<<setw(7)<< 
+    systHist_[3][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[2][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+    systHist_[3][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[2][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+    systHist_[3][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[2][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+    1.00<<setw(10)<<
+    systHist_[3][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[2][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+    systHist_[3][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[2][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+    systHist_[3][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[2][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+    systHist_[3][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[2][6]->Integral()  / hist_[6]->Integral()  <<endl;
+  datacard_<<" leptEff        lnN"<<setw(7)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.00<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<endl;
+  datacard_<<" btagging      lnN"<<setw(7)<< 
+    systHist_[7][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[6][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+    systHist_[7][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[6][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+    systHist_[7][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[6][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+    1.00<<setw(10)<<
+    systHist_[7][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[6][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+    systHist_[7][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[6][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+    systHist_[7][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[6][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+    systHist_[7][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[6][6]->Integral()  / hist_[6]->Integral()  <<endl;
+  datacard_<<" bmistagging      lnN"<<setw(7)<< 
+    systHist_[9][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[8][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+    systHist_[9][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[8][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+    systHist_[9][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[8][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+    1.00<<setw(10)<<
+    systHist_[9][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[8][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+    systHist_[9][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[8][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+    systHist_[9][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[8][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+    systHist_[9][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[8][6]->Integral()  / hist_[6]->Integral()  <<endl;
+  // FIXME: NoNorm??
+  datacard_<<" tbhStatistics     lnN"<<setw(7)<<
+    histStatNoNorm_[1]->Integral()  / hist_[1]->Integral()<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<endl;
+  datacard_<<" ttltauStatistics  lnN"<<setw(7)<<
+    1.00<<setw(10)<<
+    histStatNoNorm_[3]->Integral()  / hist_[3]->Integral()<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<endl;
+  datacard_<<" ttllStatistics    lnN"<<setw(7)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    histStatNoNorm_[4]->Integral()  / hist_[4]->Integral()<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<endl;
+  datacard_<<" zeemumuStatistics     lnN"<<setw(7)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    histStatNoNorm_[8]->Integral()  / hist_[8]->Integral()<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<endl;
+  datacard_<<" ztautauStatistics     lnN"<<setw(7)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    histStatNoNorm_[7]->Integral()  / hist_[7]->Integral()<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<endl;
+  datacard_<<" singleTopStatistics   lnN"<<setw(7)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    histStatNoNorm_[5]->Integral()  / hist_[5]->Integral()<<setw(10)<<
+    1.00<<endl;
+  datacard_<<" dibosonStatistics     lnN"<<setw(7)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    1.00<<setw(10)<<
+    histStatNoNorm_[6]->Integral()  / hist_[6]->Integral()<<endl;
+  datacard_<<" wjetsCrossSection     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+  datacard_<<" singletopCrossSection lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.08<<setw(10)<<1.00<<setw(10)<<endl;
+  datacard_<<" zllCrossSection       lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<setw(10)<<1.04<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+  datacard_<<" dibosonCrossSection   lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<endl;
+  datacard_<<" lumiErr                lnN"<<setw(7)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.00<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<endl;
+ 
+  datacard_<<" pileupErr               lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    pileup"<<endl;
+  
+  
+// fixme do loop //   for(size_t f=1; f<nSamples_+2; f++){ // Samples, data excluded
+// fixme do loop // 
+// fixme do loop // 
+// fixme do loop //     
+// fixme do loop //     datacard_<<"process         HTB    tt_ltau    tt_ll     tau_fake    Z_eemumu   Z_tautau   singleTop  di_boson"<<endl;
+// fixme do loop //     datacard_<<"process          0          1          2           3           4           5           6         7         "<<endl;
+// fixme do loop //     datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+// fixme do loop //     datacard_<<"rate      "<<vHTB<<setw(10)<<tt<<setw(10)<<ttll<<setw(10)<<tauF<<setw(10)<<Zll<<setw(10)<<Ztau<<setw(10)<<sTop<<setw(10)<<VV<<endl;//"       Projected event rates"<<endl; 
+// fixme do loop //     datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+// fixme do loop //     datacard_<<endl;
+// fixme do loop //     datacard_<<" tauId  lnN"<<setw(7)<<1.06<<setw(10)<<1.06<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<endl;
+// fixme do loop //     datacard_<<" jetTauMisId    lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+// fixme do loop //     datacard_<<" fakesSyst      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sytauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+// fixme do loop //     datacard_<<" fakesStat      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErtauF/tauF<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+// fixme do loop //     
+// fixme do loop //     datacard_<<" jes      lnN"<<setw(7)<<1-jesNHTB/vHTB<<"/"<<1+jesPHTB/vHTB<<setw(7)<<1-jesNtt/tt<<"/"<<1+jesPtt/tt<<setw(7)<<1-jesNttll/ttll<<"/"<<1+jesPttll/ttll<<setw(7)<<1.00<<setw(10)<<1-jesNZll/Zll<<"/"<<1+jesPZll/Zll<<setw(7)<<1-jesNZtau/Ztau<<"/"<<1+jesPZtau/Ztau<<setw(7)<<1-jesNsTop/sTop<<"/"<<1+jesPsTop/sTop<<setw(7)<<1-jesNVV/VV<<"/"<<1+jesPVV/VV<<endl;
+// fixme do loop //     datacard_<<" jer      lnN"<<setw(7)<<1-jesNHTB/vHTB<<"/"<<1+jesPHTB/vHTB<<setw(7)<<1-jesNtt/tt<<"/"<<1+jesPtt/tt<<setw(7)<<1-jesNttll/ttll<<"/"<<1+jesPttll/ttll<<setw(7)<<1.00<<setw(10)<<1-jesNZll/Zll<<"/"<<1+jesPZll/Zll<<setw(7)<<1-jesNZtau/Ztau<<"/"<<1+jesPZtau/Ztau<<setw(7)<<1-jesNsTop/sTop<<"/"<<1+jesPsTop/sTop<<setw(7)<<1-jesNVV/VV<<"/"<<1+jesPVV/VV<<endl;
+// fixme do loop //     datacard_<<" met      lnN"<<setw(7)<<1-jesNHTB/vHTB<<"/"<<1+jesPHTB/vHTB<<setw(7)<<1-jesNtt/tt<<"/"<<1+jesPtt/tt<<setw(7)<<1-jesNttll/ttll<<"/"<<1+jesPttll/ttll<<setw(7)<<1.00<<setw(10)<<1-jesNZll/Zll<<"/"<<1+jesPZll/Zll<<setw(7)<<1-jesNZtau/Ztau<<"/"<<1+jesPZtau/Ztau<<setw(7)<<1-jesNsTop/sTop<<"/"<<1+jesPsTop/sTop<<setw(7)<<1-jesNVV/VV<<"/"<<1+jesPVV/VV<<endl;
+// fixme do loop //     
+// fixme do loop //     
+// fixme do loop //     outfile<<" leptEff        lnN"<<setw(7)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.00<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<endl;
+// fixme do loop //     outfile<<" btagging       lnN"<<setw(7)<<1+buHTB/vHTB<<setw(10)<<1+buPtt/tt<<setw(10)<<1+buPttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPsTop/sTop<<setw(10)<<1.00<<endl;
+// fixme do loop //     outfile<<"bmistagging     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+buPZll/Zll<<setw(10)<<1+buPZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1+buPVV/VV<<endl;
+// fixme do loop //     outfile<<" tbhStatistics     lnN"<<setw(7)<<1+sErHTB/vHTB<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+// fixme do loop //     outfile<<" ttltauStatistics  lnN"<<setw(7)<<1.00<<setw(10)<<1+sErtt/tt<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+// fixme do loop //     outfile<<" ttllStatistics    lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErttll/ttll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+// fixme do loop //     outfile<<" zeemumuStatistics     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZll/Zll<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<endl;
+// fixme do loop //     outfile<<" ztautauStatistics     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErZtau/Ztau<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+// fixme do loop //     outfile<<" wjetsStatistics       lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+// fixme do loop //     outfile<<" singleTopStatistics   lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErsTop/sTop<<setw(10)<<1.00<<endl;
+// fixme do loop //     outfile<<" dibosonStatistics     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1+sErVV/VV<<endl;
+// fixme do loop //     /// 	outfile<<" ttbarCrossSection     lnN"<<setw(7)<<0.90<<"/"<<1.07<<setw(10)<<0.90<<"/"<<1.07<<setw(7)<<0.90<<"/"<<1.07<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    ttbar cross-section"<<endl;
+// fixme do loop //     outfile<<" wjetsCrossSection     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+// fixme do loop //     outfile<<" singletopCrossSection lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.08<<setw(10)<<1.00<<setw(10)<<endl;
+// fixme do loop //     outfile<<" zllCrossSection       lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<setw(10)<<1.04<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+// fixme do loop //     outfile<<" dibosonCrossSection   lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<endl;
+// fixme do loop //     outfile<<" lumiErr                lnN"<<setw(7)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.00<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<endl;
+// fixme do loop //     outfile<<" pileupErr               lnN"<<setw(7)<<1+puHTB/vHTB<<setw(10)<<1+putt/tt<<setw(10)<<1+puttll/ttll<<setw(10)<<1.00<<setw(10)<<1+puZll/Zll<<setw(10)<<1+puZtau/Ztau<<setw(10)<<1+pusTop/sTop<<setw(10)<<1+puVV/VV<<endl;//"    pileup"<<endl;
+// fixme do loop //     
+// fixme do loop //   } // End loop on mc/dd samples    
+
+//    vector<string> line;
+//  
+//  line.push_back(""); // Base datacards stuff
+//  line.push_back("");
+//  line.push_back("");
+//  line.push_back("");
+//  line.push_back("");
+//  line.push_back("");
+//
+//  for(size_t l=0; l<systComponents_.size(); ++l){
+//    line.push_back(systComponents_[l]+"      ");
+//  }
+
+  // For(samples)
+  // Create array for lines and add to header the sample
+  // Get all the syst components
+
+  // Write and close datacard_
+
 }
 
 void LandSShapesProducer::Produce(){
