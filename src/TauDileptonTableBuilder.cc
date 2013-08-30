@@ -3918,7 +3918,7 @@ namespace tableutils{
 	outfile<<" singletopCrossSection lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.08<<setw(10)<<1.00<<setw(10)<<endl;//"    singleTop cross-section"<<endl; 
 	outfile<<" zllCrossSection       lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<setw(10)<<1.04<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    Z->ll cross section"<<endl;
 	outfile<<" dibosonCrossSection   lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<endl;//"    diboson cross-section"<<endl;
-	outfile<<" lumiErr                lnN"<<setw(7)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.00<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<endl;//"    Luminosity Error"<<endl;
+	outfile<<" lumiErr                lnN"<<setw(7)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.00<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<endl;//"    Luminosity Error"<<endl;
 	outfile<<" pileupErr               lnN"<<setw(7)<<1+puTBH/vTBH<<setw(10)<<1+puHTB/vHTB<<setw(10)<<1+putt/tt<<setw(10)<<1+puttll/ttll<<setw(10)<<1.00<<setw(10)<<1+puZll/Zll<<setw(10)<<1+puZtau/Ztau<<setw(10)<<1+pusTop/sTop<<setw(10)<<1+puVV/VV<<endl;//"    pileup"<<endl;
 	if(withShapes){
 	  outfile<<"jes           "<<"  shape        1         1        1        1           1           1           1           1           1            "<<endl;  //        JES_effect_on_shape                             
@@ -3999,7 +3999,7 @@ namespace tableutils{
     outfile<<30<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.08<<setw(10)<<1.00<<setw(10)<<"    singleTop cross-section"<<endl; 
     outfile<<31<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<setw(10)<<1.04<<setw(10)<<1.00<<setw(10)<<1.00<<"    Z->ll cross section"<<endl;
     outfile<<32<<"  lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<"    diboson cross-section"<<endl;
-    outfile<<33<<"  lnN"<<setw(7)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.00<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<setw(10)<<1.045<<"    Luminosity Error"<<endl;
+    outfile<<33<<"  lnN"<<setw(7)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.00<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<"    Luminosity Error"<<endl;
     outfile<<34<<"  lnN"<<setw(7)<<1+puHH/vHH<<setw(10)<<1+puWH/vWH<<setw(10)<<1+putt/tt<<setw(10)<<1+puttll/ttll<<setw(10)<<1.00<<setw(10)<<1+puZll/Zll<<setw(10)<<1+puZtau/Ztau<<setw(10)<<1+pusTop/sTop<<setw(10)<<1+puVV/VV<<"    pileup"<<endl;
 
 */
