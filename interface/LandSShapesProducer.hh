@@ -74,6 +74,7 @@ public :
   void Produce();
   
 private:
+
   void Init();
   void SetOptions();
   void InitMassPoint(size_t);

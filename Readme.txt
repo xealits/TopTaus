@@ -139,6 +139,7 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-08-31: Categorization per-btag-multiplicity for datacards
 2013-08-30: Improved things for freezing.
 	    Correted bug in jes/jer/met systematics shapes
 2013-08-22: Split code runs in 15 minutes (previous: one hour)
