@@ -2183,7 +2183,7 @@ namespace tableutils{
     
     //  double ttbar_init(20416081); //SIMPLE evt processed
     double ttbar_init(8228517); // evt processed from debug.txt
-    
+    ttbar_init =299668.; // HTB ACCEPTANCE
   
   // For datacards
   vector<vector<double> > tbh_datacards;
@@ -2192,7 +2192,10 @@ namespace tableutils{
   vector<double>          data_datacards;
   vector<double>          taufakes_datacards;
 
-  double lum(commondefinitions::LUM_); double lumFactor(1); double scalefactor(1.); double scale(0.51393073); //    double scale(0.03284470); // double scale(0.08562379); // NEW VALUES
+  double lum(commondefinitions::LUM_); double lumFactor(1); double scalefactor(1.); 
+  double scale(0.51393073); //    double scale(0.03284470); // double scale(0.08562379); // NEW VALUES
+  scale = lum*11.9413  * (1 - 0.04129783 )/ ttbar_init;   
+
 
   //  sqrt( (eA.B)^2 + (A.eB)^2 ), /B^2
 
@@ -3205,6 +3208,9 @@ namespace tableutils{
     double systerr0(htb_syst_plus[k0][STEP]); if( htb_syst_minus[k0][STEP] > htb_syst_plus[k0][STEP] ) systerr0 = htb_syst_minus[k0][STEP];
    
     fprintf(f, data, brHtb_[l]*htb[k0][STEP], brHtb_[l]*htb_err[k0][STEP], brHtb_[l]*systerr0 );
+
+    tau_dilepton = brHtb_[l]*htb[k0][STEP]; tau_dilepton_stat = brHtb_[l]*htb_err[k0][STEP];  tau_dilepton_syst = brHtb_[l]*systerr0 ; // acceptance computation
+
     
     
   }
@@ -3277,7 +3283,7 @@ namespace tableutils{
 
 
 
-    tau_dilepton = signal_0; tau_dilepton_stat = err_0;  tau_dilepton_syst = syst_0; // acceptance computation
+    // DO WITH HTB    tau_dilepton = signal_0; tau_dilepton_stat = err_0;  tau_dilepton_syst = syst_0; // acceptance computation
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     
