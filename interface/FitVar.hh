@@ -17,7 +17,7 @@
 
 // System headers
 #include <string>
-
+#include <vector>
 
 // ROOT headers
 #include "TString.h"
@@ -29,11 +29,13 @@ class FitVar{
 public:
   FitVar(std::string, double, double, int, double, double, Int_t, Int_t);
   void setFancyName(std::string);
+  void setBinNames(std::vector<std::string>);
   std::string getVarName();
   std::string getFancyName();
   double getMin();
   double getMax();
   int getBins();
+  std::string getBinName(int);
   double getBinStep();
   double getHmin();
   double getHmax();
@@ -45,6 +47,7 @@ private:
   double min_;
   double max_;
   int bins_;
+  std::vector<std::string> binNames_;
   double hmin_;
   double hmax_;
   Int_t unbinned_;

@@ -21,10 +21,15 @@ FitVar::FitVar(string varName, double min, double max, int bins, double hmin, do
   unbinned_(unbinned),
   smoothOrder_(smoothOrder)
 {
+  binNames_.clear();
 }
 
 void FitVar::setFancyName(std::string fancyName){
   fancyName_ = fancyName;
+}
+
+void FitVar::setBinNames(std::vector<std::string> binNames){
+  binNames_ = binNames;
 }
 
 string FitVar::getVarName(){
@@ -45,6 +50,10 @@ double FitVar::getMax(){
 
 int FitVar::getBins(){
   return bins_;
+}
+
+std::string FitVar::getBinName(int ibin){
+  return binNames_[ibin];
 }
 
 double FitVar::getBinStep(){
