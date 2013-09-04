@@ -17,19 +17,12 @@
 #include "TLegendEntry.h"
 
 
-// FIXME: move options to cfg file
-
-//include errors is for syst
-// HistogramPlotter(){ c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=false; LUM_ERR = 0.045;}  
-
-///  HistogramPlotter(){ c_ = 0; plotHiggs_= true; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
-
 HistogramPlotter::HistogramPlotter(): PlotStyle() {
   c_ = 0; 
   plotHiggs_= false;
   showOnlyBR_=false; 
   includeErrors_=true; 
-  LUM_ERR = 0.022;
+  LUM_ERR = 0.026;
   
   setTDRStyle();
   gStyle->SetPadTopMargin   (0.06);
@@ -38,11 +31,6 @@ HistogramPlotter::HistogramPlotter(): PlotStyle() {
   gStyle->SetPadLeftMargin  (0.14);
 
 }
-
-//HistogramPlotter(){ c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=false; LUM_ERR = 0.022;}
-
-//HistogramPlotter(){ c_ = 0; plotHiggs_= false; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
-//HistogramPlotter(){ c_ = 0; plotHiggs_= true; showOnlyBR_=false; includeErrors_=true; LUM_ERR = 0.022;}
 
 HistogramPlotter::~HistogramPlotter()
 {
@@ -54,11 +42,8 @@ void HistogramPlotter::processCanvas(){
 	
   if(c_) delete c_;
 
-  //cout<<" id number is : "<<idNumber_<<endl;
-
   for(int i=0; i<= idNumber_;i++){
 
-    //c_ = new TCanvas("name","title",1);
     c_ = new TCanvas("c1","c1",800,800);// fianco
 
     // Set canvas as id name  ///
@@ -72,10 +57,6 @@ void HistogramPlotter::processCanvas(){
 
 
 } 
-
-
-
-
 
 void HistogramPlotter::processPlots(int i){
 
@@ -110,6 +91,8 @@ void HistogramPlotter::processPlots(int i){
   if(ratioOptions.first){
     c_->Divide(1,2);
     TPad *p = (TPad *)c_->cd(1);
+    //c_->cd(1);
+    //TPad* p = new TPad();
     p->SetBottomMargin(0);
     p->SetPad(xpad[0],ypad[2],xpad[1],ypad[3]);
   }
@@ -117,6 +100,8 @@ void HistogramPlotter::processPlots(int i){
     c_->SetWindowSize(800,800);
     c_->SetCanvasSize(800,800);
     TPad* p = (TPad*) c_->cd();
+    //c_->cd();
+    //TPad* p = new TPad();
     p->SetPad(0,0,1,1);
   }
   // See if log is enabled /////////////////////////////////////////////////////// 
@@ -145,7 +130,7 @@ void HistogramPlotter::processPlots(int i){
   vector<TH1 *> histoStacks;
   TH1 * errorH=0;
   TGraphErrors* myError = new TGraphErrors();
- 
+
   TH1 *    higgsH=0; TString histoHiggsPlotName("");
   if(stackSamples.size()){
 
@@ -154,25 +139,17 @@ void HistogramPlotter::processPlots(int i){
     float totalIntegral(0);
     float totalIntegralWithHiggs(0);
     for(uint u=0;u<stackSamples.size();u++){
-      cout << "stack place: " << u << endl;
-      //cout<<endl<<" adding stack... "<<u<<endl;
       int ind = stackSamples[u];
       TString plotName = mapIdFolder_[i]+TString("/")+mapIdHistoName_[i];
-      cout << "plotName " << plotName << endl;
       TH1 * histo         = ( TH1 * ) mapFiles_[ind]->Get(plotName);
-      cout << "file: " << mapFiles_[ind]->GetName() << endl;
-      cout << "1: histo bins " << histo->GetXaxis()->GetNbins() << endl;
       TH1 * histoForHiggs = 0; 
  
-	
       TString opt("lpf");
       map< int , TString >::iterator itopt ;   
       itopt = mapLegopt_.find(ind); if(itopt != mapLegopt_.end()){ opt = mapLegopt_[ind]; }
 	  
       setHistoSampleProperties(histo,ind); 
-      cout << "2: histo bins " << histo->GetXaxis()->GetNbins() << endl;
       setHistoIdProperties(histo,i,firstPlot);
-      cout << "3: histo bins " << histo->GetXaxis()->GetNbins() << endl;
       stack->Add(histo, "hist");
       
       
@@ -182,11 +159,8 @@ void HistogramPlotter::processPlots(int i){
           TString errorName("systematics");
 	  errorH = ( TH1 * ) histo->Clone(errorName); errorH->Sumw2(); 
           int numberOfBins = errorH->GetNbinsX();
-	  cout << "number of bins: errorH: " << numberOfBins << endl;
           for(int n=1;n<=numberOfBins; n++){
-	    cout << " bin number " << n ;
             double value    = errorH->GetBinContent(n);
-	    cout << ", value " << value << endl;
             double errorN   = errorH->GetBinError(n);
 
             TString sampName(mapName_[ind]);
@@ -199,11 +173,8 @@ void HistogramPlotter::processPlots(int i){
         else {
           TH1 * temp = (TH1 *) histo->Clone();  
           int numberOfBins = temp->GetNbinsX();
-	  cout << "number of bins: temp: " << numberOfBins << endl;
           for(int n=1;n<=numberOfBins; n++){
-	    cout << " bin number " << n ;
             double value  = temp->GetBinContent(n);
-	    cout << ", value " << value << endl;
             double errorN = temp->GetBinError(n);
 
 	    double graphBinError = myError->GetErrorY(n);
@@ -219,8 +190,6 @@ void HistogramPlotter::processPlots(int i){
       }       
       //////////////////////////////////////////////////////////////////////////
       
-
-   
       // is this needed?????????????????????????????????
       // for the higgs /////////////////////////////
       if(histoForHiggs){
@@ -233,8 +202,7 @@ void HistogramPlotter::processPlots(int i){
       if(plotHiggs_){
         histoHiggsPlotName = plotName;
         histoForHiggs = (TH1 * )  histo->Clone(plotName); // clone for the higgs stack
-        // for the higgs : warning ttbar is scalled if name is found /////
-        //if( (mapName_[ind]).Contains("t#bar{t}") ){ histoForHiggs->Scale(0.8*0.8); }
+        //if( (mapName_[ind]).Contains("t#bar{t}") ){ histoForHiggs->Scale(0.8*0.8); }        // for the higgs : warning ttbar is scaled if name is found /////
         if( (mapName_[ind]).Contains("t#bar{t}") ){ histoForHiggs->Scale(0.95*0.95); }
         ///////////////////////////////////////////////////////////////////
         if(u==0){ higgsH = histoForHiggs; }/// anti quick fix ///
@@ -258,52 +226,48 @@ void HistogramPlotter::processPlots(int i){
     stack->Draw("hist");
     if(!ratioOptions.first) stack->GetHistogram()->GetXaxis()->SetTitleOffset(0.9);
 
-
-    
     setStackIdProperties(stack,i);
-
+    
 
     /// quick fix ///    if(higgsH){ 
     if(plotHiggs_){ 
       //get HH , get WH and add to it
-
-      cout << "plotme?"<<endl;
-//      TFile * file1 = TFile::Open( "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m120.root");
-//      TFile * file2 = TFile::Open( "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m120.root");
-
+      
+      //      TFile * file1 = TFile::Open( "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/out-wh-pythia-m120.root");
+      //      TFile * file2 = TFile::Open( "/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3_nojer_2012-10-27/mt-2011-V1-mc-MU-20GeV/out-hh-pythia-m120.root");
+      
       TFile * file1 = TFile::Open( "/lustre/data3/cmslocal/vischia/tau_dilepton/newRun/nomt-2011-V1-mc-MU-20GeV/out-wh-pythia-m120.root");
       TFile * file2 = TFile::Open( "/lustre/data3/cmslocal/vischia/tau_dilepton/newRun/nomt-2011-V1-mc-MU-20GeV/out-hh-pythia-m120.root");
-
+      
       cout<<"\n plot name is : "<<histoHiggsPlotName<<endl;
-
+      
       TH1F * wh  = (TH1F*) file1->Get(histoHiggsPlotName);
       TH1F * hh  = (TH1F*) file2->Get(histoHiggsPlotName);
-
+      
       setHistoIdProperties(wh,i,firstPlot);
       setHistoIdProperties(hh,i,firstPlot);
 
+
+      // Light charged higgs values
       //2(1-x)x + x2
       //20%
       //higgsH->Add(wh,0.32);
       //higgsH->Add(hh,0.04);
 
-      //0.05%
-     higgsH->Add(wh,0.095);/// anti quick fix /// 
-/// anti quick fix ///      higgsH=wh;
-/// anti quick fix ///      higgsH->Scale(0.095/higgsH->Integral());
+      higgsH->Add(wh,0.095);/// anti quick fix /// 
+      /// anti quick fix ///      higgsH=wh;
+      /// anti quick fix ///      higgsH->Scale(0.095/higgsH->Integral());
       higgsH->Add(hh,0.025);
 
       cout << "higgsH integral:" << higgsH->Integral() << endl;
- 
+      
       normalize(higgsH, i);
       higgsH->SetFillColor(0);
       higgsH->SetLineColor(616);/// anti quick fix ///      
-      //higgsH->SetLineColor(1);
       higgsH->SetLineWidth(2);
       higgsH->SetLineStyle(7);
-            higgsH->Draw("same hist0 e0");
+      higgsH->Draw("same hist0 e0");
       higgsH->Draw("same hist");
-            //TODO ADD LEGEND , SET COLOR
     }
 	 
   }
@@ -313,34 +277,15 @@ void HistogramPlotter::processPlots(int i){
   if(errorH){
     //normalize(errorH, i);
     errorH->SetFillColor(4);
-    //    errorH->SetFillStyle(3001);
-    errorH->SetFillStyle(3004);
-//    errorH->SetLineColor(616);
-//    errorH->SetLineWidth(4);
-//    errorH->SetLineStyle(7);
+    errorH->SetFillStyle(3001);
 
-    myError->SetFillColor(1);
-    //    errorH->SetFillStyle(3001);
+    myError->SetFillColor(kGray+2);
     myError->SetFillStyle(3004);
     errorH->SetFillStyle(3001);
-    //errorH->Draw("e2p same");
-    //    errorH->Draw("2psame");
     myError->Draw("2same");
 
-    int numberOfBins = errorH->GetNbinsX();
-    
-    cout<<"\n number of bins : "<<numberOfBins<<endl;
-
-    //for(int n=1;n<=numberOfBins; n++){
-    //  double value = errorH->GetBinContent(n);
-    //  cout<<"\n error H bin n : "<<n<<" content is "<<value<<" +- "<<errorH->GetBinError(n)<<endl;
-    //}
 
   }
- 
-
-
-
 
   // Plot unstacked samples ////////////////////////////////////////////////////////////
   for( uint u=0;u<noStackSamples.size();u++){
@@ -348,11 +293,9 @@ void HistogramPlotter::processPlots(int i){
     //get plots from sample
     TString plotName = mapIdFolder_[i]+TString("/")+mapIdHistoName_[i];
     TH1 * histo = ( TH1 * )mapFiles_[ind]->Get(plotName);
-    cout << "fname: " << mapFiles_[ind]->GetName();
     setHistoSampleProperties(histo,ind);
     setHistoIdProperties(histo,i,firstPlot);	
 
-    //TString opt("pl");
     TString opt("pl hist");
     map< int , TString >::iterator itopt ;   
     //itopt = mapLegopt_.find(ind); if(itopt != mapLegopt_.end()){ opt = mapLegopt_[ind]; }
@@ -370,11 +313,8 @@ void HistogramPlotter::processPlots(int i){
   }
   ////////////////////////////////////////////////////////////////////////////////////////
 
-  
- 
-  
   if( dataSample!=-1){
-   
+    
     TString opt("pl");
     map< int , TString >::iterator itopt ;   
     itopt = mapLegopt_.find(dataSample); if(itopt != mapLegopt_.end()){ opt = mapLegopt_[dataSample]; }
@@ -390,23 +330,17 @@ void HistogramPlotter::processPlots(int i){
     pair<TString,TString> key(mapName_[dataSample],opt); vOptions.push_back(key);
   }
   
+  TLegend* leg = new TLegend(0.845,0.2,0.99,0.99,NULL,"NDC"); // On the side <3
   
-  //TLegend *leg = new TLegend(0.7181208,0.6451049,0.9479866,0.9001399,NULL,"brNDC");
-  //   TLegend *leg = new TLegend(0.7147651,0.6346154,0.9446309,0.9353147,NULL,"brNDC");
-   TLegend *leg = new TLegend(0.845,0.2,0.99,0.99,NULL,"NDC"); // fianco
-
   TString title("");
   map< int , TString >::iterator ittitle ;   
   ittitle = mapIdtitle_.find(i); if(ittitle != mapIdtitle_.end()){ title = mapIdtitle_[i]; }
   plotLegend( higgsH, leg, title, vhistos, vOptions, dataSample);
-
-
+  
   // draw pad with ratio ////////////////////////////////////////
   if(ratioOptions.first){
 
-    TH1 * denominator ;
-
-   
+    TH1* denominator;
     for(uint u=0;u<stackSamples.size();u++){
       if(u == 0){
         TString cloneName = histoStacks[0]->GetName() + TString("_ratio");
@@ -415,44 +349,45 @@ void HistogramPlotter::processPlots(int i){
       else{ denominator->Add(histoStacks[u]);}
     }
     
+    TPad* p = (TPad*)c_->cd(2);   
+    //c_->cd(2);
+    //TPad* p = new TPad();
+    p->SetFillColor(0);
+    //    p->SetPad(xpad[0],ypad[2],xpad[1],ypad[3]);
 
-    TPad * p = (TPad*)c_->cd(2);   
-
-
-    TH1 * dataClone = (TH1 * ) dataHisto->Clone("dataclone");
+    TH1* dataClone = (TH1*) dataHisto->Clone("dataclone");
     
 
-    TH1 *iRatio = dataClone;    
+    TH1* iRatio = dataClone;    
     
     if(ratioOptions.second) {
       iRatio->Add(denominator,-1);            
       iRatio->GetYaxis()->SetTitle("Relative difference");
     }
     else iRatio->GetYaxis()->SetTitle("data/MC");
-
+    
     
     iRatio->Divide(denominator); 
     
-
-    TGraphErrors* myRelError;
+    
+    TGraphErrors* myRelError = new TGraphErrors(myError->GetN());
     TH1* myDataClone = (TH1*) dataClone->Clone("forValues");
     myDataClone->Add(denominator,-1);
     if(includeErrors_){
-      TGraphErrors* myRelErrorTemp = (TGraphErrors*) myError->Clone("myRelError");
-      myRelError = myRelErrorTemp;
-      //      cout << "MyRelError bins " << myRelError->GetN() <<", iRatio bins " << iRatio->GetNbinsX() << endl;
+      //      TGraphErrors* myRelErrorTemp = (TGraphErrors*) myError->Clone();//"myRelError");
+      //      myRelError = myRelErrorTemp;
       for(int n=1;n<myRelError->GetN(); n++){// FIXME: 1?
 	double xValue, yValue;
-	myRelError->GetPoint(n, xValue, yValue);
-	double xError   = myRelError->GetErrorX(n);
-	double yError   = myRelError->GetErrorY(n);
+	/*myRelError*/myError->GetPoint(n, xValue, yValue);
+	double xError   = /*myRelError*/myError->GetErrorX(n);
+	double yError   = /*myRelError*/myError->GetErrorY(n);
 	
 	double newX(iRatio->GetBinCenter(n)), newY(iRatio->GetBinContent(n));
 	//  sqrt( (eA.B)^2 + (A.eB)^2 ), /B^2
        	double newError( sqrt( pow(myDataClone->GetBinError(n) * denominator->GetBinContent(n),2) + pow(myDataClone->GetBinContent(n) * yError,2) )/pow(denominator->GetBinContent(n),2)  );
 	myRelError->SetPoint(n, newX, newY );
 	myRelError->SetPointError(n, xError, newError );
-
+	
 	
 	//	map< int, float >::iterator errRenormIt = mapIdnorm_.find(i);
 	//	if( errRenormIt != mapIdnorm_.end() ){
@@ -477,7 +412,6 @@ void HistogramPlotter::processPlots(int i){
  
     iRatio->GetXaxis()->SetTitleOffset(0.85);
     iRatio->GetXaxis()->SetLabelSize(0.04 * yscale);
-    // iRatio->GetXaxis()->SetLabelSize(0.07 * yscale);//yields
     //    iRatio->GetXaxis()->SetBinLabel(7, "1l+ #geq 3j");
     iRatio->GetXaxis()->SetLabelOffset(0.02 * yscale);
     iRatio->GetXaxis()->SetTitleSize(0.06 * yscale);
@@ -489,14 +423,17 @@ void HistogramPlotter::processPlots(int i){
     iRatio->SetMarkerSize(1);
     iRatio->SetMarkerColor(1);
     iRatio->SetLineColor(1);
+    iRatio->SetFillColor(0);
     iRatio->SetMarkerStyle(20);
     iRatio->Draw();
     if(includeErrors_){
-      myRelError->SetFillColor(1);
+      myRelError->SetName("bl");
+      myRelError->SetTitle("mmbm");
+      myRelError->SetFillColor(kGray+2);
       myRelError->SetFillStyle(3001);
       myRelError->Draw("2same");
     }
-
+    
     //draw the canvas
     p->SetTopMargin(0);
     p->SetBottomMargin(0.3);
@@ -515,108 +452,73 @@ void HistogramPlotter::processPlots(int i){
 }
 
 void HistogramPlotter::plotLegend( TH1 * higgs, TLegend *l, TString title, vector<TH1*> & vhistos , vector< pair<TString,TString> > &vOptions , int data){
-
-
+  
   //FormatLegendForMonitor(l,title);
   
   int size = (int) vhistos.size();
- 
-  //cout<<" histo size is : "<<vhistos.size()<<endl;
-
-  //l->SetHeader("CMS preliminary \n#sqrt(s)=7,L=153/pb");
   
-  //   TLegend *leg = new TLegend(0.1627517,0.8496503,0.3020134,0.9195804,NULL,"brNDC");
-  TLegend *leg = new TLegend(0.845,0.2,0.99,0.99,NULL,"NDC"); // fianco
-
-   leg->SetBorderSize(0);
-   leg->SetTextFont(132);
-   //leg->SetTextSize(0.02622377);
-   leg->SetTextSize(0.033);
-   leg->SetLineColor(1);
-   leg->SetLineStyle(1);
-   leg->SetLineWidth(1);
-   leg->SetFillColor(0);
-   leg->SetFillStyle(1001);
-   //TLegendEntry *entry=leg->AddEntry("NULL","CMS Preliminary","");
-   //entry->SetLineColor(1);
-   //entry->SetLineStyle(1);
-   //entry->SetLineWidth(1);
-   //entry->SetMarkerColor(1);
-   //entry->SetMarkerStyle(21);
-   //entry->SetMarkerSize(1);
-   //entry=leg->AddEntry("NULL","#sqrt{s} = 7 TeV, L = 1.09 fb^{-1}","");
-   //entry=leg->AddEntry("NULL","#sqrt{s} = 7 TeV, L = 204 pb^{-1}","");
-   //entry->SetLineColor(1);
-   //entry->SetLineStyle(1);
-   //entry->SetLineWidth(1);
-   //entry->SetMarkerColor(1);
-   //entry->SetMarkerStyle(21);
-   //entry->SetMarkerSize(1);
-   //leg->Draw();
-
-
+  TLegend *leg = new TLegend(0.845,0.2,0.99,0.99,NULL,"NDC"); // On the side
+  
+  leg->SetBorderSize(0);
+  leg->SetTextFont(132);
+  leg->SetTextSize(0.033);
+  leg->SetLineColor(1);
+  leg->SetLineStyle(1);
+  leg->SetLineWidth(1);
+  leg->SetFillColor(0);
+  leg->SetFillStyle(1001);
+  
   for(int i=(size-1); i>-1; i=i-1){ 
     l->AddEntry(vhistos[i],(vOptions[i]).first ,(vOptions[i]).second ); 
     if(i==size-1 && higgs ){l->AddEntry(higgs,"with H^{#pm} #rightarrow #tau^{#pm}#nu","l");}
     /// antifix /// if(i==size-1 && higgs ){l->AddEntry(higgs,"H^{#pm} #rightarrow #tau^{#pm}#nu","l");}
   }
-
+  
   l->SetFillColor(0);
   l->SetTextFont(42);
   l->SetBorderSize(0);
   l->Draw();
- 
-   TPaveText *pt = new TPaveText(0.15,0.93,0.9,1.0, "brNDC");
-   pt->SetBorderSize(1);
-   pt->SetFillColor(19);
-   pt->SetFillStyle(0);
-   pt->SetLineColor(0);
-   pt->SetTextFont(132);
-   pt->SetTextSize(0.045);
-   //TText *text = pt->AddText("#sqrt{s} = 7 TeV,  2.1 fb^{-1}  CMS Preliminary");
-   //TText *text = pt->AddText("#sqrt{s} = 7 TeV,  2.1 fb^{-1} CMS ");
-   //TText *text = pt->AddText("#sqrt{s} = 7 TeV,  2.2 fb^{-1} CMS Preliminary");
-   //TText *text = pt->AddText("#sqrt{s} = 7 TeV,  1.9 fb^{-1}  CMS Preliminary");
-//   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  1.9 fb^{-1}  CMS ");
-//   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  4.0 fb^{-1} CMS Preliminary");
-//   TText *text = pt->AddText("#sqrt{s} = 7 TeV,  4.7 fb^{-1} CMS Preliminary");
-   TText *text = pt->AddText("CMS Preliminary, #sqrt{s} = 8 TeV, 19.3 fb^{-1}");
-   text->SetTextAlign(11);
-   pt->Draw();
-
-
-   if(plotHiggs_){
-     TPaveText *pt1 = new TPaveText(0.17,0.85,0.65,0.895, "brNDC");
-     pt1->SetBorderSize(1);
-     pt1->SetFillColor(19);
-     pt1->SetFillStyle(0);
-     pt1->SetLineColor(0);
-     pt1->SetTextFont(132);
-     pt1->SetTextSize(0.033);
+  
+  TPaveText *pt = new TPaveText(0.15,0.93,0.9,1.0, "brNDC");
+  pt->SetBorderSize(1);
+  pt->SetFillColor(19);
+  pt->SetFillStyle(0);
+  pt->SetLineColor(0);
+  pt->SetTextFont(132);
+  pt->SetTextSize(0.045);
+  TText *text = pt->AddText("CMS Preliminary, #sqrt{s} = 8 TeV, 19.3 fb^{-1}");
+  text->SetTextAlign(11);
+  pt->Draw();
+  
+  
+  if(plotHiggs_){
+    TPaveText *pt1 = new TPaveText(0.17,0.85,0.65,0.895, "brNDC");
+    pt1->SetBorderSize(1);
+    pt1->SetFillColor(19);
+    pt1->SetFillStyle(0);
+    pt1->SetLineColor(0);
+    pt1->SetTextFont(132);
+    pt1->SetTextSize(0.033);
     // TText *text = pt1->AddText("#splitline{m_{H^{#pm}} = 120 GeV/c^{2},}{BR(t #rightarrow H^{+}b) = 0.2}");
-     TText *text = pt1->AddText("#splitline{m_{H^{#pm}} = 120 GeV/c^{2}}{BR(t #rightarrow H^{+}b) = 0.05}");
-     text->SetTextAlign(11);
-     pt1->Draw();
-   }
-   if(showOnlyBR_){
-     TPaveText *pt1 = new TPaveText(0.17,0.85,0.65,0.895, "brNDC");
-     pt1->SetBorderSize(1);
-     pt1->SetFillColor(19);
-     pt1->SetFillStyle(0);
-     pt1->SetLineColor(0);
-     pt1->SetTextFont(132);
-     pt1->SetTextSize(0.033);
+    TText *text = pt1->AddText("#splitline{m_{H^{#pm}} = 120 GeV/c^{2}}{BR(t #rightarrow H^{+}b) = 0.05}");
+    text->SetTextAlign(11);
+    pt1->Draw();
+  }
+  if(showOnlyBR_){
+    TPaveText *pt1 = new TPaveText(0.17,0.85,0.65,0.895, "brNDC");
+    pt1->SetBorderSize(1);
+    pt1->SetFillColor(19);
+    pt1->SetFillStyle(0);
+    pt1->SetLineColor(0);
+    pt1->SetTextFont(132);
+    pt1->SetTextSize(0.033);
     // TText *text = pt1->AddText("BR(t #rightarrow H^{+}b) = 0.2");
-     TText *text = pt1->AddText("BR(t #rightarrow H^{+}b) = 0.05");
-     text->SetTextAlign(11);
-     pt1->Draw();
-   }
-
-
+    TText *text = pt1->AddText("BR(t #rightarrow H^{+}b) = 0.05");
+    text->SetTextAlign(11);
+    pt1->Draw();
+  }
 }
 
-
- 
 
 void HistogramPlotter::saveCanvas(){
 
@@ -626,8 +528,12 @@ void HistogramPlotter::saveCanvas(){
   TString epsfile = outFolder_ + canvasName + TString(".eps");
   TString cfile   = outFolder_ + canvasName + TString(".C");
 
-  c_->SaveAs(epsfile);
+  c_->Modified();
+  c_->Update();
+  c_->cd();
+
   c_->SaveAs(pdffile);
+  c_->SaveAs(epsfile);
   c_->SaveAs(pngfile);
   c_->SaveAs(cfile);
 
@@ -650,13 +556,9 @@ void HistogramPlotter::fixExtremityBins(TH1 *h,int i){
 void HistogramPlotter::setHistoIdProperties(TH1 *h, int i, bool firstplot){
 
   if(firstplot){
-    // set histo title
     h->SetTitle(mapIdtitle_[i]);
 
-//    h->GetXaxis()->SetTitleOffset(0.8);
-//    h->GetYaxis()->SetTitleOffset(0.8);
-
- 
+    
     // set axis properties if present ///////////////////////////////////////////////////////////////////////////////////////////
     map<int, pair<float,float> >::iterator it1, it2;
     it1=mapIdXrange_.find(i); it2=mapIdYrange_.find(i); 
@@ -672,11 +574,8 @@ void HistogramPlotter::setHistoIdProperties(TH1 *h, int i, bool firstplot){
   map< int, int >::iterator it = mapIdXrebin_.find(i);
   if( it != mapIdXrebin_.end() ){ 
     if(mapIdXrebin_[i]!=0) h->Rebin(mapIdXrebin_[i]); }
-  cout << "rebin from map: " << mapIdXrebin_[i];
   fixExtremityBins(h,i);
-
-
-
+  
 }
 
 
@@ -693,10 +592,10 @@ pair<bool,bool> HistogramPlotter::getRatioOptions(TH1 *h, int i){
       if( it != mapIdrelRatio_.end() ){
         ratioOptions.second = mapIdrelRatio_[i];
       }
-
+      
     }
   }
-
+  
   return ratioOptions;
 }
 
@@ -771,18 +670,14 @@ void HistogramPlotter::setStackIdProperties(THStack *h, int i){
 
 void HistogramPlotter::setHistoSampleProperties(TH1 *h, int i){
 
-  
-  /*void FormatHisto(TObject *h, int color, int line, int linew, int marker, int fill, bool detachFromCurrentDir, bool setSumw2, int linecolor, int fillcolor, int markercolor) */
-
   FormatHisto(h, mapColor_[i],mapLine_[i], mapLineWidth_[i], mapMarker_[i], mapFill_[i], false,true, mapLineColor_[i], mapFillColor_[i], mapMarkerColor_[i]  );
   map<int, int>::iterator it;
   it = mapLineStyle_.find(i);
-  if( it != mapLineStyle_.end() ){ 
-    cout << endl<< "mapline style " << mapLineStyle_[i] << endl << "integral " << h->Integral() << endl;
-      h->SetLineStyle(mapLineStyle_[i]); }
+  if( it != mapLineStyle_.end() )
+    h->SetLineStyle(mapLineStyle_[i]);
   h->Scale( mapWeights_[i] );
-
-
+  
+  
   
   for(int i=1; i<= h->GetXaxis()->GetNbins() ; i++){
     TString label=h->GetXaxis()->GetBinLabel(i);
@@ -804,12 +699,13 @@ void HistogramPlotter::showRatio(){
   const float ypad[4] = {0.,0.3,0.3,1.0};
 
   TPad * originalPad = (TPad *)c_->cd();
-
+  originalPad->SetFillColor(0);
 
   TCanvas * clone = new TCanvas("newName","newName",1000,1000);
   clone->Divide(1,2);
 
   TPad *p = (TPad *)clone->cd(1);
+  p->SetFillColor(0);
   p->SetBottomMargin(0);
   p->SetPad(xpad[0],ypad[2],xpad[1],ypad[3]);
   p->SetGridx();
@@ -911,30 +807,30 @@ TLegend * HistogramPlotter::ShowRatio(TString name, TString title, TList &plots,
       p->GetYaxis()->SetTitleOffset(0.5);
       p->GetYaxis()->SetLabelSize(0.04 * yscale);
       p->GetYaxis()->SetTitleSize(0.04 * yscale);
-    }
-  p->Modified();
+      }
+    p->Modified();
   p->Update();
 
   if(relative)
     {
-      TLine *line = new TLine(((TH1 *)ratiosH.At(0))->GetXaxis()->GetXmin(),0,
+    TLine *line = new TLine(((TH1 *)ratiosH.At(0))->GetXaxis()->GetXmin(),0,
 			      ((TH1 *)ratiosH.At(0))->GetXaxis()->GetXmax(),0);
-      line->SetLineColor(14);
-      line->SetLineWidth(2);
-      line->Draw("same");
+			      line->SetLineColor(14);
+			      line->SetLineWidth(2);
+			      line->Draw("same");
     }
 
   c->cd();
   c->Update();
   c->cd(1);
   return leg;
-}
-
-}
+  }
+  
+  }
 */
 
 double HistogramPlotter::getError2OnSystematics( TString sampName, double value ){
-
+  
   double xsecError(0);
   double puError(0);
   double btagError(0);
