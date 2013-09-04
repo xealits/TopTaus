@@ -3,28 +3,27 @@
 
 
   <!-- jet distribition (After lepton + 3jets  -->
-  <id tag="muCh_pt_j" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{jets}_{T}
-  [GeV/c]" yrange="10,20000000" xrange="35,500" xbin="4" >
+  <id tag="muCh_pt_j" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV" xtitle="p^{jets}_{T} [GeV]" yrange="10,20000000" xrange="35,500" xbin="4" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j_4</item>
   </id> 
 
-  <id tag="muCh_pt_bj" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{bjets}_{T}
-  [GeV/c]" yrange="10,2000000" xrange="35,500" xbin="4" >
+  <id tag="muCh_pt_bj" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV" xtitle="p^{bjets}_{T}
+  [GeV]" yrange="10,2000000" xrange="35,500" xbin="4" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_bj_4</item>
   </id> 
 
-  <id tag="muCh_pt_j1" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{lead jet}_{T}
-  [GeV/c]" yrange="10,600000" xrange="35,500" xbin="4" >
+  <id tag="muCh_pt_j1" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV" xtitle="p^{lead jet}_{T}
+  [GeV]" yrange="10,600000" xrange="35,500" xbin="4" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j1_4</item>
   </id> 
 
-  <id tag="muCh_pt_j2" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{sublead jet}_{T}
-  [GeV/c]" yrange="10,600000" xrange="35,500" xbin="4" >
+  <id tag="muCh_pt_j2" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV" xtitle="p^{sublead jet}_{T}
+  [GeV]" yrange="10,600000" xrange="35,500" xbin="4" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j2_4</item>
   </id> 
 
-  <id tag="muCh_pt_j3" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p^{sub-sub lead jet}_{T}
-  [GeV/c]" yrange="10,600000" xrange="35,500" xbin="4" >
+  <id tag="muCh_pt_j3" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV" xtitle="p^{sub-sub lead jet}_{T}
+  [GeV]" yrange="10,600000" xrange="35,500" xbin="4" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_j3_4</item>
   </id> 
 
@@ -87,11 +86,11 @@
   </id>
 
 
-  <id tag="muCh_m_mbj" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="M^{lep-bjet} [GeV/c^{2}]" yrange="0.1,10000000"  xbin="16" >
+  <id tag="muCh_m_mbj" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV" xtitle="M^{lep-bjet} [GeV]" yrange="0.1,10000000"  xbin="16" >
     <item dir="PFlow/RecoSteps/lep_tau/1 btag">m_mubj_7</item>
   </id> 
 
-  <id tag="muCh_max_m_muj" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="max M^{lep-jet} [GeV/c^{2}]" yrange="0.1,10000000"  xbin="16" >
+  <id tag="muCh_max_m_muj" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV" xtitle="max M^{lep-jet} [GeV]" yrange="0.1,10000000"  xbin="16" >
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">max_m_muj_4</item>
   </id> 
 
@@ -108,14 +107,14 @@
 
 
 
-  <id tag="muCh_sumpt_taub" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p_{T}^{\tau} + p_{T}^{b} [GeV/c]" yrange="0.1,5000" xrange="35,1000" xbin="16" >
+  <id tag="muCh_sumpt_taub" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV" xtitle="p_{T}^{\tau} + p_{T}^{b} [GeV]" yrange="0.1,5000" xrange="35,1000" xbin="16" >
     <item dir="PFlow/RecoSteps/lep_tau/OS">sumpt_taub_9</item>
   </id> 
-  <id tag="muCh_sumpt_jj" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="p_{T}^{jet1} + p_{T}^{jet2} [GeV/c]" yrange="0.1,1000" xrange="35,1000" xbin="16" >
+  <id tag="muCh_sumpt_jj" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV" xtitle="p_{T}^{jet1} + p_{T}^{jet2} [GeV]" yrange="0.1,1000" xrange="35,1000" xbin="16" >
     <item dir="PFlow/RecoSteps/lep_tau/OS">sumpt_jj_9</item>
   </id> 
 
-  <id tag="muCh_m_taub" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV/c" xtitle="M^{#tau-bjet} [GeV/c^{2}]" yrange="0.1,10000"  xbin="16" >
+  <id tag="muCh_m_taub" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 5 GeV" xtitle="M^{#tau-bjet} [GeV]" yrange="0.1,10000"  xbin="16" >
     <item dir="PFlow/RecoSteps/lep_tau/OS">m_taub_9</item>
   </id> 
 
