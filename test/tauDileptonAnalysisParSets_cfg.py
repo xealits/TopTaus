@@ -12,7 +12,6 @@ LandSShapesProducerParSet = cms.PSet(
     datacardsBaseName  = cms.string("datacard"),
 #    massPointName   = cms.vstring("m180", "m190", "m200", "m220", "m250", "m300"),
     massPointName   = cms.vstring("m180","m200","m220","m240","m250","m260","m280","m300"),
-
     
     #    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
     #    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
@@ -38,7 +37,7 @@ LandSShapesProducerParSet = cms.PSet(
     #    sampleName      = cms.vstring( "data_obs", "WH3", "HH3", "tau_fake3", "tt_ltau3", "tt_ll3", "singleTop3","di_boson3", "Z_tautau3",  "Z_eemumu3" ),
     sampleName      = cms.vstring( "data_obs", "HTB", "tau_fake", "tt_ltau", "tt_ll", "singleTop","di_boson", "Z_tautau",  "Z_eemumu" ),
     
-    fancySampleName      = cms.vstring("data", "H^{+}[m_{H^{#pm}} = 250 GeV]", "misidentified #tau_{h}", "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson","Z #rightarrow #tau#tau", "Z #rightarrow ee,#mu#mu"),
+    fancySampleName      = cms.vstring("data", "#splitline{H^{+}#rightarrow tb}{[250 GeV]}", "#splitline{#tau_{h} misID}{DD}", "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson","Z #rightarrow #tau#tau", "Z #rightarrow ee,#mu#mu"),
     
     # obsolete format # for fig 7 #    mcBkgSampleColor    = cms.vint32( 614, 8, 824, 809,  596, 831, 831, 835 ),
     sampleColour    = cms.vint32( 1,  1, 799,  614,    8,   824,  596, 831, 809),
@@ -115,6 +114,7 @@ LandSShapesProducerParSet = cms.PSet(
 
 
 #    vars        = cms.vstring( "rc_t"    ),
+#    fancyName  = cms.vstring("R = p_{T}^{lead.track}/E^{#tau}"),p_{T}^{lead.track}/E^{#tau}
 #    mins        = cms.vdouble(   -0.099  ),
 #    maxs        = cms.vdouble(    1.001  ),
 #    bins        = cms.vint32(      11    ),
@@ -133,12 +133,12 @@ LandSShapesProducerParSet = cms.PSet(
 #    unbinned    = cms.vint32(       0          ),
 #    smoothOrder = cms.vint32(       3          ),   
 
-
-
 vars        = cms.vstring("btagmultiplicity_j" ),
+fancyName   = cms.vstring("N_{b-tagged jets}"  ),
 mins        = cms.vdouble(     1               ),
-maxs        = cms.vdouble(   6                 ),
-bins        = cms.vint32(     5                ),
+maxs        = cms.vdouble(   5                 ),
+bins        = cms.vint32(     4                ),
+binNames    = cms.vstring("0", "1","2","3","#geq4"),
 hmin        = cms.vdouble(     0               ),
 hmax        = cms.vdouble(   600               ),
 unbinned    = cms.vint32(      0               ),

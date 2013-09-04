@@ -76,7 +76,6 @@ public :
 private:
 
   void Init();
-  void SetOptions();
   void InitMassPoint(size_t);
   void InitPerVariableAmbient(size_t);
   void BuildDatasets(size_t);
@@ -171,9 +170,11 @@ private:
 
   vector<FitVar*> fitVars_;  
   vector<string> vars_;
+  vector<string> fancyNames_;
   vector<double> mins_;
   vector<double> maxs_;
   vector<int> bins_;
+  vector<string> binNames_;
   vector<double> hmin_;
   vector<double> hmax_;
   vector<Int_t> unbinned_;
