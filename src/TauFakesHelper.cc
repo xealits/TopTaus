@@ -8,36 +8,15 @@
       \version  $Id: TauFakesHelper.cc,v 1.5 2013/04/23 10:51:16 vischia Exp $                                                                                                       
 */
 
-
-
-
-/*
-
-   FRDataQCDTree q(20);
-   q.processEvents();
-
-*/
  
 #include "LIP/TopTaus/interface/TauFakesHelper.hh"
 
 
 // TMVA
-//#include "PhysicsTools/MVAComputer/interface/MVAModuleHelper.h"
-//#include "RecoTauTag/TauTagTools/interface/TauMVADBConfiguration.h"
-//
-//#include "PhysicsTools/MVAComputer/interface/MVAComputerRecord.h"
-//#include "CondFormats/PhysicsToolsObjects/interface/MVAComputer.h"
 #include "PhysicsTools/MVAComputer/interface/Variable.h"
 #include "PhysicsTools/MVAComputer/interface/MVAComputer.h"
 #include "PhysicsTools/MVATrainer/interface/MVATrainer.h"
 #include "PhysicsTools/MVAComputer/interface/TreeReader.h"
-//#include "PhysicsTools/MVATrainer/interface/MVATrainerLooper.h"
-//#include "PhysicsTools/MVATrainer/interface/MVATrainerContainerSave.h"
-
-//#include "FWCore/Framework/interface/IOVSyncValue.h"
-//#include "FWCore/ServiceRegistry/interface/Service.h"
-//#include "CondCore/DBOutputService/interface/PoolDBOutputService.h"
-
 
 // ROOT includes
 #include <TLegend.h>
@@ -170,21 +149,6 @@ void TauFakesHelper::ProcessEvents(unsigned int qualifier){
 
 }
 
-//  switch(qualifier_){
-//  case WMUDATA:
-//    break;
-//  case WMUMC:
-//    break;
-//  case QCDDATA:
-//    break;
-//  case QCDMC:
-//    break;
-//  default: 
-//    cout << "No valid qualifier specified."<< endl;
-//    exit(-1);
-//    break;
-//  }
-
 void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTag){
   TString url("");
   bool isDATA(true);
@@ -223,17 +187,15 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
   // Analysis
   //objects to use
   unsigned int jetAlgo(event::AK5),metAlgo(event::CALOAK5), tauType(CALOTAU), leptonType(event::STDLEPTON);
-  if(myKey=="TC") { jetAlgo=event::AK5JPT, metAlgo=event::TC, tauType = CALOTAU;}
+  if(myKey.Contains("PFlow")) { jetAlgo=event::AK5PFLOW, metAlgo=event::PFLOWMET, tauType = PFLOWTAU; leptonType = event::PFLOWLEPTON;}
+  else if(myKey=="TC") { jetAlgo=event::AK5JPT, metAlgo=event::TC, tauType = CALOTAU;}
   else if(myKey=="PF") { jetAlgo=event::AK5PF, metAlgo=event::PF, tauType = PFTAU;}
   else if(myKey.Contains("TaNC")) { jetAlgo=event::AK5PF, metAlgo=event::PF, tauType = PFTAU;}
   else if(myKey.Contains("HPS")) { jetAlgo=event::AK5PF, metAlgo=event::PF, tauType = HPSTAU;}
-  //else if(myKey=="PFlow") { jetAlgo=event::AK5PFLOW, metAlgo=event::PFLOWMET, tauType = PFLOWTAU; leptonType = event::PFLOWLEPTON;}
-  else if(myKey.Contains("PFlow")) { jetAlgo=event::AK5PFLOW, metAlgo=event::PFLOWMET, tauType = PFLOWTAU; leptonType = event::PFLOWLEPTON;}
-  
+
   cout << "Events will be taken from "  << url << endl
        << "and analyzed with jet-algo="<< jetAlgo << " met-algo=" << metAlgo << endl;
   
-
   switch(qualifier_){
   case QCDMC:
     {
@@ -260,27 +222,12 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
       
       // qcd multijet
       TString urlpath = inputArea_;
-      //TString urlpath = "/lustre/data3/cmslocal/vischia/tau_dilepton/fakerate2011/inputSamples/";
-      //double CrossBin[6] = {36750000000., 815900000., 53120000., 6359000., 784300., 115100.};  //cross section
-      //      double CrossBin[5] = {815900000., 53120000., 6359000., 784300., 115100.};  //cross section // OLD
-      double CrossBin[5] = {988287420., 66285328., 8148778., 1033680., 156293.3};  //cross section
-      //Fall11
-      ///  double CrossBin[5] = {816000000., 53100000., 6360000., 784000., 115000.};
-      //for low stat files
-      // find number of run events in file 
-      double EventsBin[5] = {8213600., 1500000., 1500000., 1500000., 1500000.};
+      int nFiles = 5; 
+      double CrossBin[5] = {988287420., 66285328., 8148778., 1033680., 156293.3};  //cross section from PREP
+      double EventsBin[5] = {8213600., 1500000., 1500000., 1500000., 1500000.}; // initial events from ntuples
       TString DataSets[5] = {"qcd_Pt-15.root", "qcd_Pt-30.root", "qcd_Pt-50.root", "qcd_Pt-80.root", "qcd_Pt-120.root"};
-      /*
-      //for all stat files
-      double EventsBin[5] = {8213600., 6529320., 4301392., 6407738., 6090400.};
-      TString DataSets[5] = {"qcd_Pt-15.root", "qcd_Pt-30-B.root", "qcd_Pt-50-B.root", "qcd_Pt-80-B.root", "qcd_Pt-120-B.root"};
-      */
-      int nFiles = 5;
-      //  double Lumi = 0.007653; //in pb-1 (for HLT_Jet30_v*)
       double Lumi = 0.00485234; //in pb-1 (effective lumi for HLT_Jet30_v*)
-      //double ProcEvents[5] = {-1, 1000000., 1000000., 1000000., 1000000.}; //events to process, scale accordingly
-      //double ProcEvents[5] = {-1, 1000000, 500000, 500000, 100000};
-      double ProcEvents[5] = {-1, -1, -1, -1, -1};
+      double ProcEvents[5] = {-1, -1, -1, -1, -1}; // Events to process. If different from -1, they get reweighted by nevts/procEvents
       
       evReader = new event::Reader();
       for(int ifile = 1; ifile <= nFiles; ifile++){
@@ -298,7 +245,6 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	
 	double weight = Lumi*CrossBin[ifile-1]/EventsBin[ifile-1];
 	//double weight = CrossBin[ifile-1]/double(nInitEvent);
-	//weight = 1.;
 	if(ProcEvents[ifile-1] != -1 && nEntries > ProcEvents[ifile-1]){
 	  weight = (weight*nEntries/ProcEvents[ifile-1]);
 	}
@@ -308,7 +254,6 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	int nToProcess = nEntries;
 	if(nToProcess > 10000000) nToProcess = 10000000;
 	for(int i=0; i<nToProcess; ++i)
-	  //    for(int i=0; i<nEntries; ++i)
 	  {
 	    nProcEvents++;
 	    if(ProcEvents[ifile-1] != -1 && nProcEvents > ProcEvents[ifile-1])break;
@@ -321,7 +266,6 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	    //trigger
 	    TVectorD *trig = (TVectorD *)ev->triggerColl->At(0);
 	    bool hasJettrig = ((*trig)[2]>0);
-	    //if(hasJettrig)cout<<"hasJettrig"<<hasJettrig<<endl;
 	    if(!hasJettrig) continue;
 	    nTriggEvent++;  
 	    
@@ -359,10 +303,9 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	      double corr_jer(1.);
 	      /*if(!isData_)*/ newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
 	      jerFactors.push_back(1.);
-	      //    std::cout << " jerfac: " << corr_jer << std::endl;
 	    } 
 	    /*if(!isData_)*/ jets=newJets;
-
+	    
 	    // preselect objects /////////////////////////////////
 	    DisableLtkCutOnJets(); Pt_Jet(MIN_JET_PT_CUT_); // select hard jets
 	    //pt_Tau(MIN_TAU_PT_CUT_);  //select tau pT
@@ -396,7 +339,6 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	      int ind =  j_afterLeptonRemoval[ijet];
 	      if(jets[ind][4] > 30)nTrigJet++;
 	    }
-	    //if(nTrigJet)cout<<"nTrig Jet "<<nTrigJet<<endl;
 	    for(size_t ijet = 0; ijet < j_afterLeptonRemoval.size(); ijet++){
 	      int ind =  j_afterLeptonRemoval[ijet];
 	      if(nTrigJet == 1 && jets[ind][4] > 30) continue; //not to use trigger matched Jet
@@ -408,11 +350,7 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	    //Fill Histograms
 	    for(size_t ijet = 0; ijet < j_final.size(); ijet++){
 	      int ind_jet = j_final[ijet];
-	      
-	      
-
-	      
-
+	    
 	      if(isAntiBTag && (jets[ind_jet][33] > 0.679)) continue; //anti-btag CSVM
 	      
 	      double Rjet = ((jets[ind_jet][29]+jets[ind_jet][30]) > 0) ? sqrt(jets[ind_jet][29]+jets[ind_jet][30]) : 0.;
@@ -431,8 +369,6 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	      }
 	      
-	      
-
 	      //fill for selected taus
 	      double mindr = 0.5; int jtau = -1;
 	      for(size_t itau = 0; itau < t_final.size(); itau++){
@@ -522,7 +458,6 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	  TVectorD *trig = (TVectorD *)ev->triggerColl->At(0);
 	  bool hasMutrig = ((*trig)[0]>0); //bool hasEGtrig = ((*trig)[1]>0);
 	  bool hasJettrig = ((*trig)[2]>0);
-	  //if(!hasMutrig && !hasEGtrig) continue;
 	  if(qualifier_ != QCDDATA && !hasMutrig) continue;
 	  if(qualifier_ == QCDDATA && !hasJettrig) continue;
 	  nTriggEvent++;
@@ -551,7 +486,6 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	  std::vector<PhysicsObject> electrons = evReader->GetPhysicsObjectsFrom(ev,event::ELECTRON);
 	  std::vector<PhysicsObject> tausColl = evReader->GetPhysicsObjectsFrom(ev,event::TAU);
 	  std::vector<PhysicsObject> taus; 
-	  //      std::cout << "DEBUG: muons " << muons.size() << std::endl;
 	  for(size_t iorigtau=0; iorigtau<tausColl.size(); iorigtau++){
 	    if(tausColl[iorigtau][17] == tauType){
 	      taus.push_back(tausColl[iorigtau]);
@@ -574,7 +508,6 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	    if(qualifier_==WMUMC)
 	      newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
 	    jerFactors.push_back(1.);
-	    //    std::cout << " jerfac: " << corr_jer << std::endl;
 	  } 
 	  if(qualifier_==WMUMC) jets=newJets;
 	  // preselect objects /////////////////////////////////
@@ -593,13 +526,9 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	    int nLepton = m_init.size();  //only muon +jet events
 	    //      std::cout << "nLepton: " << nLepton << std::endl;
 	    if(nLepton != 1)continue;
-	    //std::cout << "DEBUG: 1lep" << std::endl;
 	    if(e_init.size() > 0)continue;
-	    //std::cout << "DEBUG: electron veto" << std::endl;
 	    if( LooseMuonVeto( m_init[0], muons ))continue;
-	    //std::cout << "DEBUG: loose mu veto" << std::endl;
 	    if( LooseElectronVeto(evReader,-1,electrons))continue;
-	    //std::cout << "DEBUG: loose e veto" << std::endl;
 	    //Apply MET cut for W+jet selection
 	    //if(met.Pt() < MET_CUT_) continue;
 	    //Reconstruct W transverse mass
@@ -675,9 +604,6 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	      }
 	      
-	    
-	    
-	    
 	    //fill for selected taus
 	    double mindr = 0.5; int jtau = -1;
 	    for(size_t itau = 0; itau < t_final.size(); itau++){
@@ -749,17 +675,6 @@ void TauFakesHelper::Trainer(unsigned int qualifier)
   
   ///  // Note: one tree argument -> tree has to contain a branch __TARGET__
   ///  //       two tree arguments -> signal and background tree
-  ///  
-  ///  PhysicsTools::TreeTrainer trainer(tPassing_); // FIXME: set monitoring
-  ///  trainer.addTree(tFailing_);
-  ///  
-  ///  Calibration::MVAComputer *calib = trainer.train(configArea_+TString("fakerateMVADef")+infix_+TString(".xml"));
-  ///  
-  ///  MVAComputer::writeCalibration(outputArea_+TString("TrainedWMu")+infix_+TString("PFlow_pt20.mva"), calib);
-  ///  
-  ///  cout << "Trained.mva written." << endl;
-  ///  
-  ///  //  delete calib;
   
   MVATrainer trainer(string( configArea_+TString("fakerateMVADef")+infix_+TString(".xml") ) );
   trainer.setMonitoring(true);// ROOT file with histograms // FIXME: investigate why it seems not to be working
