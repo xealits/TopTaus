@@ -28,7 +28,9 @@ class FitVar{
   
 public:
   FitVar(std::string, double, double, int, double, double, Int_t, Int_t);
+  void setFancyName(std::string);
   std::string getVarName();
+  std::string getFancyName();
   double getMin();
   double getMax();
   int getBins();
@@ -39,6 +41,7 @@ public:
   Int_t getSmoothOrder();
 private:
   std::string varName_;
+  std::string fancyName_;
   double min_;
   double max_;
   int bins_;

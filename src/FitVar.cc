@@ -8,8 +8,11 @@
 
 using namespace std;
 
+// FIXME: change of interface needed. ShapesProducer needs fancyName, will go in the constructor when I'll have time to modify TauDileptonPDFFitter as well. For now, initFancyName(string) method will do the deed, and default for fancyName is varname (the name in the tree)
+
 FitVar::FitVar(string varName, double min, double max, int bins, double hmin, double hmax, Int_t unbinned, Int_t smoothOrder):
   varName_(varName),
+  fancyName_(varName),
   min_(min),
   max_(max),
   bins_(bins),
@@ -18,11 +21,18 @@ FitVar::FitVar(string varName, double min, double max, int bins, double hmin, do
   unbinned_(unbinned),
   smoothOrder_(smoothOrder)
 {
-  
+}
+
+void FitVar::setFancyName(std::string fancyName){
+  fancyName_ = fancyName;
 }
 
 string FitVar::getVarName(){
   return varName_;
+}
+
+string FitVar::getFancyName(){
+  return fancyName_;
 }
 
 double FitVar::getMin(){

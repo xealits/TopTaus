@@ -139,6 +139,8 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-09-04: Towards the frozen format for publication
+	    Empowered FitVar class for supporting fancy plot names
 2013-08-31: Categorization per-btag-multiplicity for datacards
 2013-08-30: Improved things for freezing.
 	    Correted bug in jes/jer/met systematics shapes
@@ -261,6 +263,8 @@ rev 702 (2012-04-18): first counting-only chiggs datacards for heavy charged hig
 
 
 TODO:
+- clean and update TODO list ;)
+- change the interface to FitVar class (constructor) in the whole code (for now, additional fancyName for the variable is set after calling costructor)
 - add comp plots for fakes
 - fix uncertainty band plotting in case the plot is normalized to 1 (Rtau)
 - update tau ID uncertainties
