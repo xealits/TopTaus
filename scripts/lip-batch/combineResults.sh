@@ -47,6 +47,10 @@ if [ "${2}" = "hadd" ]; then
     hadd -f $DATAPLACE/out-ttbar-mumu.root $DATAPLACE/out-ttbar-mumu_*.root
     hadd -f $DATAPLACE/out-ttbar-emu.root $DATAPLACE/out-ttbar-emu_*.root
 
+
+    # misidentified tau_h component from MC
+    hadd -f $DATAPLACE/out-misidbkg.root $DATAPLACE/out-wjets.root $DATAPLACE/out-ttbar-ddbkg.root $DATAPLACE/out-qcd.root
+
     
     # mc total
     hadd -f $DATAPLACE/out-mc.root $DATAPLACE/out-qcd.root $DATAPLACE/out-wjets.root $DATAPLACE/out-zjets.root $DATAPLACE/out-dibosons.root $DATAPLACE/out-ttbar.root $DATAPLACE/out-singletop.root &

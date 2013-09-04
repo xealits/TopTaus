@@ -6,7 +6,7 @@
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-mutau.root</file>
    </process>
 
-<!--
+<!-- Not to be used
    <process isstack="1" isdata="0" name="t#bar{t} #rightarrow #mu#mu" color="616" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-mumu.root</file>
    </process>
@@ -16,15 +16,17 @@
    </process>
 -->
 
+<!-- Substituted by out-ttbar-mcbkg when plotting misid
    <process isstack="1" isdata="0" name="other t#bar{t}" color="8" width="1" fill="1001" fillcolor="8" markercolor="8" line="1"  linecolor="8" marker="1" >
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-other.root</file>
    </process>
+--> 
 
-<!--
+<!-- Used instead of out-ttbar-other when plotting misid -->
    <process isstack="1" isdata="0" name="other t#bar{t}" color="8" width="1" fill="1001" fillcolor="8" markercolor="8" line="1"  linecolor="8" marker="1" >
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-mcbkg.root</file>
    </process>
--->
+
 
    <process isstack="1" isdata="0" name="Single t" color="824" width="1" fill="1001" fillcolor="824" markercolor="824" linecolor="824" line="1" marker="1" >
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-singletop.root</file>
@@ -42,21 +44,24 @@
 
 
 
+
+<!-- Substituted by misid when plotting misid
    <process isstack="1" isdata="0" name="W+jets" color="809" width="1" fill="1001" fillcolor="809" markercolor="809" line="1" linecolor="809" marker="1" >
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-wjets.root</file>
    </process>
+-->
 
-<!--  
-   <process isstack="1" isdata="0" name="misidentified #tau_{h}" color="799" width="1" fill="1001" fillcolor="799" markercolor="799" line="1" linecolor="799" marker="1" >
+<!-- Substitutes lots of stuff when plotting misid -->
+   <process isstack="1" isdata="0" name="#tau_{h} misID" color="799" width="1" fill="1001" fillcolor="799" markercolor="799" line="1" linecolor="799" marker="1" >
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-misidbkg.root</file>
    </process>
--->
+
    
+<!-- Substituted by misid when plotting misid 
    <process isstack="1" isdata="0" name="QCD" color="798" width="1" fill="1001" fillcolor="798" markercolor="798"  line="1" linecolor="798" marker="1" >
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-qcd.root</file>
    </process>
-
-
+-->
 
    <process isstack="0" isdata="1" name="data" color="1" width="1" fill="0" fillcolor="0" markercolor="1" linecolor="1" line="1" marker="20" >
      <file weight="1">nomt-2012-V1-data-MU-20GeV/out-data.root</file>
