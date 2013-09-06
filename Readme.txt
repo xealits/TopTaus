@@ -139,6 +139,7 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-09-06: Cosmetics. Tag for preapproval of HIG-13-026 (V13-09-06)
 2013-09-04: Towards the frozen format for publication
 	    Empowered FitVar class for supporting fancy plot names
 2013-08-31: Categorization per-btag-multiplicity for datacards
@@ -248,6 +249,7 @@ CHANGELOG for major updates:
 2012-09-21: shapes producer for lands and multiple likelihood fit for fake rates are ready to use.
 
 FIXED TAGS:
+- V13-09-06: tag for preapproval of HIG-13-026
 - V13-08-20-def: tag for use with first production (ABC1-rereco, C2D-promptReco) in CMSSW_5_3_7_patch4
 - V13-08-20/V13-08-20_fix: forget.
 - V13-03-07: full working heavy charged higgs tag
