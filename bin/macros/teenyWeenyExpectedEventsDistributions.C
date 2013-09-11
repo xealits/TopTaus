@@ -29,43 +29,24 @@ double ww, wh, hh;
 
 void HeavyChHiggsEventDist(bool isEMu, bool ism250)
 {
-  
-  double xsecMultiplier(100.);
 
 
-  // mutau channel 
-  // Values for 200 GeV
-  double
-    BR_htaunu (0.228564),
-    BR_htb    (0.771436);
+  double 
+    prodXsec (ism250 ? 11.9413    : 18.4811),
+    BR_htaunu(ism250 ? 0.04129783 : 0.228564),
+    BR_htb(   1- BR_htaunu),
+    // mutau
+    Y_Htaunu (ism250 ? 0.4180 : 3.4506),
+    Y_Htb    (ism250 ? 0.1304 : 0.1616);
   
-  double
-    Y_Htaunu (2.10),
-    Y_Htb    (2.10);
-  
-  
-  // Values for 250 GeV
-  if(ism250){
-    BR_htaunu = 0.04129783;
-    BR_htb    = 0.95870217;
-    
-    Y_Htaunu = 0.3967;
-    Y_Htb    = 2.48;
-  }
-  
-
-  // emu channel
+  // emu
   if(isEMu){
-    // Values for 200 GeV
-    Y_Htaunu = 0.00;
-    Y_Htb    = 0.00;
-    
-    // Values for 250 GeV
-    if(ism250){
-      Y_Htaunu = 0.00;
-      Y_Htb    = 0.00;
-    }
+    Y_Htaunu  = (ism250 ? 0.22 : 1.05);
+    Y_Htb     = (ism250 ? 11.92 : 7.37);
   }
+
+  double xsecMultiplier(1.);
+
 
   // Rescale according to chosen multiplier
   Y_Htaunu *= xsecMultiplier;
@@ -79,8 +60,8 @@ void HeavyChHiggsEventDist(bool isEMu, bool ism250)
   double RY_Htaunu[17], RY_Htb[17]; // Rescaled yields
 
   for(int i = 0; i < 17; i++){
-    RY_Htaunu[i] = Y_Htaunu*BR[i]/0.11601;
-    RY_Htb[i]    = Y_Htb   *BR[i]/0.11601;
+    RY_Htaunu[i] = Y_Htaunu*BR[i];
+    RY_Htb[i]    = Y_Htb   *BR[i];
   }
 
   gROOT->ProcessLine(".L tdrstyle.C");
@@ -100,8 +81,8 @@ void HeavyChHiggsEventDist(bool isEMu, bool ism250)
   evtH_taunu->GetXaxis()->SetTitle("B(X #rightarrow H^{+}tb) #times BR(H^{+} #rightarrow tb (#tau#nu) )");
   evtH_taunu->GetYaxis()->SetTitle("Events");
   evtH_taunu->GetXaxis()->SetRangeUser(0, 1.0);
-  evtH_taunu->GetYaxis()->SetRangeUser(0, 3000.0);
-  if(ism250) evtH_taunu->GetYaxis()->SetRangeUser(0, 3000.0);
+  evtH_taunu->GetYaxis()->SetRangeUser(0, 20.0);
+  if(ism250) evtH_taunu->GetYaxis()->SetRangeUser(0, 20.0);
   evtH_taunu->GetYaxis()->SetTitleOffset(1.4);
 
   evtH_taunu->Draw("AL");
@@ -132,17 +113,16 @@ void HeavyChHiggsEventDist(bool isEMu, bool ism250)
   pt->Draw();
 
 
-  TLatex *tex2 = new TLatex(0.05, 800.0, "m_{H^{#pm}} = 200 GeV");
-  if(isEMu && !ism250)tex2 = new TLatex(0.65, 2300.0, "m_{H^{#pm}} = 200 GeV");  
-  if(ism250)tex2 = new TLatex(0.05, 300.0, "m_{H^{#pm}} = 250 GeV");  
-  if(isEMu && ism250)tex2 = new TLatex(0.65, 2300.0, "m_{H^{#pm}} = 250 GeV");
+  TLatex *tex2 = new TLatex(0.05, 7.0, "m_{H^{#pm}} = 200 GeV");
+  if(isEMu && !ism250)tex2 = new TLatex(0.65, 7.0, "m_{H^{#pm}} = 200 GeV");  
+  if(ism250)tex2 = new TLatex(0.05, 7.0, "m_{H^{#pm}} = 250 GeV");  
+  if(isEMu && ism250)tex2 = new TLatex(0.65, 7.0, "m_{H^{#pm}} = 250 GeV");
   tex2->SetTextSize(0.035);  
   tex2->Draw(); 
 
-  TLatex *tex3 = new TLatex(0.05, 750.0, "#mu#tau_{h} final state");
-  if(ism250)tex3 = new TLatex(0.05, 350.0, "#mu#tau_{h} final state");  
-  if(isEMu && !ism250)tex3 = new TLatex(0.65, 2150.0, "e#mu final state");  
-  if(isEMu && ism250)tex3 = new TLatex(0.65, 2150.0, "e#mu final state");
+  TLatex *tex3;
+  if(isEMu) tex3 = new TLatex(0.05, 13.0, "e#mu final state");  
+  else tex3 = new TLatex(0.05, 13.0, "#mu#tau_{h} final state");  
   tex3->SetTextSize(0.035);  
   tex3->Draw(); 
 
@@ -598,8 +578,8 @@ void teenyWeenyExpectedEventsDistributions(){
   //  HeavyChHiggsEventDist(1,0); // emu
   //
   //  // mH+ = 250
-  HeavyChHiggsEventDist(0,1); // mutau
-  //  HeavyChHiggsEventDist(1,1); // emu
+  //  HeavyChHiggsEventDist(0,1); // mutau
+  HeavyChHiggsEventDist(0,1); // emu
   
 
   //LightChHiggsEventDist();
