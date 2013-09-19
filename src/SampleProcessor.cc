@@ -124,7 +124,6 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[HH160_URL]              = 245.8;                                                                                 
       
       // This yields include branching ratio (which for the light charged higgs was identically 1 and thus not included)
-      // Must fix in the tables (which currently use a mismatched normalization assuming 234 as a start)
       defaultXSections_[TBH180_URL]             = 22.6975  * 0.831852  ; 
       defaultXSections_[TBH190_URL]             = 20.4088  * 0.407966  ;   
       defaultXSections_[TBH200_URL]             = 18.4811  * 0.228564  ;   
@@ -328,23 +327,49 @@ void SampleProcessor::init(){
 
     //    double unsplitNumber(1.);
 
-    if     (listOfurls_[i].Contains("ttbar_") )           /*unsplitNumber*/ listOfEvents_[i] =  8228517.;
-    else if(listOfurls_[i].Contains("stopbar_s_") )       /*unsplitNumber*/ listOfEvents_[i] =  139974.;
-    else if(listOfurls_[i].Contains("WJetsToLNu_") )      /*unsplitNumber*/ listOfEvents_[i] =  43636521.;
-    else if(listOfurls_[i].Contains("dy_from50_") )       /*unsplitNumber*/ listOfEvents_[i] =  6084984.;
-    else if(listOfurls_[i].Contains("dy_10_50_") )        /*unsplitNumber*/ listOfEvents_[i] =  7107167.;//20751565.;
-    else if(listOfurls_[i].Contains("WW_") )              /*unsplitNumber*/ listOfEvents_[i] =  9840413.;//9000414.;
-    else if(listOfurls_[i].Contains("WZ_") )              /*unsplitNumber*/ listOfEvents_[i] =  9985267.;//9050268.;
-    else if(listOfurls_[i].Contains("ZZ_") )              /*unsplitNumber*/ listOfEvents_[i] =  9396412.;//9022326.;
-    else if(listOfurls_[i].Contains("htb-pythia-m180_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
-    else if(listOfurls_[i].Contains("htb-pythia-m200_") ) /*unsplitNumber*/ listOfEvents_[i] =  299999.;
-    else if(listOfurls_[i].Contains("htb-pythia-m220_") ) /*unsplitNumber*/ listOfEvents_[i] =  299999.;
-    else if(listOfurls_[i].Contains("htb-pythia-m240_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
-    else if(listOfurls_[i].Contains("htb-pythia-m250_") ) /*unsplitNumber*/ listOfEvents_[i] =  299668.;
-    else if(listOfurls_[i].Contains("htb-pythia-m260_") ) /*unsplitNumber*/ listOfEvents_[i] =  299686.;
-    else if(listOfurls_[i].Contains("htb-pythia-m280_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
-    else if(listOfurls_[i].Contains("htb-pythia-m300_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
+//    if     (listOfurls_[i].Contains("ttbar_") )           /*unsplitNumber*/ listOfEvents_[i] =  8228517.;
+//    else if(listOfurls_[i].Contains("stopbar_s_") )       /*unsplitNumber*/ listOfEvents_[i] =  139974.;
+//    else if(listOfurls_[i].Contains("WJetsToLNu_") )      /*unsplitNumber*/ listOfEvents_[i] =  43636521.;
+//    else if(listOfurls_[i].Contains("dy_from50_") )       /*unsplitNumber*/ listOfEvents_[i] =  6084984.;
+//    else if(listOfurls_[i].Contains("dy_10_50_") )        /*unsplitNumber*/ listOfEvents_[i] =  7107167.;//20751565.;
+//    else if(listOfurls_[i].Contains("WW_") )              /*unsplitNumber*/ listOfEvents_[i] =  9840413.;//9000414.;
+//    else if(listOfurls_[i].Contains("WZ_") )              /*unsplitNumber*/ listOfEvents_[i] =  9985267.;//9050268.;
+//    else if(listOfurls_[i].Contains("ZZ_") )              /*unsplitNumber*/ listOfEvents_[i] =  9396412.;//9022326.;
+//    else if(listOfurls_[i].Contains("htb-pythia-m180_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
+//    else if(listOfurls_[i].Contains("htb-pythia-m200_") ) /*unsplitNumber*/ listOfEvents_[i] =  299999.;
+//    else if(listOfurls_[i].Contains("htb-pythia-m220_") ) /*unsplitNumber*/ listOfEvents_[i] =  299999.;
+//    else if(listOfurls_[i].Contains("htb-pythia-m240_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
+//    else if(listOfurls_[i].Contains("htb-pythia-m250_") ) /*unsplitNumber*/ listOfEvents_[i] =  299668.;
+//    else if(listOfurls_[i].Contains("htb-pythia-m260_") ) /*unsplitNumber*/ listOfEvents_[i] =  299686.;
+//    else if(listOfurls_[i].Contains("htb-pythia-m280_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
+//    else if(listOfurls_[i].Contains("htb-pythia-m300_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
 
+    
+    if     (listOfurls_[i].Contains("ttbar_"              ))    listOfEvents_[i] =  8272517   ;
+    else if(listOfurls_[i].Contains("stop_s_"             ))    listOfEvents_[i] =  259960    ;
+    else if(listOfurls_[i].Contains("stop_t_"             ))    listOfEvents_[i] =  3741874   ;
+    else if(listOfurls_[i].Contains("stop_tW-DR_"         ))    listOfEvents_[i] =  497657    ;
+    else if(listOfurls_[i].Contains("stopbar_s_"          ))    listOfEvents_[i] =  139974    ;
+    else if(listOfurls_[i].Contains("stopbar_t_"          ))    listOfEvents_[i] =  1915066   ;
+    else if(listOfurls_[i].Contains("stopbar_tW-DR_"      ))    listOfEvents_[i] =  493458    ;
+    else if(listOfurls_[i].Contains("WJetsToLNu_"         ))    listOfEvents_[i] =  75352713  ;
+    else if(listOfurls_[i].Contains("dy_from50_"          ))    listOfEvents_[i] =  30405425  ;
+    else if(listOfurls_[i].Contains("dy_10_50_"           ))    listOfEvents_[i] =  9942910   ;
+    else if(listOfurls_[i].Contains("WW_"                 ))    listOfEvents_[i] =  9974488   ;
+    else if(listOfurls_[i].Contains("WZ_"                 ))    listOfEvents_[i] =  9924520   ;
+    else if(listOfurls_[i].Contains("ZZ_"                 ))    listOfEvents_[i] =  9744891   ;
+    else if(listOfurls_[i].Contains("qcd_EM_Pt30to80_"    ))    listOfEvents_[i] =  28619036  ;
+    else if(listOfurls_[i].Contains("qcd_EM_Pt80to170_"   ))    listOfEvents_[i] =  19945948  ;
+    else if(listOfurls_[i].Contains("qcd_30to80_BCtoE_"   ))    listOfEvents_[i] =  2043147   ;
+    else if(listOfurls_[i].Contains("qcd_80to170_BCtoE_"  ))    listOfEvents_[i] =  1945523   ;
+    else if(listOfurls_[i].Contains("PhotonJets_30to50_"  ))    listOfEvents_[i] =  1939322   ;
+    else if(listOfurls_[i].Contains("PhotonJets_50to80_"  ))    listOfEvents_[i] =  1986059   ;
+    else if(listOfurls_[i].Contains("PhotonJets_80to120_" ))    listOfEvents_[i] =  1938625   ;
+    else if(listOfurls_[i].Contains("PhotonJets_120to170_"))    listOfEvents_[i] =  1960042   ;
+    else if(listOfurls_[i].Contains("qcdmu15_20toinf_"    ))    listOfEvents_[i] =  20920569  ;
+    
+    
+    
     listOfScales_[i] = (lum_*listOfXSections_[i])/listOfEvents_[i];   
 
     if( listOfXSections_[i] == 0){ listOfScales_[i]=1;}  // Data
@@ -518,7 +543,7 @@ void SampleProcessor::process_ttbar(int i){
   //  process(false, url_, iFolder_ + TString("ttbar_v1.root"), oFolder_+TString("out-ttbar_v1.root"),keys_);
   //  process(false, url_, iFolder_ + TString("ttbar_v2.root"), oFolder_+TString("out-ttbar_v2.root"),keys_);
 
-  if(i>18){
+  if(i>49){
     cout << "ERROR CODE - must be in the range [1,18]" << endl;
     return;
   }
@@ -594,7 +619,7 @@ void SampleProcessor::process_ttbar_mutau(int i){
 
   url_= TTBAR_URL;
 
-  if(i>18){
+  if(i>49){
     cout << "ERROR CODE - must be in the range [1,18]" << endl;
     return;
   }
@@ -611,7 +636,7 @@ void SampleProcessor::process_ttbar_mutau(int i){
 void SampleProcessor::process_ttbar_mumu(int i){
 
   url_= TTBAR_URL;
-  if(i>18){
+  if(i>49){
     cout << "ERROR CODE - must be in the range [1,18]" << endl;
     return;
   }
@@ -626,7 +651,7 @@ void SampleProcessor::process_ttbar_mumu(int i){
 void SampleProcessor::process_ttbar_emu(int i){
 
   url_= TTBAR_URL;
-  if(i>18){
+  if(i>49){
     cout << "ERROR CODE - must be in the range [1,18]" << endl;
     return;
   }
@@ -643,7 +668,7 @@ void SampleProcessor::process_ttbar_ddbkg(int i){
 
   url_= TTBAR_URL;
 
-  if(i>18){
+  if(i>49){
     cout << "ERROR CODE - must be in the range [1,18]" << endl;
     return;
   }
@@ -663,7 +688,7 @@ void SampleProcessor::process_ttbar_ddbkg(int i){
 void SampleProcessor::process_ttbar_mcbkg(int i){
 
   url_= TTBAR_URL;
-  if(i>18){
+  if(i>49){
     cout << "ERROR CODE - must be in the range [1,18]" << endl;
     return;
   }
@@ -680,28 +705,21 @@ void SampleProcessor::process_ttbar_mcbkg(int i){
 }
 
 
-void SampleProcessor::process_singletop(){
+void SampleProcessor::process_singletop(int i){
 
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
   
   //SINGLE TOP
-  url_= S_URL; process(false, url_, iFolder_ + TString("stop_s.root"),     oFolder_ + TString("out-stop_s.root"),keys_);   
-  //  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t_v1.root"),     oFolder_ + TString("out-stop_t_v1.root"),keys_);  
-  //  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t_v2.root"),     oFolder_ + TString("out-stop_t_v2.root"),keys_);  
-  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t.root"),     oFolder_ + TString("out-stop_t.root"),keys_);  
-  url_= W_URL; process(false, url_, iFolder_ + TString("stop_tW-DR.root"), oFolder_ + TString("out-stop-DR_tW.root"),keys_); 
+  url_= S_URL; process(false, url_, iFolder_ + TString("stop_s_"+idx+".root"),     oFolder_ + TString("out-stop_s_"+idx+".root"),keys_);   
+  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t_"+idx+".root"),     oFolder_ + TString("out-stop_t_"+idx+".root"),keys_);  
+  url_= W_URL; process(false, url_, iFolder_ + TString("stop_tW-DR_"+idx+".root"), oFolder_ + TString("out-stop-DR_tW_"+idx+".root"),keys_); 
 
   //ANTI SINGLE TOP
-  
-  for(int i=0; i<50; i++){
-    stringstream sidx;
-    sidx<<i;
-    string idx=sidx.str();
-    url_= A_S_URL; process(false, url_, iFolder_ + TString("stopbar_s_"+idx+".root"),     oFolder_ + TString("out-stopbar_s_"+idx+".root"),keys_);   
-  }
-  url_= A_T_URL; process(false, url_, iFolder_ + TString("stopbar_t.root"),     oFolder_ + TString("out-stopbar_t.root"),keys_);  
-  url_= A_W_URL; process(false, url_, iFolder_ + TString("stopbar_tW-DR.root"), oFolder_ + TString("out-stopbar-DR_tW.root"),keys_);   
-
-
+  url_= A_S_URL; process(false, url_, iFolder_ + TString("stopbar_s_"+idx+".root"),     oFolder_ + TString("out-stopbar_s_"+idx+".root"),keys_);   
+  url_= A_T_URL; process(false, url_, iFolder_ + TString("stopbar_t_"+idx+".root"),     oFolder_ + TString("out-stopbar_t_"+idx+".root"),keys_);  
+  url_= A_W_URL; process(false, url_, iFolder_ + TString("stopbar_tW-DR_"+idx+".root"), oFolder_ + TString("out-stopbar-DR_tW_"+idx+".root"),keys_);   
 }
 
 
@@ -714,7 +732,7 @@ void SampleProcessor::process_wjets(int i){
   //  process(false, url_, iFolder_ + TString("WJetsToLNu_v1.root"), oFolder_+TString("out-wjets_v1.root"),keys_);
   //  process(false, url_, iFolder_ + TString("WJetsToLNu_v2.root"), oFolder_+TString("out-wjets_v2.root"),keys_);
 
-  if(i>18){
+  if(i>399){
     cout << "ERROR CODE - must be in the range [1,18]" << endl;
     return;
   }
@@ -741,7 +759,7 @@ void SampleProcessor::process_zjets_from50(int i){
   // MADGRAPH Z+JETS
 
   url_ = DY_FROM50_URL; 
-  if(i>49){
+  if(i>99){
     cout << "ERROR CODE - must be in the range [0,49]" << endl;
     return;
   }
@@ -758,7 +776,7 @@ void SampleProcessor::process_zjets_10to50(int i){
   
   // MADGRAPH Z+JETS
   url_ = DY_10TO50_URL;
-  if(i>49){
+  if(i>99){
     cout << "ERROR CODE - must be in the range [0,49]" << endl;
     return;
   }
@@ -950,22 +968,51 @@ void SampleProcessor::process_htb_higgs(int sample, int i){
 }
 
 
-void SampleProcessor::process_qcd(){
-   
-  url_= QCD_EM30TO80_URL;     process(false,url_, iFolder_ + TString("qcd_EM_Pt30to80.root"),     oFolder_ + TString("out-qcd_EM_Pt30to80.root"),keys_); 
-  url_= QCD_EM80TO170_URL;    process(false,url_, iFolder_ + TString("qcd_EM_Pt80to170.root"),    oFolder_ + TString("out-qcd_EM_Pt80to170.root"),keys_);    
-  url_= QCD_BCTOE30TO80_URL;  process(false,url_, iFolder_ + TString("qcd_30to80_BCtoE.root"),    oFolder_ + TString("out-qcd_30to80_BCtoE.root"),keys_);  
-  url_= QCD_BCTOE80TO170_URL; process(false,url_, iFolder_ + TString("qcd_80to170_BCtoE.root"),   oFolder_ + TString("out-qcd_80to170_BCtoE.root"),keys_);  
- 
-  url_= QCD_PHOTON30TO50_URL;   process(false,url_, iFolder_ + TString("PhotonJets_30to50.root"),   oFolder_ + TString("out-PhotonJets_30to50.root"),keys_);  
-  url_= QCD_PHOTON50TO80_URL;   process(false,url_, iFolder_ + TString("PhotonJets_50to80.root"),   oFolder_ + TString("out-PhotonJets_50to80.root"),keys_);  
-  url_= QCD_PHOTON80TO120_URL;  process(false,url_, iFolder_ + TString("PhotonJets_80to120.root"),  oFolder_ + TString("out-PhotonJets_80to120.root"),keys_); 
-  url_= QCD_PHOTON120TO170_URL; process(false,url_, iFolder_ + TString("PhotonJets_120to170.root"), oFolder_ + TString("out-PhotonJets_120to170.root"),keys_); 
+void SampleProcessor::process_qcd(int sample, int i){
 
-  // mu + jets specific samples
-  url_= QCD_MU_URL; process(false, url_, iFolder_ + TString("qcdmu15_20toinf.root"), oFolder_ + TString("out-qcdmu15_20toinf.root"),keys_);   
-
- 
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+  
+  switch(sample){
+  case 1:
+    url_= QCD_EM30TO80_URL;     process(false,url_, iFolder_ + TString("qcd_EM_Pt30to80_"+idx+".root"),     oFolder_ + TString("out-qcd_EM_Pt30to80_"+idx+".root"),keys_); 
+    break;
+  case 2:
+    url_= QCD_EM80TO170_URL;    process(false,url_, iFolder_ + TString("qcd_EM_Pt80to170_"+idx+".root"),    oFolder_ + TString("out-qcd_EM_Pt80to170_"+idx+".root"),keys_);    
+    break;
+  case 3:
+    url_= QCD_BCTOE30TO80_URL;  process(false,url_, iFolder_ + TString("qcd_30to80_BCtoE_"+idx+".root"),    oFolder_ + TString("out-qcd_30to80_BCtoE_"+idx+".root"),keys_);  
+    break;
+  case 4:
+    url_= QCD_BCTOE80TO170_URL; process(false,url_, iFolder_ + TString("qcd_80to170_BCtoE_"+idx+".root"),   oFolder_ + TString("out-qcd_80to170_BCtoE_"+idx+".root"),keys_);  
+    break;
+  case 5:
+    url_= QCD_PHOTON30TO50_URL;   process(false,url_, iFolder_ + TString("PhotonJets_30to50_"+idx+".root"),   oFolder_ + TString("out-PhotonJets_30to50_"+idx+".root"),keys_);  
+    break;
+  case 6:
+    url_= QCD_PHOTON50TO80_URL;   process(false,url_, iFolder_ + TString("PhotonJets_50to80_"+idx+".root"),   oFolder_ + TString("out-PhotonJets_50to80_"+idx+".root"),keys_);  
+    break;
+  case 7:
+    url_= QCD_PHOTON80TO120_URL;  process(false,url_, iFolder_ + TString("PhotonJets_80to120_"+idx+".root"),  oFolder_ + TString("out-PhotonJets_80to120_"+idx+".root"),keys_); 
+    break;
+  case 8:
+    url_= QCD_PHOTON120TO170_URL; process(false,url_, iFolder_ + TString("PhotonJets_120to170_"+idx+".root"), oFolder_ + TString("out-PhotonJets_120to170_"+idx+".root"),keys_); 
+    break;
+  case 9:
+    // mu + jets specific samples
+    url_= QCD_MU_URL; process(false, url_, iFolder_ + TString("qcdmu15_20toinf_"+idx+".root"), oFolder_ + TString("out-qcdmu15_20toinf_"+idx+".root"),keys_);   
+    break;
+  default:
+    cout << "No Sample" << endl;
+    break;
+  }
+  
 }
 
 

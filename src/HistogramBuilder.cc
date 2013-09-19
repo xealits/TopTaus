@@ -589,6 +589,10 @@ void HistogramBuilder::buildYieldsHistograms( TFile * outFile, map< TString, Sel
   TH1D * h11 = new TH1D("cutflow_yields_unbminus","Cut Flow; Step;N",nsteps,0,nsteps); addHistoToMonitors(h11,h11->GetName(), yieldsMons, keys);
   TH1D * h12 = new TH1D("cutflow_yields_tesplus", "Cut Flow; Step;N",nsteps,0,nsteps); addHistoToMonitors(h12,h12->GetName(), yieldsMons, keys);
   TH1D * h13 = new TH1D("cutflow_yields_tesminus","Cut Flow; Step;N",nsteps,0,nsteps); addHistoToMonitors(h13,h13->GetName(), yieldsMons, keys);
+  TH1D * h14 = new TH1D("cutflow_yields_topptuncplus", "Cut Flow; Step;N",nsteps,0,nsteps); addHistoToMonitors(h14,h14->GetName(), yieldsMons, keys);
+  TH1D * h15 = new TH1D("cutflow_yields_topptuncminus","Cut Flow; Step;N",nsteps,0,nsteps); addHistoToMonitors(h15,h15->GetName(), yieldsMons, keys);
+
+
 
   for(int ibin=1; ibin<=nsteps; ibin++) { 
     h0->GetXaxis()->SetBinLabel(ibin,steps[ibin-1]);
@@ -690,6 +694,10 @@ void HistogramBuilder::buildMCYieldsHistograms( TFile * outFile, map< TString, S
   addHistoToMonitors(mc_h2d_12,mc_h2d_12->GetName(), yieldsMons,keys);
   TH2D * mc_h2d_13  = new TH2D("cutflow_yields_mc_tesminus", "cut flow;Step;Event type;N_{events}",nsteps,0,nsteps,ysteps,0,ysteps); 
   addHistoToMonitors(mc_h2d_13,mc_h2d_13->GetName(), yieldsMons,keys);
+  TH2D * mc_h2d_14  = new TH2D("cutflow_yields_mc_topptuncplus", "cut flow;Step;Event type;N_{events}",nsteps,0,nsteps,ysteps,0,ysteps); 
+  addHistoToMonitors(mc_h2d_14,mc_h2d_14->GetName(), yieldsMons,keys);
+  TH2D * mc_h2d_15  = new TH2D("cutflow_yields_mc_topptuncminus", "cut flow;Step;Event type;N_{events}",nsteps,0,nsteps,ysteps,0,ysteps); 
+  addHistoToMonitors(mc_h2d_15,mc_h2d_15->GetName(), yieldsMons,keys);
 
 
   for( int xsteps_i=1; xsteps_i <= nsteps; xsteps_i++ ){ 

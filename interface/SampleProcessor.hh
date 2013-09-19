@@ -86,8 +86,8 @@ public :
   //  void process_ttbar_ee(); // ee and etau without electron trigger is not worth
   void process_ttbar_ddbkg(int);
   void process_ttbar_mcbkg(int);
-  void process_singletop();
-  void process_qcd();
+  void process_singletop(int);
+  void process_qcd(int, int);
   void process_wjets(int);
   void process_zjets_from50(int);
   void process_zjets_10to50(int);

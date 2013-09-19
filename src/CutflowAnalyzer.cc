@@ -92,7 +92,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   TAUPRONGS_ = 1;    
   
   // Uncertainties //////////////////////////////////////////////////// FIXME: update this
-  JES_ = 0.05; UNC_ = 0.10; JER_ = 1; BTAGUNC_= 0.10; UNBTAGUNC_=0.10; TES_ = 0.03;
+  JES_ = 0.05; UNC_ = 0.10; JER_ = 1; BTAGUNC_= 0.10; UNBTAGUNC_=0.10; TES_ = 0.03; TOPPTUNC_ = 1.;
   ////////////////////////////////////////////////////////////////////
   
   
@@ -231,26 +231,29 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
     for(it=keys.begin();it!=keys.end();++it){   
       // tau dilepton analysis (newphys,tau algo, miniEvent, jes, unc, jer )
       myKey_ = (*it);
-      eventAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0,         0); 
+      eventAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0,         0, 0); 
       if(!isData_)
 	if(!noUncertainties_){
-	  eventAnalysis( false, (*it),ev,      JES_ ,        0,        0  ,             0,                0,           0);        
-	  eventAnalysis( false, (*it),ev, (-1)*JES_ ,        0,        0  ,             0,                0,           0);
-	  eventAnalysis( false, (*it),ev,        0  ,     UNC_,        0  ,             0,                0,           0);
-	  eventAnalysis( false, (*it),ev,        0  ,(-1)*UNC_,        0  ,             0,                0,           0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,      JER_ ,             0,                0,           0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0, (-1)*JER_ ,             0,                0,           0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,      BTAGUNC_,                0,           0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  , (-1)*BTAGUNC_,                0,           0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,       UNBTAGUNC_,           0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_,           0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,        TES_);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,   (-1)*TES_);
-	  
+	  eventAnalysis( false, (*it),ev,      JES_ ,        0,        0  ,             0,                0,           0,          0);        
+	  eventAnalysis( false, (*it),ev, (-1)*JES_ ,        0,        0  ,             0,                0,           0,          0);
+	  eventAnalysis( false, (*it),ev,        0  ,     UNC_,        0  ,             0,                0,           0,          0);
+	  eventAnalysis( false, (*it),ev,        0  ,(-1)*UNC_,        0  ,             0,                0,           0,          0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,      JER_ ,             0,                0,           0,          0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0, (-1)*JER_ ,             0,                0,           0,          0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,      BTAGUNC_,                0,           0,          0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  , (-1)*BTAGUNC_,                0,           0,          0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,       UNBTAGUNC_,           0,          0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_,           0,          0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,        TES_,          0);
+	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,   (-1)*TES_,          0);
+
+	  if( url_ == TTBAR_URL){
+	    eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,        0,          TOPPTUNC_);
+	    eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,        0,     (-1)*TOPPTUNC_);
+	  }
 	}
       
       // WARNING : we only store WplusJets info for PFlow (HPS Pftopat based jets) 
-      //      if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev_, 0,0,0,0,0); }
       if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev, 0,0,0,0,0,0); }
     }
     //////////////////////////////////////////////////////////////////////////////////
@@ -293,15 +296,22 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
 				    double jer, 
 				    double btagunc, 
 				    double unbtagunc,
-				    double tes
+				    double tes, 
+				    double topptunc
 				    ){
 
 
-  jes_=jes; unc_=unc; jer_=jer, btagunc_=btagunc; unbtagunc_=unbtagunc, tes_=tes;
+  jes_=jes;
+  unc_=unc;
+  jer_=jer;
+  btagunc_=btagunc; 
+  unbtagunc_=unbtagunc;
+  tes_=tes;
+  topptunc_=topptunc;
 
 
   // see if we run with systematics...////////////////////////////////////////// 
-  if( jes_|| unc_|| jer_|| btagunc_|| unbtagunc_ || tes_) sys_ = true; else sys_= false;
+  if( jes_|| unc_|| jer_|| btagunc_|| unbtagunc_ || tes_ || topptunc_) sys_ = true; else sys_= false;
   ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -352,15 +362,12 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   std::vector<PhysicsObject> tausColl                 = evR_->GetPhysicsObjectsFrom(ev,event::TAU);
   std::vector<PhysicsObject> taus; 
   
-  //  cout << "tau size tausColl.size(): " << tausColl.size() << " PFLOWTAU: " << PFLOWTAU << ", PFTAU: " << PFTAU << " HPSTAU: " << HPSTAU << endl; // Debug
-  
   for(size_t iorigtau=0; iorigtau<tausColl.size(); ++iorigtau){ // Get taus from leptons collection
-    //    cout << tausColl[iorigtau][17] << ", " << tauType << endl; // Debug 
     if(tausColl[iorigtau][17] == tauType ){ taus.push_back(tausColl[iorigtau]); }
   }
 
 
-  if(i_ == 45){
+  if(i_ == 45){ // Debug event
     cout<<endl<< "JETS IN EVENT " << i_ << endl;
     for(size_t ijet=0; ijet<jets.size(); ++ijet){
       cout << setprecision(6) << "\t\t jet " << ijet << ", pt " << jets[ijet].Pt() <<", eta " << jets[ijet].Eta() << ", phi " << jets[ijet].Phi() << endl;
@@ -384,11 +391,10 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   // pileup reweighting /////////////////////////////////////////////////////////////////////////
   if(! isData_ ){ 
     outtimepuWeight_= 1;     /*outtimepuWeight_ = eventPUWeight( (*classif)[3] );*/ 
-    int npv = (*classif)[2]; //intime pu vertices
+    int npv = (*classif)[8]; // True number of interactions // 2]; //intime pu vertices
     intimepuWeight_ = LumiWeights_.ITweight(npv);
 
-    // why outtime pu? why this formula
-    //int ave_nvtx = int((*classif)[2] + (*classif)[3])/3;
+    //int ave_nvtx = int((*classif)[2] + (*classif)[3])/3; // OOT pileup
     int ave_nvtx = npv;
     if     ( pu_ == PUPLUS  ) intimepuWeight_ = intimepuWeight_*PShiftUp_.ShiftWeight( ave_nvtx );
     else if( pu_ == PUMINUS ) intimepuWeight_ = intimepuWeight_*PShiftDown_.ShiftWeight( ave_nvtx );
@@ -412,10 +418,11 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
   PhysicsObject met = mets[0]; 
 
-  if(i_ == 45) cout<<endl<< "MET: pt " << met.Pt() << ", eta " << met.Eta() << ", phi " << met.Phi() << endl;
+  if(i_ == 45) // Debug event
+    cout<<endl<< "MET: pt " << met.Pt() << ", eta " << met.Eta() << ", phi " << met.Phi() << endl;
   vector<double> jerFactors;
   doPropagations( jerFactors, jes, jer, junc, jets , met, isData_);
-  if(i_ == 45){
+  if(i_ == 45){ // Debug event
     cout<<endl<< "RESCALED JETS IN EVENT " << i_ << endl;
     for(size_t ijet=0; ijet<jets.size(); ++ijet){
       cout << setprecision(6) << "\t\t jet " << ijet << ", pt " << jets[ijet].Pt() <<", eta " << jets[ijet].Eta() << ", phi " << jets[ijet].Phi() << endl;
@@ -424,7 +431,6 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
     cout<<endl<< "PROPAGATED MET: pt " << met.Pt() << ", eta " << met.Eta() << ", phi " << met.Phi() << endl;
   }
 
-  //double metValue = met.Pt();
   mets[0] = met;
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   
@@ -573,7 +579,6 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
         weighted2PDFSelectedEvents_.push_back(0);
       }
     }
-    //else{ for(int i=6; i<classifMC->GetNoElements();i++ ){ weightedPDFEvents_[i-6] += ((*classifMC)[i])*w_ ; } }
     else{ for(int i=14; i<classifMC->GetNoElements();++i ){ weightedPDFEvents_[i-14] += (*classifMC)[i] ; } }
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -845,7 +850,6 @@ void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniE
         weighted2PDFSelectedEvents_.push_back(0);
       }
     }
-    //else{ for(int i=6; i<classifMC->GetNoElements();i++ ){ weightedPDFEvents_[i-6] += ((*classifMC)[i])*w_ ; } }
     else{ for(int i=14; i<classifMC->GetNoElements();++i ){ weightedPDFEvents_[i-14] += (*classifMC)[i] ; } }
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -918,6 +922,7 @@ void CutflowAnalyzer::tauDileptonSelection(
   if( btagunc_   > 0 ){ add = TString("_bplus");      }if( btagunc_   < 0 ){ add = TString("_bminus");     }
   if( unbtagunc_ > 0 ){ add = TString("_unbplus");    }if( unbtagunc_ < 0 ){ add = TString("_unbminus");   }
   if( tes_       > 0 ){ add = TString("_tesplus");    }if( tes_       < 0 ){ add = TString("_tesminus");   }
+  if( topptunc_  > 0 ){ add = TString("_topptuncplus");  }if( topptunc_  < 0 ){ add = TString("_topptuncminus");   }
   
   TString evYields          = TString("cutflow_yields")    + add;     
   TString evYieldsMC        = TString("cutflow_yields_mc") + add;   
@@ -945,6 +950,34 @@ void CutflowAnalyzer::tauDileptonSelection(
   SelectionMonitor& mcmon  = *myMCMon;
   SelectionMonitor& debmon = *(tauDileptonDebugMons_[myKey]);
 
+
+// Top pt reweighting
+  if( url_ == TTBAR_URL){
+    double tPt(99999.), tbarPt(99999.);
+    event::MiniEvent_t *evmontecarlo = evRMC_->GetNewMiniEvent(i_,"mc");
+    if( evmontecarlo == 0 ){ cout<<"\n empty event"<<endl; }
+    else{
+      std::vector<PhysicsObject> mcquarksColl = evRMC_->GetPhysicsObjectsFrom(evmontecarlo,event::QUARK);
+      for( size_t iquark=0; iquark<mcquarksColl.size(); iquark++){
+	if( i_ == 45) cout << "pdg id: " << mcquarksColl[iquark][1] << endl;
+	if(mcquarksColl[iquark][1] == 6) tPt = mcquarksColl[iquark].Pt();
+	if(mcquarksColl[iquark][1] == -6) tbarPt = mcquarksColl[iquark].Pt();
+      }
+      
+    }
+    
+    // down: no reweighting
+    // central: weight -> weight * reweight
+    // up: weight -> weight * reweight * reweight
+    if(topptunc_ >=0) 
+      w_  *= ttbarReweight(tPt,tbarPt);    
+    if( topptunc_>0)
+      w_  *= ttbarReweight(tPt,tbarPt);
+    
+    if(i_ == 45) cout << "topptunc: (" << tPt << ", " << tbarPt << ") ---> " <<  ttbarReweight(tPt,tbarPt) <<endl;
+  }
+  /////////////////////////////////////////////
+  
   
   // mini tree stats /////////////////////////////////////////////////////////////////
   
@@ -981,25 +1014,7 @@ void CutflowAnalyzer::tauDileptonSelection(
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
 
-    // Top pt reweighting
-    if( url_ == TTBAR_URL){
-      double tPt(99999.), tbarPt(99999.);
-      event::MiniEvent_t *evmontecarlo = evRMC_->GetNewMiniEvent(i_,"mc");
-      if( evmontecarlo == 0 ){ cout<<"\n empty event"<<endl; }
-      else{
-	std::vector<PhysicsObject> mcquarksColl = evRMC_->GetPhysicsObjectsFrom(evmontecarlo,event::QUARK);
-	for( size_t iquark=0; iquark<mcquarksColl.size(); iquark++){
-	  if(mcquarksColl[iquark][1] == 6) tPt = mcquarksColl[iquark].Pt();
-	  if(mcquarksColl[iquark][1] == -6) tbarPt = mcquarksColl[iquark].Pt();
-	}
-	
-      }
-      
-      w_  *= ttbarReweight(tPt,tbarPt);
-
-
-    }
-    /////////////////////////////////////////////
+    // Top pt reweighting was here
 
 
     if( checkleptonsFromTauDecay_ ){
@@ -1088,6 +1103,74 @@ void CutflowAnalyzer::tauDileptonSelection(
       w_=w_*leptontriggerefficiency_;}
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  // New way to deal with btag uncertainies //////////////////
+  int nbtags_taus(0);
+  bool nbtag1(false),  nbtag2(false); // ENABLED BTAGGING CUT
+  ////////////////////////////////////////////////////////////
+
+
+
+  // new way to compute btag uncertainty //////////////////////////////////////////
+  if( isData_ || !  applybtagweight_){
+    for(uint j=0; j<j_final.size(); ++j){  
+      int j_ind = j_final[j]; 
+      double btagvalue = jets[j_ind][BTAGIND_] ;
+      if( btagvalue>BTAG_CUT_){nbtags_taus++;} 
+    }
+  }
+  else {
+    for(uint j=0; j<j_final.size(); ++j){  
+      int    j_ind     = j_final[j]; 
+      double btagvalue = jets[j_ind][BTAGIND_];
+      bool   isTagged = false;
+      double bjpt(jets[j_ind].Pt()), bjeta(jets[j_ind].Eta()); 
+
+      if( btagvalue > BTAG_CUT_) isTagged = true;
+
+      double newBTagSF     = getSFb(bjpt, BTAGIND_);
+      double newLightJetSF = getSFlight(bjpt, bjeta, BTAGIND_);
+      
+      // get flavour of the jet
+
+      int jet_flavor = TMath::Abs(jets[j_ind][jetpgid_]);
+      double err_newBTagSF = err_BTagSF_;
+
+      if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
+
+      if(btagunc_   > 0){ newBTagSF     = BTagSF_+ err_newBTagSF; }
+      else              { newBTagSF     = BTagSF_- err_newBTagSF; }
+
+      if(unbtagunc_ > 0){ newLightJetSF = LightJetSF_ + err_LightJetSF_;}
+      else              { newLightJetSF = LightJetSF_ - err_LightJetSF_;}
+
+      //       double BTagEff     = newBTagSF*    BTAG_eff_R_;
+      //       double LightJeteff = newLightJetSF*BTAG_eff_F_;
+
+      double jet_phi = jets[j_ind].Phi();
+
+      double sin_phi = sin(jet_phi*1000000);
+      double seed = abs(static_cast<int>(sin_phi*100000));
+
+      //Initialize class
+      BTagSFUtil btsfutil(seed);
+    
+      //modify tags
+      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, /*BTagEff*/ BTAG_eff_R_, newLightJetSF, /*LightJeteff*/ BTAG_eff_F_);
+
+      if(isTagged) nbtags_taus++;
+
+    }
+  }
+  if(nbtags_taus > 0 ) nbtag1=true;
+  if(nbtags_taus > 1)  nbtag2=true;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
   
 
   // events with 1 lepton /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1097,7 +1180,7 @@ void CutflowAnalyzer::tauDileptonSelection(
     if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,LEP_STEP2,tauDilCh,errorOnEff); }
   }
   if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,LEP_STEP2,tauDilCh,w_); }
-  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"init",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"init",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1111,7 +1194,7 @@ void CutflowAnalyzer::tauDileptonSelection(
     if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET1_STEP2,tauDilCh,errorOnEff); }
   }
   if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,JET1_STEP2,tauDilCh,w_); }
-  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 1 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 1 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1124,7 +1207,7 @@ void CutflowAnalyzer::tauDileptonSelection(
     if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET2_STEP2,tauDilCh,errorOnEff); }
   }
   if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,JET2_STEP2,tauDilCh, w_);}
-  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 2 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 2 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1368,6 +1451,9 @@ void CutflowAnalyzer::tauDileptonSelection(
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+  double tempw(1.);
+  // Here temp
+  
   // events with at least 2 jets+1 jet>20GeV ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // number of jets above jet pt cut and extra jet between tau pt and jet pt cut 
   if( j_final.size() + totalJets <3) return;
@@ -1377,7 +1463,7 @@ void CutflowAnalyzer::tauDileptonSelection(
     if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET3_STEP2,tauDilCh,errorOnEff); }
   }
   if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,JET3_STEP2,tauDilCh,w_);}
-  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 3 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 3 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1389,9 +1475,10 @@ void CutflowAnalyzer::tauDileptonSelection(
     if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,MET_STEP2,tauDilCh,errorOnEff); }
   }
   if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,MET_STEP2,tauDilCh,w_);}
-  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MET",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);  
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MET",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);  
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  // Here temp
   //testMe_+=errorOnEff2; testMe_Nev_++;
   //cout<<endl<<" Deb :  eff  = "<<setprecision (5)<<(eff.first)<<" +- "<<(eff.second)<<" errorOnEff2  = "<<errorOnEff2<<" total is "<<testMe_<<" in N events : "<<testMe_Nev_<<endl;
 
@@ -1412,73 +1499,11 @@ void CutflowAnalyzer::tauDileptonSelection(
       if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,MT_STEP2,tauDilCh,errorOnEff); }
     }
     if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,MT_STEP2,tauDilCh,w_);}
-    fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MT",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+    fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MT",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-  // New way to deal with btag uncertainies //////////////////
-  int nbtags_taus(0);
-  bool nbtag1(false),  nbtag2(false); // ENABLED BTAGGING CUT
-  ////////////////////////////////////////////////////////////
-
-
-
-  // new way to compute btag uncertainty //////////////////////////////////////////
-  if( isData_ || !  applybtagweight_){
-    for(uint j=0; j<j_final.size(); ++j){  
-      int j_ind = j_final[j]; 
-      double btagvalue = jets[j_ind][BTAGIND_] ;
-      if( btagvalue>BTAG_CUT_){nbtags_taus++;} 
-    }
-  }
-  else {
-    for(uint j=0; j<j_final.size(); ++j){  
-      int    j_ind     = j_final[j]; 
-      double btagvalue = jets[j_ind][BTAGIND_];
-      bool   isTagged = false;
-      double bjpt(jets[j_ind].Pt()), bjeta(jets[j_ind].Eta()); 
-
-      if( btagvalue > BTAG_CUT_) isTagged = true;
-
-      double newBTagSF     = getSFb(bjpt, BTAGIND_);
-      double newLightJetSF = getSFlight(bjpt, bjeta, BTAGIND_);
-      
-      // get flavour of the jet
-
-      int jet_flavor = TMath::Abs(jets[j_ind][jetpgid_]);
-      double err_newBTagSF = err_BTagSF_;
-
-      if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
-
-      if(btagunc_   > 0){ newBTagSF     = BTagSF_+ err_newBTagSF; }
-      else              { newBTagSF     = BTagSF_- err_newBTagSF; }
-
-      if(unbtagunc_ > 0){ newLightJetSF = LightJetSF_ + err_LightJetSF_;}
-      else              { newLightJetSF = LightJetSF_ - err_LightJetSF_;}
-
-      //       double BTagEff     = newBTagSF*    BTAG_eff_R_;
-      //       double LightJeteff = newLightJetSF*BTAG_eff_F_;
-
-      double jet_phi = jets[j_ind].Phi();
-
-      double sin_phi = sin(jet_phi*1000000);
-      double seed = abs(static_cast<int>(sin_phi*100000));
-
-      //Initialize class
-      BTagSFUtil btsfutil(seed);
-    
-      //modify tags
-      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, /*BTagEff*/ BTAG_eff_R_, newLightJetSF, /*LightJeteff*/ BTAG_eff_F_);
-
-      if(isTagged) nbtags_taus++;
-
-    }
-  }
-  if(nbtags_taus > 0 ) nbtag1=true;
-  if(nbtags_taus > 1)  nbtag2=true;
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+  // BTAG multiplicity was here.
 
 
 

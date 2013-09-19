@@ -104,6 +104,9 @@ void AnalysisMonitoring::buildTrees(TFile* f){
     TString selectedTesPlusTreeName   = channels[c]+TString("_Selected_tesplus");
     TString selectedTesMinusTreeName  = channels[c]+TString("_Selected_tesminus");
 
+    TString selectedTopptuncPlusTreeName   = channels[c]+TString("_Selected_topptuncplus");
+    TString selectedTopptuncMinusTreeName  = channels[c]+TString("_Selected_topptuncminus");
+
     TString selectedBPlusTreeName     = channels[c]+TString("_Selected_bplus");   
     TString selectedBMinusTreeName    = channels[c]+TString("_Selected_bminus");   
     TString selectedUnBPlusTreeName   = channels[c]+TString("_Selected_unbplus");
@@ -146,6 +149,15 @@ void AnalysisMonitoring::buildTrees(TFile* f){
     // Tree TES minus
     TTree * selectedTesMinusTree        = new TTree(selectedTesMinusTreeName.Data(),selectedTesMinusTreeName.Data());
     treeMap_[selectedTesMinusTreeName]  = selectedTesMinusTree;
+
+
+    // Tree TOP PT plus
+    TTree * selectedTopptuncPlusTree        = new TTree(selectedTopptuncPlusTreeName.Data(),selectedTopptuncPlusTreeName.Data());
+    treeMap_[selectedTopptuncPlusTreeName]  = selectedTopptuncPlusTree;
+
+    // Tree TOP PT minus
+    TTree * selectedTopptuncMinusTree        = new TTree(selectedTopptuncMinusTreeName.Data(),selectedTopptuncMinusTreeName.Data());
+    treeMap_[selectedTopptuncMinusTreeName]  = selectedTopptuncMinusTree;
 
     
     // Tree b plus

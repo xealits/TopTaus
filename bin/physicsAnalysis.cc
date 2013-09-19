@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
   std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;
 
 
-  for(int i=0; i<50; ++i){
+  for(int i=0; i<400; ++i){
     stringstream sidx;
     sidx<<i;
     string idx=sidx.str();
@@ -101,12 +101,34 @@ int main(int argc, char* argv[])
     else if (runOn == "data_muonC2_"+idx) analyzer->process_data_RunC2(i);
     else if (runOn == "data_muonD1_"+idx) analyzer->process_data_RunD1(i);
     else if (runOn == "data_muonD2_"+idx) analyzer->process_data_RunD2(i);
-    else if(runOn == "zjets_from50_"+idx)        analyzer->process_zjets_from50(i)       ;
-    else if(runOn == "zjets_10to50_"+idx)        analyzer->process_zjets_10to50(i)       ;
     else if(runOn == "ww_"+idx)            analyzer->process_diboson(0, i);
     else if(runOn == "wz_"+idx)            analyzer->process_diboson(1, i);
     else if(runOn == "zz_"+idx)            analyzer->process_diboson(2, i);
+    else if(runOn == "ttbar_mutau_"+idx)         analyzer->process_ttbar_mutau(i)    ;
+    else if(runOn == "ttbar_mumu_"+idx)          analyzer->process_ttbar_mumu(i)    ;
+    else if(runOn == "ttbar_emu_"+idx)           analyzer->process_ttbar_emu(i)    ;
+    else if(runOn == "ttbar_ddbkg_"+idx)         analyzer->process_ttbar_ddbkg(i)    ;
+    else if(runOn == "ttbar_mcbkg_"+idx)         analyzer->process_ttbar_mcbkg(i)    ;
+    else if(runOn == "ttbar_"+idx)               analyzer->process_ttbar(i)              ;
+    else if(runOn == "qcd_1_"+idx)                 analyzer->process_qcd(1, i)                ;
+    else if(runOn == "qcd_2_"+idx)                 analyzer->process_qcd(2, i)                ;
+    else if(runOn == "qcd_3_"+idx)                 analyzer->process_qcd(3, i)                ;
+    else if(runOn == "qcd_4_"+idx)                 analyzer->process_qcd(4, i)                ;
+    else if(runOn == "qcd_5_"+idx)                 analyzer->process_qcd(5, i)                ;
+    else if(runOn == "qcd_6_"+idx)                 analyzer->process_qcd(6, i)                ;
+    else if(runOn == "qcd_7_"+idx)                 analyzer->process_qcd(7, i)                ;
+    else if(runOn == "qcd_8_"+idx)                 analyzer->process_qcd(8, i)                ;
+    else if(runOn == "qcd_9_"+idx)                 analyzer->process_qcd(9, i)                ;
+
+    // 100 from 0
+    else if(runOn == "zjets_from50_"+idx)        analyzer->process_zjets_from50(i)       ;
+    else if(runOn == "zjets_10to50_"+idx)        analyzer->process_zjets_10to50(i)       ;
+
+    // 400 from 0
     else if(runOn == "wjets_"+idx)               analyzer->process_wjets(i)              ;
+
+    // 20 from 0
+    else if(runOn == "singletop_"+idx)           analyzer->process_singletop(i)          ;
 
     // 30 from 0
     else if(runOn == "htb_higgs_bychannel_180_"+idx) analyzer->process_htb_higgs_bychannel(180, i) ;
@@ -125,23 +147,12 @@ int main(int argc, char* argv[])
     else if(runOn == "htb_higgs_260_"+idx)           analyzer->process_htb_higgs(260, i)           ;
     else if(runOn == "htb_higgs_280_"+idx)           analyzer->process_htb_higgs(280, i)           ;
     else if(runOn == "htb_higgs_300_"+idx)           analyzer->process_htb_higgs(300, i)           ;
-    
-    // 18 from 1
-    else if(runOn == "ttbar_mutau_"+idx)         analyzer->process_ttbar_mutau(i)    ;
-    else if(runOn == "ttbar_mumu_"+idx)          analyzer->process_ttbar_mumu(i)    ;
-    else if(runOn == "ttbar_emu_"+idx)           analyzer->process_ttbar_emu(i)    ;
-    else if(runOn == "ttbar_ddbkg_"+idx)         analyzer->process_ttbar_ddbkg(i)    ;
-    else if(runOn == "ttbar_mcbkg_"+idx)         analyzer->process_ttbar_mcbkg(i)    ;
-    else if(runOn == "ttbar_"+idx)               analyzer->process_ttbar(i)              ;
-
 
   }  
 
     
   if     (runOn == "hh_higgs_bychannel")  analyzer->process_hh_higgs_bychannel() ;
   else if(runOn == "hh_higgs")            analyzer->process_hh_higgs()           ;
-  else if(runOn == "qcd")                 analyzer->process_qcd()                ;
-  else if(runOn == "singletop")           analyzer->process_singletop()          ;
   else if(runOn == "ttbar_unc")           analyzer->process_ttbar_unc()          ;
   
   else if(runOn == "wh_higgs_bychannel")  analyzer->process_wh_higgs_bychannel() ;
