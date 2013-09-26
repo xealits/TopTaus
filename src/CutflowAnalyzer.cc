@@ -178,10 +178,13 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
 
 
     // Muons without mt cut, 2013-08-24. Following twiki, gluon contribution not considered for ratios.
-    BTAG_eff_R_ = 0.656;         
-    BTAG_eff_F_ = 0.054;
+    // passage ntuples //     BTAG_eff_R_ = 0.656;         
+    // passage ntuples //     BTAG_eff_F_ = 0.054;
     
-
+    // new ntuples
+    BTAG_eff_R_ = 0.396856;
+    BTAG_eff_F_ = 0.031894;
+    
 
     
   }else { // Zeroed
@@ -391,7 +394,7 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   // pileup reweighting /////////////////////////////////////////////////////////////////////////
   if(! isData_ ){ 
     outtimepuWeight_= 1;     /*outtimepuWeight_ = eventPUWeight( (*classif)[3] );*/ 
-    int npv = (*classif)[8]; // True number of interactions // 2]; //intime pu vertices
+    int npv = (*classif)[2]; //8 True number of interactions // 2]; //intime pu vertices
     intimepuWeight_ = LumiWeights_.ITweight(npv);
 
     //int ave_nvtx = int((*classif)[2] + (*classif)[3])/3; // OOT pileup
@@ -1140,11 +1143,11 @@ void CutflowAnalyzer::tauDileptonSelection(
 
       if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
 
-      if(btagunc_   > 0){ newBTagSF     = BTagSF_+ err_newBTagSF; }
-      else              { newBTagSF     = BTagSF_- err_newBTagSF; }
+      if(btagunc_   > 0){ newBTagSF     = newBTagSF+ err_newBTagSF; }
+      else              { newBTagSF     = newBTagSF- err_newBTagSF; }
 
-      if(unbtagunc_ > 0){ newLightJetSF = LightJetSF_ + err_LightJetSF_;}
-      else              { newLightJetSF = LightJetSF_ - err_LightJetSF_;}
+      if(unbtagunc_ > 0){ newLightJetSF = newLightJetSF + err_LightJetSF_;}
+      else              { newLightJetSF = newLightJetSF - err_LightJetSF_;}
 
       //       double BTagEff     = newBTagSF*    BTAG_eff_R_;
       //       double LightJeteff = newLightJetSF*BTAG_eff_F_;
