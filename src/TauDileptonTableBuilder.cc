@@ -110,14 +110,19 @@ namespace tableutils{
     hwEffHitoNames.push_back("TBH300");
 
     vector<TString> htbEffHitoNames;
-    hwEffHitoNames.push_back("TBH180"); 
-    hwEffHitoNames.push_back("TBH200"); 
-    hwEffHitoNames.push_back("TBH220"); 
-    hwEffHitoNames.push_back("TBH240"); 
-    hwEffHitoNames.push_back("TBH250");
-    hwEffHitoNames.push_back("TBH260");
-    hwEffHitoNames.push_back("TBH280");
-    hwEffHitoNames.push_back("TBH300");
+    htbEffHitoNames.push_back("TBH180"); 
+    htbEffHitoNames.push_back("TBH200"); 
+    htbEffHitoNames.push_back("TBH220"); 
+    htbEffHitoNames.push_back("TBH240"); 
+    htbEffHitoNames.push_back("TBH250");
+    htbEffHitoNames.push_back("TBH260");
+    htbEffHitoNames.push_back("TBH280");
+    htbEffHitoNames.push_back("TBH300");
+    htbEffHitoNames.push_back("TBH350");
+    //    htbEffHitoNames.push_back("TBH400");
+    htbEffHitoNames.push_back("TBH500");
+    htbEffHitoNames.push_back("TBH600");
+    htbEffHitoNames.push_back("TBH700");
 
 
 
@@ -154,6 +159,11 @@ namespace tableutils{
     htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m260.root"));   
     htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m280.root"));   
     htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m300.root"));   
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m350.root"));   
+    //    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m400.root"));   
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m500.root"));   
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m600.root"));   
+    htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m700.root"));   
   }
   
   
@@ -1358,6 +1368,11 @@ namespace tableutils{
    "$H^{+}\\rightarrow tb, M_{H}=260 GeV/c^{2}$ & ", 
    "$H^{+}\\rightarrow tb, M_{H}=280 GeV/c^{2}$ & ", 
    "$H^{+}\\rightarrow tb, M_{H}=300 GeV/c^{2}$ & ", 
+   "$H^{+}\\rightarrow tb, M_{H}=350 GeV/c^{2}$ & ", 
+   //   "$H^{+}\\rightarrow tb, M_{H}=400 GeV/c^{2}$ & ", 
+   "$H^{+}\\rightarrow tb, M_{H}=500 GeV/c^{2}$ & ", 
+   "$H^{+}\\rightarrow tb, M_{H}=600 GeV/c^{2}$ & ", 
+   "$H^{+}\\rightarrow tb, M_{H}=700 GeV/c^{2}$ & " 
   }; 
 
   fprintf(f,"\\hline \n");
@@ -2428,6 +2443,11 @@ namespace tableutils{
       htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m260.root")); // for datacards
       htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m280.root")); // for datacards
       htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m300.root")); // for datacards
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m350.root")); // for datacards
+      //      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m400.root")); // for datacards
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m500.root")); // for datacards
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m600.root")); // for datacards
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-heavyHiggs-pythia-m700.root")); // for datacards
     }
     else {
       htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m180.root")); // for tables
@@ -2438,6 +2458,11 @@ namespace tableutils{
       htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m260.root")); // for tables
       htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m280.root")); // for tables
       htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m300.root")); // for tables
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m350.root")); // for tables
+      //      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m400.root")); // for tables
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m500.root")); // for tables
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m600.root")); // for tables
+      htbFiles.push_back(outputArea_+TString("nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m700.root")); // for tables
     }
   }
   
@@ -3117,7 +3142,12 @@ namespace tableutils{
     "$H^{+}\\rightarrow tb, M_{H^{+}}=250GeV$ &",
     "$H^{+}\\rightarrow tb, M_{H^{+}}=260GeV$ &",
     "$H^{+}\\rightarrow tb, M_{H^{+}}=280GeV$ &",
-    "$H^{+}\\rightarrow tb, M_{H^{+}}=300GeV$ &"
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=300GeV$ &",
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=350GeV$ &",
+    //    "$H^{+}\\rightarrow tb, M_{H^{+}}=400GeV$ &",
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=500GeV$ &",
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=600GeV$ &",
+    "$H^{+}\\rightarrow tb, M_{H^{+}}=700GeV$ &"
   };
 
 //    TString    other[] = {
