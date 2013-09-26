@@ -141,8 +141,12 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[HTB260_URL]             = 10.9879  * (1 - 0.0361988  ) ;/// 30.;  
       defaultXSections_[HTB280_URL]             = 09.31608 * (1 - 0.02984434 ) ;/// 30.; 
       defaultXSections_[HTB300_URL]             = 07.91902 * (1 - 0.02514242 ) ;/// 30.; 
+      defaultXSections_[HTB350_URL]             = 0.0536621 * (1.-0.01838561  ) ;/// 30.; 
+      defaultXSections_[HTB400_URL]             = 0.0371904 * (1.-0.01402549  ) ;/// 30.; 
+      defaultXSections_[HTB500_URL]             = 0.0187822 * (1.-0.006268037 ) ;/// 30.; 
+      defaultXSections_[HTB600_URL]             = 0.0100715 * (1.-0.004805924 ) ;/// 30.; 
+      defaultXSections_[HTB700_URL]             = 0.0056681 * (1.-0.004234392 ) ;/// 30.; 
    
-	
     } else {
       
       defaultXSections_[DATA_URL]      = 0.;         
@@ -326,25 +330,6 @@ void SampleProcessor::init(){
     listOfEvents_[i] = (listOfHistos_[i])->GetBinContent(1);
 
     //    double unsplitNumber(1.);
-
-//    if     (listOfurls_[i].Contains("ttbar_") )           /*unsplitNumber*/ listOfEvents_[i] =  8228517.;
-//    else if(listOfurls_[i].Contains("stopbar_s_") )       /*unsplitNumber*/ listOfEvents_[i] =  139974.;
-//    else if(listOfurls_[i].Contains("WJetsToLNu_") )      /*unsplitNumber*/ listOfEvents_[i] =  43636521.;
-//    else if(listOfurls_[i].Contains("dy_from50_") )       /*unsplitNumber*/ listOfEvents_[i] =  6084984.;
-//    else if(listOfurls_[i].Contains("dy_10_50_") )        /*unsplitNumber*/ listOfEvents_[i] =  7107167.;//20751565.;
-//    else if(listOfurls_[i].Contains("WW_") )              /*unsplitNumber*/ listOfEvents_[i] =  9840413.;//9000414.;
-//    else if(listOfurls_[i].Contains("WZ_") )              /*unsplitNumber*/ listOfEvents_[i] =  9985267.;//9050268.;
-//    else if(listOfurls_[i].Contains("ZZ_") )              /*unsplitNumber*/ listOfEvents_[i] =  9396412.;//9022326.;
-//    else if(listOfurls_[i].Contains("htb-pythia-m180_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
-//    else if(listOfurls_[i].Contains("htb-pythia-m200_") ) /*unsplitNumber*/ listOfEvents_[i] =  299999.;
-//    else if(listOfurls_[i].Contains("htb-pythia-m220_") ) /*unsplitNumber*/ listOfEvents_[i] =  299999.;
-//    else if(listOfurls_[i].Contains("htb-pythia-m240_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
-//    else if(listOfurls_[i].Contains("htb-pythia-m250_") ) /*unsplitNumber*/ listOfEvents_[i] =  299668.;
-//    else if(listOfurls_[i].Contains("htb-pythia-m260_") ) /*unsplitNumber*/ listOfEvents_[i] =  299686.;
-//    else if(listOfurls_[i].Contains("htb-pythia-m280_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
-//    else if(listOfurls_[i].Contains("htb-pythia-m300_") ) /*unsplitNumber*/ listOfEvents_[i] =  300000.;
-
-    
     if     (listOfurls_[i].Contains("ttbar_"              ))    listOfEvents_[i] =  8272517   ;
     else if(listOfurls_[i].Contains("stop_s_"             ))    listOfEvents_[i] =  259960    ;
     else if(listOfurls_[i].Contains("stop_t_"             ))    listOfEvents_[i] =  3741874   ;
@@ -362,12 +347,23 @@ void SampleProcessor::init(){
     else if(listOfurls_[i].Contains("qcd_EM_Pt80to170_"   ))    listOfEvents_[i] =  19945948  ;
     else if(listOfurls_[i].Contains("qcd_30to80_BCtoE_"   ))    listOfEvents_[i] =  2043147   ;
     else if(listOfurls_[i].Contains("qcd_80to170_BCtoE_"  ))    listOfEvents_[i] =  1945523   ;
-    else if(listOfurls_[i].Contains("PhotonJets_30to50_"  ))    listOfEvents_[i] =  1939322   ;
+    else if(listOfurls_[i].Contains("PhotonJets_30to50_"  ))    listOfEvents_[i] =  1984322   ; //1939322   ;
     else if(listOfurls_[i].Contains("PhotonJets_50to80_"  ))    listOfEvents_[i] =  1986059   ;
-    else if(listOfurls_[i].Contains("PhotonJets_80to120_" ))    listOfEvents_[i] =  1938625   ;
+    else if(listOfurls_[i].Contains("PhotonJets_80to120_" ))    listOfEvents_[i] =  1983625   ; //1938625   ;
     else if(listOfurls_[i].Contains("PhotonJets_120to170_"))    listOfEvents_[i] =  1960042   ;
-    else if(listOfurls_[i].Contains("qcdmu15_20toinf_"    ))    listOfEvents_[i] =  20920569  ;
-    
+    else if(listOfurls_[i].Contains("qcdmu15_20toinf_"    ))    listOfEvents_[i] =  21352566  ; //20920569  ;
+    else if(listOfurls_[i].Contains("htb-pythia-m180_"  ))      listOfEvents_[i] = 300000;
+    else if(listOfurls_[i].Contains("htb-pythia-m200_"  ))      listOfEvents_[i] = 299999;
+    else if(listOfurls_[i].Contains("htb-pythia-m220_"  ))      listOfEvents_[i] = 299999;
+    else if(listOfurls_[i].Contains("htb-pythia-m240_"  ))      listOfEvents_[i] = 300000;
+    else if(listOfurls_[i].Contains("htb-pythia-m250_"  ))      listOfEvents_[i] = 299668;
+    else if(listOfurls_[i].Contains("htb-pythia-m260_"  ))      listOfEvents_[i] = 299686;
+    else if(listOfurls_[i].Contains("htb-pythia-m280_"  ))      listOfEvents_[i] = 290000;
+    else if(listOfurls_[i].Contains("htb-pythia-m300_"  ))      listOfEvents_[i] = 290000;
+    else if(listOfurls_[i].Contains("htb-pythia-m350_"  ))      listOfEvents_[i] = 290304;
+    else if(listOfurls_[i].Contains("htb-pythia-m500_"  ))      listOfEvents_[i] = 290880;
+    else if(listOfurls_[i].Contains("htb-pythia-m600_"  ))      listOfEvents_[i] = 286484;
+    else if(listOfurls_[i].Contains("htb-pythia-m700_"  ))      listOfEvents_[i] = 290000;
     
     
     listOfScales_[i] = (lum_*listOfXSections_[i])/listOfEvents_[i];   
@@ -710,16 +706,18 @@ void SampleProcessor::process_singletop(int i){
   stringstream sidx;
   sidx<<i;
   string idx=sidx.str();
-  
-  //SINGLE TOP
-  url_= S_URL; process(false, url_, iFolder_ + TString("stop_s_"+idx+".root"),     oFolder_ + TString("out-stop_s_"+idx+".root"),keys_);   
-  url_= T_URL; process(false, url_, iFolder_ + TString("stop_t_"+idx+".root"),     oFolder_ + TString("out-stop_t_"+idx+".root"),keys_);  
-  url_= W_URL; process(false, url_, iFolder_ + TString("stop_tW-DR_"+idx+".root"), oFolder_ + TString("out-stop-DR_tW_"+idx+".root"),keys_); 
 
-  //ANTI SINGLE TOP
-  url_= A_S_URL; process(false, url_, iFolder_ + TString("stopbar_s_"+idx+".root"),     oFolder_ + TString("out-stopbar_s_"+idx+".root"),keys_);   
+  if(i<20){
+    //SINGLE TOP
+    url_= S_URL; process(false, url_, iFolder_ + TString("stop_s_"+idx+".root"),     oFolder_ + TString("out-stop_s_"+idx+".root"),keys_);   
+    url_= T_URL; process(false, url_, iFolder_ + TString("stop_t_"+idx+".root"),     oFolder_ + TString("out-stop_t_"+idx+".root"),keys_);  
+    url_= W_URL; process(false, url_, iFolder_ + TString("stop_tW-DR_"+idx+".root"), oFolder_ + TString("out-stop-DR_tW_"+idx+".root"),keys_); 
+    
+    //ANTI SINGLE TOP
+    url_= A_S_URL; process(false, url_, iFolder_ + TString("stopbar_s_"+idx+".root"),     oFolder_ + TString("out-stopbar_s_"+idx+".root"),keys_);   
+    url_= A_W_URL; process(false, url_, iFolder_ + TString("stopbar_tW-DR_"+idx+".root"), oFolder_ + TString("out-stopbar-DR_tW_"+idx+".root"),keys_);
+  }   
   url_= A_T_URL; process(false, url_, iFolder_ + TString("stopbar_t_"+idx+".root"),     oFolder_ + TString("out-stopbar_t_"+idx+".root"),keys_);  
-  url_= A_W_URL; process(false, url_, iFolder_ + TString("stopbar_tW-DR_"+idx+".root"), oFolder_ + TString("out-stopbar-DR_tW_"+idx+".root"),keys_);   
 }
 
 
@@ -759,7 +757,7 @@ void SampleProcessor::process_zjets_from50(int i){
   // MADGRAPH Z+JETS
 
   url_ = DY_FROM50_URL; 
-  if(i>99){
+  if(i>199){
     cout << "ERROR CODE - must be in the range [0,49]" << endl;
     return;
   }
@@ -884,7 +882,7 @@ void SampleProcessor::process_tbh_higgs(){
 
 void SampleProcessor::process_htb_higgs_bychannel(int sample, int i){
 
-  if(i>29){
+  if(i>30){
     cout << "ERROR CODE - must be in the range [0,29]" << endl;
     return;
   }
@@ -918,8 +916,23 @@ void SampleProcessor::process_htb_higgs_bychannel(int sample, int i){
   case 300:
     url_ = HTB300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m300_"+idx+".root"), oFolder_+TString("out-htb-pythia-m300-mutau_"+idx+".root"),keys_, MUTAU_); 
     break;
+  case 350:
+    url_ = HTB350_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m350_"+idx+".root"), oFolder_+TString("out-htb-pythia-m350-mutau_"+idx+".root"),keys_, MUTAU_); 
+    break;
+  case 400:
+    url_ = HTB400_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m400_"+idx+".root"), oFolder_+TString("out-htb-pythia-m400-mutau_"+idx+".root"),keys_, MUTAU_); 
+    break;
+  case 500:
+    url_ = HTB500_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m500_"+idx+".root"), oFolder_+TString("out-htb-pythia-m500-mutau_"+idx+".root"),keys_, MUTAU_); 
+    break;
+  case 600:
+    url_ = HTB600_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m600_"+idx+".root"), oFolder_+TString("out-htb-pythia-m600-mutau_"+idx+".root"),keys_, MUTAU_); 
+    break;
+  case 700:
+    url_ = HTB700_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m700_"+idx+".root"), oFolder_+TString("out-htb-pythia-m700-mutau_"+idx+".root"),keys_, MUTAU_); 
+    break;
   default:
-    cout << "ERROR CODE - must be among [180,200,220,240,250,260,280,300]" << endl;
+    cout << "ERROR CODE - must be among [180,200,220,240,250,260,280,300,350,400,500,600,700]" << endl;
     break;
   }
 }
@@ -927,7 +940,7 @@ void SampleProcessor::process_htb_higgs_bychannel(int sample, int i){
 
 void SampleProcessor::process_htb_higgs(int sample, int i){
   
-  if(i>29){
+  if(i>30){
     cout << "ERROR CODE - must be in the range [0,29]" << endl;
     return;
   }
@@ -961,8 +974,23 @@ void SampleProcessor::process_htb_higgs(int sample, int i){
   case 300:
     url_ = HTB300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m300_"+idx+".root"), oFolder_+TString("out-htb-pythia-m300_"+idx+".root"),keys_); 
     break;
+  case 350:
+    url_ = HTB350_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m350_"+idx+".root"), oFolder_+TString("out-htb-pythia-m350_"+idx+".root"),keys_); 
+    break;
+  case 400:
+    url_ = HTB400_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m400_"+idx+".root"), oFolder_+TString("out-htb-pythia-m400_"+idx+".root"),keys_); 
+    break;
+  case 500:
+    url_ = HTB500_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m500_"+idx+".root"), oFolder_+TString("out-htb-pythia-m500_"+idx+".root"),keys_); 
+    break;
+  case 600:
+    url_ = HTB600_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m600_"+idx+".root"), oFolder_+TString("out-htb-pythia-m600_"+idx+".root"),keys_); 
+    break;
+  case 700:
+    url_ = HTB700_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("htb-pythia-m700_"+idx+".root"), oFolder_+TString("out-htb-pythia-m700_"+idx+".root"),keys_); 
+    break;
   default:
-    cout << "ERROR CODE - must be among [180,200,220,240,250,260,280,300]" << endl;
+    cout << "ERROR CODE - must be among [180,200,220,240,250,260,280,300,350,400,500,600,700]" << endl;
     break;
   }
 }
@@ -970,7 +998,7 @@ void SampleProcessor::process_htb_higgs(int sample, int i){
 
 void SampleProcessor::process_qcd(int sample, int i){
 
-  if(i>49){
+  if(i>100){
     cout << "ERROR CODE - must be in the range [0,49]" << endl;
     return;
   }

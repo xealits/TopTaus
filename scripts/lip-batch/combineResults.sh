@@ -32,20 +32,20 @@ if [ "${2}" = "hadd" ]; then
     hadd -f $DATAPLACE/out-zjets.root $DATAPLACE/out-dy_from50_*root $DATAPLACE/out-dy_10to50_*.root
 
     # single top
-    hadd -f $DATAPLACE/out-singletop.root $DATAPLACE/out-stop*.root
+     hadd -f $DATAPLACE/out-singletop.root $DATAPLACE/out-stop*.root
     
     # diboson
     hadd -f $DATAPLACE/out-dibosons.root $DATAPLACE/out-ww_*.root $DATAPLACE/out-wz_*.root $DATAPLACE/out-zz_*.root
 
     # wjets
-    hadd -f $DATAPLACE/out-wjets.root $DATAPLACE/out-wjets_*.root
-
-    hadd -f $DATAPLACE/out-ttbar.root $DATAPLACE/out-ttbar_*.root
-    hadd -f $DATAPLACE/out-ttbar-ddbkg.root $DATAPLACE/out-ttbar-ddbkg_*.root
-    hadd -f $DATAPLACE/out-ttbar-mcbkg.root $DATAPLACE/out-ttbar-mcbkg_*.root
-    hadd -f $DATAPLACE/out-ttbar-mutau.root $DATAPLACE/out-ttbar-mutau_*.root
-    hadd -f $DATAPLACE/out-ttbar-mumu.root $DATAPLACE/out-ttbar-mumu_*.root
-    hadd -f $DATAPLACE/out-ttbar-emu.root $DATAPLACE/out-ttbar-emu_*.root
+     hadd -f $DATAPLACE/out-wjets.root $DATAPLACE/out-wjets_*.root
+ 
+     hadd -f $DATAPLACE/out-ttbar.root $DATAPLACE/out-ttbar_*.root
+     hadd -f $DATAPLACE/out-ttbar-ddbkg.root $DATAPLACE/out-ttbar-ddbkg_*.root
+     hadd -f $DATAPLACE/out-ttbar-mcbkg.root $DATAPLACE/out-ttbar-mcbkg_*.root
+     hadd -f $DATAPLACE/out-ttbar-mutau.root $DATAPLACE/out-ttbar-mutau_*.root
+     hadd -f $DATAPLACE/out-ttbar-mumu.root $DATAPLACE/out-ttbar-mumu_*.root
+     hadd -f $DATAPLACE/out-ttbar-emu.root $DATAPLACE/out-ttbar-emu_*.root
 
 
     # misidentified tau_h component from MC
@@ -80,7 +80,11 @@ if [ "${2}" = "hadd" ]; then
     hadd -f $DATAPLACE/out-htb-pythia-m260.root $DATAPLACE/out-htb-pythia-m260_*.root 
     hadd -f $DATAPLACE/out-htb-pythia-m280.root $DATAPLACE/out-htb-pythia-m280_*.root 
     hadd -f $DATAPLACE/out-htb-pythia-m300.root $DATAPLACE/out-htb-pythia-m300_*.root 
-
+    hadd -f $DATAPLACE/out-htb-pythia-m350.root $DATAPLACE/out-htb-pythia-m350_*.root 
+    hadd -f $DATAPLACE/out-htb-pythia-m400.root $DATAPLACE/out-htb-pythia-m400_*.root 
+    hadd -f $DATAPLACE/out-htb-pythia-m500.root $DATAPLACE/out-htb-pythia-m500_*.root 
+    hadd -f $DATAPLACE/out-htb-pythia-m600.root $DATAPLACE/out-htb-pythia-m600_*.root 
+    hadd -f $DATAPLACE/out-htb-pythia-m700.root $DATAPLACE/out-htb-pythia-m700_*.root 
 
     # higgs  mass points
     hadd -f $DATAPLACE/out-heavyHiggs-pythia-m180.root $DATAPLACE/out-tbh-pythia-m180.root $DATAPLACE/out-htb-pythia-m180.root &
@@ -92,7 +96,12 @@ if [ "${2}" = "hadd" ]; then
     cp  $DATAPLACE/out-htb-pythia-m260.root $DATAPLACE/out-heavyHiggs-pythia-m260.root                                         &
     cp  $DATAPLACE/out-htb-pythia-m280.root $DATAPLACE/out-heavyHiggs-pythia-m280.root                                         &
     hadd -f $DATAPLACE/out-heavyHiggs-pythia-m300.root $DATAPLACE/out-tbh-pythia-m300.root $DATAPLACE/out-htb-pythia-m300.root &
-    
+    cp  $DATAPLACE/out-htb-pythia-m350.root $DATAPLACE/out-heavyHiggs-pythia-m350.root                                         &
+    cp  $DATAPLACE/out-htb-pythia-m400.root $DATAPLACE/out-heavyHiggs-pythia-m400.root                                         &
+    cp  $DATAPLACE/out-htb-pythia-m500.root $DATAPLACE/out-heavyHiggs-pythia-m500.root                                         &
+    cp  $DATAPLACE/out-htb-pythia-m600.root $DATAPLACE/out-heavyHiggs-pythia-m600.root                                         &
+    cp  $DATAPLACE/out-htb-pythia-m700.root $DATAPLACE/out-heavyHiggs-pythia-m700.root                                         &
+
 
 elif [ "${2}" = "clean" ]; then
   # Clean processed files
