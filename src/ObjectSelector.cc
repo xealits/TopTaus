@@ -75,7 +75,7 @@ void ObjectSelector::SetLeptonPlusJetsSelection(){
   
   
   // muon //////////////////////////////////////////
-  M_RELISO_MAX_  = 0.2; //0.05;         // dilepton is 0.15
+  M_RELISO_MAX_  = 0.12; // Tight WP       //0.05;         // dilepton is 0.15
   M_PT_MIN_      = 30; //30;  //WARNING M_PT_MIN_      = 20;               // dilepton is 20 // test on 70
   M_ETA_MAX_     = 2.1;                 // dilepton is 2.5
   M_D0_MAX_      = 0.02;                // dilepton is 0.02
@@ -86,7 +86,7 @@ void ObjectSelector::SetLeptonPlusJetsSelection(){
   RHO_AEFF_M_         = 0.112;
   
   if(commondefinitions::run2012_){
-    M_RELISO_MAX_  = 0.1; //cone 0.4
+    M_RELISO_MAX_  = 0.12; // tight WP //cone 0.4
   }
   ///////////////////////////////////////////////////
   
