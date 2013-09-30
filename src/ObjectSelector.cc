@@ -615,177 +615,343 @@ void ObjectSelector::LeadMuonTriggerEfficiency(const vector<PhysicsObject>& muon
 
   // TOTAL // pt>500 assumed flat and uses 140.<pt<500. SF.
   if(abseta>=0. && abseta <0.9){ // ABCD
-    if(pt>=140. /* && pt<500. */)      muontriggerefficiency=0.983259;
-    if(pt>=25. && pt<30.)              muontriggerefficiency=0.979543;
-    if(pt>=30. && pt<35.)              muontriggerefficiency=0.980155;
-    if(pt>=35. && pt<40.)              muontriggerefficiency=0.980745;
-    if(pt>=40. && pt<50.)              muontriggerefficiency=0.980943;
-    if(pt>=50. && pt<60.)	       muontriggerefficiency=0.981394;
-    if(pt>=60. && pt<90.)	       muontriggerefficiency=0.983171;
-    if(pt>=90. && pt<140.)	       muontriggerefficiency=0.98099 ;
-  }
+    if(pt>=140. /*&& pt<500.*/) muontriggerefficiency=0.98041749810533507;
+    if(pt>=25.  && pt<30.)      muontriggerefficiency=0.98372524384334614;
+    if(pt>=30.  && pt<35.)      muontriggerefficiency=0.98406344315477012;
+    if(pt>=35.  && pt<40.)      muontriggerefficiency=0.98391658181685537;
+    if(pt>=40.  && pt<50.)      muontriggerefficiency=0.98345252700570363;
+    if(pt>=50.  && pt<60.)      muontriggerefficiency=0.98429177039157478;
+    if(pt>=60.  && pt<90.)      muontriggerefficiency=0.98467201842489449;
+    if(pt>=90.  && pt<140.)     muontriggerefficiency=0.98091711658069591;
+  }  
   if(abseta>=0.9 && abseta <1.2){ // ABCD
-    if(pt>=140. /*&& pt<500. */)       muontriggerefficiency=0.986067;
-    if(pt>=25. && pt<30.)              muontriggerefficiency=0.968072;
-    if(pt>=30. && pt<35.)              muontriggerefficiency=0.962795;
-    if(pt>=35. && pt<40.)              muontriggerefficiency=0.964999;
-    if(pt>=40. && pt<50.)              muontriggerefficiency=0.964565;
-    if(pt>=50. && pt<60.)              muontriggerefficiency=0.961581;
-    if(pt>=60. && pt<90.)              muontriggerefficiency=0.956228;
-    if(pt>=90. && pt<140.)             muontriggerefficiency=0.959373;
-  }
+    if(pt>=140. /*&& pt<500.*/) muontriggerefficiency=0.97127896196175556;
+    if(pt>=25.  && pt<30.)      muontriggerefficiency=0.96838127559931908;
+    if(pt>=30.  && pt<35.)      muontriggerefficiency=0.96538054889610103;
+    if(pt>=35.  && pt<40.)      muontriggerefficiency=0.96696514151670487;
+    if(pt>=40.  && pt<50.)      muontriggerefficiency=0.96667958160832501;
+    if(pt>=50.  && pt<60.)      muontriggerefficiency=0.96273957552501865;
+    if(pt>=60.  && pt<90.)      muontriggerefficiency=0.95952416834753307;
+    if(pt>=90.  && pt<140.)     muontriggerefficiency=0.96444182461126438;
+  }	  
   if(abseta>=1.2 && abseta <2.1){ // ABCD
-    if(pt>=140. /*&& pt<500. */)       muontriggerefficiency=0.976435;
-    if(pt>=25. && pt<30.)              muontriggerefficiency=1.00288 ;
-    if(pt>=30. && pt<35.)              muontriggerefficiency=0.998932;
-    if(pt>=35. && pt<40.)              muontriggerefficiency=0.995211;
-    if(pt>=40. && pt<50.)              muontriggerefficiency=0.993481;
-    if(pt>=50. && pt<60.)              muontriggerefficiency=0.990445;
-    if(pt>=60. && pt<90.)              muontriggerefficiency=0.984746;
-    if(pt>=90. && pt<140.)             muontriggerefficiency=0.98326 ;
+    if(pt>=140. /*&& pt<500.*/) muontriggerefficiency=0.99416866829048334;
+    if(pt>=25.  && pt<30.)      muontriggerefficiency=1.0051991254438037;
+    if(pt>=30.  && pt<35.)      muontriggerefficiency=1.0013781590159485;
+    if(pt>=35.  && pt<40.)      muontriggerefficiency=0.99616640424792002;
+    if(pt>=40.  && pt<50.)      muontriggerefficiency=0.99425410141043047;
+    if(pt>=50.  && pt<60.)      muontriggerefficiency=0.99054467301217797;
+    if(pt>=60.  && pt<90.)      muontriggerefficiency=0.98829374192885855;
+    if(pt>=90.  && pt<140.)     muontriggerefficiency=0.98187598993908232;
   }
 
-  
-  
-  /* Naked values
-
-  // RUN A
-  if(abseta>=0. && abseta <0.9){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta<0.9_2012A']
-  {'140_500':'data/mc': {'efficiency_ratio': 1.0039855865250082,                         'err_hi': 0.022499183084688845,                         'err_low': 0.029995941945261614,
-  '25_30'  'data/mc': {'efficiency_ratio': 0.93813730368945492,                       'err_hi': 0.0044022371718614199,                       'err_low': 0.0044354815653162025,   
-  '30_35':  'data/mc': {'efficiency_ratio': 0.94234693090055577,                       'err_hi': 0.0028007879009532481,                       'err_low': 0.0028208720486102776,
-  '35_40':  'data/mc': {'efficiency_ratio': 0.9511673822775496,                       'err_hi': 0.0019217206048403684,                       'err_low': 0.0019351915905614554,
-  '40_50':  'data/mc': {'efficiency_ratio': 0.96009375278418141,                       'err_hi': 0.0011143882954913547,                       'err_low': 0.0011179007238696897,
-  '50_60':  'data/mc': {'efficiency_ratio': 0.97343957235480161,                       'err_hi': 0.0024411350920320106,                       'err_low': 0.0024754942326703422,
-  '60_90':  'data/mc': {'efficiency_ratio': 0.97573663054250859,                       'err_hi': 0.0035828589659443228,                       'err_low': 0.0036549437474093912,
-  '90_140':  'data/mc': {'efficiency_ratio': 0.98029069760538523,                        'err_hi': 0.012366158027736435,                        'err_low': 0.013260673665312696,
-  
-  
-  }
-  if(abseta>=0.9 && abseta <1.2){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta0.9-1.2_2012A']
-  {'140_500':  'data/mc': {'efficiency_ratio': 0.87925933693202241,                         'err_hi': 0.09659576917260633,                         'err_low': 0.11584311792663776,
-  '25_30':  'data/mc': {'efficiency_ratio': 0.94044745125239582,                       'err_hi': 0.0091767215066666675,                       'err_low': 0.0092635075891679113,
-  '30_35':  'data/mc': {'efficiency_ratio': 0.94175636773857052,                       'err_hi': 0.0068800427455579663,                       'err_low': 0.0069361952719798189,
-  '35_40':  'data/mc': {'efficiency_ratio': 0.96184390382781271,                       'err_hi': 0.0050058891385179978,                       'err_low': 0.0050470262459905374,
-  '40_50':  'data/mc': {'efficiency_ratio': 0.95880861862761002,                       'err_hi': 0.0028604289424100783,                       'err_low': 0.0028768404443189955,
-  '50_60':  'data/mc': {'efficiency_ratio': 0.94396680918599263,                       'err_hi': 0.0069651492894596927,                       'err_low': 0.0070602979471116618,
-  '60_90':  'data/mc': {'efficiency_ratio': 0.94402326294141492,                       'err_hi': 0.01060753235806736,                       'err_low': 0.010818706427484965,
-  '90_140':  'data/mc': {'efficiency_ratio': 0.98555155845578823,                        'err_hi': 0.029074568385132889,                        'err_low': 0.031287356179248285,
-  
-  }
-  if(abseta>=1.2 && abseta <2.1){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta1.2-2.1_2012A']
-  {'140_500':  'data/mc': {'efficiency_ratio': 1.0276661017688036,                         'err_hi': 0.058613958853563478,                         'err_low': 0.071021543276337876,
-  '25_30':  'data/mc': {'efficiency_ratio': 0.98008815033950636,                       'err_hi': 0.0058749122809747352,                       'err_low': 0.0059037530583840132,
-  '30_35':  'data/mc': {'efficiency_ratio': 0.98934704759544734,                       'err_hi': 0.0045785677725535805,                       'err_low': 0.0046011603775876582,
-  '35_40':  'data/mc': {'efficiency_ratio': 0.98463970628770603,                       'err_hi': 0.0036470820310153121,                       'err_low': 0.003663238973677829,
-  '40_50':   'data/mc': {'efficiency_ratio': 0.97977118571541111,                       'err_hi': 0.002256573606508046,                       'err_low': 0.0022619617032217866,
-  '50_60':  'data/mc': {'efficiency_ratio': 0.98223280251110145,                       'err_hi': 0.0053736555765784471,                       'err_low': 0.0054196536658200579,
-  '60_90':  'data/mc': {'efficiency_ratio': 0.96524157990770376,                       'err_hi': 0.0083434128724738637,                       'err_low': 0.0084409501663191694,
-  '90_140':  'data/mc': {'efficiency_ratio': 0.97760874126163566,                        'err_hi': 0.029743004651914488,                        'err_low': 0.03121370649559679,
-  }
-  
-  
-  
-  
-  // RUN B
-  if(abseta>=0. && abseta <0.9){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta<0.9_2012B']
-  {'140_500':  'data/mc': {'efficiency_ratio': 0.97440457563913907,                         'err_hi': 0.014256560782020932,                         'err_low': 0.015275754946814704,
-  '25_30':  'data/mc': {'efficiency_ratio': 0.97885805202380882,                       'err_hi': 0.0019851847371091013,                       'err_low': 0.0019931662231116409,
-  '30_35':  'data/mc': {'efficiency_ratio': 0.97980323349334553,                       'err_hi': 0.0012453102988839982,                       'err_low': 0.0012497557832992071,
-  '35_40':  'data/mc': {'efficiency_ratio': 0.97975530836897795,                       'err_hi': 0.00085702693603589158,                       'err_low': 0.00086003584517788925,
-  '40_50':   'data/mc': {'efficiency_ratio': 0.97968142272864767,                       'err_hi': 0.0004943362934782293,                       'err_low': 0.00024819327312176692,
-  '50_60':  'data/mc': {'efficiency_ratio': 0.97870686775661053,                       'err_hi': 0.0011392030775206204,                       'err_low': 0.001146432417345856,
-  '60_90':  'data/mc': {'efficiency_ratio': 0.98110330744549257,                       'err_hi': 0.0016872169812545313,                       'err_low': 0.0017032973425868255,
-  '90_140':  'data/mc': {'efficiency_ratio': 0.98042031652949257,                        'err_hi': 0.0056548504354232837,                        'err_low': 0.0058207886942260225,
-  }
-  if(abseta>=0.9 && abseta <1.2){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta0.9-1.2_2012B']
-  {'140_500':  'data/mc': {'efficiency_ratio': 0.95360674495560072,                         'err_hi': 0.045847507937714443,                         'err_low': 0.050015414181808653,
-  '25_30':  'data/mc': {'efficiency_ratio': 0.97007008718709498,                       'err_hi': 0.0043723050165507121,                       'err_low': 0.0043928231586872497,
-  '30_35':  'data/mc': {'efficiency_ratio': 0.96269379501996166,                       'err_hi': 0.0031856425422058347,                       'err_low': 0.003198565152114299,
-  '35_40':  'data/mc': {'efficiency_ratio': 0.96023531079758973,                       'err_hi': 0.00244009260220135,                       'err_low': 0.0024487492905615532,
-  '40_50':  'data/mc': {'efficiency_ratio': 0.96214880574476191,                       'err_hi': 0.0013954557209484328,                       'err_low': 0.001401656713597709,
-  '50_60':  'data/mc': {'efficiency_ratio': 0.95908612627283873,                       'err_hi': 0.0033425420704125655,                       'err_low': 0.0033631128064578282,
-  '60_90':  'data/mc': {'efficiency_ratio': 0.95217276446962162,                       'err_hi': 0.0050683327810917035,                       'err_low': 0.0051125913184399303,
-  '90_140':  'data/mc': {'efficiency_ratio': 0.94918636153681046,                        'err_hi': 0.016794425935082069,                        'err_low': 0.01726967001934817,
-  }
-  if(abseta>=1.2 && abseta <2.1){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta1.2-2.1_2012B']
-  {'140_500':  'data/mc': {'efficiency_ratio': 0.98286615824757273,                         'err_hi': 0.043720961605029501,                         'err_low': 0.046117181616762426,
-  '25_30':  'data/mc': {'efficiency_ratio': 0.99501274847385413,                       'err_hi': 0.0028283579570503891,                       'err_low': 0.0028340040981053908,
-  '30_35':  'data/mc': {'efficiency_ratio': 0.98649349917357299,                       'err_hi': 0.002233236508377224,                       'err_low': 0.0022372876535592299,
-  '35_40':  'data/mc': {'efficiency_ratio': 0.98149970931934127,                       'err_hi': 0.0018194402833553954,                       'err_low': 0.0018227440996326791,
-  '40_50':  'data/mc': {'efficiency_ratio': 0.97870186746514398,                       'err_hi': 0.0011350367205615391,                       'err_low': 0.0011358914921148053,
-  '50_60':  'data/mc': {'efficiency_ratio': 0.97745007778784843,                       'err_hi': 0.0027039814950265023,                       'err_low': 0.0027130658944350679,
-  '60_90':  'data/mc': {'efficiency_ratio': 0.97572759209438797,                       'err_hi': 0.0040970458403296215,                       'err_low': 0.0041195117858496581,
-  '90_140':  'data/mc': {'efficiency_ratio': 0.95520425403413389,                        'err_hi': 0.013386396743115671,                        'err_low': 0.01362169423675119,
-  }
-  
-  
-  //RUN C
-  if(abseta>=0. && abseta <0.9){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta<0.9']
-  {'140_500':  'data/mc': {'efficiency_ratio': 0.98331488030612646,                         'err_hi': 0.0121594366990965,                         'err_low': 0.013165510795077145,
-  '25_30':  'data/mc': {'efficiency_ratio': 0.98605163783412098,                       'err_hi': 0.0013942452628413233,                       'err_low': 0.0014020800585459675,
-  '30_35':  'data/mc': {'efficiency_ratio': 0.98551473615861951,                       'err_hi': 0.00090516284233322665,                       'err_low': 0.00090956689404318822,
-  '35_40':  'data/mc': {'efficiency_ratio': 0.98494669206714758,                       'err_hi': 0.00064516806298976249,                       'err_low': 0.00064877503730224092,
-  '40_50':  'data/mc': {'efficiency_ratio': 0.98321323751374934,                       'err_hi': 0.00053949010189997511,                       'err_low': 0.00053949010189997511,
-  '50_60':  'data/mc': {'efficiency_ratio': 0.98380139407493405,                       'err_hi': 0.00091790757839555306,                       'err_low': 0.00092294379257880062,
-  '60_90':  'data/mc': {'efficiency_ratio': 0.98339711419280051,                       'err_hi': 0.0013854763027156304,                       'err_low': 0.0013967579304166784,
-  '90_140':  'data/mc': {'efficiency_ratio': 0.97708648648494312,                        'err_hi': 0.0048207587940254258,                        'err_low': 0.0049507189011278388,
-  }
-  if(abseta>=0.9 && abseta <1.2){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta0.9-1.2']
-  {'140_500':  'data/mc': {'efficiency_ratio': 1.014598415522407,                         'err_hi': 0.038009914795107277,                         'err_low': 0.041868767454545423,
-  '25_30':  'data/mc': {'efficiency_ratio': 0.97610027144634715,                       'err_hi': 0.0035318036056163978,                       'err_low': 0.0035499948993381342,
-  '30_35':  'data/mc': {'efficiency_ratio': 0.96957505872620087,                       'err_hi': 0.0026421144608112968,                       'err_low': 0.0026538760490568795,
-  '35_40':  'data/mc': {'efficiency_ratio': 0.97172722186989646,                       'err_hi': 0.0020470584115986497,                       'err_low': 0.0020547205420876338,
-  '40_50':  'data/mc': {'efficiency_ratio': 0.96855088549646673,                       'err_hi': 0.0009274726479718379,                       'err_low': 0.00093428028163270881,
-  '50_60':  'data/mc': {'efficiency_ratio': 0.96689267029367632,                       'err_hi': 0.0028357838374024179,                       'err_low': 0.0028515267995841602,
-  '60_90':  'data/mc': {'efficiency_ratio': 0.95999872287817567,                       'err_hi': 0.0042727494870127766,                       'err_low': 0.0043027753489072789,
-  '90_140':  'data/mc': {'efficiency_ratio': 0.95932231979340665,                        'err_hi': 0.014274024008399628,                        'err_low': 0.014685692866276922,
-  }
-  if(abseta>=1.2 && abseta <2.1){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta1.2-2.1']
-  '140_500':  'data/mc': {'efficiency_ratio': 0.99805498588548336,                         'err_hi': 0.036102881278942782,                         'err_low': 0.040416111226777102,
-  '25_30':  'data/mc': {'efficiency_ratio': 1.0091911468596282,                       'err_hi': 0.0024097844241964205,                       'err_low': 0.0024154834432019187,
-  '30_35':  'data/mc': {'efficiency_ratio': 1.0051776462431439,                       'err_hi': 0.0018841769147249416,                       'err_low': 0.0018875065748520203,
-  '35_40':  'data/mc': {'efficiency_ratio': 1.0024159561631731,                       'err_hi': 0.0015550332829383185,                       'err_low': 0.0015576645386781234,
-  '40_50':   'data/mc': {'efficiency_ratio': 1.0016974912730539,                       'err_hi': 0.00097388377843326982,                       'err_low': 0.00092317537162422069,
-  '50_60':  'data/mc': {'efficiency_ratio': 0.99924439802206022,                       'err_hi': 0.0022931577193718157,                       'err_low': 0.0023007860598461011,
-  '60_90':  'data/mc': {'efficiency_ratio': 0.99415925403956484,                       'err_hi': 0.0034877157906004035,                       'err_low': 0.0035051608536696482,
-  '90_140':  'data/mc': {'efficiency_ratio': 1.0018625421366663,                        'err_hi': 0.011647383620774592,                        'err_low': 0.011843439025869167,
-  }
-  // RUN D
-  if(abseta>=0. && abseta <0.9){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta<0.9_2012D']
-  if(pt>=140.  && pt<500. )      muontriggerefficiency=0.98601151721013425; // 'data/mc': {'efficiency_ratio': 0.98601151721013425, 'err_hi': 0.013062714238057683, 'err_low': 0.014073601453910352, 
-  if(pt>=25. && pt<30.)              muontriggerefficiency=0.97914496622610225; // 'data/mc': {'efficiency_ratio': 0.97914496622610225, 'err_hi': 0.0018008858554421543, 'err_low': 0.001806929370962707,
-  if(pt>=30. && pt<35.)              muontriggerefficiency=0.98019485553878438; // 'data/mc': {'efficiency_ratio': 0.98019485553878438, 'err_hi': 0.0011196120617616768, 'err_low': 0.0011229899299581472,
-  if(pt>=35. && pt<40.)              muontriggerefficiency=0.98121815376364718; // 'data/mc': {'efficiency_ratio': 0.98121815376364718, 'err_hi': 0.0007626607730832082, 'err_low': 0.00076461153531109168,
-  if(pt>=40. && pt<50.)              muontriggerefficiency=0.98231741596833355; // 'data/mc': {'efficiency_ratio': 0.98231741596833355, 'err_hi': 0.078803443945036702, 'err_low': 0.00036329303125574918,
-  if(pt>=50. && pt<60.)	       muontriggerefficiency=0.98179265165696761; // 'data/mc': {'efficiency_ratio': 0.98179265165696761, 'err_hi': 0.00099006266924005432, 'err_low': 0.00099558740718984763,
-  if(pt>=60. && pt<90.)	       muontriggerefficiency=0.98526154045830983; // 'data/mc': {'efficiency_ratio': 0.98526154045830983, 'err_hi': 0.0014681423182645698, 'err_low': 0.0014806677503566158,
-  if(pt>=90. && pt<140.)	       muontriggerefficiency=0.98529848220688254; // 'data/mc': {'efficiency_ratio': 0.98529848220688254, 'err_hi': 0.0048957147462200925, 'err_low': 0.0050279411182655599,
-  }
-  if(abseta>=0.9 && abseta <1.2){// dict['IsoMu24_eta2p1_TightIso']['ptabseta0.9-1.2_2012D']
-  if(pt>=140. && pt<500. )       muontriggerefficiency=0.99289045846971669; // 'data/mc': {'efficiency_ratio': 0.99289045846971669, 'err_hi': 0.034047432416510044,   'err_low': 0.037621730879919629,
-  if(pt>=25. && pt<30.)              muontriggerefficiency=0.96261309489587965; // 'data/mc': {'efficiency_ratio': 0.96261309489587965, 'err_hi': 0.0039150467122432073, 'err_low': 0.0039295292214824992,
-  if(pt>=30. && pt<35.)              muontriggerefficiency=0.95900676188305922; // 'data/mc': {'efficiency_ratio': 0.95900676188305922, 'err_hi': 0.0028826197641733985, 'err_low': 0.0028917465174494511,
-  if(pt>=35. && pt<40.)              muontriggerefficiency=0.96179985528446077; // 'data/mc': {'efficiency_ratio': 0.96179985528446077, 'err_hi': 0.0021886297596684532, 'err_low': 0.002195247383850036,
-  if(pt>=40. && pt<50.)              muontriggerefficiency=0.96293779887804887; // 'data/mc': {'efficiency_ratio': 0.96293779887804887, 'err_hi': 0.0012496849632170402, 'err_low': 0.0012519048627461281,
-  if(pt>=50. && pt<60.)              muontriggerefficiency=0.96029757743629218; // 'data/mc': {'efficiency_ratio': 0.96029757743629218, 'err_hi': 0.0029620477233797118, 'err_low': 0.0029778291697058414,
-  if(pt>=60. && pt<90.)              muontriggerefficiency=0.95672179799515245; // 'data/mc': {'efficiency_ratio': 0.95672179799515245, 'err_hi': 0.0045008915161213444, 'err_low': 0.0045338834116438118,
-  if(pt>=90. && pt<140.)             muontriggerefficiency=0.9623387481411757 ; // 'data/mc': {'efficiency_ratio': 0.9623387481411757,  'err_hi': 0.014502317240007626,  'err_low': 0.014870736802545031,
-  }
-  if(abseta>=1.2 && abseta <2.1){ // dict['IsoMu24_eta2p1_TightIso']['ptabseta1.2-2.1_2012D']
-  if(pt>=140. && pt<500.)            muontriggerefficiency=0.94409610419248469; // 'data/mc': {'efficiency_ratio': 0.94409610419248469, 'err_hi': 0.03915721520872615,   'err_low': 0.040781109792725333,
-  if(pt>=25. && pt<30.)              muontriggerefficiency=1.0047243862175275;  // 'data/mc': {'efficiency_ratio': 1.0047243862175275,  'err_hi': 0.0025421804311439788, 'err_low': 0.0025460048398088719,
-  if(pt>=30. && pt<35.)              muontriggerefficiency=1.0019383989167374;  // 'data/mc': {'efficiency_ratio': 1.0019383989167374,  'err_hi': 0.0019821971393773671, 'err_low': 0.0019852404459558166,
-  if(pt>=35. && pt<40.)              muontriggerefficiency=0.99821177731560617; // 'data/mc': {'efficiency_ratio': 0.99821177731560617, 'err_hi': 0.0016227869401149063, 'err_low': 0.0016253110660227157,
-  if(pt>=40. && pt<50.)              muontriggerefficiency=0.99658256171319515; // 'data/mc': {'efficiency_ratio': 0.99658256171319515, 'err_hi': 0.001005524945783521,  'err_low': 0.0010073667951948028,
-  if(pt>=50. && pt<60.)              muontriggerefficiency=0.99109764417153334; // 'data/mc': {'efficiency_ratio': 0.99109764417153334, 'err_hi': 0.002383366530969413,  'err_low': 0.0023910677931727117,
-  if(pt>=60. && pt<90.)              muontriggerefficiency=0.98379899771732682; // 'data/mc': {'efficiency_ratio': 0.98379899771732682, 'err_hi': 0.0035900842092497962, 'err_low': 0.0036072104737469349,
-    if(pt>=90. && pt<140.)             muontriggerefficiency=0.98342842226423999; // 'data/mc': {'efficiency_ratio': 0.98342842226423999, 'err_hi': 0.011993403076338283,  'err_low': 0.012173910417085737,
-    }
 
 
-    
-  */ 
+    /* Naked values:
+  In [19]: dict['IsoMu24']['TightID_IsodB']['PT_ABSETA_Barrel_0to0p9']       
+    Out[19]: 
+    {'140_500': {'data': {'PT_ABSETA_Barrel_0to0p9': 170.923905126562,
+	    'efficiency': 0.93843876780571422,
+	    'err_hi': 0.0050666130039955107,
+	    'err_low': 0.0053491416097449064},
+	  'data/mc': {'PT_ABSETA_Barrel_0to0p9': 174.76713166318004,
+	    'efficiency_ratio': 0.98041749810533507,
+	    'err_hi': 0.0081332613489531018,
+	    'err_low': 0.0087466829592699382},
+	  'mc': {'PT_ABSETA_Barrel_0to0p9': 174.76713166318004,
+	    'efficiency': 0.95718280183621252,
+	    'err_hi': 0.0060287203476393301,
+	    'err_low': 0.0065691362155674664}},
+	'25_30': {'data': {'PT_ABSETA_Barrel_0to0p9': 27.834995486240917,
+	    'efficiency': 0.91820621634353716,
+	    'err_hi': 0.00056495672179433592,
+	    'err_low': 0.00056683536835262977},
+	  'data/mc': {'PT_ABSETA_Barrel_0to0p9': 27.837963829313658,
+	    'efficiency_ratio': 0.98372524384334614,
+	    'err_hi': 0.0010031080858819209,
+	    'err_low': 0.0010075240449770098},
+	  'mc': {'PT_ABSETA_Barrel_0to0p9': 27.837963829313658,
+	    'efficiency': 0.93339702532809798,
+	    'err_hi': 0.00075899701248552463,
+	    'err_low': 0.00076280593916992767}},
+	'30_35': {'data': {'PT_ABSETA_Barrel_0to0p9': 32.746641896839911,
+	    'efficiency': 0.92936382610783175,
+	    'err_hi': 0.00036451752750855503,
+	    'err_low': 0.00036538697765936491},
+	  'data/mc': {'PT_ABSETA_Barrel_0to0p9': 32.749910446162517,
+	    'efficiency_ratio': 0.98406344315477012,
+	    'err_hi': 0.00063535205129759502,
+	    'err_low': 0.0006375087089531662},
+	  'mc': {'PT_ABSETA_Barrel_0to0p9': 32.749910446162517,
+	    'efficiency': 0.94441454214417409,
+	    'err_hi': 0.00048434211196648536,
+	    'err_low': 0.0004862718563105615}},
+	'35_40': {'data': {'PT_ABSETA_Barrel_0to0p9': 37.670601736313046,
+	    'efficiency': 0.9355237458999156,
+	    'err_hi': 0.00026020574031778375,
+	    'err_low': 0.00026075425515741151},
+	  'data/mc': {'PT_ABSETA_Barrel_0to0p9': 37.673364126749753,
+	    'efficiency_ratio': 0.98391658181685537,
+	    'err_hi': 0.00044422220647608669,
+	    'err_low': 0.00044558990769502421},
+	  'mc': {'PT_ABSETA_Barrel_0to0p9': 37.673364126749753,
+	    'efficiency': 0.95081611915963471,
+	    'err_hi': 0.00033814326314450581,
+	    'err_low': 0.00033938500977268927}},
+	'40_50': {'data': {'PT_ABSETA_Barrel_0to0p9': 44.340513019802621,
+	    'efficiency': 0.94070359339739529,
+	    'err_hi': 0.00020041245410647231,
+	    'err_low': 0.00016124224017327959},
+	  'data/mc': {'PT_ABSETA_Barrel_0to0p9': 44.342917008694222,
+	    'efficiency_ratio': 0.98345252700570363,
+	    'err_hi': 0.00029736820137356149,
+	    'err_low': 0.00027066643447339175},
+	  'mc': {'PT_ABSETA_Barrel_0to0p9': 44.342917008694222,
+	    'efficiency': 0.95653177714793713,
+	    'err_hi': 0.00020524316783116539,
+	    'err_low': 0.00020596859995901333}},
+	'50_60': {'data': {'PT_ABSETA_Barrel_0to0p9': 53.789342847075453,
+	    'efficiency': 0.94402302093113344,
+	    'err_hi': 0.00035464571076777938,
+	    'err_low': 0.00035450976318700137},
+	  'data/mc': {'PT_ABSETA_Barrel_0to0p9': 53.75578899867358,
+	    'efficiency_ratio': 0.98429177039157478,
+	    'err_hi': 0.00060283573195383719,
+	    'err_low': 0.00060257389558970441},
+	  'mc': {'PT_ABSETA_Barrel_0to0p9': 53.75578899867358,
+	    'efficiency': 0.95908860495255233,
+	    'err_hi': 0.0004639165894083157,
+	    'err_low': 0.00046370081704151024}},
+	'60_90': {'data': {'PT_ABSETA_Barrel_0to0p9': 68.730391710877825,
+	    'efficiency': 0.94437317913039642,
+	    'err_hi': 0.00055534840916684472,
+	    'err_low': 0.00055764428023759923},
+	  'data/mc': {'PT_ABSETA_Barrel_0to0p9': 68.736048944738855,
+	    'efficiency_ratio': 0.98467201842489449,
+	    'err_hi': 0.00092756084334772685,
+	    'err_low': 0.00093371028168127751},
+	  'mc': {'PT_ABSETA_Barrel_0to0p9': 68.736048944738855,
+	    'efficiency': 0.95907384536125939,
+	    'err_hi': 0.0007057823464877021,
+	    'err_low': 0.00071158391170965895}},
+	'90_140': {'data': {'PT_ABSETA_Barrel_0to0p9': 104.5256845587222,
+	    'efficiency': 0.93898276097766487,
+	    'err_hi': 0.0018674369359216896,
+	    'err_low': 0.0018932808300815968},
+	  'data/mc': {'PT_ABSETA_Barrel_0to0p9': 104.53990109043714,
+	    'efficiency_ratio': 0.98091711658069591,
+	    'err_hi': 0.0031287565107191648,
+	    'err_low': 0.0032070455991960061},
+	  'mc': {'PT_ABSETA_Barrel_0to0p9': 104.53990109043714,
+	    'efficiency': 0.95724984823467363,
+	    'err_hi': 0.0023870719016186688,
+	    'err_low': 0.0024636313491742516}}}
+
+    In [20]: 
+      In [22]: dict['IsoMu24']['TightID_IsodB']['PT_ABSETA_Transition_0p9to1p2']       
+      Out[22]: 
+      {'140_500': {'data': {'PT_ABSETA_Transition_0p9to1p2': 171.02307488508285,
+	      'efficiency': 0.86413759128998668,
+	      'err_hi': 0.015269347301468728,
+	      'err_low': 0.016122725659541096},
+	    'data/mc': {'PT_ABSETA_Transition_0p9to1p2': 174.45408481156858,
+	      'efficiency_ratio': 0.97127896196175556,
+	      'err_hi': 0.025376053351416492,
+	      'err_low': 0.02743437935083038},
+	    'mc': {'PT_ABSETA_Transition_0p9to1p2': 174.45408481156858,
+	      'efficiency': 0.88969042379403707,
+	      'err_hi': 0.01712186169392001,
+	      'err_low': 0.018867091511550003}},
+	  '25_30': {'data': {'PT_ABSETA_Transition_0p9to1p2': 27.751889478949067,
+	      'efficiency': 0.82194544122367552,
+	      'err_hi': 0.0013039477018938418,
+	      'err_low': 0.0013090479954735584},
+	    'data/mc': {'PT_ABSETA_Transition_0p9to1p2': 27.755085504117098,
+	      'efficiency_ratio': 0.96838127559931908,
+	      'err_hi': 0.0025787575866262039,
+	      'err_low': 0.002591557665753458},
+	    'mc': {'PT_ABSETA_Transition_0p9to1p2': 27.755085504117098,
+	      'efficiency': 0.84878287295980992,
+	      'err_hi': 0.0018154079701705886,
+	      'err_low': 0.0018254691006806723}},
+	  '30_35': {'data': {'PT_ABSETA_Transition_0p9to1p2': 32.678887519886544,
+	      'efficiency': 0.82914484921229503,
+	      'err_hi': 0.00097776324221852126,
+	      'err_low': 0.00098229607003779708},
+	    'data/mc': {'PT_ABSETA_Transition_0p9to1p2': 32.686478674633101,
+	      'efficiency_ratio': 0.96538054889610103,
+	      'err_hi': 0.0018925540568696933,
+	      'err_low': 0.001901806697793774},
+	    'mc': {'PT_ABSETA_Transition_0p9to1p2': 32.686478674633101,
+	      'efficiency': 0.85887876046436862,
+	      'err_hi': 0.0013450830109056149,
+	      'err_low': 0.0013518520345241827}},
+	  '35_40': {'data': {'PT_ABSETA_Transition_0p9to1p2': 37.681183600885269,
+	      'efficiency': 0.83613679390494133,
+	      'err_hi': 0.00074921390039779884,
+	      'err_low': 0.00075080864902723229},
+	    'data/mc': {'PT_ABSETA_Transition_0p9to1p2': 37.691073306871196,
+	      'efficiency_ratio': 0.96696514151670487,
+	      'err_hi': 0.0014385864945490831,
+	      'err_low': 0.001442964213476463},
+	    'mc': {'PT_ABSETA_Transition_0p9to1p2': 37.691073306871196,
+	      'efficiency': 0.86470210559342753,
+	      'err_hi': 0.0010269441259473256,
+	      'err_low': 0.0010306034078939811}},
+	  '40_50': {'data': {'PT_ABSETA_Transition_0p9to1p2': 44.352429207734467,
+	      'efficiency': 0.8446275610931202,
+	      'err_hi': 0.00046265180835233164,
+	      'err_low': 0.00046327640031021351},
+	    'data/mc': {'PT_ABSETA_Transition_0p9to1p2': 44.355027480489127,
+	      'efficiency_ratio': 0.96667958160832501,
+	      'err_hi': 0.00052977221668667205,
+	      'err_low': 0.00053048670702444901},
+	    'mc': {'PT_ABSETA_Transition_0p9to1p2': 44.355027480489127,
+	      'efficiency': 0.87374097597868028,
+	      'err_hi': 1.5154813859663552e-05,
+	      'err_low': 1.5154813859663552e-05}},
+	  '50_60': {'data': {'PT_ABSETA_Transition_0p9to1p2': 53.759612006848243,
+	      'efficiency': 0.84718518125856201,
+	      'err_hi': 0.0010337855331709819,
+	      'err_low': 0.0010357567140461829},
+	    'data/mc': {'PT_ABSETA_Transition_0p9to1p2': 53.733448441803397,
+	      'efficiency_ratio': 0.96273957552501865,
+	      'err_hi': 0.0019297478815599588,
+	      'err_low': 0.0019327403824020816},
+	    'mc': {'PT_ABSETA_Transition_0p9to1p2': 53.733448441803397,
+	      'efficiency': 0.87997336226316403,
+	      'err_hi': 0.0013993299901930675,
+	      'err_low': 0.0014012065047039721}},
+	  '60_90': {'data': {'PT_ABSETA_Transition_0p9to1p2': 68.705285238787667,
+	      'efficiency': 0.84357616695526649,
+	      'err_hi': 0.0016473739496371941,
+	      'err_low': 0.0016536505073870831},
+	    'data/mc': {'PT_ABSETA_Transition_0p9to1p2': 68.72628644673695,
+	      'efficiency_ratio': 0.95952416834753307,
+	      'err_hi': 0.0030221102906236239,
+	      'err_low': 0.0030421868554624618},
+	    'mc': {'PT_ABSETA_Transition_0p9to1p2': 68.72628644673695,
+	      'efficiency': 0.87916093703825182,
+	      'err_hi': 0.0021724933679449282,
+	      'err_low': 0.0021907610172522667}},
+	  '90_140': {'data': {'PT_ABSETA_Transition_0p9to1p2': 104.50536913350477,
+	      'efficiency': 0.84665919222547592,
+	      'err_hi': 0.0054802608877182364,
+	      'err_low': 0.0055789765024975143},
+            'data/mc': {'PT_ABSETA_Transition_0p9to1p2': 104.51898738480921,
+	      'efficiency_ratio': 0.96444182461126438,
+	      'err_hi': 0.010055105850685283,
+	      'err_low': 0.010200424767055799},
+            'mc': {'PT_ABSETA_Transition_0p9to1p2': 104.51898738480921,
+	      'efficiency': 0.87787481900915809,
+	      'err_hi': 0.0071750195291853123,
+	      'err_low': 0.0072626452059437133}}}
+
+      In [23]: 
+	In [24]: dict['IsoMu24']['TightID_IsodB']['PT_ABSETA_Endcaps_1p2to2p1']       
+	Out[24]: 
+	{'140_500': {'data': {'PT_ABSETA_Endcaps_1p2to2p1': 168.1525442137135,
+		'efficiency': 0.82683947801809832,
+		'err_hi': 0.011308756263186295,
+		'err_low': 0.011707073177917663},
+	      'data/mc': {'PT_ABSETA_Endcaps_1p2to2p1': 170.73449705514739,
+		'efficiency_ratio': 0.99416866829048334,
+		'err_hi': 0.027302993818728562,
+		'err_low': 0.027846431972317096},
+	      'mc': {'PT_ABSETA_Endcaps_1p2to2p1': 170.73449705514739,
+		'efficiency': 0.83168933440628856,
+		'err_hi': 0.019806805934334412,
+		'err_low': 0.020099967276010291}},
+	    '25_30': {'data': {'PT_ABSETA_Endcaps_1p2to2p1': 27.698281861092511,
+		'efficiency': 0.79374186711322625,
+		'err_hi': 0.00077954445660775569,
+		'err_low': 0.00078049186065368961},
+	      'data/mc': {'PT_ABSETA_Endcaps_1p2to2p1': 27.705955195620472,
+		'efficiency_ratio': 1.0051991254438037,
+		'err_hi': 0.0017782159910835391,
+		'err_low': 0.0017823280400050144},
+	      'mc': {'PT_ABSETA_Endcaps_1p2to2p1': 27.705955195620472,
+		'efficiency': 0.78963644816422085,
+		'err_hi': 0.0011618341550551762,
+		'err_low': 0.001165088322305208}},
+	    '30_35': {'data': {'PT_ABSETA_Endcaps_1p2to2p1': 32.636403834896512,
+		'efficiency': 0.80848509506495958,
+		'err_hi': 0.00062230595600791278,
+		'err_low': 0.00062310196595774102},
+	      'data/mc': {'PT_ABSETA_Endcaps_1p2to2p1': 32.630044552701698,
+		'efficiency_ratio': 1.0013781590159485,
+		'err_hi': 0.0013693380303715827,
+		'err_low': 0.0013715807241176374},
+	      'mc': {'PT_ABSETA_Endcaps_1p2to2p1': 32.630044552701698,
+		'efficiency': 0.80737240750233219,
+		'err_hi': 0.00091253169868429917,
+		'err_low': 0.00091417799108474158}},
+	    '35_40': {'data': {'PT_ABSETA_Endcaps_1p2to2p1': 37.606961140747615,
+		'efficiency': 0.81418056279946283,
+		'err_hi': 0.00051411825860703481,
+		'err_low': 0.00051477939588037138},
+	      'data/mc': {'PT_ABSETA_Endcaps_1p2to2p1': 37.613946100888114,
+		'efficiency_ratio': 0.99616640424792002,
+		'err_hi': 0.0011101094832906267,
+		'err_low': 0.0011118453938292981},
+	      'mc': {'PT_ABSETA_Endcaps_1p2to2p1': 37.613946100888114,
+		'efficiency': 0.81731381356325516,
+		'err_hi': 0.00075046636917388448,
+		'err_low': 0.0007517384599005166}},
+	    '40_50': {'data': {'PT_ABSETA_Endcaps_1p2to2p1': 44.338139026050378,
+		'efficiency': 0.82445240820621812,
+		'err_hi': 0.00033912400006564638,
+		'err_low': 0.00033879478905920351},
+	      'data/mc': {'PT_ABSETA_Endcaps_1p2to2p1': 44.34821082420018,
+		'efficiency_ratio': 0.99425410141043047,
+		'err_hi': 0.00071581456250963582,
+		'err_low': 0.00071551911935136946},
+	      'mc': {'PT_ABSETA_Endcaps_1p2to2p1': 44.34821082420018,
+		'efficiency': 0.82921700502584317,
+		'err_hi': 0.00048996520900932751,
+		'err_low': 0.00048989542737746443}},
+	    '50_60': {'data': {'PT_ABSETA_Endcaps_1p2to2p1': 53.75526471777529,
+		'efficiency': 0.8288286854835083,
+		'err_hi': 0.00076408064975267418,
+		'err_low': 0.00076494547469196613},
+	      'data/mc': {'PT_ABSETA_Endcaps_1p2to2p1': 53.740270521575724,
+		'efficiency_ratio': 0.99054467301217797,
+		'err_hi': 0.001581754019526234,
+		'err_low': 0.0015867039726075091},
+	      'mc': {'PT_ABSETA_Endcaps_1p2to2p1': 53.740270521575724,
+		'efficiency': 0.83674033899258426,
+		'err_hi': 0.0010910002949207547,
+		'err_low': 0.0010955022975369145}},
+	    '60_90': {'data': {'PT_ABSETA_Endcaps_1p2to2p1': 68.629114537732164,
+		'efficiency': 0.82904551798424264,
+		'err_hi': 0.0012258295642393971,
+		'err_low': 0.0012288819777911159},
+	      'data/mc': {'PT_ABSETA_Endcaps_1p2to2p1': 68.702092540415421,
+		'efficiency_ratio': 0.98829374192885855,
+		'err_hi': 0.0025335294460190152,
+		'err_low': 0.0025430635002634187},
+	      'mc': {'PT_ABSETA_Endcaps_1p2to2p1': 68.702092540415421,
+		'efficiency': 0.83886549394331866,
+		'err_hi': 0.0017567100282409724,
+		'err_low': 0.0017644346471241503}},
+	    '90_140': {'data': {'PT_ABSETA_Endcaps_1p2to2p1': 104.25616320155041,
+		'efficiency': 0.82901945107830488,
+		'err_hi': 0.0040657596366516146,
+		'err_low': 0.0041029932811339157},
+	      'data/mc': {'PT_ABSETA_Endcaps_1p2to2p1': 104.05685928928493,
+		'efficiency_ratio': 0.98187598993908232,
+		'err_hi': 0.0080605050273570671,
+		'err_low': 0.0081573855229078087},
+	      'mc': {'PT_ABSETA_Endcaps_1p2to2p1': 104.05685928928493,
+		'efficiency': 0.84432195060573689,
+		'err_hi': 0.0055584538777953621,
+		'err_low': 0.0056340687750593994}}}
+
+
+
+
+    */
+
 
 
 }
