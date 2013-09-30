@@ -110,21 +110,21 @@ private:
   // TAU DILEPTON ANALYSIS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // FIXME: switch to const for parameters
 
-  void dileptonAnalysis( bool, TString, event::MiniEvent_t*, double, double, double, double, double, double);
+  // to be removed //   void dileptonAnalysis( bool, TString, event::MiniEvent_t*, double, double, double, double, double, double);
   void    wPlusJetAnalysis( TString, event::MiniEvent_t*,double, double, double, double, double, double);
   
   
-void dileptonEventAnalysis(
-				bool,
-				vector<PhysicsObject>&,
-				std::vector<PhysicsObject>&, vector<int>&,  
-				std::vector<PhysicsObject>&, vector<int>&,
-				std::vector<PhysicsObject>&, vector<int>&, 
-				std::vector<PhysicsObject>&, vector<int>&, int, JetCorrectionUncertainty*, vector<double>&, 
-				TString,
-				event::MiniEvent_t*
-				);
-  
+  // to be removed // void dileptonEventAnalysis(
+  // to be removed // 				bool,
+  // to be removed // 				vector<PhysicsObject>&,
+  // to be removed // 				std::vector<PhysicsObject>&, vector<int>&,  
+  // to be removed // 				std::vector<PhysicsObject>&, vector<int>&,
+  // to be removed // 				std::vector<PhysicsObject>&, vector<int>&, 
+  // to be removed // 				std::vector<PhysicsObject>&, vector<int>&, int, JetCorrectionUncertainty*, vector<double>&, 
+  // to be removed // 				TString,
+  // to be removed // 				event::MiniEvent_t*
+  // to be removed // 				);
+  // to be removed //   
   void newPhysics(
 		  vector<PhysicsObject>&,
 		  std::vector<PhysicsObject>&, vector<int>&,  
