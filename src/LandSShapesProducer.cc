@@ -1160,10 +1160,11 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     }
     
     //    cout << "dd integral: " << hist_[3]->Integral() << endl;
-    // do not normalize btagmulti     normalize(hs, 1.);
+    // do not normalize btagmulti
+    normalize(hs, 1.);
     //    hs.SetMaximum(0.4);
-    // do not normalize btagmulti    hs.SetMaximum(1.2);
-    hs.SetMaximum(20000);
+    // do not normalize btagmulti
+    hs.SetMaximum(1.2);   // hs.SetMaximum(20000);
     hs.Draw("hist");
     hs.GetXaxis()->SetRange(displayMin_,displayMax_);    
     hs.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
@@ -1171,12 +1172,16 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     hs.GetXaxis()->SetTitle((fitVars_[i]->getFancyName()).c_str());
     //  hs.GetXaxis()->SetTitleOffset(1.5);
     
-    // do not normalize btagmulti     hist_[0]->Scale(1./hist_[0]->Integral());
+    // do not normalize btagmulti
+    hist_[0]->Scale(1./hist_[0]->Integral());
+    
     hist_[0]->GetXaxis()->SetRange(displayMin_,displayMax_);    
     hist_[0]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
   
     hist_[0]->Draw("same");
-    // do not normalize btagmulti    higgsH_->Scale(1./higgsH_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
+    // do not normalize btagmulti    
+    higgsH_->Scale(1./higgsH_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
+    
     higgsH_->GetXaxis()->SetRange(displayMin_,displayMax_);    
     higgsH_->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     higgsH_->Draw("histsame");
@@ -1230,7 +1235,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     pt->SetLineColor(0);
     pt->SetTextFont(132);
     pt->SetTextSize(0.045);
-    TText *textPrel = pt->AddText("#sqrt{s} = 8 TeV,  19.3 fb^{-1} CMS Preliminary");
+    TText *textPrel = pt->AddText("CMS Preliminary, #sqrt{s} = 8 TeV,  19.3 fb^{-1}");
     textPrel->SetTextAlign(11);
     pt->Draw("same");
     
