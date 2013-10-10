@@ -83,7 +83,11 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   is_os_=0.; // Stored in tree for fitters
 
   // Minimum distance b/ween objects ////////////////////////////////////////////////////////////////
-  DRMIN_JET_E_ = 0.3; DRMIN_JET_M_ = 0.3; DRMIN_T_E_   = 0.3; DRMIN_T_M_   = 0.3; DRMIN_T_J_   = 0.3;
+  DRMIN_JET_E_ = 0.4; 
+  DRMIN_JET_M_ = 0.4; 
+  DRMIN_T_E_   = 0.4; 
+  DRMIN_T_M_   = 0.4; 
+  DRMIN_T_J_   = 0.3;
   ///////////////////////////////////////////////////////////////////////////////////////////////////    
   
   MT_CUT_    = 40;  
