@@ -53,41 +53,37 @@ void ObjectSelector::SetLeptonPlusJetsSelection(){
   JET_ETA_MAX_       = 2.4;       // dilepton is 2.5 
   JET_EMF_MIN_       = 0.01;       
   JET_LTK_           = 5.;
-  JET_LEPTON_DRMIN_  = 0.3;
+  JET_LEPTON_DRMIN_  = 0.4;
   applyJetLtkCut_    = true; // TODAY: false
   //////////////////////////////////////////////////
   
   
   // electron //////////////////////////////////////
-  // with 0.05 the agreement is mush better
-  E_RELISO_MAX_       = 0.1;//0.05 //test 0.1;//Value to be used(0.1)   // dilepton is 0.15 , //0.1
-  
+  // All values from TwikiTopRefEventSel#Electrons, lepton+jets selection
+  // Signal
+  E_RELISO_MAX_       = 0.1; // dilepton is 0.15
   E_ETA_MAX_          = 2.5;     
   E_ET_MIN_           = 35;      
-  E_D0_MAX_           = 0.02;   // dilepton is 0.04
-  
-  LOOSE_E_RELISO_MAX_ = 0.2;
+  E_D0_MAX_           = 0.02; // dilepton is 0.04
+  // Veto
+  LOOSE_E_RELISO_MAX_ = 0.15;
   LOOSE_E_ETA_MAX_    = 2.5;
-  LOOSE_E_ET_MIN_     = 15;
+  LOOSE_E_ET_MIN_     = 20;
   RHO_AEFF_E_         = 0.24;
-  
   //////////////////////////////////////////////////
   
-  
   // muon //////////////////////////////////////////
-  M_RELISO_MAX_  = 0.12; // Tight WP       //0.05;         // dilepton is 0.15
+  // All values from TwikiTopRefEventSel#Muons, lepton+jets selection
+  // Signal
+  M_RELISO_MAX_  = 0.12; // Tight WP    
   M_PT_MIN_      = 30; //30;  //WARNING M_PT_MIN_      = 20;               // dilepton is 20 // test on 70
-  M_ETA_MAX_     = 2.1;                 // dilepton is 2.5
-  M_D0_MAX_      = 0.02;                // dilepton is 0.02
-  
+  M_ETA_MAX_     = 2.4; // RunA trigger is still 2p1  -> 2.4 threshold means removing RunA. Trying that.
+  M_D0_MAX_      = 0.2;                // dilepton is 0.20
+  // Veto
   LOOSE_M_RELISO_MAX_ = 0.2; 
   LOOSE_M_ETA_MAX_    = 2.5; 
   LOOSE_M_PT_MIN_     = 10;
   RHO_AEFF_M_         = 0.112;
-  
-  if(commondefinitions::run2012_){
-    M_RELISO_MAX_  = 0.12; // tight WP //cone 0.4
-  }
   ///////////////////////////////////////////////////
   
   
