@@ -1143,10 +1143,10 @@ void CutflowAnalyzer::tauDileptonSelection(
       if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
 
       if(btagunc_   > 0){ newBTagSF     = newBTagSF+ err_newBTagSF; }
-      else              { newBTagSF     = newBTagSF- err_newBTagSF; }
+      else if (btagunc_   < 0){ newBTagSF     = newBTagSF- err_newBTagSF; }
 
       if(unbtagunc_ > 0){ newLightJetSF = newLightJetSF + err_LightJetSF_;}
-      else              { newLightJetSF = newLightJetSF - err_LightJetSF_;}
+      else if(unbtagunc_<0){ newLightJetSF = newLightJetSF - err_LightJetSF_;}
 
       //       double BTagEff     = newBTagSF*    BTAG_eff_R_;
       //       double LightJeteff = newLightJetSF*BTAG_eff_F_;
@@ -3663,10 +3663,10 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
       if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
 
       if(btagunc_   > 0){ newBTagSF     = BTagSF_+ err_newBTagSF; }
-      else              { newBTagSF     = BTagSF_- err_newBTagSF; }
+      else if(btagunc_ < 0){ newBTagSF     = BTagSF_- err_newBTagSF; }
 
       if(unbtagunc_ > 0){ newLightJetSF = LightJetSF_ + err_LightJetSF_;}
-      else              { newLightJetSF = LightJetSF_ - err_LightJetSF_;}
+      else if(unbtagunc_ < 0){ newLightJetSF = LightJetSF_ - err_LightJetSF_;}
 
 //      double BTagEff     = newBTagSF*BTAG_eff_R_;
 //      double LightJeteff = newLightJetSF*BTAG_eff_F_;
