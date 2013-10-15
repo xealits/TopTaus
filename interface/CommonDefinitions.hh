@@ -271,7 +271,11 @@ namespace commondefinitions{
    HTB400_URL,
    HTB500_URL,
    HTB600_URL,
-   HTB700_URL
+   HTB700_URL,
+
+   HHHTAUTAUBB260_URL,
+   HHHTAUTAUBB300_URL,
+   HHHTAUTAUBB350_URL
   };
 
   

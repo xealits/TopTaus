@@ -146,6 +146,12 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[HTB500_URL]             = 0.0187822 * (1.-0.006268037 ) ;/// 30.; 
       defaultXSections_[HTB600_URL]             = 0.0100715 * (1.-0.004805924 ) ;/// 30.; 
       defaultXSections_[HTB700_URL]             = 0.0056681 * (1.-0.004234392 ) ;/// 30.; 
+
+
+      defaultXSections_[HHHTAUTAUBB260_URL]             = 0.06 ;// 60 fb 
+      defaultXSections_[HHHTAUTAUBB300_URL]             = 0.06 ;// 60 fb 
+      defaultXSections_[HHHTAUTAUBB350_URL]             = 0.06 ;// 60 fb
+      
    
     } else {
       
@@ -1243,6 +1249,33 @@ void SampleProcessor::process_data_RunD2(int i){
 
 }
 
+
+void SampleProcessor::process_hhhtautaubb_higgs(int sample, int i){
+ 
+  if(i>30){
+    cout << "ERROR CODE - must be in the range [0,29]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+  
+  switch(sample){
+  case 260:
+    url_ = HHHTAUTAUBB260_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("hhhtautaubb-pythia-m260_"+idx+".root"), oFolder_+TString("out-hhhtautaubb-pythia-m260_"+idx+".root"),keys_); 
+    break;
+  case 300:
+    url_ = HHHTAUTAUBB300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("hhhtautaubb-pythia-m300_"+idx+".root"), oFolder_+TString("out-hhhtautaubb-pythia-m300_"+idx+".root"),keys_); 
+    break;
+  case 350:
+    url_ = HHHTAUTAUBB350_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("hhhtautaubb-pythia-m350_"+idx+".root"), oFolder_+TString("out-hhhtautaubb-pythia-m350_"+idx+".root"),keys_); 
+    break;
+  default:
+    cout << "ERROR CODE - must be among [260,300,350]" << endl;
+    break;
+  }
+}
 
 
 

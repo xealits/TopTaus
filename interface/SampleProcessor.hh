@@ -102,6 +102,8 @@ public :
   void process_htb_higgs_bychannel(int, int);
   void process_ttbar_unc();
 
+  void process_hhhtautaubb_higgs(int, int);
+
   void process_triggersamples_mht();
   void process_triggersamples_mhtjets();
   

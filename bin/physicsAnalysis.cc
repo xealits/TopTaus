@@ -129,6 +129,9 @@ int main(int argc, char* argv[])
 
     // 20 from 0
     else if(runOn == "singletop_"+idx)           analyzer->process_singletop(i)          ;
+    else if(runOn == "hhhtautaubb_higgs_260_"+idx)           analyzer->process_hhhtautaubb_higgs(260, i);
+    else if(runOn == "hhhtautaubb_higgs_300_"+idx)           analyzer->process_hhhtautaubb_higgs(300, i);
+    else if(runOn == "hhhtautaubb_higgs_350_"+idx)           analyzer->process_hhhtautaubb_higgs(350, i);
 
     // 30 from 0
     else if(runOn == "htb_higgs_bychannel_180_"+idx) analyzer->process_htb_higgs_bychannel(180, i) ;
