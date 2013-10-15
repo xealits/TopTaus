@@ -35,7 +35,9 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   puFileName_ = puFileName ;
 
   // Default is ABCD in CommonDefinitions.cc
-  if(runRange=="ABCD")     LUM_ = 19258.225; // 2012 ABCD 539 ReReco.
+  //  if(runRange=="ABCD")     LUM_ = 19258.225; // 2012 ABCD 539 ReReco.
+  if(runRange=="ABCD")     LUM_ = 18282; // 2012 BCD 539 ReReco.
+
   // RunA: 876.225
   // RunB: 4311
   // RunC1: 3598
@@ -390,7 +392,7 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
 
   if(vertices.size()==0){ cout<<endl<<" Vertex was zero ???????"<<endl; return; }
 
-  if(vertices.size()>30 || vertices.size()<5) return; // Vertex cut
+  //  if(vertices.size()>30 || vertices.size()<5) return; // Vertex cut
 
   PhysicsObject & primaryVertex = vertices[0];
 
