@@ -38,7 +38,10 @@ namespace utilities{
     void normalize(THStack& hstack, double norm);
     void getErrorBands(THStack& stack, TGraphErrors& myError);
     void getErrorBands(TH1& histo, TGraphErrors& myError);
+    void getErrorBands(TGraphErrors& histo, TGraphErrors& myError);
     void getErrorBands(TH1& histo, TH1& varUp, TH1& varDown, TGraphAsymmErrors& myError);
+    void scaleErrorBands(TGraphErrors& errors, TH1& num, TH1& den);
+    void sumErrorBands(TGraphErrors& errors, TH1& ratio);
   };
   
   class EditorialUtils {

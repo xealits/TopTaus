@@ -166,6 +166,9 @@ void LandSShapesProducer::Init(){
 
   canvas_ = new TCanvas("canvas","My plots ",0,0,1000,1000);
   canvas_->cd();
+
+
+
   // set logy
   
   resultsFile_.open ((outFolder_+resultsFileName_).c_str());
@@ -658,12 +661,13 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
     // Current numbering is:
     // 0: data
-    // 1: TBH
-    // 2: DD
-    // 3: other MCs
+    // 1: HTB
+    // 2: TBH
+    // 3: DD
+    // 4: other MCs
     
     TGraphAsymmErrors ddbkgBands;
-    getErrorBands(*(hist_[3-1]), *ddbkgHistUp_, *ddbkgHistDown_, ddbkgBands);
+    getErrorBands(*(hist_[3]), *ddbkgHistUp_, *ddbkgHistDown_, ddbkgBands);
 
     ddbkgBands.SetFillColor(1);
     ddbkgBands.SetFillStyle(3004);
@@ -1077,9 +1081,23 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     //    TPad* p = (TPad*) canvas_->cd();
     
     //gPad->SetPad(0,0,1,1);
-    gPad->SetPad(0,0,1,1); 
+
+
+    // Without ratio:
+    //    gPad->SetPad(0,0,1,1); 
+    //    gPad->cd();
+    //    gPad->Draw();
+    //    canvas_->cd(); 
+
+    // With ratio
+    canvas_->Divide(1,2);
+    canvas_->cd(1);
+    gPad->SetBottomMargin(0);
+    gPad->SetPad(0,0.3,1,1); 
     gPad->cd();
     gPad->Draw();
+
+
     // on top: leg_ = new TLegend(0.23,0.535,0.62,0.93,NULL,"brNDC");
     leg_ = new TLegend(0.845,0.2,0.99,0.99,NULL,"NDC"); // On the side <3
     //  leg_ = new TLegend(0.7147651,0.6346154,0.9446309,0.9353147,NULL,"brNDC");
@@ -1094,24 +1112,24 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     leg_->SetFillStyle(0);
     leg_->AddEntry(hist_[0],(fancySampleName_[0]).c_str(),"lep");
     leg_->AddEntry(hist_[1],fancySampleName_[1].c_str(),"l");
-    //  leg_->AddEntry(signalHistHH_,signalSampleNameHH_.c_str(),"f");
-
-
+    leg_->AddEntry(hist_[2],fancySampleName_[2].c_str(),"l");
     // Because colour printer is a nobrainer
-    leg_->AddEntry(hist_[3-1],fancySampleName_[3-1].c_str(),"f");
-    leg_->AddEntry(hist_[8-1],fancySampleName_[8-1].c_str(),"f");
-    leg_->AddEntry(hist_[7-1],fancySampleName_[7-1].c_str(),"f");
-    leg_->AddEntry(hist_[6-1],fancySampleName_[6-1].c_str(),"f");
-    leg_->AddEntry(hist_[5-1],fancySampleName_[5-1].c_str(),"f");
-    leg_->AddEntry(hist_[4-1],fancySampleName_[4-1].c_str(),"f");
+    leg_->AddEntry(hist_[3],fancySampleName_[3].c_str(),"f");
+    leg_->AddEntry(hist_[8],fancySampleName_[8].c_str(),"f");
+    leg_->AddEntry(hist_[7],fancySampleName_[7].c_str(),"f");
+    leg_->AddEntry(hist_[6],fancySampleName_[6].c_str(),"f");
+    leg_->AddEntry(hist_[5],fancySampleName_[5].c_str(),"f");
+    leg_->AddEntry(hist_[4],fancySampleName_[4].c_str(),"f");
 
-    canvas_->cd(); 
+    
+    
     // Order chosen to have good Y axis boundaries
    
     perMassPointSignalShapesToCompareHH_.push_back((TH1*)hist_[2]->Clone(hist_[2]->GetName() +TString("comparison") + massPointName_[currentMassPoint_].c_str()) );
     perMassPointSignalShapesToCompareWH_.push_back((TH1*)hist_[1]->Clone(hist_[1]->GetName() +TString("comparison") + massPointName_[currentMassPoint_].c_str()) );
     
     TH1* higgsH_ = 0;
+    TH1* higgsH2_ = 0;
     // must update when updating light chhiggs analysis //    double cHiggsBR_ = 0.05; // Perhaps move to cfg file.
     // must update when updating light chhiggs analysis //    double fhh(cHiggsBR_*cHiggsBR_) , fhw( 2*(1-cHiggsBR_)*cHiggsBR_), ftt(1-fhh-fhw);
     //  signalHistWH_->Scale(fhw/signalHistWH_->Integral());
@@ -1119,6 +1137,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
     //  signalHistWH_->Add(signalHistHH_, fhh);
     higgsH_ = hist_[1];
+    higgsH2_= hist_[2];
     // FIXME: fix for heavy/light in a non-hardcoded way
     //    higgsH_->Scale(fhw/higgsH_->Integral());
     //    higgsH_->Add(hist_[2],fhh);
@@ -1141,9 +1160,9 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
 
     THStack hs("hs","stacked");
-    
-    hist_[2-1]->DrawNormalized("histsame");
-    for(size_t f=3-1; f<nSamples_+2-1; f++){
+    hist_[1]->DrawNormalized("histsame");
+    hist_[2]->DrawNormalized("histsame");
+    for(size_t f=3; f<nSamples_+2; f++){
       // for fig7 // for(size_t f=0; f<nMcSamples_; f++){
       hist_[f]->GetYaxis()->SetTitle("Events/bin");
       hist_[f]->GetYaxis()->SetTitleOffset(0.85);
@@ -1155,16 +1174,17 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       if(isDDbkg_[f] == 0) hs.Add(hist_[f],"hist");
     }
     
-    for(size_t f=3-1; f<nSamples_+2-1; f++){
+    for(size_t f=3; f<nSamples_+2; f++){
       if(isDDbkg_[f]) hs.Add(hist_[f],"hist");
     }
     
     //    cout << "dd integral: " << hist_[3]->Integral() << endl;
     // do not normalize btagmulti
     normalize(hs, 1.);
-    //    hs.SetMaximum(0.4);
+    hs.SetMaximum(0.4);
     // do not normalize btagmulti
-    hs.SetMaximum(1.2);   // hs.SetMaximum(20000);
+    //hs.SetMaximum(1.2); 
+    //hs.SetMaximum(20000);
     hs.Draw("hist");
     hs.GetXaxis()->SetRange(displayMin_,displayMax_);    
     hs.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
@@ -1181,11 +1201,17 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     hist_[0]->Draw("same");
     // do not normalize btagmulti    
     higgsH_->Scale(1./higgsH_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
+    higgsH2_->Scale(1./higgsH2_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
     
     higgsH_->GetXaxis()->SetRange(displayMin_,displayMax_);    
     higgsH_->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     higgsH_->Draw("histsame");
-    
+
+    higgsH2_->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    higgsH2_->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    higgsH2_->Draw("histsame");
+
+
     TGraphErrors myBkgError;
     getErrorBands(hs, myBkgError);
     myBkgError.SetFillColor(1);
@@ -1210,11 +1236,27 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     mySignalError.GetXaxis()->SetTitleOffset(0.85);
     mySignalError.GetXaxis()->SetTitleSize(5);
     mySignalError.GetXaxis()->SetRange(displayMin_,displayMax_);    
+
     mySignalError.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
-    mySignalError.Draw("2");
+    //    mySignalError.Draw("2");
+    
+    TGraphErrors mySignal2Error;
+    getErrorBands(*higgsH2_, mySignalError);
+    mySignalError.SetName("blahSignalError");
+    mySignalError.SetFillColor(618);
+    mySignalError.SetFillStyle(3005);
+    mySignalError.GetYaxis()->SetTitle("Events/bin");
+    mySignalError.GetYaxis()->SetTitleOffset(0.85);
+    mySignalError.GetXaxis()->SetTitle((fitVars_[i]->getFancyName()).c_str());
+    mySignalError.GetXaxis()->SetTitleOffset(0.85);
+    mySignalError.GetXaxis()->SetTitleSize(5);
+    mySignalError.GetXaxis()->SetRange(displayMin_,displayMax_);    
+    mySignalError.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    //  mySignalError.Draw("2");
     
     leg_->AddEntry(myBkgError.GetName(),"#splitline{bkg}{total unc.}","f");
-    leg_->AddEntry(mySignalError.GetName(),"#splitline{signal}{total unc.}","f");
+//    leg_->AddEntry(mySignalError.GetName(),"#splitline{tb signal}{total unc.}","f");
+//    leg_->AddEntry(mySignalError.GetName(),"#splitline{#tau#nu signal}{total unc.}","f");
     
     TPaveText *pt1 = new TPaveText(0.17,0.45,0.65,0.5, "brNDC");
     pt1->SetBorderSize(1);
@@ -1254,13 +1296,54 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
     leg_->Draw("same");
 
-    gPad->SetLogy();
+    //    gPad->SetLogy();
 
 
     canvas_->Modified();
     canvas_->Update();
 
-    canvas_->cd();
+    //    canvas_->cd();
+    canvas_->cd(2);
+    gPad->SetFillColor(0);
+    gPad->SetPad(0,0,1,0.3);
+    gPad->SetGridx();
+    gPad->SetGridy();
+
+    // Build denominator
+    TH1* denominator;
+    for(size_t f=3; f<nSamples_+2; f++){
+      if(f==3) denominator = (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("_ratio"));
+      else
+	denominator->Add(hist_[f]);
+    }
+    // Build data clone
+    TH1* dataClone = (TH1*) hist_[0]->Clone("dataclone");
+    TH1* iRatio = dataClone;
+    TGraphErrors myRelError = myBkgError;
+    //    getErrorBands(myBkgError, myRelError);
+    scaleErrorBands(myRelError, *iRatio, *denominator);
+    iRatio->GetYaxis()->SetTitle("data/MC");
+    iRatio->Divide(denominator);
+    sumErrorBands(myRelError, *iRatio);
+    iRatio->SetMarkerSize(1);
+    iRatio->SetMarkerColor(1);
+    iRatio->SetLineColor(1);
+    iRatio->SetFillColor(0);
+    iRatio->SetMarkerStyle(20);
+    iRatio->GetYaxis()->SetRangeUser(0.1, 2.);
+    iRatio->Draw();
+    myRelError.SetName("bl");
+    myRelError.SetTitle("mmbm");
+    myRelError.SetFillColor(kGray+2);
+    myRelError.SetFillStyle(3001);
+    myRelError.Draw("2same");
+    
+    gPad->Modified();
+    gPad->Update();
+    
+    canvas_->Modified();
+    canvas_->Update();
+    
 
     canvas_->SaveAs((outFolder_+outputFileName+string(".pdf")).c_str());
     canvas_->SaveAs((outFolder_+outputFileName+string(".png")).c_str());
