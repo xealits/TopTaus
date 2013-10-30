@@ -44,7 +44,7 @@ void ObjectSelector::SetLeptonPlusJetsSelection(){
   
   //Vertex //////
   ZMAX_    = 1;
-  ZTAUMAX_ = 0.2;
+  ZTAUMAX_ = 0.5;
   ///////////////
   
   // Jets ///////////////////////////////////////////
