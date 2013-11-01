@@ -170,7 +170,7 @@ bool ObjectSelector::LooseMuonVeto( int selectedMuon, const vector<PhysicsObject
     double mRelIso  = (*m)[18];
     
     //see if this muon is glogal (how to see if it is only global?)
-    bool isGlobalAndTracker ( (int( (*m)[3])>>1 & 0x3) == 3); 
+    bool isGlobalAndTracker ( (int( (*m)[3])>>1 & 0x3) == 3); // ( blah AND 0011 -> returns >0 only if both global and tracker (pos0 and pos1) are 1)
     
     if(! isGlobalAndTracker ) continue;
     
@@ -331,8 +331,8 @@ void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject
     
     // isobits
     
-    // position 0 (default) , position 1 (delta beta corrections), position 2 (combined iso)
-    int isobits              = vT[i][20];  int tau_dis_iso =  isobits & 0x1; 
+    // position 0 (default) , position 1 (delta beta corrections), position 2 (combined iso), position 3 (deltabeta 3hits)
+    int isobits              = vT[i][20];  int tau_dis_iso =  isobits & 0x8; // deltabeta 3hits is binary 100
     
     double tau_dis_muon      = vT[i][21];
     double tau_dis_electron  = vT[i][22];
