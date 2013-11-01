@@ -1571,7 +1571,7 @@ void TauFakesHelper::TauFakeEstimate(TString filename_, TString jetObject_, Phys
 }
 
 
-void TauFakesHelper::ProduceDataDrivenDistributions(){
+void TauFakesHelper::ProduceDataDrivenDistributions(bool rescaleData, bool rescaleMC){
   
   // Example of Root macro to copy a subset of a Tree to a new Tree
   // Only selected entries are copied to the new Tree.
@@ -1603,9 +1603,33 @@ void TauFakesHelper::ProduceDataDrivenDistributions(){
   vector<TString> listOfurls_; listOfurls_.clear();
   vector<TString> rescaledListOfurls_; rescaledListOfurls_.clear();
   
-  listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-data-MU-20GeV/"+TString("out-data.root"));  
-  
-  rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-data-MU-20GeV/"+TString("out-data_rescaled.root"));  
+  // Base
+  if(rescaleData){
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-data-MU-20GeV/"+TString("out-data.root"));  
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-data-MU-20GeV/"+TString("out-data_rescaled.root"));  
+  }
+
+  if(rescaleMC){
+    // For ARC plots
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ttbar-mutau.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ttbar-mcbkg.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wjets.root"));  
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zjets.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-singletop.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ww.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wz.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zz.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-qcd.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ttbar-mutau_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ttbar-mcbkg_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wjets_rescaled.root"));  
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zjets_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-singletop_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ww_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wz_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zz_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-qcd_rescaled.root"));
+  }
   
   //  TString jetObject_("m_tau_DataDriven");
   std::vector<TString>jetObject_;

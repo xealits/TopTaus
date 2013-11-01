@@ -55,9 +55,12 @@ void printHelp()
 	   << "\t\t\t\t\t computeAll computeWMuFakes computeQCDFakes:\n"
 	   << "\t\t\t\t\t \t\t compute fakes.\n"
 	   << "\t\t\t\t\t produceDDfile:\n"
+	   << "\t\t\t\t\t \t\t do all the following:\n"
+	   << "\t\t\t\t\t produceDataDDfile:\n"
 	   << "\t\t\t\t\t \t\t produce final data driven file with data rescaled events.\n"
-	   << std::endl;
-  
+	   << "\t\t\t\t\t produceMCDDfile:\n"
+	   << "\t\t\t\t\t \t\t produce final data driven file with MC rescaled events.\n"
+    	   << std::endl;
 }
 //
 int main(int argc, char* argv[])
@@ -242,8 +245,12 @@ int main(int argc, char* argv[])
     }
     
     // Produce final data driven file with data rescaled events
-    if(actions_[i] == "produceDDfile" || actions_[i] == "all"){
-      helper->ProduceDataDrivenDistributions();
+    if(actions_[i] == "produceDDfile" || actions_[i] == "produceDataDDfile" || actions_[i] == "all"){
+      helper->ProduceDataDrivenDistributions(true,false);
+    }
+    
+    if(actions_[i] == "produceDDfile" || actions_[i] == "produceMCDDfile" || actions_[i] == "all"){
+      helper->ProduceDataDrivenDistributions(false,true);
     }
     
     
