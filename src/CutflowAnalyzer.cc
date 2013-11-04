@@ -963,9 +963,9 @@ void CutflowAnalyzer::tauDileptonSelection(
     else{
       std::vector<PhysicsObject> mcquarksColl = evRMC_->GetPhysicsObjectsFrom(evmontecarlo,event::QUARK);
       for( size_t iquark=0; iquark<mcquarksColl.size(); iquark++){
-	if( i_ == 45) cout << "pdg id: " << mcquarksColl[iquark][1] << endl;
-	if(mcquarksColl[iquark][1] == 6) tPt = mcquarksColl[iquark].Pt();
-	if(mcquarksColl[iquark][1] == -6) tbarPt = mcquarksColl[iquark].Pt();
+	if( i_ == 45) cout << "pdg id: " << mcquarksColl[iquark][2] << endl;
+	if(mcquarksColl[iquark][2] == 6) tPt = mcquarksColl[iquark].Pt();
+	if(mcquarksColl[iquark][2] == -6) tbarPt = mcquarksColl[iquark].Pt();
       }
       
     }
@@ -3780,7 +3780,38 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   ////////////////////////////////////////////////////////////////////////////////
 
 
-
+  // Acquire W pt
+  // W is lepton+met  
+  TLorentzVector wvec(met + *lep_obj);
+  for(size_t itag=0; itag<evTags.size(); ++itag){
+    mon_.fillHisto("recow_pt", evTags[itag], wvec.Pt(), w_);
+  }
+  
+// manipulate for w //  if( url_ == TTBAR_URL){
+// manipulate for w //    double tPt(99999.), tbarPt(99999.);
+// manipulate for w //    event::MiniEvent_t *evmontecarlo = evRMC_->GetNewMiniEvent(i_,"mc");
+// manipulate for w //    if( evmontecarlo == 0 ){ cout<<"\n empty event"<<endl; }
+// manipulate for w //    else{
+// manipulate for w //      std::vector<PhysicsObject> mcquarksColl = evRMC_->GetPhysicsObjectsFrom(evmontecarlo,event::TOP);
+// manipulate for w //      for( size_t iquark=0; iquark<mcquarksColl.size(); iquark++){
+// manipulate for w //	if( i_ == 45) cout << "pdg id: " << mcquarksColl[iquark][1] << endl;
+// manipulate for w //	if(mcquarksColl[iquark][1] == 6) tPt = mcquarksColl[iquark].Pt();
+// manipulate for w //	if(mcquarksColl[iquark][1] == -6) tbarPt = mcquarksColl[iquark].Pt();
+// manipulate for w //      }
+// manipulate for w //      
+// manipulate for w //    }
+// manipulate for w //    
+// manipulate for w //    // down: no reweighting
+// manipulate for w //    // central: weight -> weight * reweight
+// manipulate for w //    // up: weight -> weight * reweight * reweight
+// manipulate for w //    if(topptunc_ >=0) 
+// manipulate for w //      w_  *= ttbarReweight(tPt,tbarPt);    
+// manipulate for w //    if( topptunc_>0)
+// manipulate for w //      w_  *= ttbarReweight(tPt,tbarPt);
+// manipulate for w //    
+// manipulate for w //    if(i_ == 45) cout << "topptunc: (" << tPt << ", " << tbarPt << ") ---> " <<  ttbarReweight(tPt,tbarPt) <<endl;
+// manipulate for w //  }
+// manipulate for w //  /////////////////////////////////////////////
 
 
 

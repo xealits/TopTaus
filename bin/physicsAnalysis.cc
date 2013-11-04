@@ -120,7 +120,19 @@ int main(int argc, char* argv[])
     else if(runOn == "qcd_8_"+idx)                 analyzer->process_qcd(8, i)                ;
     else if(runOn == "qcd_9_"+idx)                 analyzer->process_qcd(9, i)                ;
 
+    
+    else if(runOn == "qcd_15_"+idx)                 analyzer->process_qcd(15, i)                ;
+    else if(runOn == "qcd_16_"+idx)                 analyzer->process_qcd(16, i)                ;
+    else if(runOn == "qcd_17_"+idx)                 analyzer->process_qcd(17, i)                ;
+    else if(runOn == "qcd_18_"+idx)                 analyzer->process_qcd(18, i)                ;
+    else if(runOn == "qcd_19_"+idx)                 analyzer->process_qcd(19, i)                ;
+    else if(runOn == "qcd_20_"+idx)                 analyzer->process_qcd(20, i)                ;
+
+
     // 100 from 0
+    else if(runOn == "qcd_11_"+idx)                 analyzer->process_qcd(11, i)                ;
+    else if(runOn == "qcd_12_"+idx)                 analyzer->process_qcd(12, i)                ;
+    else if(runOn == "qcd_13_"+idx)                 analyzer->process_qcd(13, i)                ;
     else if(runOn == "zjets_from50_"+idx)        analyzer->process_zjets_from50(i)       ;
     else if(runOn == "zjets_10to50_"+idx)        analyzer->process_zjets_10to50(i)       ;
 
@@ -134,6 +146,7 @@ int main(int argc, char* argv[])
     else if(runOn == "hhhtautaubb_higgs_350_"+idx)           analyzer->process_hhhtautaubb_higgs(350, i);
 
     // 30 from 0
+    else if(runOn == "qcd_10_"+idx)                 analyzer->process_qcd(10, i)                ;
     else if(runOn == "htb_higgs_bychannel_180_"+idx) analyzer->process_htb_higgs_bychannel(180, i) ;
     else if(runOn == "htb_higgs_bychannel_200_"+idx) analyzer->process_htb_higgs_bychannel(200, i) ;
     else if(runOn == "htb_higgs_bychannel_220_"+idx) analyzer->process_htb_higgs_bychannel(220, i) ;
@@ -161,12 +174,15 @@ int main(int argc, char* argv[])
     else if(runOn == "htb_higgs_600_"+idx)           analyzer->process_htb_higgs(600, i) ;
     else if(runOn == "htb_higgs_700_"+idx)           analyzer->process_htb_higgs(700, i) ;
 
+    // 1 from 0
+    else if(runOn == "qcd_14_"+idx)                 analyzer->process_qcd(14, i)                ;
+
+
   }  
 
     
   if     (runOn == "hh_higgs_bychannel")  analyzer->process_hh_higgs_bychannel() ;
   else if(runOn == "hh_higgs")            analyzer->process_hh_higgs()           ;
-  else if(runOn == "ttbar_unc")           analyzer->process_ttbar_unc()          ;
   
   else if(runOn == "wh_higgs_bychannel")  analyzer->process_wh_higgs_bychannel() ;
   else if(runOn == "wh_higgs")            analyzer->process_wh_higgs()           ;
@@ -197,6 +213,7 @@ int main(int argc, char* argv[])
 //    sty.setTDRStyle();
       
     TString samples("data/plotter/samples.xml");
+    TString samples_datadriven("data/plotter/samples_datadriven.xml"); 
     TString outFolder("plots/"); // move to input line
     TString cmd = "mkdir -p "+outFolder+"; cp data/plotter/index.html+"+outFolder+";";
     gSystem->Exec(cmd);
@@ -214,6 +231,8 @@ int main(int argc, char* argv[])
     TString test("data/plotter/test.xml");
     TString debug("data/plotter/debug.xml");
 
+    TString wplusjets("data/plotter/wplusjets.xml");
+
     HistogramPlotter a; // Move to input line or cfg file the choice of what to plot
     a.parse(samples,vertex,outFolder);
     a.parse(samples,met,outFolder);      
@@ -221,7 +240,7 @@ int main(int argc, char* argv[])
     a.parse(samples,mt,outFolder);      
     a.parse(samples,jets,outFolder); 
     a.parse(samples,yields,outFolder);
-
+    a.parse(samples_datadriven,wplusjets,outFolder);
     //a.parse(samples,limits,outFolder);      
     //a.parse(samples,debug,outFolder);  
     //a.parse(samples,afterR,outFolder);

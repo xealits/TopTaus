@@ -47,13 +47,14 @@ namespace event
     TClonesArray *photonsColl,  *photonsClassifColl;
     TClonesArray *jetsColl,     *jetsClassifColl;
     TClonesArray *metColl,      *metClassifColl;
+    TClonesArray *quarksColl,   *quarksClassifColl;
   };
   
   
   /**
      @short adds a new particle to the mini event
   */
-  enum ParticleType {MET, JET, QUARK, ELECTRON=11, MUON=13, TAU=15, CHLEPTON=17, TRACK=100, PHOTON=22, SUPERCLUSTER=2222};
+  enum ParticleType {MET, JET, QUARK, ELECTRON=11, MUON=13, TAU=15, CHLEPTON=17, TRACK=100, PHOTON=22, SUPERCLUSTER=2222, TOP=6};
   enum JetAlgo { AK5, SC5, IC5, AK5Track, AK5JPT, AK5PF, AK5PFLOW, UNKNOWNJETALGO };
   enum METAlgo { CALOAK5, CALOSC5, CALOIC5, TC, PF, PFLOWMET, UNKNOWNMETALGO };
   enum TauType { PFTAU, CALOTAU, HPSTAU, PFLOWTAU, HPSTANCTAU, UNKNOWNTAU };

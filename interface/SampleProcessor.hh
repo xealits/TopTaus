@@ -79,8 +79,13 @@ public :
 
   
   void process_ttbar(int);
+  void process_ttbar_scaleup(int);
+  void process_ttbar_scaledown(int);
+  void process_ttbar_matchup(int);
+  void process_ttbar_matchdown(int);
   //  void process_ttbar_bychannel();
   void process_ttbar_mutau(int);
+  void process_ttbar_etau(int);
   void process_ttbar_mumu(int );
   void process_ttbar_emu(int );
   //  void process_ttbar_ee(); // ee and etau without electron trigger is not worth
@@ -100,7 +105,6 @@ public :
   void process_tbh_higgs_bychannel();
   void process_htb_higgs(int, int);
   void process_htb_higgs_bychannel(int, int);
-  void process_ttbar_unc();
 
   void process_hhhtautaubb_higgs(int, int);
 
