@@ -1749,6 +1749,9 @@ void LandSShapesProducer::ShapesToDatacard(){
     datacard_<<"jmax   *  number of backgrounds"<<endl;
     datacard_<<"kmax   *  number of nuisance parameters"<<endl;
     datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+    //      outfile<<"shapes * * shapes_m"<<HMass[im]<<"_rc_t.root $PROCESS $PROCESS_$SYSTEMATIC"<<endl;                                                                             
+    datacard_<<"shapes * * shapes_m"<<massPointName_[currentMassPoint_]<<"_btagmultiplicity_j.root $PROCESS $PROCESS_$SYSTEMATIC"<<endl;
+    datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
     datacard_<<"bin a"<<endl;
     datacard_<<"observation    "<<  hist_[0]->Integral() <<endl; // data yield
     testIntegral=hist_[0]->Integral(); cout << "Test Integral" << testIntegral << endl;
