@@ -35,8 +35,8 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   puFileName_ = puFileName ;
 
   // Default is ABCD in CommonDefinitions.cc
-  //  if(runRange=="ABCD")     LUM_ = 19258.225; // 2012 ABCD 539 ReReco.
-  if(runRange=="ABCD")     LUM_ = 18282; // 2012 BCD 539 ReReco.
+  if(runRange=="ABCD")     LUM_ = 19258.225; // 2012 ABCD 539 ReReco.
+  //  if(runRange=="ABCD")     LUM_ = 18282; // 2012 BCD 539 ReReco.
 
   // RunA: 876.225
   // RunB: 4311
@@ -973,10 +973,10 @@ void CutflowAnalyzer::tauDileptonSelection(
     // down: no reweighting
     // central: weight -> weight * reweight
     // up: weight -> weight * reweight * reweight
-    if(topptunc_ >=0) 
-      w_  *= ttbarReweight(tPt,tbarPt);    
-    if( topptunc_>0)
-      w_  *= ttbarReweight(tPt,tbarPt);
+//    if(topptunc_ >=0) 
+//      w_  *= ttbarReweight(tPt,tbarPt);    
+//    if( topptunc_>0)
+//      w_  *= ttbarReweight(tPt,tbarPt);
     
     if(i_ == 45) cout << "topptunc: (" << tPt << ", " << tbarPt << ") ---> " <<  ttbarReweight(tPt,tbarPt) <<endl;
   }

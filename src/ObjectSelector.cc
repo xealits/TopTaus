@@ -43,7 +43,7 @@ void ObjectSelector::SetLeptonPlusJetsSelection(){
   leptonPlusJetsSelection_=true;
   
   //Vertex //////
-  ZMAX_    = 1;
+  ZMAX_    = 0.5;
   ZTAUMAX_ = 0.5;
   ///////////////
   
@@ -77,7 +77,7 @@ void ObjectSelector::SetLeptonPlusJetsSelection(){
   // Signal
   M_RELISO_MAX_  = 0.12; // Tight WP    
   M_PT_MIN_      = 30; //30;  //WARNING M_PT_MIN_      = 20;               // dilepton is 20 // test on 70
-  M_ETA_MAX_     = 2.4; // RunA trigger is still 2p1  -> 2.4 threshold means removing RunA. Trying that.
+  M_ETA_MAX_     = 2.1; // RunA trigger is still 2p1  -> 2.4 threshold means removing RunA. Trying that.
   M_D0_MAX_      = 0.2;                // dilepton is 0.20
   // Veto
   LOOSE_M_RELISO_MAX_ = 0.2; 
@@ -470,7 +470,7 @@ void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject
     else if( type == PFLOWTAU  ){
       // WARNING DISCRIMINATOR BY DECAY MODE FINDING in 38x = LeadingTrackFinding > 0.5 (this is applied by default to all)
       /*double discByDecayModeFinding = vT[i][xxx]; */ 
-      int discByIsolation = ((int) vT[i][HPS_ISO_]) & 0x1;
+      int discByIsolation = ((int) vT[i][HPS_ISO_] >> 2) & 0x1;
       
       
       
