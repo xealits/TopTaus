@@ -16,13 +16,15 @@ if [ "${2}" = "1" ]; then
     qsub batchHadd.sh ${1} mc1_12
     qsub batchHadd.sh ${1} mc1_13
     qsub batchHadd.sh ${1} mc1_14
-elif [ "${2}" = "1" ]; then
+elif [ "${2}" = "2" ]; then
     qsub batchHadd.sh ${1} mc2_1
     qsub batchHadd.sh ${1} mc2_2
     qsub batchHadd.sh ${1} mc2_3
     qsub batchHadd.sh ${1} mc2_4
     qsub batchHadd.sh ${1} mc2_5
     qsub batchHadd.sh ${1} mc2_6
-elif [ "${2}" = "1" ]; then
+    qsub batchHadd.sh ${1} mc2_7
+    qsub batchHadd.sh ${1} mc2_8
+elif [ "${2}" = "3" ]; then
     qsub batchHadd.sh ${1} mc3_1
 fi
