@@ -4,6 +4,11 @@
 
   <!-- jet distribution -->
 
+  <id tag="muCh_recow_pt" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{W, reco}_{T} [GeV]" yrange="10,30000000" xrange="0,250"  >
+    <item dir="PFlow/Bkg/lep_tau/">recow_pt_1</item>
+  </id> 
+
+
 
   <id tag="muCh_wplusjets_pt" doratio="1" logy="0" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{jets}_{T} [GeV]" yrange="10,300000" xrange="0,250"  >
     <item dir="PFlow/Bkg/lep_tau/">wplusjets_pt_1</item>
