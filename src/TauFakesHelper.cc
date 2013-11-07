@@ -252,7 +252,8 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	int nTriggEvent = 0;
 	int nProcEvents = 0;
 	int nToProcess = nEntries;
-	if(nToProcess > 10000000) nToProcess = 10000000;
+	//	if(nToProcess > 10000000) nToProcess = 10000000;
+	if(nToProcess > 50000) nToProcess = 50000;
 	for(int i=0; i<nToProcess; ++i)
 	  {
 	    nProcEvents++;
@@ -668,11 +669,13 @@ void TauFakesHelper::Trainer(unsigned int qualifier)
   if(fFailing_->IsZombie()) { fFailing_->Close(); return; }
   tFailing_ = (TTree *) fFailing_->Get("tree");
   
+  
   std::cout << "Training with " << tPassing_->GetEntries()
 	    << " signal events." <<  std::endl;
   std::cout << "Training with " << tFailing_->GetEntries()
 	    << " background events." << std::endl;
   
+
   ///  // Note: one tree argument -> tree has to contain a branch __TARGET__
   ///  //       two tree arguments -> signal and background tree
   
@@ -1346,9 +1349,10 @@ void TauFakesHelper::ComputeTauFake(string type, vector<double>& finalValues, do
   listOfurls_.push_back(mcFolder+TString("out-wjets.root"));  
   listOfurls_.push_back(mcFolder+TString("out-zjets.root"));
   listOfurls_.push_back(mcFolder+TString("out-singletop.root"));
-  listOfurls_.push_back(mcFolder+TString("out-ww.root"));
-  listOfurls_.push_back(mcFolder+TString("out-wz.root"));
-  listOfurls_.push_back(mcFolder+TString("out-zz.root"));
+//  listOfurls_.push_back(mcFolder+TString("out-ww.root"));
+//  listOfurls_.push_back(mcFolder+TString("out-wz.root"));
+//  listOfurls_.push_back(mcFolder+TString("out-zz.root"));
+  listOfurls_.push_back(mcFolder+TString("out-dibosons.root"));
   listOfurls_.push_back(mcFolder+TString("out-qcd.root"));
 
 ///  listOfurls_.push_back(dataFolder+TString("out-data.root"));
@@ -1616,18 +1620,20 @@ void TauFakesHelper::ProduceDataDrivenDistributions(bool rescaleData, bool resca
     listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wjets.root"));  
     listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zjets.root"));
     listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-singletop.root"));
-    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ww.root"));
-    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wz.root"));
-    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zz.root"));
+//    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ww.root"));
+//    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wz.root"));
+//    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zz.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-dibosons.root"));
     listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-qcd.root"));
     rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ttbar-mutau_rescaled.root"));
     rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ttbar-mcbkg_rescaled.root"));
     rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wjets_rescaled.root"));  
     rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zjets_rescaled.root"));
     rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-singletop_rescaled.root"));
-    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ww_rescaled.root"));
-    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wz_rescaled.root"));
-    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zz_rescaled.root"));
+//    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ww_rescaled.root"));
+//    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wz_rescaled.root"));
+//    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zz_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-dibosons_rescaled.root"));
     rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-qcd_rescaled.root"));
   }
   
