@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
       helper->Monitor(TauFakesHelper::WMUDATA);
     }
     
-    if(actions_[i] == "trainWmuMC" || actions_[i] == "trainWmuAll" || actions_[i] == "trainAll" || actions_[i] == "all"){
+    if(actions_[i] == "trainWMuMC" || actions_[i] == "trainWMuAll" || actions_[i] == "trainAll" || actions_[i] == "all"){
       helper->Trainer(TauFakesHelper::WMUMC);
       helper->Monitor(TauFakesHelper::WMUMC);
     }
