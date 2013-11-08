@@ -96,25 +96,24 @@ void teenyWeenyCalcNewFakes(){
 // preapp //     i1(2903.62),//3650.0),  // W+jets
 // preapp //     i2(2449.51);//2538.0);  // QCD
     
-    i1(2451),
-    i2(1815);
-  
+    i1(2451), // W+jets
+    i2(1815); // QCD
 
+
+//
 //  \begin{tabular}{c|c|c|c}
 //  \multicolumn{4}{c}{ } \\
 //\hline
 //Sample &  MC expectation & Estimated from MC & Estimated from data  \\\hline
 //\hline
-//			  QCD multi-jet & \multirow{3}{*}{740.16$\pm$21.4709} & 2837.08 & 2801.45 \\\cline{1-1} \cline{3-4}
-//  W+jets &   & 4030.72 & 3284.62 \\\cline{1-1} \cline{3-4}
-//Average &  & 3433.9$\pm$17.3802\% & 3043.04$\pm$7.93896\%  \\\hline
+//			  QCD multi-jet & \multirow{3}{*}{740.16$\pm$21.4709} & 1984.86 & 1815.02 \\\cline{1-1} \cline{3-4}
+//  W+jets &   & 2642.77 & 2451.14 \\\cline{1-1} \cline{3-4}
+//Average &  & 2313.81$\pm$14.2171\% & 2133.08$\pm$14.9108\%  \\\hline
 //\hline
 //  \end{tabular}
-//physicsAnalysis reached its natural end
 //
 //
-
-
+//
 
   double
     oldEst( (i1+i2)/2. ),
