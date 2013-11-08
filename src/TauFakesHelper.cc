@@ -297,16 +297,14 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	    if(vertices.size()==0){ cout<<endl<<" Vertex was zero ???????"<<endl; continue; }
 	    PhysicsObject & primaryVertex = vertices[0];
 	    
+	    PhysicsObjectCollection mets = evReader->GetPhysicsObjectsFrom(ev,event::MET,metAlgo);
+	    if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
+	    PhysicsObject met = mets[0];
 	    JetCorrectionUncertainty * junc(0);
 	    vector<double> jerFactors; jerFactors.clear();
-	    vector<PhysicsObject> newJets; newJets.clear();
-	    for(unsigned int i=0;i<jets.size();++i){ 
-	      double corr_jer(1.);
-	      /*if(!isData_)*/ newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-	      jerFactors.push_back(1.);
-	    } 
-	    /*if(!isData_)*/ jets=newJets;
-	    
+	    doPropagations( jerFactors, 0, 0, junc, jets, met, isDATA);
+	    mets[0]=met;
+
 	    // preselect objects /////////////////////////////////
 	    DisableLtkCutOnJets(); Pt_Jet(MIN_JET_PT_CUT_); // select hard jets
 	    //pt_Tau(MIN_TAU_PT_CUT_);  //select tau pT
@@ -503,14 +501,9 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	  
 	  JetCorrectionUncertainty * junc(0);
 	  vector<double> jerFactors; jerFactors.clear();
-	  vector<PhysicsObject> newJets; newJets.clear();
-	  for(unsigned int i=0;i<jets.size();++i){ 
-	    double corr_jer(1.);
-	    if(qualifier_==WMUMC)
-	      newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-	    jerFactors.push_back(1.);
-	  } 
-	  if(qualifier_==WMUMC) jets=newJets;
+	  doPropagations( jerFactors, 0, 0, junc, jets, met, isDATA);
+	  mets[0]=met;
+
 	  // preselect objects /////////////////////////////////
 	  DisableLtkCutOnJets(); Pt_Jet(MIN_JET_PT_CUT_); // select hard jets
 	  //pt_Tau(MIN_TAU_PT_CUT_);  //select tau pT
