@@ -11,24 +11,24 @@ void teenyWeenyCalcNewFakes(){
   
   double
     // Fractions
-// preapp //     a1(0.62),
-// preapp //     b1(0.38),
-// preapp // 
-// preapp //     a2(0.88),
-// preapp //     b2(0.12),
-// preapp //     
-// preapp //     ai(0.835),
-// preapp //     bi(0.165),
+     a1(0.62),
+     b1(0.38),
+ 
+     a2(0.88),
+     b2(0.12),
+     
+     ai(0.835),
+     bi(0.165),
 
 
-    a1(0.62),
-    b1(0.38),
-
-    a2(0.27),
-    b2(0.73),
-    
-    ai(0.78),
-    bi(0.22),
+//    a1(0.62),
+//    b1(0.38),
+//
+//    a2(0.27),
+//    b2(0.73),
+//    
+//    ai(0.78),
+//    bi(0.22),
 
 
 //    Fractions in ttll sample: quarks 0.886973, gluons 0.113027
