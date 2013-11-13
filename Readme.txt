@@ -21,7 +21,7 @@ setenv SCRAM_ARCH slc5_amd64_gcc462
 scramv1 project CMSSW CMSSW_5_3_9
 cd CMSSW_5_3_9/src/
 cmsenv
-# must update recipe: cvs co -p UserCode/LIP/TopTaus/TAGS_2012.txt | sh
+wget -q -O - --no-check-certificate https://raw.github.com/vischia/TopTaus/master/TAGS_2012.txt | sh
 scram b -j8
 
 

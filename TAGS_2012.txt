@@ -101,5 +101,5 @@ cvs co -r V13-03-07 -d LIP/TopTaus UserCode/LIP/TopTaus
 ###  # # Fix bug with high pt taus: https://indico.cern.ch/getFile.py/access?contribId=0&resId=0&materialId=slides&confId=177212
 ###  # cvs up -r 1.17 RecoTauTag/RecoTau/plugins/RecoTauBuilderCombinatoricPlugin.cc
 
-
-
+### BLUE
+svn co svn+ssh://svn.cern.ch/reps/bluefin/bluefin/tags/BLUEFIN_01_00_03
