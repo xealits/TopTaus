@@ -209,8 +209,8 @@ void teenyWeenyQGJetsFractions(){
 
   double fqf= httllq->Integral() / (httllq->Integral() + httllg->Integral());
   double fgf= httllg->Integral() / (httllq->Integral() + httllg->Integral());
-  
- 
+
+
   cout << "Fractions in ttll sample: quarks " << ttllfq << ", gluons " << ttllfg << endl;
   cout << "Fractions in wjet sample: quarks " << wjetfq << ", gluons " << wjetfg << endl;
   cout << "Combination: quarks " << 0.5*ttllfq + 0.5*wjetfq << ", gluons " << 0.5*ttllfg+0.5*wjetfg << endl;
@@ -355,6 +355,8 @@ void teenyWeenyQGJetsFractions(){
     //    pt1->Draw("same");
     myCanva->SaveAs(fBase[i]+".pdf");
     myCanva->SaveAs(fBase[i]+".png");
+    myCanva->SaveAs(fBase[i]+".root");
+    myCanva->SaveAs(fBase[i]+".C");
     myCanva->Clear();
     delete myCanva;
     delete pt1;
@@ -363,4 +365,69 @@ void teenyWeenyQGJetsFractions(){
     delete den;
     delete leg_;
   }
+
+
+
+
+  double fqf= httllq->Integral() / (httllq->Integral() + httllg->Integral());
+  double fgf= httllg->Integral() / (httllq->Integral() + httllg->Integral());
+
+
+  TH1F* finalNum_qf = (TH1F*) httllq->Clone("finalNum_qf");
+  TH1F* finalNum_gf = (TH1F*) httllg->Clone("finalNum_gf");
+  
+  TH1F* finalDen = (TH1F*) httllq->Clone("finalDen_qf"); finalDen_qf->Add(httllg);
+
+
+  finalNum_qf->Divide(finalDen);
+  finalNum_gf->Divide(finalDen);
+
+
+  finalNum_qf->SetLineColor(2);    
+  finalNum_gf->SetLineColor(4);
+  
+  finalNum_qf->SetLineWidth(3);    
+  finalNum_gf->SetLineWidth(3);    
+  
+  //    TLegend* leg_ = new TLegend(0.15,0.65,0.62,0.80,NULL,"brNDC");
+  TLegend* leg_ = new TLegend(0.40,0.50,0.80,0.70,NULL,"brNDC");
+  leg_->SetTextFont(42);
+  leg_->SetBorderSize(0);
+  leg_->SetLineColor(1);
+  leg_->SetLineStyle(1);
+  leg_->SetLineWidth(1);
+  leg_->SetFillColor(0);
+  leg_->SetFillStyle(0);
+  leg_->AddEntry(finalNum_qf,/*labels[i]+*/"Quark jets fraction","lpf");  
+  leg_->AddEntry(finalNum_gf,/*labels[i]+*/"Gluon jets fraction","lpf");
+  
+  TPaveText *pt1 = new TPaveText(0.17,0.45,0.5,0.5, "brNDC");
+  pt1->SetBorderSize(1);
+  pt1->SetFillColor(19);
+  pt1->SetFillStyle(0);
+  pt1->SetLineColor(0);
+  pt1->SetTextFont(132);
+  pt1->SetTextSize(0.033);
+  //  TText *text = pt1->AddText("#splitline{m_{H^{#pm}} = 120 GeV/c^{2},}{BR(t #rightarrow H^{+}b) = 0.05}");
+  TCanvas* myCanva = new TCanvas("mainsel","Main selection",2000,2000);
+  myCanva->cd();
+  
+  finalNum_qf->Draw("hist");
+  finalNum_gf->Draw("histsame");
+  
+  leg_->Draw();
+  //    pt1->Draw("same");
+  myCanva->SaveAs("finalSelection.pdf");
+  myCanva->SaveAs("finalSelection.png");
+  myCanva->SaveAs("finalSelection.root");
+  myCanva->SaveAs("finalSelection.C");
+  myCanva->Clear();
+  delete myCanva;
+  delete pt1;
+  delete finalNum_qf;
+  delete finalNum_qf;
+  delete finalDen;
+  delete leg_;
+
+
 }
