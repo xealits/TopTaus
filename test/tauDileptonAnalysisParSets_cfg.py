@@ -14,8 +14,9 @@ LandSShapesProducerParSet = cms.PSet(
     datacardsBaseName  = cms.string("datacard_mutau_tb"),
     #    massPointName   = cms.vstring("m180", "m200", "m220", "m250", "m300"),
     # massPointName   = cms.vstring("m180","m200","m220","m240","m250","m260","m280","m300","m350","m500","m600","m700"),
+    massPointName   = cms.vstring("m180","m200","m220","m250","m300","m350","m500","m600","m700"),
     # plot:
-    massPointName = cms.vstring("m250"),
+    # massPointName = cms.vstring("m250"),
     #    baseMCDir        = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-mc-MU-20GeV/"),
     #    baseDataDir      = cms.string("/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"),
     
