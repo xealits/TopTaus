@@ -64,7 +64,7 @@ class LandSShapesProducer: protected utilities::EditorialUtils, utilities::StatU
 public :
   
   // Constructor
-  LandSShapesProducer(string, bool);
+  LandSShapesProducer(string, string, string, bool);
   // Destructor
   ~LandSShapesProducer();
   
@@ -97,8 +97,10 @@ private:
   
   // Parameter set
   string parSet_;
+  string whatToDo_; 
 
   // Output paths
+  string outputPrefix_;
   string outFolder_;
   string outputFileName_;
   string datacardsBaseName_;

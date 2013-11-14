@@ -16,13 +16,15 @@
 #include <TGraphAsymmErrors.h>
 #include <TText.h>
 #include <TPaveText.h>
-
+#include <TSystem.h>
 
 using namespace std;
 using namespace RooFit;
 
-LandSShapesProducer::LandSShapesProducer(string parSet, bool produceOnly):
+LandSShapesProducer::LandSShapesProducer(string parSet, string whatToDo, string outputPrefix, bool produceOnly):
   parSet_(parSet),
+  whatToDo_(whatToDo),
+  outputPrefix_(outputPrefix),
   produceOnly_(produceOnly)
 {
   
@@ -31,6 +33,49 @@ LandSShapesProducer::LandSShapesProducer(string parSet, bool produceOnly):
   
   Init();
 
+}
+
+LandSShapesProducer::~LandSShapesProducer(){
+
+//  delete streamToFile_;
+//  delete myStyle_;
+//  delete inputFile_;
+//  delete inputTree_;
+//  delete[] systTree_;
+//  delete[] fitVars_;  
+//  delete canvas_;
+//  delete myvar_         ;
+//  delete myvarMultiD_   ;
+//  delete myvar_weights_ ;
+//  delete isOSvar_       ;
+//  delete[] histo_     ;
+//  delete[] systHisto_     ;
+//  delete[] myDS_         ; 
+//  delete[] mySystDS_         ; 
+//  delete[] masterHist_;
+//  delete[] masterShapes_;
+//  delete[] signalShapesToCompare_;
+//  delete[] signalShapesToCompareHH_;
+//  delete[] signalShapesToCompareWH_;
+//  delete[] perMassPointSignalShapesToCompare_;
+//  delete[] perMassPointSignalShapesToCompareHH_;
+//  delete[] perMassPointSignalShapesToCompareWH_;
+//  delete ddbkgHistUp_;  
+//  delete ddbkgHistDown_;
+//  delete[] hist_;
+//  delete[] histStatNoNorm_;
+//  delete[] histStatUp_;
+//  delete[] histStatDown_;
+//  delete[] systHist_;
+//  delete[] th2_;
+//  delete[] th2StatUp_;
+//  delete[] th2StatDown_;
+//  delete[] th2Syst_;
+//  delete[] unrolled_;
+//  delete[] unrolledStatUp_;
+//  delete[] unrolledStatDown_;
+//  delete[] unrolledSyst_;
+//  delete leg_;
 }
 
 
@@ -78,9 +123,20 @@ void LandSShapesProducer::Init(){
   identifier_ = "";
 
   // Get ParameterSet from cfg file
-  const edm::ParameterSet &mFitPars = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSet");
+  edm::ParameterSet mFitPars;
 
-  outFolder_        = mFitPars.getParameter<std::string>("outFolder");
+  if     (whatToDo_=="tb")    mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetTb");
+  else if(whatToDo_=="taunu") mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetTaunu");
+  else if(whatToDo_=="mhmax") mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetMhmax");
+  else if(whatToDo_=="plot")  mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetPlot");
+  else { cout << "BREAK: I don't know what to do" << endl; return;}
+  
+  
+  outFolder_        = outputPrefix_ + mFitPars.getParameter<std::string>("outFolder");
+  string cmd = "mkdir -p "; cmd+=outFolder_;
+  gSystem->Exec(cmd.c_str());
+
+
   outputFileName_  = mFitPars.getParameter<std::string>("outputFileName");
   datacardsBaseName_ = mFitPars.getParameter<std::string>("datacardsBaseName");
 
