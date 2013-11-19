@@ -2222,7 +2222,7 @@ namespace tableutils{
 // preapp //  double fe_1tau(241.4);
 
   double f_1tau( 1925.1); //2741.7);//2328.3);
-  double fe_1tau(192.4); //249.1);//357.7);
+  double fe_1tau(288.8);//192.4 ); //249.1);//357.7);
 
   double oscuteff(0.72);
   
