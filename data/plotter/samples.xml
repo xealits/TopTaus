@@ -8,7 +8,7 @@
 
 
    <process isstack="1" isdata="0" name="t#bar{t} #rightarrow #mu#tau_{h}" color="614" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-mutau.root</file>
+     <file weight="0.949">nomt-2012-V1-mc-MU-20GeV/out-ttbar-mutau.root</file>
    </process>
 
 <!-- Not to be used
@@ -23,7 +23,7 @@
 
 <!-- Substituted by out-ttbar-mcbkg when plotting misid -->
    <process isstack="1" isdata="0" name="other t#bar{t}" color="822" width="1" fill="1001" fillcolor="822" markercolor="822" line="1"  linecolor="822" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-other.root</file>
+     <file weight="0.949">nomt-2012-V1-mc-MU-20GeV/out-ttbar-other.root</file>
    </process>
 
 
