@@ -3782,9 +3782,9 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
 
   // Acquire W pt
   // W is lepton+met  
-  TLorentzVector wvec(met + *lep_obj);
+  double thewpt(met.Pt() + lep_obj->Pt());
   for(size_t itag=0; itag<evTags.size(); ++itag){
-    mon_.fillHisto("recow_pt", evTags[itag], wvec.Pt(), w_);
+    mon_.fillHisto("recow_pt", evTags[itag], thewpt, w_);
   }
   
 // manipulate for w //  if( url_ == TTBAR_URL){
