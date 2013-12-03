@@ -64,7 +64,7 @@ void HistogramPlotter::processPlots(int i){
   bool firstPlot(true);
 
   const float xpad[2] = {0.,1};
-  const float ypad[4] = {0.,0.3,0.3,1.0};
+  const float ypad[4] = {0.,0.2,0.2,1.0};
   const float yscale = (ypad[3]-ypad[2])/(ypad[1]-ypad[0]);
 
   map< int, int >::iterator it;
@@ -93,7 +93,7 @@ void HistogramPlotter::processPlots(int i){
     TPad *p = (TPad *)c_->cd(1);
     //c_->cd(1);
     //TPad* p = new TPad();
-    p->SetBottomMargin(0);
+    p->SetBottomMargin(0.1);//0);
     p->SetPad(xpad[0],ypad[2],xpad[1],ypad[3]);
   }
   else{
@@ -223,9 +223,12 @@ void HistogramPlotter::processPlots(int i){
 
     c_->cd(1);
 
-    stack->Draw("hist");
-    if(!ratioOptions.first) stack->GetHistogram()->GetXaxis()->SetTitleOffset(0.9);
 
+    stack->Draw("hist");
+
+    /*if(!ratioOptions.first)*/ stack->GetHistogram()->GetXaxis()->SetTitleOffset(0.8);
+    /*if(!ratioOptions.first)*/ stack->GetHistogram()->GetXaxis()->SetTitleSize(0.05);
+    
     setStackIdProperties(stack,i);
     
 
@@ -282,7 +285,7 @@ void HistogramPlotter::processPlots(int i){
     myError->SetFillColor(kGray+2);
     myError->SetFillStyle(3004);
     errorH->SetFillStyle(3001);
-    myError->Draw("2same");
+    // 2011-12-03 PIETRO    myError->Draw("2same");
 
 
   }
@@ -364,7 +367,7 @@ void HistogramPlotter::processPlots(int i){
       iRatio->Add(denominator,-1);            
       iRatio->GetYaxis()->SetTitle("Relative difference");
     }
-    else iRatio->GetYaxis()->SetTitle("data/MC");
+    else iRatio->GetYaxis()->SetTitle("Data/#Sigma MC");
     
     
     iRatio->Divide(denominator); 
@@ -414,12 +417,14 @@ void HistogramPlotter::processPlots(int i){
     iRatio->GetXaxis()->SetLabelSize(0.04 * yscale);
     //    iRatio->GetXaxis()->SetBinLabel(7, "1l+ #geq 3j");
     iRatio->GetXaxis()->SetLabelOffset(0.02 * yscale);
-    iRatio->GetXaxis()->SetTitleSize(0.06 * yscale);
-    iRatio->GetXaxis()->SetTitleOffset(0.9);
-    iRatio->GetXaxis()->SetTickLength( 0.03 * yscale );
+//    iRatio->GetXaxis()->SetTitleSize(0.06 * yscale);
+//    iRatio->GetXaxis()->SetTitleOffset(0.9);
+//    iRatio->GetXaxis()->SetTickLength( 0.03 * yscale );
     iRatio->GetYaxis()->SetTitleOffset(0.7);
     iRatio->GetYaxis()->SetLabelSize(0.04 * yscale);
     iRatio->GetYaxis()->SetTitleSize(0.04 * yscale);     
+    iRatio->GetYaxis()->SetNdivisions(5);     
+    iRatio->GetXaxis()->SetTitle("");
     iRatio->SetMarkerSize(1);
     iRatio->SetMarkerColor(1);
     iRatio->SetLineColor(1);
@@ -436,7 +441,7 @@ void HistogramPlotter::processPlots(int i){
     
     //draw the canvas
     p->SetTopMargin(0);
-    p->SetBottomMargin(0.3);
+    p->SetBottomMargin(0.5);//3);
     p->SetPad(xpad[0],ypad[0],xpad[1],ypad[1]);
     p->SetGridx();
     p->SetGridy();
@@ -484,9 +489,9 @@ void HistogramPlotter::plotLegend( TH1 * higgs, TLegend *l, TString title, vecto
   pt->SetFillColor(19);
   pt->SetFillStyle(0);
   pt->SetLineColor(0);
-  pt->SetTextFont(132);
+  //  pt->SetTextFont(132);
   pt->SetTextSize(0.045);
-  TText *text = pt->AddText("CMS Preliminary, #sqrt{s} = 8 TeV, 19.3 fb^{-1}");
+  TText *text = pt->AddText("CMS Preliminary, #sqrt{s} = 8 TeV, 19.7 fb^{-1}");
   text->SetTextAlign(11);
   pt->Draw();
   
