@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <monitor> 
 
-  <!-- Muon pt and eta distribition (After lepton + 3jets )-->
+  <!-- Muon pt and eta distribution (After lepton + 3jets )-->
    <id tag="muCh_pt_m" doratio="1" logy="1" cmspublic="y" opt="e1" oflow="0" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{#mu}_{T} [GeV]" yrange="10,2000000"  xbin="8">
     <item dir="PFlow/RecoSteps/lep_tau/#geq 3 jet">pt_m_4</item>
   </id>
@@ -10,9 +10,9 @@
   </id>
 
 
-  <!-- tau pt and eta distribition (After OS ) -->
+  <!-- tau pt and eta distrubition (After 1tau ) -->
 
-  <id tag="muCh_pt_t_1t" doratio="1" logy="1" cmspublic="y" opt="e1" oflow="1" uflow="0" xbin="4" title="" ytitle="Events / 5 GeV"
+  <id tag="muCh_pt_t_1t" doratio="1" logy="1" cmspublic="y" opt="e1" oflow="1" uflow="0" xbin="4" title="" ytitle="Events / 10 GeV"
   xtitle="p^{#tau}_{T} [GeV]" yrange="0.1,10000" xrange="20,500">
     <item dir="PFlow/RecoSteps/lep_tau/1 Tau">pt_t_8</item>
   </id> 
@@ -21,8 +21,9 @@
     <item dir="PFlow/RecoSteps/lep_tau/1 Tau">eta_t_8</item>
   </id> 
 
+  <!-- tau pt and eta distrubition (After OS ) -->
 
-  <id tag="muCh_pt_t_OS" doratio="1" logy="1" cmspublic="y" opt="e1" oflow="1" uflow="0" xbin="4" title="" ytitle="Events / 5 GeV"
+  <id tag="muCh_pt_t_OS" doratio="1" logy="1" cmspublic="y" opt="e1" oflow="1" uflow="0" xbin="4" title="" ytitle="Events / 10 GeV"
   xtitle="p^{#tau}_{T} [GeV]" yrange="0.1,10000" xrange="20,350">
     <item dir="PFlow/RecoSteps/lep_tau/OS">pt_t_9</item>
   </id> 

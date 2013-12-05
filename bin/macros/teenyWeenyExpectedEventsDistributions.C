@@ -64,6 +64,7 @@ void HeavyChHiggsEventDist(bool isEMu, bool ism250)
     RY_Htb[i]    = Y_Htb   *BR[i];
   }
 
+
   gROOT->ProcessLine(".L tdrstyle.C");
   setTDRStyle();
   c1 = new TCanvas();
@@ -78,7 +79,7 @@ void HeavyChHiggsEventDist(bool isEMu, bool ism250)
   evtH_tb->SetLineWidth(3);
   evtH_tb->SetLineStyle(7);
 
-  evtH_taunu->GetXaxis()->SetTitle("B(X #rightarrow H^{+}tb) #times BR(H^{+} #rightarrow tb (#tau#nu) )");
+  evtH_taunu->GetXaxis()->SetTitle("BR(H^{+} #rightarrow tb (#tau#nu) )");
   evtH_taunu->GetYaxis()->SetTitle("Events");
   evtH_taunu->GetXaxis()->SetRangeUser(0, 1.0);
   evtH_taunu->GetYaxis()->SetRangeUser(0, 20.0);
@@ -113,10 +114,10 @@ void HeavyChHiggsEventDist(bool isEMu, bool ism250)
   pt->Draw();
 
 
-  TLatex *tex2 = new TLatex(0.05, 7.0, "m_{H^{#pm}} = 200 GeV");
-  if(isEMu && !ism250)tex2 = new TLatex(0.65, 7.0, "m_{H^{#pm}} = 200 GeV");  
-  if(ism250)tex2 = new TLatex(0.05, 7.0, "m_{H^{#pm}} = 250 GeV");  
-  if(isEMu && ism250)tex2 = new TLatex(0.65, 7.0, "m_{H^{#pm}} = 250 GeV");
+  TLatex *tex2 = new TLatex(0.05, 7.0, "#splitline{m_{H^{#pm}} = 200 GeV}{#sigma from MSSM}");
+  if(isEMu && !ism250)tex2 = new TLatex(0.65, 7.0, "#splitline{m_{H^{#pm}} = 200 GeV}{#sigma from MSSM}");  
+  if(ism250)tex2 = new TLatex(0.05, 7.0, "#splitline{m_{H^{#pm}} = 250 GeV}{#sigma from MSSM}");  
+  if(isEMu && ism250)tex2 = new TLatex(0.65, 7.0, "#splitline{m_{H^{#pm}} = 250 GeV}{#sigma from MSSM}");
   tex2->SetTextSize(0.035);  
   tex2->Draw(); 
 
@@ -574,12 +575,12 @@ void checkroot() //for cross checking the result
 
 void teenyWeenyExpectedEventsDistributions(){
   // mH+ = 200
-  //  HeavyChHiggsEventDist(0,0); // mutau
-  //  HeavyChHiggsEventDist(1,0); // emu
+  HeavyChHiggsEventDist(0,0); // mutau
+  HeavyChHiggsEventDist(1,0); // emu
   //
   //  // mH+ = 250
-  //  HeavyChHiggsEventDist(0,1); // mutau
-  HeavyChHiggsEventDist(0,1); // emu
+  HeavyChHiggsEventDist(0,1); // mutau
+  HeavyChHiggsEventDist(1,1); // emu
   
 
   //LightChHiggsEventDist();

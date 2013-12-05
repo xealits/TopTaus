@@ -36,17 +36,21 @@ int main(int argc, char* argv[])
 
   //check arguments
   if ( argc < 4 ) {
-    std::cout << "Usage : " << argv[0] << " parameters_cfg.py --produceOnly [true|false]" << std::endl;
+    std::cout << "Usage : " << argv[0] << " parameters_cfg.py --produceOnly [true|*false*] --do [all|tb|taunu|mhmax|*plot*] --outFolder []" << std::endl;
     return 0;
   }
   
   string sProduceOnly("");
   bool produceOnly(false);
+  string whatToDo("plot");
+  string outputPrefix("");
   // Get input arguments
   for(int i=2;i<argc;i++){
     string arg(argv[i]);
     //    if(arg.find("--help")        !=string::npos) { printHelp(); return -1;}   
     if(arg.find("--produceOnly") !=string::npos) { sProduceOnly = argv[i+1];}
+    if(arg.find("--do")          !=string::npos) { whatToDo     = argv[i+1];}
+    if(arg.find("--outFolder")   !=string::npos) { outputPrefix = argv[i+1];}
     //check arguments // FIXME: implement --blah bih
   }
   
@@ -58,13 +62,34 @@ int main(int argc, char* argv[])
     cout << "Error. ProduceOnly value not defined. Defaulting to true" << endl;
     produceOnly=true;
   }
-
+  
   string parSet(argv[1]);
+  
+  if(whatToDo=="all"){
+    LandSShapesProducer* producerTb = new LandSShapesProducer(parSet, "tb", outputPrefix, true);
+    producerTb->Produce();
+    delete producerTb;
 
-  LandSShapesProducer* myProducer = new LandSShapesProducer(parSet, produceOnly);
-  myProducer->Produce();
-  cout << "Shapes producer reached its natural end" << endl;
+    LandSShapesProducer* producerTaunu = new LandSShapesProducer(parSet, "taunu", outputPrefix, true);
+    producerTaunu->Produce();
+    delete producerTaunu;    
+    
+    LandSShapesProducer* producerMhmax = new LandSShapesProducer(parSet, "mhmax", outputPrefix, true);
+    producerMhmax->Produce();
+    delete producerMhmax;
+    
+    LandSShapesProducer* producerPlot = new LandSShapesProducer(parSet, "plot", outputPrefix, false);
+    producerPlot->Produce();
+    delete producerPlot;
+  }
+  else{
+    LandSShapesProducer* myProducer = new LandSShapesProducer(parSet, whatToDo, outputPrefix, produceOnly);
+    myProducer->Produce();
 
+    delete myProducer;
+  }
+    cout << "Shapes producer reached its natural end" << endl;
+  
   return 0;
   
 }

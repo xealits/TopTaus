@@ -146,6 +146,12 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[HTB500_URL]             = 0.0187822 * (1.-0.006268037 ) ;/// 30.; 
       defaultXSections_[HTB600_URL]             = 0.0100715 * (1.-0.004805924 ) ;/// 30.; 
       defaultXSections_[HTB700_URL]             = 0.0056681 * (1.-0.004234392 ) ;/// 30.; 
+
+
+      defaultXSections_[HHHTAUTAUBB260_URL]             = 0.06 ;// 60 fb 
+      defaultXSections_[HHHTAUTAUBB300_URL]             = 0.06 ;// 60 fb 
+      defaultXSections_[HHHTAUTAUBB350_URL]             = 0.06 ;// 60 fb
+      
    
     } else {
       
@@ -188,18 +194,58 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[A_T_URL]                = 22;    
       defaultXSections_[A_W_URL]                = 7.87;  
       
+
       defaultXSections_[QCD_EM20TO30_URL]       = 2454400.;     //xsec =236000000 eff=0.0104 QCD_Pt-20to30_EMEnriched_TuneZ2_7TeV-pythia6
       defaultXSections_[QCD_EM30TO80_URL]       = 3866200.;     //xsec =59480000  eff=0.065  QCD_Pt-30to80_EMEnriched_TuneZ2_7TeV-pythia6 
       defaultXSections_[QCD_EM80TO170_URL]      = 139500.;      //xsec =900000    eff=0.155  QCD_Pt-80to170_EMEnriched_TuneZ2_7TeV-pythia6 
+      defaultXSections_[QCD_EM170TO250_URL]      = 5503.824; //5962.476; //4586.52; 
+      defaultXSections_[QCD_EM250TO350_URL]      = 779.45; //835.125; //556.75; 
+      defaultXSections_[QCD_EM350TOINF_URL]      = 124.74; //133.65; //89.1; 
+
       
       defaultXSections_[QCD_BCTOE20TO30_URL]    = 132160;       //xsec = 236000000 eff=0.00056 QCD_Pt-20to30_BCtoE_TuneZ2_7TeV-pythia6 
       defaultXSections_[QCD_BCTOE30TO80_URL]    = 136804;       //xsec = 59480000  eff=0.00230 QCD_Pt-30to80_BCtoE_TuneZ2_7TeV-pythia6 
       defaultXSections_[QCD_BCTOE80TO170_URL]   = 9360;         //xsec = 900000    eff=0.0104  QCD_Pt-80to170_BCtoE_TuneZ2_7TeV-pythia6   
-      
+      defaultXSections_[QCD_BCTOE170TO250_URL]   = 758.4; //821.6; //632.; 
+      defaultXSections_[QCD_BCTOE250TO350_URL]   = 144.62; //154.95; //103.3; 
+      defaultXSections_[QCD_BCTOE350TOINF_URL]   = 33.6; //36.; //24.; 
+
+      defaultXSections_[QCD_PHOTON15TO30_URL]   = 200061.7; //220067.87; //200061.7;        
       defaultXSections_[QCD_PHOTON30TO50_URL]   = 16690;        //xsec = 1.669e+04   G_Pt_30to50_TuneZ2_7TeV_pythia6                 
       defaultXSections_[QCD_PHOTON50TO80_URL]   = 2722;         //xsec = 2.722e+03   G_Pt_50to80_TuneZ2_7TeV_pythia6                         
       defaultXSections_[QCD_PHOTON80TO120_URL]  = 447.2;        //xsec = 4.472e+02   G_Pt_80to120_TuneZ2_7TeV_pythia6
       defaultXSections_[QCD_PHOTON120TO170_URL] = 84.1;	        //xsec = 8.417e+01   G_Pt_120to170_TuneZ2_7TeV_pythia6
+      defaultXSections_[QCD_PHOTON170TO300_URL] = 48.195; //45.183;  //39.1586; //30.122;
+      defaultXSections_[QCD_PHOTON300TO470_URL] = 3.42;  //3.21;  //2.14;
+
+
+
+//      defaultXSections_[QCD_EM20TO30_URL]       = 2914860.;
+//      defaultXSections_[QCD_EM30TO80_URL]       = 4615893.; //5077482.3; //4615893.; 
+//      defaultXSections_[QCD_EM80TO170_URL]      = 277997.; //238283.37; //183294.9; 
+//      defaultXSections_[QCD_EM170TO250_URL]      = 5503.824; //5962.476; //4586.52; 
+//      defaultXSections_[QCD_EM250TO350_URL]      = 779.45; //835.125; //556.75; 
+//      defaultXSections_[QCD_EM350TOINF_URL]      = 124.74; //133.65; //89.1; 
+//      
+//      defaultXSections_[QCD_BCTOE20TO30_URL]    = 167388.; 
+//      defaultXSections_[QCD_BCTOE30TO80_URL]    = 167040.; //183744.; //167040.; 
+//      defaultXSections_[QCD_BCTOE80TO170_URL]   =  19689.; //16876.47; //12981.9; 
+//      defaultXSections_[QCD_BCTOE170TO250_URL]   = 758.4; //821.6; //632.; 
+//      defaultXSections_[QCD_BCTOE250TO350_URL]   = 144.62; //154.95; //103.3; 
+//      defaultXSections_[QCD_BCTOE350TOINF_URL]   = 33.6; //36.; //24.; 
+//      
+//      defaultXSections_[QCD_MU_URL]             = 134680.; //364000000. eff 3.7E-4 http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6&campid=Summer12
+//      
+//      defaultXSections_[QCD_PHOTON15TO30_URL]   = 200061.7; //220067.87; //200061.7;        
+//      defaultXSections_[QCD_PHOTON30TO50_URL]   = 19931.62; //21924.78; //19931.62;        
+//      defaultXSections_[QCD_PHOTON50TO80_URL]   = 3322.309;         
+//      defaultXSections_[QCD_PHOTON80TO120_URL]  = 893.; //781.6; //614.115; //558.2865;        
+//      defaultXSections_[QCD_PHOTON120TO170_URL] = 172.81; //151.209; //108.0068;
+//      defaultXSections_[QCD_PHOTON170TO300_URL] = 48.195; //45.183;  //39.1586; //30.122;
+//      defaultXSections_[QCD_PHOTON300TO470_URL] = 3.42;  //3.21;  //2.14;
+      
+
+
       
       //defaultXSections_[QCD_MU_URL]           = 349988;       //xsec=296600000 	eff=0.00118  QCD_Pt-20_MuEnrichedPt-10_TuneZ2_7TeV-pythia6 //79688.;                                    
       defaultXSections_[QCD_MU_URL]             = 84679;        //xsec=296600000 	eff=0.002855 QCD_Pt-20_MuEnrichedPt-15_TuneZ2_7TeV-pythia6      
@@ -563,50 +609,99 @@ void SampleProcessor::process_ttbar(int i){
 }
 
 
-
-
-void SampleProcessor::process_ttbar_unc(){
+void SampleProcessor::process_ttbar_scaleup(int i){
 
   url_= TTBAR_URL;
-/*
-  process(false, url_, iFolder_ + TString("ttbar-scaleup_424.root"),   oFolder_+TString("out-ttbar-scaleup.root"),keys_);    
-  process(false, url_, iFolder_ + TString("ttbar-scaledown_424.root"), oFolder_+TString("out-ttbar-scaledown.root"),keys_);    
-  process(false, url_, iFolder_ + TString("ttbar-matchup_424.root"),   oFolder_+TString("out-ttbar-pdfup.root"),keys_);    
-  process(false, url_, iFolder_ + TString("ttbar-matchdown_424.root"), oFolder_+TString("out-ttbar-pdfdown.root"),keys_);   
 
-  process(false, url_, iFolder_ + TString("ttbar-m161p5_424.root"),   oFolder_+TString("out-ttbar-m161p5.root"),keys_);    
-  process(false, url_, iFolder_ + TString("ttbar-m166p5_424.root"),   oFolder_+TString("out-ttbar-m166p5.root"),keys_);    
-  process(false, url_, iFolder_ + TString("ttbar-m169p5_424.root"),   oFolder_+TString("out-ttbar-m169p5.root"),keys_);    
-  process(false, url_, iFolder_ + TString("ttbar-m175p5_424.root"),   oFolder_+TString("out-ttbar-m175p5.root"),keys_);    
-  process(false, url_, iFolder_ + TString("ttbar-m178p5_424.root"),   oFolder_+TString("out-ttbar-m178p5.root"),keys_);    
-  process(false, url_, iFolder_ + TString("ttbar-m184p5_424.root"),   oFolder_+TString("out-ttbar-m184p5.root"),keys_);  
-
-*/
-
-  // this is negleted for now 
-/*
-  process(false, url_, iFolder_ + TString("ttbar-m161p5_424.root"),   oFolder_+TString("out-ttbar-m161p5_etau.root"),keys_,ETAU_);    
-  process(false, url_, iFolder_ + TString("ttbar-m166p5_424.root"),   oFolder_+TString("out-ttbar-m166p5_etau.root"),keys_,ETAU_);    
-  process(false, url_, iFolder_ + TString("ttbar-m169p5_424.root"),   oFolder_+TString("out-ttbar-m169p5_etau.root"),keys_,ETAU_);    
-  process(false, url_, iFolder_ + TString("ttbar-m175p5_424.root"),   oFolder_+TString("out-ttbar-m175p5_etau.root"),keys_,ETAU_);    
-  process(false, url_, iFolder_ + TString("ttbar-m178p5_424.root"),   oFolder_+TString("out-ttbar-m178p5_etau.root"),keys_,ETAU_);    
-  process(false, url_, iFolder_ + TString("ttbar-m184p5_424.root"),   oFolder_+TString("out-ttbar-m184p5_etau.root"),keys_,ETAU_);  
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
   
-  process(false, url_, iFolder_ + TString("ttbar-m161p5_424.root"),   oFolder_+TString("out-ttbar-m161p5_mutau.root"),keys_,MUTAU_);    
-  process(false, url_, iFolder_ + TString("ttbar-m166p5_424.root"),   oFolder_+TString("out-ttbar-m166p5_mutau.root"),keys_,MUTAU_);    
-  process(false, url_, iFolder_ + TString("ttbar-m169p5_424.root"),   oFolder_+TString("out-ttbar-m169p5_mutau.root"),keys_,MUTAU_);    
-  process(false, url_, iFolder_ + TString("ttbar-m175p5_424.root"),   oFolder_+TString("out-ttbar-m175p5_mutau.root"),keys_,MUTAU_);    
-  process(false, url_, iFolder_ + TString("ttbar-m178p5_424.root"),   oFolder_+TString("out-ttbar-m178p5_mutau.root"),keys_,MUTAU_);    
-  process(false, url_, iFolder_ + TString("ttbar-m184p5_424.root"),   oFolder_+TString("out-ttbar-m184p5_mutau.root"),keys_,MUTAU_);    
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+  //  process(false, url_, iFolder_ + TString("ttbar_scaleup.root"),   oFolder_+TString("out-ttbar_scaleup.root"),keys_);
+  //  process(false, url_, iFolder_ + TString("ttbar_scaleup.root"), oFolder_+TString("out-ttbar-scaleup_mutau.root"),keys_, MUTAU_ ); 
+  process(false, url_, iFolder_ + TString("ttbar_scaleup_"+idx+".root"),
+	  oFolder_+TString("out-ttbar-scaleup_"+idx+".root"),keys_); 
+}
 
-  process(false, url_, iFolder_ + TString("ttbar-m161p5_424.root"),   oFolder_+TString("out-ttbar-m161p5_other.root"),keys_,TTBAR_OTHER_);    
-  process(false, url_, iFolder_ + TString("ttbar-m166p5_424.root"),   oFolder_+TString("out-ttbar-m166p5_other.root"),keys_,TTBAR_OTHER_);    
-  process(false, url_, iFolder_ + TString("ttbar-m169p5_424.root"),   oFolder_+TString("out-ttbar-m169p5_other.root"),keys_,TTBAR_OTHER_);    
-  process(false, url_, iFolder_ + TString("ttbar-m175p5_424.root"),   oFolder_+TString("out-ttbar-m175p5_other.root"),keys_,TTBAR_OTHER_);    
-  process(false, url_, iFolder_ + TString("ttbar-m178p5_424.root"),   oFolder_+TString("out-ttbar-m178p5_other.root"),keys_,TTBAR_OTHER_);    
-  process(false, url_, iFolder_ + TString("ttbar-m184p5_424.root"),   oFolder_+TString("out-ttbar-m184p5_other.root"),keys_,TTBAR_OTHER_);    
 
-*/
+void SampleProcessor::process_ttbar_scaledown(int i){
+
+  url_= TTBAR_URL;
+
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+  //  process(false, url_, iFolder_ + TString("ttbar_scaledown.root"), oFolder_+TString("out-ttbar_scaledown.root"),keys_);
+  //  process(false, url_, iFolder_ + TString("ttbar_scaledown.root"), oFolder_+TString("out-ttbar-scaledown_mutau.root"),keys_, MUTAU_ ); 
+  process(false, url_, iFolder_ + TString("ttbar_scaledown_"+idx+".root"),
+	  oFolder_+TString("out-ttbar-scaledown_"+idx+".root"),keys_); 
+}
+
+
+void SampleProcessor::process_ttbar_matchup(int i){
+
+  url_= TTBAR_URL;
+
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+  //  process(false, url_, iFolder_ + TString("ttbar_matchup.root"),   oFolder_+TString("out-ttbar_matchup.root"),keys_);
+  //  process(false, url_, iFolder_ + TString("ttbar_matchup.root"), oFolder_+TString("out-ttbar-matchup_mutau.root"),keys_, MUTAU_ ); 
+  process(false, url_, iFolder_ + TString("ttbar_matchup_"+idx+".root"),
+	  oFolder_+TString("out-ttbar-matchup_"+idx+".root"),keys_); 
+
+}
+
+
+void SampleProcessor::process_ttbar_matchdown(int i){
+
+  url_= TTBAR_URL;
+
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+  //  process(false, url_, iFolder_ + TString("ttbar_matchdown.root"), oFolder_+TString("out-ttbar_matchdown.root"),keys_);
+  //  process(false, url_, iFolder_ + TString("ttbar_matchdown.root"), oFolder_+TString("out-ttbar-matchdown_mutau.root"),keys_, MUTAU_ ); 
+  process(false, url_, iFolder_ + TString("ttbar_matchdown_"+idx+".root"),
+	  oFolder_+TString("out-ttbar-matchdown_"+idx+".root"),keys_); 
+
+}
+
+
+void SampleProcessor::process_ttbar_etau(int i){
+  
+  url_= TTBAR_URL;
+  
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+  
+  process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/samples/CMSSW_5_3_9_def/ttbar_"+idx+".root"), oFolder_+TString("out-ttbar-etau_"+idx+".root"),keys_, ETAU_ ); 
+
 }
 
 
@@ -1036,6 +1131,39 @@ void SampleProcessor::process_qcd(int sample, int i){
     // mu + jets specific samples
     url_= QCD_MU_URL; process(false, url_, iFolder_ + TString("qcdmu15_20toinf_"+idx+".root"), oFolder_ + TString("out-qcdmu15_20toinf_"+idx+".root"),keys_);   
     break;
+  case 10:
+    url_= QCD_EM20TO30_URL;     process(false,url_, iFolder_ + TString("qcd_EM_Pt20to30_"+idx+".root"),     oFolder_ + TString("out-qcd_EM_Pt20to30_"+idx+".root"),keys_); 
+    break;
+  case 11:
+    url_= QCD_EM170TO250_URL;     process(false,url_, iFolder_ + TString("qcd_EM_Pt170to250_"+idx+".root"),     oFolder_ + TString("out-qcd_EM_Pt170to250_"+idx+".root"),keys_); 
+    break;
+  case 12:
+    url_= QCD_EM250TO350_URL;     process(false,url_, iFolder_ + TString("qcd_EM_Pt250to350_"+idx+".root"),     oFolder_ + TString("out-qcd_EM_Pt250to350_"+idx+".root"),keys_);
+    break;
+  case 13:
+    url_= QCD_EM350TOINF_URL;     process(false,url_, iFolder_ + TString("qcd_EM_Pt350toinf_"+idx+".root"),     oFolder_ + TString("out-qcd_EM_Pt350toinf_"+idx+".root"),keys_); 
+    break;
+  case 14:
+    url_= QCD_BCTOE20TO30_URL;  process(false,url_, iFolder_ + TString("qcd_20to30_BCtoE.root"),    oFolder_ + TString("out-qcd_20to30_BCtoE.root"),keys_);  
+    break;
+  case 15:
+    url_= QCD_BCTOE170TO250_URL;  process(false,url_, iFolder_ + TString("qcd_170to250_BCtoE_"+idx+".root"),    oFolder_ + TString("out-qcd_170to250_BCtoE_"+idx+".root"),keys_);  
+    break;
+  case 16:
+    url_= QCD_BCTOE250TO350_URL;  process(false,url_, iFolder_ + TString("qcd_250to350_BCtoE_"+idx+".root"),    oFolder_ + TString("out-qcd_250to350_BCtoE_"+idx+".root"),keys_);  
+    break;
+  case 17:
+    url_= QCD_BCTOE350TOINF_URL;  process(false,url_, iFolder_ + TString("qcd_350toinf_BCtoE_"+idx+".root"),    oFolder_ + TString("out-qcd_350toinf_BCtoE_"+idx+".root"),keys_);  
+    break;
+  case 18:
+    url_= QCD_PHOTON15TO30_URL;   process(false,url_, iFolder_ + TString("PhotonJets_15to30_"+idx+".root"),   oFolder_ + TString("out-PhotonJets_15to30_"+idx+".root"),keys_);  
+    break;
+  case 19:
+    url_= QCD_PHOTON170TO300_URL;   process(false,url_, iFolder_ + TString("PhotonJets_170to300_"+idx+".root"),   oFolder_ + TString("out-PhotonJets_170to300_"+idx+".root"),keys_);  
+    break;
+  case 20:
+    url_= QCD_PHOTON300TO470_URL;   process(false,url_, iFolder_ + TString("PhotonJets_300to470_"+idx+".root"),   oFolder_ + TString("out-PhotonJets_300to470_"+idx+".root"),keys_);  
+    break;
   default:
     cout << "No Sample" << endl;
     break;
@@ -1243,6 +1371,33 @@ void SampleProcessor::process_data_RunD2(int i){
 
 }
 
+
+void SampleProcessor::process_hhhtautaubb_higgs(int sample, int i){
+ 
+  if(i>30){
+    cout << "ERROR CODE - must be in the range [0,29]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+  
+  switch(sample){
+  case 260:
+    url_ = HHHTAUTAUBB260_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("hhhtautaubb-pythia-m260_"+idx+".root"), oFolder_+TString("out-hhhtautaubb-pythia-m260_"+idx+".root"),keys_); 
+    break;
+  case 300:
+    url_ = HHHTAUTAUBB300_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("hhhtautaubb-pythia-m300_"+idx+".root"), oFolder_+TString("out-hhhtautaubb-pythia-m300_"+idx+".root"),keys_); 
+    break;
+  case 350:
+    url_ = HHHTAUTAUBB350_URL; process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/ttbarDileptonAnalysis/topMassAnalysis/tDilbh/") + TString("hhhtautaubb-pythia-m350_"+idx+".root"), oFolder_+TString("out-hhhtautaubb-pythia-m350_"+idx+".root"),keys_); 
+    break;
+  default:
+    cout << "ERROR CODE - must be among [260,300,350]" << endl;
+    break;
+  }
+}
 
 
 

@@ -252,7 +252,8 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	int nTriggEvent = 0;
 	int nProcEvents = 0;
 	int nToProcess = nEntries;
-	if(nToProcess > 10000000) nToProcess = 10000000;
+	//	if(nToProcess > 10000000) nToProcess = 10000000;
+	if(nToProcess > 50000) nToProcess = 50000;
 	for(int i=0; i<nToProcess; ++i)
 	  {
 	    nProcEvents++;
@@ -296,16 +297,14 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	    if(vertices.size()==0){ cout<<endl<<" Vertex was zero ???????"<<endl; continue; }
 	    PhysicsObject & primaryVertex = vertices[0];
 	    
+	    PhysicsObjectCollection mets = evReader->GetPhysicsObjectsFrom(ev,event::MET,metAlgo);
+	    if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
+	    PhysicsObject met = mets[0];
 	    JetCorrectionUncertainty * junc(0);
 	    vector<double> jerFactors; jerFactors.clear();
-	    vector<PhysicsObject> newJets; newJets.clear();
-	    for(unsigned int i=0;i<jets.size();++i){ 
-	      double corr_jer(1.);
-	      /*if(!isData_)*/ newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-	      jerFactors.push_back(1.);
-	    } 
-	    /*if(!isData_)*/ jets=newJets;
-	    
+	    doPropagations( jerFactors, 0, 0, junc, jets, met, isDATA);
+	    mets[0]=met;
+
 	    // preselect objects /////////////////////////////////
 	    DisableLtkCutOnJets(); Pt_Jet(MIN_JET_PT_CUT_); // select hard jets
 	    //pt_Tau(MIN_TAU_PT_CUT_);  //select tau pT
@@ -502,14 +501,9 @@ void TauFakesHelper::ComputeFakeRate(TString myKey, bool passing, bool isAntiBTa
 	  
 	  JetCorrectionUncertainty * junc(0);
 	  vector<double> jerFactors; jerFactors.clear();
-	  vector<PhysicsObject> newJets; newJets.clear();
-	  for(unsigned int i=0;i<jets.size();++i){ 
-	    double corr_jer(1.);
-	    if(qualifier_==WMUMC)
-	      newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-	    jerFactors.push_back(1.);
-	  } 
-	  if(qualifier_==WMUMC) jets=newJets;
+	  doPropagations( jerFactors, 0, 0, junc, jets, met, isDATA);
+	  mets[0]=met;
+
 	  // preselect objects /////////////////////////////////
 	  DisableLtkCutOnJets(); Pt_Jet(MIN_JET_PT_CUT_); // select hard jets
 	  //pt_Tau(MIN_TAU_PT_CUT_);  //select tau pT
@@ -668,11 +662,13 @@ void TauFakesHelper::Trainer(unsigned int qualifier)
   if(fFailing_->IsZombie()) { fFailing_->Close(); return; }
   tFailing_ = (TTree *) fFailing_->Get("tree");
   
+  
   std::cout << "Training with " << tPassing_->GetEntries()
 	    << " signal events." <<  std::endl;
   std::cout << "Training with " << tFailing_->GetEntries()
 	    << " background events." << std::endl;
   
+
   ///  // Note: one tree argument -> tree has to contain a branch __TARGET__
   ///  //       two tree arguments -> signal and background tree
   
@@ -1346,9 +1342,10 @@ void TauFakesHelper::ComputeTauFake(string type, vector<double>& finalValues, do
   listOfurls_.push_back(mcFolder+TString("out-wjets.root"));  
   listOfurls_.push_back(mcFolder+TString("out-zjets.root"));
   listOfurls_.push_back(mcFolder+TString("out-singletop.root"));
-  listOfurls_.push_back(mcFolder+TString("out-ww.root"));
-  listOfurls_.push_back(mcFolder+TString("out-wz.root"));
-  listOfurls_.push_back(mcFolder+TString("out-zz.root"));
+//  listOfurls_.push_back(mcFolder+TString("out-ww.root"));
+//  listOfurls_.push_back(mcFolder+TString("out-wz.root"));
+//  listOfurls_.push_back(mcFolder+TString("out-zz.root"));
+  listOfurls_.push_back(mcFolder+TString("out-dibosons.root"));
   listOfurls_.push_back(mcFolder+TString("out-qcd.root"));
 
 ///  listOfurls_.push_back(dataFolder+TString("out-data.root"));
@@ -1571,7 +1568,7 @@ void TauFakesHelper::TauFakeEstimate(TString filename_, TString jetObject_, Phys
 }
 
 
-void TauFakesHelper::ProduceDataDrivenDistributions(){
+void TauFakesHelper::ProduceDataDrivenDistributions(bool rescaleData, bool rescaleMC){
   
   // Example of Root macro to copy a subset of a Tree to a new Tree
   // Only selected entries are copied to the new Tree.
@@ -1603,9 +1600,35 @@ void TauFakesHelper::ProduceDataDrivenDistributions(){
   vector<TString> listOfurls_; listOfurls_.clear();
   vector<TString> rescaledListOfurls_; rescaledListOfurls_.clear();
   
-  listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-data-MU-20GeV/"+TString("out-data.root"));  
-  
-  rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-data-MU-20GeV/"+TString("out-data_rescaled.root"));  
+  // Base
+  if(rescaleData){
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-data-MU-20GeV/"+TString("out-data.root"));  
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-data-MU-20GeV/"+TString("out-data_rescaled.root"));  
+  }
+
+  if(rescaleMC){
+    // For ARC plots
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ttbar-mutau.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ttbar-mcbkg.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wjets.root"));  
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zjets.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-singletop.root"));
+//    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ww.root"));
+//    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wz.root"));
+//    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zz.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-dibosons.root"));
+    listOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-qcd.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ttbar-mutau_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ttbar-mcbkg_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wjets_rescaled.root"));  
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zjets_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-singletop_rescaled.root"));
+//    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-ww_rescaled.root"));
+//    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-wz_rescaled.root"));
+//    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-zz_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-dibosons_rescaled.root"));
+    rescaledListOfurls_.push_back(ntuplesArea_+"/nomt-2012-V1-mc-MU-20GeV/"+TString("out-qcd_rescaled.root"));
+  }
   
   //  TString jetObject_("m_tau_DataDriven");
   std::vector<TString>jetObject_;

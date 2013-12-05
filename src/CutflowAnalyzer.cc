@@ -36,6 +36,8 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
 
   // Default is ABCD in CommonDefinitions.cc
   if(runRange=="ABCD")     LUM_ = 19258.225; // 2012 ABCD 539 ReReco.
+  //  if(runRange=="ABCD")     LUM_ = 18282; // 2012 BCD 539 ReReco.
+
   // RunA: 876.225
   // RunB: 4311
   // RunC1: 3598
@@ -83,7 +85,11 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   is_os_=0.; // Stored in tree for fitters
 
   // Minimum distance b/ween objects ////////////////////////////////////////////////////////////////
-  DRMIN_JET_E_ = 0.3; DRMIN_JET_M_ = 0.3; DRMIN_T_E_   = 0.3; DRMIN_T_M_   = 0.3; DRMIN_T_J_   = 0.3;
+  DRMIN_JET_E_ = 0.4; 
+  DRMIN_JET_M_ = 0.4; 
+  DRMIN_T_E_   = 0.4; 
+  DRMIN_T_M_   = 0.4; 
+  DRMIN_T_J_   = 0.3;
   ///////////////////////////////////////////////////////////////////////////////////////////////////    
   
   MT_CUT_    = 40;  
@@ -386,7 +392,7 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
 
   if(vertices.size()==0){ cout<<endl<<" Vertex was zero ???????"<<endl; return; }
 
-  if(vertices.size()>30 || vertices.size()<5) return; // Vertex cut
+  //  if(vertices.size()>30 || vertices.size()<5) return; // Vertex cut
 
   PhysicsObject & primaryVertex = vertices[0];
 
@@ -957,9 +963,9 @@ void CutflowAnalyzer::tauDileptonSelection(
     else{
       std::vector<PhysicsObject> mcquarksColl = evRMC_->GetPhysicsObjectsFrom(evmontecarlo,event::QUARK);
       for( size_t iquark=0; iquark<mcquarksColl.size(); iquark++){
-	if( i_ == 45) cout << "pdg id: " << mcquarksColl[iquark][1] << endl;
-	if(mcquarksColl[iquark][1] == 6) tPt = mcquarksColl[iquark].Pt();
-	if(mcquarksColl[iquark][1] == -6) tbarPt = mcquarksColl[iquark].Pt();
+	if( i_ == 45) cout << "pdg id: " << mcquarksColl[iquark][2] << endl;
+	if(mcquarksColl[iquark][2] == 6) tPt = mcquarksColl[iquark].Pt();
+	if(mcquarksColl[iquark][2] == -6) tbarPt = mcquarksColl[iquark].Pt();
       }
       
     }
@@ -1139,10 +1145,10 @@ void CutflowAnalyzer::tauDileptonSelection(
       if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
 
       if(btagunc_   > 0){ newBTagSF     = newBTagSF+ err_newBTagSF; }
-      else              { newBTagSF     = newBTagSF- err_newBTagSF; }
+      else if (btagunc_   < 0){ newBTagSF     = newBTagSF- err_newBTagSF; }
 
       if(unbtagunc_ > 0){ newLightJetSF = newLightJetSF + err_LightJetSF_;}
-      else              { newLightJetSF = newLightJetSF - err_LightJetSF_;}
+      else if(unbtagunc_<0){ newLightJetSF = newLightJetSF - err_LightJetSF_;}
 
       //       double BTagEff     = newBTagSF*    BTAG_eff_R_;
       //       double LightJeteff = newLightJetSF*BTAG_eff_F_;
@@ -3659,10 +3665,10 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
       if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
 
       if(btagunc_   > 0){ newBTagSF     = BTagSF_+ err_newBTagSF; }
-      else              { newBTagSF     = BTagSF_- err_newBTagSF; }
+      else if(btagunc_ < 0){ newBTagSF     = BTagSF_- err_newBTagSF; }
 
       if(unbtagunc_ > 0){ newLightJetSF = LightJetSF_ + err_LightJetSF_;}
-      else              { newLightJetSF = LightJetSF_ - err_LightJetSF_;}
+      else if(unbtagunc_ < 0){ newLightJetSF = LightJetSF_ - err_LightJetSF_;}
 
 //      double BTagEff     = newBTagSF*BTAG_eff_R_;
 //      double LightJeteff = newLightJetSF*BTAG_eff_F_;
@@ -3774,7 +3780,38 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   ////////////////////////////////////////////////////////////////////////////////
 
 
-
+  // Acquire W pt
+  // W is lepton+met  
+  double thewpt(met.Pt() + lep_obj->Pt());
+  for(size_t itag=0; itag<evTags.size(); ++itag){
+    mon_.fillHisto("recow_pt", evTags[itag], thewpt, w_);
+  }
+  
+// manipulate for w //  if( url_ == TTBAR_URL){
+// manipulate for w //    double tPt(99999.), tbarPt(99999.);
+// manipulate for w //    event::MiniEvent_t *evmontecarlo = evRMC_->GetNewMiniEvent(i_,"mc");
+// manipulate for w //    if( evmontecarlo == 0 ){ cout<<"\n empty event"<<endl; }
+// manipulate for w //    else{
+// manipulate for w //      std::vector<PhysicsObject> mcquarksColl = evRMC_->GetPhysicsObjectsFrom(evmontecarlo,event::TOP);
+// manipulate for w //      for( size_t iquark=0; iquark<mcquarksColl.size(); iquark++){
+// manipulate for w //	if( i_ == 45) cout << "pdg id: " << mcquarksColl[iquark][1] << endl;
+// manipulate for w //	if(mcquarksColl[iquark][1] == 6) tPt = mcquarksColl[iquark].Pt();
+// manipulate for w //	if(mcquarksColl[iquark][1] == -6) tbarPt = mcquarksColl[iquark].Pt();
+// manipulate for w //      }
+// manipulate for w //      
+// manipulate for w //    }
+// manipulate for w //    
+// manipulate for w //    // down: no reweighting
+// manipulate for w //    // central: weight -> weight * reweight
+// manipulate for w //    // up: weight -> weight * reweight * reweight
+// manipulate for w //    if(topptunc_ >=0) 
+// manipulate for w //      w_  *= ttbarReweight(tPt,tbarPt);    
+// manipulate for w //    if( topptunc_>0)
+// manipulate for w //      w_  *= ttbarReweight(tPt,tbarPt);
+// manipulate for w //    
+// manipulate for w //    if(i_ == 45) cout << "topptunc: (" << tPt << ", " << tbarPt << ") ---> " <<  ttbarReweight(tPt,tbarPt) <<endl;
+// manipulate for w //  }
+// manipulate for w //  /////////////////////////////////////////////
 
 
 

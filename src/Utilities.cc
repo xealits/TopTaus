@@ -168,6 +168,23 @@ namespace utilities{
     }
   }
 
+  void StatUtils::getErrorBands(TGraphErrors& histo, TGraphErrors& myError){
+    
+    int numberOfBins = histo.GetN();
+    for(int n=1;n<=numberOfBins; n++){
+      double value  = histo.GetY()[n];
+      double errorN = histo.GetErrorY(n);
+      
+      double myGraphError = myError.GetErrorY(n);
+      
+      double errorContribution2 =  value *0.05 * value*0.05;
+      histo.SetPointError( n, sqrt( errorContribution2 + errorN*errorN ));
+      myError.SetPoint(n, histo.GetX()[n], histo.GetY()[n]  );
+      myError.SetPointError(n, histo.GetErrorX(n), histo.GetErrorY(n) ); //sqrt( myGraphError*myGraphError + temp->GetBinError(n) * temp->GetBinError(n) ));
+    }
+  }
+
+
   void StatUtils::getErrorBands(TH1& histo, TH1& varUp, TH1& varDown, TGraphAsymmErrors& myError){
     
     int numberOfBins = histo.GetNbinsX();
@@ -195,6 +212,45 @@ namespace utilities{
     }
   }
   
+  void StatUtils::scaleErrorBands(TGraphErrors& errors, TH1& num, TH1& den){
+    int numberOfBins = errors.GetN();
+    for(int n=1;n<=numberOfBins; n++){
+      double nVal = num.GetBinContent(n);
+      double nErr = num.GetBinError(n);
+      double dVal = den.GetBinContent(n);
+      double eErr = errors.GetErrorY(n);
+      double xVal = errors.GetX()[n];
+      double xErr = errors.GetErrorX(n);
+      
+      double newErr = sqrt( nErr*dVal*dVal*nErr + nVal*eErr*nVal*eErr )/(dVal*dVal);
+
+      errors.SetPoint(n, xVal, nVal/dVal);
+      errors.SetPointError(n, xErr, newErr);
+
+    }
+
+  }
+
+  void StatUtils::sumErrorBands(TGraphErrors& errors, TH1& ratio){
+    int numberOfBins = errors.GetN();
+    for(int n=1;n<=numberOfBins; n++){
+      
+      double xErr = errors.GetErrorX(n);
+      double yErr = errors.GetErrorY(n);
+      double rErr = ratio.GetBinError(n);
+
+      double newErr = sqrt( yErr*yErr + rErr*rErr);
+
+      errors.SetPointError(n, xErr, newErr);
+
+
+
+      
+    }
+
+  }
+
+
 //    }     
 //  }
 //  //normalize(errorH, i);
@@ -358,7 +414,7 @@ namespace utilities{
 
   tdrStyle->SetLabelColor(1, "XYZ");
   tdrStyle->SetLabelFont(42, "XYZ");
-  tdrStyle->SetLabelOffset(0.007, "XYZ");
+  tdrStyle->SetLabelOffset(0.01, "XYZ");
   tdrStyle->SetLabelSize(0.05, "XYZ");
 
 // For the axis:

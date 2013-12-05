@@ -21,7 +21,9 @@ namespace event
     miniEvents[tag]->metClassifColl = new TClonesArray("TVectorD", 10);
     miniEvents[tag]->photonsColl = new TClonesArray("TLorentzVector", 10);
     miniEvents[tag]->photonsClassifColl = new TClonesArray("TVectorD", 10);
-     
+    miniEvents[tag]->quarksColl = new TClonesArray("TLorentzVector", 10);
+    miniEvents[tag]->quarksClassifColl = new TClonesArray("TVectorD", 10);
+
     miniTrees[tag] =  tree;
     miniTrees[tag]->Branch("RunNb",                     &miniEvents[tag]->iRun, "iRun/I");
     miniTrees[tag]->Branch("EventNb",                   &miniEvents[tag]->iEvent, "iEvent/I");
@@ -37,6 +39,8 @@ namespace event
     miniTrees[tag]->Branch("JetsInfo", "TClonesArray",  &miniEvents[tag]->jetsClassifColl, 128000, 0);
     miniTrees[tag]->Branch("MET", "TClonesArray",       &miniEvents[tag]->metColl, 128000, 0);
     miniTrees[tag]->Branch("METInfo", "TClonesArray",   &miniEvents[tag]->metClassifColl, 128000, 0);
+    miniTrees[tag]->Branch("Quarks", "TClonesArray",    &miniEvents[tag]->quarksColl, 128000, 0);
+    miniTrees[tag]->Branch("QuarksInfo", "TClonesArray",&miniEvents[tag]->quarksClassifColl, 128000, 0);
   }
 
   //
@@ -54,6 +58,8 @@ namespace event
     miniEvents[tag]->jetsClassifColl->Delete();
     miniEvents[tag]->metColl->Delete();
     miniEvents[tag]->metClassifColl->Delete();
+    miniEvents[tag]->quarksColl->Delete();
+    miniEvents[tag]->quarksClassifColl->Delete();
   }
 
   //
@@ -100,6 +106,8 @@ namespace event
       { pColl = miniEvents[tag]->photonsColl; pInfoColl = miniEvents[tag]->photonsClassifColl; }
     if(pType==JET)      { pColl= miniEvents[tag]->jetsColl; pInfoColl = miniEvents[tag]->jetsClassifColl; }
     if(pType==MET)      { pColl= miniEvents[tag]->metColl; pInfoColl = miniEvents[tag]->metClassifColl; }
+    if(pType==TOP)      { pColl= miniEvents[tag]->quarksColl; pInfoColl = miniEvents[tag]->quarksClassifColl; }
+
     
     if(pColl==0 || pInfoColl==0) return;
 

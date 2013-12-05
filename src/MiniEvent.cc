@@ -55,7 +55,8 @@ namespace event
     ev->jetsClassifColl=0;    t->GetBranch("JetsInfo")->SetAddress(&ev->jetsClassifColl);
     ev->metColl=0;            t->GetBranch("MET")->SetAddress(&ev->metColl);
     ev->metClassifColl=0;     t->GetBranch("METInfo")->SetAddress(&ev->metClassifColl);
-
+//    ev->quarksColl=0;         t->GetBranch("Quarks")->SetAddress(&ev->quarksColl);
+//    ev->quarksClassifColl=0;  t->GetBranch("QuarksInfo")->SetAddress(&ev->quarksClassifColl);
     return nEntries;
   }
 
@@ -108,6 +109,9 @@ namespace event
     if(type==QUARK || type == JET) { coll = ev->jetsColl; info = ev->jetsClassifColl; }
     if(type==SUPERCLUSTER || type==PHOTON) { coll = ev->photonsColl; info = ev->photonsClassifColl; }
     if(type == MET) { coll = ev->metColl;  info = ev->metClassifColl; }
+    //if(type==TOP) { coll = ev->quarksColl; info = ev->quarksClassifColl; }
+    if(type==TOP) { coll = ev->jetsColl; info = ev->jetsClassifColl; }
+
     if(coll==0) return objColl;
     bool acquireJets(false);
     //build the collection of physics objects
@@ -128,6 +132,7 @@ namespace event
 	if( type==TRACK && fabs((*(TVectorD *)info->At(i))[0]) > 2 ) continue;
 	else if(type==JET && fabs((*(TVectorD *)info->At(i))[3]) != algo) continue;
 	else if(type==MET && fabs((*(TVectorD *)info->At(i))[0]) != algo) continue;
+
 
 
 //	if(type==JET) {

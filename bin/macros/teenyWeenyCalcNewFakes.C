@@ -2,20 +2,80 @@ void teenyWeenyCalcNewFakes(){
   
   // MC exp
   double 
-    mcExp(2567.7+210.0),//2690.7),
-    mcErr(sqrt(39.1*39.1+60.3*60.3));//77.3);
+// preapp //     mcExp(2567.7+210.0),//2690.7),
+// preapp //     mcErr(sqrt(39.1*39.1+60.3*60.3));//77.3);
+
+     mcExp(1448+137),//2690.7),
+     mcErr(sqrt(29*29+37*37));//77.3);
   
   
   double
     // Fractions
-    a1(0.62),
-    b1(0.38),
+     a1(0.62),
+     b1(0.38),
+ 
+     a2(0.88),
+     b2(0.12),
+     
+     ai(0.835),
+     bi(0.165),
 
-    a2(0.88),
-    b2(0.12),
-    
-    ai(0.835),
-    bi(0.165),
+
+//    a1(0.62),
+//    b1(0.38),
+//
+//    a2(0.27),
+//    b2(0.73),
+//    
+//    ai(0.78),
+//    bi(0.22),
+
+
+//    Fractions in ttll sample: quarks 0.886973, gluons 0.113027
+//    Fractions in wjet sample: quarks 0.324602, gluons 0.675398
+//    Combination: quarks 0.605788, gluons 0.394212
+//    Fractions in main anal. sample: quarks 0.781443, gluons 0.218557
+//-------------------------------
+//    Fractions for WMu1: quark 0.620944, gluon 0.379056
+//
+//    Info in <TCanvas::Print>: pdf file WMu1.pdf has been created
+//    Info in <TCanvas::Print>: file WMu1.png has been created
+//    Fractions for WMu2: quark 0.620944, gluon 0.379056
+//
+//    Info in <TCanvas::Print>: pdf file WMu2.pdf has been created
+//    Info in <TCanvas::Print>: file WMu2.png has been created
+//    Fractions for QCD1: quark 0.265476, gluon 0.734524
+//
+//    Info in <TCanvas::Print>: pdf file QCD1.pdf has been created
+//    Info in <TCanvas::Print>: file QCD1.png has been created
+//    Fractions for QCD2: quark 0.265476, gluon 0.734524
+//
+//    Info in <TCanvas::Print>: pdf file QCD2.pdf has been created
+//    Info in <TCanvas::Print>: file QCD2.png has been created
+
+
+//     Fractions in ttll sample: quarks 0.886973, gluons 0.113027
+//     Fractions in wjet sample: quarks 0.324602, gluons 0.675398
+//     Combination: quarks 0.605788, gluons 0.394212
+//     Fractions in main anal. sample: quarks 0.781443, gluons 0.218557
+// -------------------------------
+//     Fractions for WMu1: quark 0.620477, gluon 0.379523
+// 
+//     Info in <TCanvas::Print>: pdf file WMu1.pdf has been created
+//     Info in <TCanvas::Print>: file WMu1.png has been created
+//     Fractions for WMu2: quark 0.620477, gluon 0.379523
+// 
+//     Info in <TCanvas::Print>: pdf file WMu2.pdf has been created
+//     Info in <TCanvas::Print>: file WMu2.png has been created
+//     Fractions for QCD1: quark 0.256393, gluon 0.743607
+// 
+//     Info in <TCanvas::Print>: pdf file QCD1.pdf has been created
+//     Info in <TCanvas::Print>: file QCD1.png has been created
+//     Fractions for QCD2: quark 0.256393, gluon 0.743607
+// 
+//     Info in <TCanvas::Print>: pdf file QCD2.pdf has been created
+//     Info in <TCanvas::Print>: file QCD2.png has been created
+// 
 
     // Errors
     ea1(0.10*a1),
@@ -32,8 +92,28 @@ void teenyWeenyCalcNewFakes(){
   double
 // data    i1(3197.9), 
 // data    i2(2682.0); 
-    i1(2903.62),//3650.0), 
-    i2(2449.51);//2538.0); 
+
+// preapp //     i1(2903.62),//3650.0),  // W+jets
+// preapp //     i2(2449.51);//2538.0);  // QCD
+    
+    i1(2451), // W+jets
+    i2(1815); // QCD
+
+
+//
+//  \begin{tabular}{c|c|c|c}
+//  \multicolumn{4}{c}{ } \\
+//\hline
+//Sample &  MC expectation & Estimated from MC & Estimated from data  \\\hline
+//\hline
+//			  QCD multi-jet & \multirow{3}{*}{740.16$\pm$21.4709} & 1984.86 & 1815.02 \\\cline{1-1} \cline{3-4}
+//  W+jets &   & 2642.77 & 2451.14 \\\cline{1-1} \cline{3-4}
+//Average &  & 2313.81$\pm$14.2171\% & 2133.08$\pm$14.9108\%  \\\hline
+//\hline
+//  \end{tabular}
+//
+//
+//
 
   double
     oldEst( (i1+i2)/2. ),

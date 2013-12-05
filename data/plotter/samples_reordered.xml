@@ -1,10 +1,47 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <samples>
 
+   <process isstack="1" isdata="0" name="Diboson" color="592" width="1" fill="1001" fillcolor="592" markercolor="592" linecolor="592" line="1" marker="1" >
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-dibosons.root</file>
+   </process>
+
+<!-- Substituted by misid when plotting misid -->
+   <process isstack="1" isdata="0" name="W,multijets" color="809" width="1" fill="1001" fillcolor="809" markercolor="809" line="1" linecolor="809" marker="1" >
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-wmultijets.root</file>
+   </process>
+
+
+<!-- Substitutes lots of stuff when plotting misid
+   <process isstack="1" isdata="0" name="#tau_{h} misID" color="799" width="1" fill="1001" fillcolor="799" markercolor="799" line="1" linecolor="799" marker="1" >
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-misidbkg.root</file>
+   </process>
+-->
+   
+<!-- Substituted by misid when plotting misid 
+   <process isstack="1" isdata="0" name="QCD" color="798" width="1" fill="1001" fillcolor="798" markercolor="798"  line="1" linecolor="798" marker="1" >
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-qcd.root</file>
+   </process>-->
+
+
+<!-- Substituted by out-ttbar-mcbkg when plotting misid -->
+   <process isstack="1" isdata="0" name="other t#bar{t}" color="822" width="1" fill="1001" fillcolor="822" markercolor="822" line="1"  linecolor="822" marker="1" >
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-other.root</file>
+   </process>
+
+   <process isstack="1" isdata="0" name="Single t" color="824" width="1" fill="1001" fillcolor="824" markercolor="824" linecolor="824" line="1" marker="1" >
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-singletop.root</file>
+   </process>
+
+
+   <process isstack="1" isdata="0" name="DY+jets" color="831" width="1" fill="1001" fillcolor="831" markercolor="831" line="1" linecolor="831" marker="1" >
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-zjets.root</file>
+   </process>
+
+
 
 
    <process isstack="1" isdata="0" name="t#bar{t} #rightarrow #mu#tau_{h}" color="614" width="1" fill="1001" fillcolor="614" markercolor="614" line="1"  linecolor="614" marker="1" >
-     <file weight="0.949">nomt-2012-V1-mc-MU-20GeV/out-ttbar-mutau.root</file>
+     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-ttbar-mutau.root</file>
    </process>
 
 <!-- Not to be used
@@ -17,11 +54,6 @@
    </process>
 -->
 
-<!-- Substituted by out-ttbar-mcbkg when plotting misid -->
-   <process isstack="1" isdata="0" name="other t#bar{t}" color="822" width="1" fill="1001" fillcolor="822" markercolor="822" line="1"  linecolor="822" marker="1" >
-     <file weight="0.949">nomt-2012-V1-mc-MU-20GeV/out-ttbar-other.root</file>
-   </process>
-
 
 <!-- Used instead of out-ttbar-other when plotting misid
    <process isstack="1" isdata="0" name="other t#bar{t}" color="8" width="1" fill="1001" fillcolor="8" markercolor="8" line="1"  linecolor="8" marker="1" >
@@ -29,44 +61,8 @@
    </process>
 -->
 
-   <process isstack="1" isdata="0" name="Single t" color="824" width="1" fill="1001" fillcolor="824" markercolor="824" linecolor="824" line="1" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-singletop.root</file>
-   </process>
-
    
-   <process isstack="1" isdata="0" name="Diboson" color="592" width="1" fill="1001" fillcolor="592" markercolor="592" linecolor="592" line="1" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-dibosons.root</file>
-   </process>
 
-
-   <process isstack="1" isdata="0" name="DY+jets" color="831" width="1" fill="1001" fillcolor="831" markercolor="831" line="1" linecolor="831" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-zjets.root</file>
-   </process>
-
-
-
-
-<!-- Substituted by misid when plotting misid -->
-   <process isstack="1" isdata="0" name="W,multijets" color="809" width="1" fill="1001" fillcolor="809" markercolor="809" line="1" linecolor="809" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-wmultijets.root</file>
-   </process>
-
-<!-- Old wjets and qcd separated -- Substituted by misid when plotting misid
-   <process isstack="1" isdata="0" name="W+jets" color="809" width="1" fill="1001" fillcolor="809" markercolor="809" line="1" linecolor="809" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-wjets.root</file>
-   </process>
-   <process isstack="1" isdata="0" name="QCD" color="798" width="1" fill="1001" fillcolor="798" markercolor="798"  line="1" linecolor="798" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-qcd.root</file>
-   </process>
--->
-
-
-<!-- Substitutes lots of stuff when plotting misid
-   <process isstack="1" isdata="0" name="#tau_{h} misID" color="799" width="1" fill="1001" fillcolor="799" markercolor="799" line="1" linecolor="799" marker="1" >
-     <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-misidbkg.root</file>
-   </process>
--->
-   
 
 
    <process isstack="0" isdata="1" name="data" color="1" width="1" fill="0" fillcolor="0" markercolor="1" linecolor="1" line="1" marker="20" >
@@ -84,7 +80,7 @@
 
 
 
-<!-- chaged higgs analysis -->
+<!-- chaged higgs
    <process isstack="0" isdata="0"  opt="same histo" name="#splitline{100#times H^{+}#rightarrow#tau#nu}{[250 GeV]}" color="001" width="3" fill="0" fillcolor="001" markercolor="001" line="1"  linecolor="001" linestyle="7" marker="1" >
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-tbh-pythia-m250.root</file>
    </process>
@@ -92,14 +88,13 @@
    <process isstack="0" isdata="0"  opt="same histo" name="#splitline{100#times H^{+}#rightarrow tb}{[250 GeV]}" color="002" width="3" fill="0" fillcolor="002" markercolor="002" line="1"  linecolor="002" linestyle="7" marker="1" >
      <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-htb-pythia-m250.root</file>
    </process>
+--> 
 
 
-
-<!-- H->hh->tautaubb analysis
 <process isstack="0" isdata="0"  opt="same histo" name="#splitline{H^{+}#rightarrow#tau#tau bb}{[260 GeV]}" color="002" width="3" fill="0" fillcolor="002" markercolor="002" line="1"  linecolor="002" linestyle="7" marker="1" >
   <file weight="1">nomt-2012-V1-mc-MU-20GeV/out-hhhtautaubb-pythia-m260.root</file>
    </process>
--->
+
 
 
 <!--

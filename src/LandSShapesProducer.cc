@@ -16,13 +16,15 @@
 #include <TGraphAsymmErrors.h>
 #include <TText.h>
 #include <TPaveText.h>
-
+#include <TSystem.h>
 
 using namespace std;
 using namespace RooFit;
 
-LandSShapesProducer::LandSShapesProducer(string parSet, bool produceOnly):
+LandSShapesProducer::LandSShapesProducer(string parSet, string whatToDo, string outputPrefix, bool produceOnly):
   parSet_(parSet),
+  whatToDo_(whatToDo),
+  outputPrefix_(outputPrefix),
   produceOnly_(produceOnly)
 {
   
@@ -31,6 +33,49 @@ LandSShapesProducer::LandSShapesProducer(string parSet, bool produceOnly):
   
   Init();
 
+}
+
+LandSShapesProducer::~LandSShapesProducer(){
+
+//  delete streamToFile_;
+//  delete myStyle_;
+//  delete inputFile_;
+//  delete inputTree_;
+//  delete[] systTree_;
+//  delete[] fitVars_;  
+//  delete canvas_;
+//  delete myvar_         ;
+//  delete myvarMultiD_   ;
+//  delete myvar_weights_ ;
+//  delete isOSvar_       ;
+//  delete[] histo_     ;
+//  delete[] systHisto_     ;
+//  delete[] myDS_         ; 
+//  delete[] mySystDS_         ; 
+//  delete[] masterHist_;
+//  delete[] masterShapes_;
+//  delete[] signalShapesToCompare_;
+//  delete[] signalShapesToCompareHH_;
+//  delete[] signalShapesToCompareWH_;
+//  delete[] perMassPointSignalShapesToCompare_;
+//  delete[] perMassPointSignalShapesToCompareHH_;
+//  delete[] perMassPointSignalShapesToCompareWH_;
+//  delete ddbkgHistUp_;  
+//  delete ddbkgHistDown_;
+//  delete[] hist_;
+//  delete[] histStatNoNorm_;
+//  delete[] histStatUp_;
+//  delete[] histStatDown_;
+//  delete[] systHist_;
+//  delete[] th2_;
+//  delete[] th2StatUp_;
+//  delete[] th2StatDown_;
+//  delete[] th2Syst_;
+//  delete[] unrolled_;
+//  delete[] unrolledStatUp_;
+//  delete[] unrolledStatDown_;
+//  delete[] unrolledSyst_;
+//  delete leg_;
 }
 
 
@@ -78,9 +123,20 @@ void LandSShapesProducer::Init(){
   identifier_ = "";
 
   // Get ParameterSet from cfg file
-  const edm::ParameterSet &mFitPars = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSet");
+  edm::ParameterSet mFitPars;
 
-  outFolder_        = mFitPars.getParameter<std::string>("outFolder");
+  if     (whatToDo_=="tb")    mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetTb");
+  else if(whatToDo_=="taunu") mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetTaunu");
+  else if(whatToDo_=="mhmax") mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetMhmax");
+  else if(whatToDo_=="plot")  mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetPlot");
+  else { cout << "BREAK: I don't know what to do" << endl; return;}
+  
+  
+  outFolder_        = outputPrefix_ + mFitPars.getParameter<std::string>("outFolder");
+  string cmd = "mkdir -p "; cmd+=outFolder_;
+  gSystem->Exec(cmd.c_str());
+
+
   outputFileName_  = mFitPars.getParameter<std::string>("outputFileName");
   datacardsBaseName_ = mFitPars.getParameter<std::string>("datacardsBaseName");
 
@@ -166,6 +222,9 @@ void LandSShapesProducer::Init(){
 
   canvas_ = new TCanvas("canvas","My plots ",0,0,1000,1000);
   canvas_->cd();
+
+
+
   // set logy
   
   resultsFile_.open ((outFolder_+resultsFileName_).c_str());
@@ -545,9 +604,13 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       hist_[f]->SetFillColor(sampleColour_[f]);
     hist_[f]->SetLineWidth(3);
     hist_[f]->SetFillStyle(sampleFillStyle_[f]); //1001 for background and data, 0 for signal // 3017);
-    
+ 
+
+    if(sampleName_[f] == "tt_ltau" || sampleName_[f] == "tt_ll")
+      hist_[f]->Scale(2776./hist_[f]->Integral());
+   
     if(isDDbkg_[f]){
-      hist_[f]->Scale(1767.14/hist_[f]->Integral());
+      hist_[f]->Scale(1386./hist_[f]->Integral());
       ddbkgHistUp_ =   (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Up") );
       ddbkgHistDown_ = (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Down") );
       
@@ -569,8 +632,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   hist_[nSamples_]  ->Sumw2();
   hist_[nSamples_+1]->Sumw2();
   
-  hist_[nSamples_]->Scale(272.804/hist_[nSamples_]->Integral());      // Normalize to sample  Ztautau  
-  hist_[nSamples_+1]->Scale(11.407/hist_[nSamples_+1]->Integral()); // Normalize to sample    Zee,mumu
+  hist_[nSamples_]->Scale(159./hist_[nSamples_]->Integral());      // Normalize to sample  Ztautau  
+  hist_[nSamples_+1]->Scale(12/hist_[nSamples_+1]->Integral()); // Normalize to sample    Zee,mumu
 
   ddbkgHistUp_ =   (TH1*) hist_[3]->Clone(hist_[3]->GetName() + TString("Up") );
   ddbkgHistDown_ = (TH1*) hist_[3]->Clone(hist_[3]->GetName() + TString("Down") );
@@ -611,6 +674,10 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       systHist_[a][f]->Sumw2();
       systHist_[a][f]->SetFillColor(sampleColour_[f]);
       systHist_[a][f]->SetFillStyle(sampleFillStyle_[f]);
+      if(sampleName_[f] == "tt_ltau" || sampleName_[f] == "tt_ll")
+	if( systComponents_[a] == "_topptuncplus" || systComponents_[a] == "_topptuncminus") 
+	  systHist_[a][f]->Scale(hist_[f]->Integral()/systHist_[a][f]->Integral());
+      
       if(isDDbkg_[f]){    
 	if(a == 0 || a == 2 || a == 4)
 	  systHist_[a][f]->Scale((222+11.4/5)/systHist_[a][f]->Integral());
@@ -625,8 +692,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     systHist_[a][nSamples_]  ->Sumw2();
     systHist_[a][nSamples_+1]->Sumw2();
     
-    systHist_[a][nSamples_]  ->Scale( (272.804/systHist_[a][nSamples_]->Integral()  )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )    );
-    systHist_[a][nSamples_+1]->Scale( (11.407/systHist_[a][nSamples_+1]->Integral() )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )  );
+    systHist_[a][nSamples_]  ->Scale( (159./systHist_[a][nSamples_]->Integral()  )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )    );
+    systHist_[a][nSamples_+1]->Scale( (12/systHist_[a][nSamples_+1]->Integral() )*( systHist_[a][nSamples_-1]->Integral() / hist_[nSamples_-1]->Integral()  )  );
     
     for(size_t f=0; f<nSamples_+2; f++){
       if(f>nSamples_-1){ // Repeat colours for newly cloned histos
@@ -658,12 +725,13 @@ void LandSShapesProducer::DrawTemplates(size_t i){
 
     // Current numbering is:
     // 0: data
-    // 1: TBH
-    // 2: DD
-    // 3: other MCs
+    // 1: HTB
+    // 2: TBH
+    // 3: DD
+    // 4: other MCs
     
     TGraphAsymmErrors ddbkgBands;
-    getErrorBands(*(hist_[3-1]), *ddbkgHistUp_, *ddbkgHistDown_, ddbkgBands);
+    getErrorBands(*(hist_[3]), *ddbkgHistUp_, *ddbkgHistDown_, ddbkgBands);
 
     ddbkgBands.SetFillColor(1);
     ddbkgBands.SetFillStyle(3004);
@@ -1077,9 +1145,23 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     //    TPad* p = (TPad*) canvas_->cd();
     
     //gPad->SetPad(0,0,1,1);
-    gPad->SetPad(0,0,1,1); 
+
+
+    // Without ratio:
+    //    gPad->SetPad(0,0,1,1); 
+    //    gPad->cd();
+    //    gPad->Draw();
+    //    canvas_->cd(); 
+
+    // With ratio
+    canvas_->Divide(1,2);
+    canvas_->cd(1);
+    gPad->SetBottomMargin(0);
+    gPad->SetPad(0,0.3,1,1); 
     gPad->cd();
     gPad->Draw();
+
+
     // on top: leg_ = new TLegend(0.23,0.535,0.62,0.93,NULL,"brNDC");
     leg_ = new TLegend(0.845,0.2,0.99,0.99,NULL,"NDC"); // On the side <3
     //  leg_ = new TLegend(0.7147651,0.6346154,0.9446309,0.9353147,NULL,"brNDC");
@@ -1094,24 +1176,24 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     leg_->SetFillStyle(0);
     leg_->AddEntry(hist_[0],(fancySampleName_[0]).c_str(),"lep");
     leg_->AddEntry(hist_[1],fancySampleName_[1].c_str(),"l");
-    //  leg_->AddEntry(signalHistHH_,signalSampleNameHH_.c_str(),"f");
-
-
+    leg_->AddEntry(hist_[2],fancySampleName_[2].c_str(),"l");
     // Because colour printer is a nobrainer
-    leg_->AddEntry(hist_[3-1],fancySampleName_[3-1].c_str(),"f");
-    leg_->AddEntry(hist_[8-1],fancySampleName_[8-1].c_str(),"f");
-    leg_->AddEntry(hist_[7-1],fancySampleName_[7-1].c_str(),"f");
-    leg_->AddEntry(hist_[6-1],fancySampleName_[6-1].c_str(),"f");
-    leg_->AddEntry(hist_[5-1],fancySampleName_[5-1].c_str(),"f");
-    leg_->AddEntry(hist_[4-1],fancySampleName_[4-1].c_str(),"f");
+    leg_->AddEntry(hist_[3],fancySampleName_[3].c_str(),"f");
+    leg_->AddEntry(hist_[8],fancySampleName_[8].c_str(),"f");
+    leg_->AddEntry(hist_[7],fancySampleName_[7].c_str(),"f");
+    leg_->AddEntry(hist_[6],fancySampleName_[6].c_str(),"f");
+    leg_->AddEntry(hist_[5],fancySampleName_[5].c_str(),"f");
+    leg_->AddEntry(hist_[4],fancySampleName_[4].c_str(),"f");
 
-    canvas_->cd(); 
+    
+    
     // Order chosen to have good Y axis boundaries
    
     perMassPointSignalShapesToCompareHH_.push_back((TH1*)hist_[2]->Clone(hist_[2]->GetName() +TString("comparison") + massPointName_[currentMassPoint_].c_str()) );
     perMassPointSignalShapesToCompareWH_.push_back((TH1*)hist_[1]->Clone(hist_[1]->GetName() +TString("comparison") + massPointName_[currentMassPoint_].c_str()) );
     
     TH1* higgsH_ = 0;
+    TH1* higgsH2_ = 0;
     // must update when updating light chhiggs analysis //    double cHiggsBR_ = 0.05; // Perhaps move to cfg file.
     // must update when updating light chhiggs analysis //    double fhh(cHiggsBR_*cHiggsBR_) , fhw( 2*(1-cHiggsBR_)*cHiggsBR_), ftt(1-fhh-fhw);
     //  signalHistWH_->Scale(fhw/signalHistWH_->Integral());
@@ -1119,6 +1201,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
     //  signalHistWH_->Add(signalHistHH_, fhh);
     higgsH_ = hist_[1];
+    higgsH2_= hist_[2];
     // FIXME: fix for heavy/light in a non-hardcoded way
     //    higgsH_->Scale(fhw/higgsH_->Integral());
     //    higgsH_->Add(hist_[2],fhh);
@@ -1141,9 +1224,9 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
 
     THStack hs("hs","stacked");
-    
-    hist_[2-1]->DrawNormalized("histsame");
-    for(size_t f=3-1; f<nSamples_+2-1; f++){
+    hist_[1]->DrawNormalized("histsame");
+    hist_[2]->DrawNormalized("histsame");
+    for(size_t f=3; f<nSamples_+2; f++){
       // for fig7 // for(size_t f=0; f<nMcSamples_; f++){
       hist_[f]->GetYaxis()->SetTitle("Events/bin");
       hist_[f]->GetYaxis()->SetTitleOffset(0.85);
@@ -1155,15 +1238,17 @@ void LandSShapesProducer::DrawTemplates(size_t i){
       if(isDDbkg_[f] == 0) hs.Add(hist_[f],"hist");
     }
     
-    for(size_t f=3-1; f<nSamples_+2-1; f++){
+    for(size_t f=3; f<nSamples_+2; f++){
       if(isDDbkg_[f]) hs.Add(hist_[f],"hist");
     }
     
     //    cout << "dd integral: " << hist_[3]->Integral() << endl;
-    // do not normalize btagmulti     normalize(hs, 1.);
-    //    hs.SetMaximum(0.4);
-    // do not normalize btagmulti    hs.SetMaximum(1.2);
-    hs.SetMaximum(20000);
+    // do not normalize btagmulti
+    normalize(hs, 1.);
+    hs.SetMaximum(0.4);
+    // do not normalize btagmulti
+    //hs.SetMaximum(1.2); 
+    //hs.SetMaximum(20000);
     hs.Draw("hist");
     hs.GetXaxis()->SetRange(displayMin_,displayMax_);    
     hs.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
@@ -1171,16 +1256,26 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     hs.GetXaxis()->SetTitle((fitVars_[i]->getFancyName()).c_str());
     //  hs.GetXaxis()->SetTitleOffset(1.5);
     
-    // do not normalize btagmulti     hist_[0]->Scale(1./hist_[0]->Integral());
+    // do not normalize btagmulti
+    hist_[0]->Scale(1./hist_[0]->Integral());
+    
     hist_[0]->GetXaxis()->SetRange(displayMin_,displayMax_);    
     hist_[0]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
   
     hist_[0]->Draw("same");
-    // do not normalize btagmulti    higgsH_->Scale(1./higgsH_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
+    // do not normalize btagmulti    
+    higgsH_->Scale(1./higgsH_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
+    higgsH2_->Scale(1./higgsH2_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
+    
     higgsH_->GetXaxis()->SetRange(displayMin_,displayMax_);    
     higgsH_->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     higgsH_->Draw("histsame");
-    
+
+    higgsH2_->GetXaxis()->SetRange(displayMin_,displayMax_);    
+    higgsH2_->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    higgsH2_->Draw("histsame");
+
+
     TGraphErrors myBkgError;
     getErrorBands(hs, myBkgError);
     myBkgError.SetFillColor(1);
@@ -1205,11 +1300,27 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     mySignalError.GetXaxis()->SetTitleOffset(0.85);
     mySignalError.GetXaxis()->SetTitleSize(5);
     mySignalError.GetXaxis()->SetRange(displayMin_,displayMax_);    
+
     mySignalError.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
-    mySignalError.Draw("2");
+    //    mySignalError.Draw("2");
+    
+    TGraphErrors mySignal2Error;
+    getErrorBands(*higgsH2_, mySignalError);
+    mySignalError.SetName("blahSignalError");
+    mySignalError.SetFillColor(618);
+    mySignalError.SetFillStyle(3005);
+    mySignalError.GetYaxis()->SetTitle("Events/bin");
+    mySignalError.GetYaxis()->SetTitleOffset(0.85);
+    mySignalError.GetXaxis()->SetTitle((fitVars_[i]->getFancyName()).c_str());
+    mySignalError.GetXaxis()->SetTitleOffset(0.85);
+    mySignalError.GetXaxis()->SetTitleSize(5);
+    mySignalError.GetXaxis()->SetRange(displayMin_,displayMax_);    
+    mySignalError.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    //  mySignalError.Draw("2");
     
     leg_->AddEntry(myBkgError.GetName(),"#splitline{bkg}{total unc.}","f");
-    leg_->AddEntry(mySignalError.GetName(),"#splitline{signal}{total unc.}","f");
+//    leg_->AddEntry(mySignalError.GetName(),"#splitline{tb signal}{total unc.}","f");
+//    leg_->AddEntry(mySignalError.GetName(),"#splitline{#tau#nu signal}{total unc.}","f");
     
     TPaveText *pt1 = new TPaveText(0.17,0.45,0.65,0.5, "brNDC");
     pt1->SetBorderSize(1);
@@ -1230,7 +1341,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     pt->SetLineColor(0);
     pt->SetTextFont(132);
     pt->SetTextSize(0.045);
-    TText *textPrel = pt->AddText("#sqrt{s} = 8 TeV,  19.3 fb^{-1} CMS Preliminary");
+    TText *textPrel = pt->AddText("CMS Preliminary, #sqrt{s} = 8 TeV,  19.3 fb^{-1}");
     textPrel->SetTextAlign(11);
     pt->Draw("same");
     
@@ -1249,13 +1360,54 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
     leg_->Draw("same");
 
-    gPad->SetLogy();
+    //    gPad->SetLogy();
 
 
     canvas_->Modified();
     canvas_->Update();
 
-    canvas_->cd();
+    //    canvas_->cd();
+    canvas_->cd(2);
+    gPad->SetFillColor(0);
+    gPad->SetPad(0,0,1,0.3);
+    gPad->SetGridx();
+    gPad->SetGridy();
+
+    // Build denominator
+    TH1* denominator;
+    for(size_t f=3; f<nSamples_+2; f++){
+      if(f==3) denominator = (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("_ratio"));
+      else
+	denominator->Add(hist_[f]);
+    }
+    // Build data clone
+    TH1* dataClone = (TH1*) hist_[0]->Clone("dataclone");
+    TH1* iRatio = dataClone;
+    TGraphErrors myRelError = myBkgError;
+    //    getErrorBands(myBkgError, myRelError);
+    scaleErrorBands(myRelError, *iRatio, *denominator);
+    iRatio->GetYaxis()->SetTitle("data/MC");
+    iRatio->Divide(denominator);
+    sumErrorBands(myRelError, *iRatio);
+    iRatio->SetMarkerSize(1);
+    iRatio->SetMarkerColor(1);
+    iRatio->SetLineColor(1);
+    iRatio->SetFillColor(0);
+    iRatio->SetMarkerStyle(20);
+    iRatio->GetYaxis()->SetRangeUser(0.1, 2.);
+    iRatio->Draw();
+    myRelError.SetName("bl");
+    myRelError.SetTitle("mmbm");
+    myRelError.SetFillColor(kGray+2);
+    myRelError.SetFillStyle(3001);
+    myRelError.Draw("2same");
+    
+    gPad->Modified();
+    gPad->Update();
+    
+    canvas_->Modified();
+    canvas_->Update();
+    
 
     canvas_->SaveAs((outFolder_+outputFileName+string(".pdf")).c_str());
     canvas_->SaveAs((outFolder_+outputFileName+string(".png")).c_str());
@@ -1278,8 +1430,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
   for(size_t f=0; f<nSamples_+2; f++){
     for(int ibin=1; ibin<=hist_[f]->GetNbinsX(); ibin++){ // <= is for overflow
       
-      hist_[nSamples_]->Scale(272.804/hist_[nSamples_]->Integral());      // Normalize to sample
-      hist_[nSamples_+1]->Scale(11.407/hist_[nSamples_+1]->Integral()); // Normalize to sample
+      hist_[nSamples_]->Scale(159./hist_[nSamples_]->Integral());      // Normalize to sample
+      hist_[nSamples_+1]->Scale(12/hist_[nSamples_+1]->Integral()); // Normalize to sample
       
       if(ibin==1 && hist_[f]->GetBinContent(ibin) != 0)
 	hist_[f]->SetBinError(ibin,  hist_[f]->GetBinContent(ibin) * hist_[f]->GetBinError(ibin+1)/hist_[f]->GetBinContent(ibin+1)  );
@@ -1523,8 +1675,8 @@ void LandSShapesProducer::UnrollMultiDimensionalShape(){
   }
 
     
-  unrolled_[nSamples_]->Scale(272.804/unrolled_[nSamples_]->Integral());      // Normalize to sample
-  unrolled_[nSamples_+1]->Scale(11.407/unrolled_[nSamples_+1]->Integral()); // Normalize to sample
+  unrolled_[nSamples_]->Scale(159./unrolled_[nSamples_]->Integral());      // Normalize to sample
+  unrolled_[nSamples_+1]->Scale(12/unrolled_[nSamples_+1]->Integral()); // Normalize to sample
 
   
   // Rescale stat plots - they must have the same integral as the base ones
@@ -1551,8 +1703,8 @@ void LandSShapesProducer::UnrollMultiDimensionalShape(){
 	}
       }
     }
-    unrolledSyst_[a][nSamples_]->Scale(272.804/unrolledSyst_[a][nSamples_]->Integral());      // Normalize to sample
-    unrolledSyst_[a][nSamples_+1]->Scale(11.407/unrolledSyst_[a][nSamples_+1]->Integral()); // Normalize to sample
+    unrolledSyst_[a][nSamples_]->Scale(159./unrolledSyst_[a][nSamples_]->Integral());      // Normalize to sample
+    unrolledSyst_[a][nSamples_+1]->Scale(12/unrolledSyst_[a][nSamples_+1]->Integral()); // Normalize to sample
 
   }
 
@@ -1655,159 +1807,480 @@ void LandSShapesProducer::ShapesToDatacard(){
     datacard_.open (   (outFolder_+datacardsBaseName_+string("_")+massPointName_[currentMassPoint_] +string("_mutau.txt") ).c_str()     ); 
     datacard_<< fixed << showpoint <<setprecision(3); // fixed point, show 3 decimals
     datacard_<<"Data: "<<t->tm_mday<<"/"<<t->tm_mon+1<<"/"<<t->tm_year+1900<<endl;
-    datacard_<<"Description: H+, e-tau, mass "<<massPointName_[currentMassPoint_]<<" GeV, lumi=" << commondefinitions::LUM_<<" pb-1"<<endl;
+    datacard_<<"Description: H+, mu-tau, mass "<<massPointName_[currentMassPoint_]<<" GeV, lumi=" << commondefinitions::LUM_<<" pb-1"<<endl;
     datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
     datacard_<<"imax   1  number of channels"<<endl;
     datacard_<<"jmax   *  number of backgrounds"<<endl;
     datacard_<<"kmax   *  number of nuisance parameters"<<endl;
     datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+    //      outfile<<"shapes * * shapes_m"<<HMass[im]<<"_rc_t.root $PROCESS $PROCESS_$SYSTEMATIC"<<endl;                                                                             
+    //    datacard_<<"shapes * * shapes_"<<massPointName_[currentMassPoint_]<<"_btagmultiplicity_j.root $PROCESS $PROCESS_$SYSTEMATIC"<<endl;
+    // WARNING: fitVars_[0] is a temporary workaround that works only because the code is still supposed to run on one variable only. Woe me.
+    datacard_<<"shapes * * " << outputFileName_ << "_" << massPointName_[currentMassPoint_] << "_" << fitVars_[0]->getVarName() << ".root $PROCESS $PROCESS_$SYSTEMATIC" << endl; 
+    datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
     datacard_<<"bin a"<<endl;
     datacard_<<"observation    "<<  hist_[0]->Integral() <<endl; // data yield
     testIntegral=hist_[0]->Integral(); cout << "Test Integral" << testIntegral << endl;
     datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-    datacard_<<"bin              a          a          a           a           a           a           a         a         "<<endl;
-    datacard_<<"process          "<<sampleName_[1]<<"   "<<sampleName_[3]<<"   "<<sampleName_[4]<<"   "<<sampleName_[2]<<"   "<<sampleName_[8]<<"   "<<sampleName_[7]<<"   "<<sampleName_[5]<<"   "<<sampleName_[6]<<endl; // Order matching values below
-    datacard_<<"process          0          1          2           3           4           5           6         7         "<<endl;
+    datacard_<<"bin              a          a          a           a           a           a           a         a      ";
+    if(sampleName_.size() >9) datacard_<<"   a  ";
+    datacard_<<endl;
+    datacard_<<"process          "<<sampleName_[1]<<"   "<< sampleName_[2] << "      " << sampleName_[3]<<"   "<<sampleName_[4]<<"   "<<sampleName_[5]<<"   "<<sampleName_[6]<<"   "<<sampleName_[7]<<"   "<<sampleName_[8]<<"   "<< (sampleName_.size() > 9 ? sampleName_[9] : " " ) <<endl;
+    datacard_<<"process          "<< (sampleName_.size() > 9 ? " -1   " : "" ) << "   0       1          2           3           4           5           6         7       "<<endl;
     datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
     datacard_<<"rate          "<<
       hist_[1]->Integral()<<setw(10)<<
+      hist_[2]->Integral()<<setw(10)<<
       hist_[3]->Integral()<<setw(10)<<
       hist_[4]->Integral()<<setw(10)<<
-      hist_[2]->Integral()<<setw(10)<<
-      hist_[8]->Integral()<<setw(10)<<
-      hist_[7]->Integral()<<setw(10)<<
       hist_[5]->Integral()<<setw(10)<<
-      hist_[6]->Integral()<<endl;
+      hist_[6]->Integral()<<setw(10)<<
+      hist_[7]->Integral()<<setw(10)<<
+      hist_[8]->Integral()<<setw(10);
+    if(sampleName_.size() > 9)  datacard_<<hist_[9]->Integral();
+    datacard_ <<endl;
     datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
     datacard_<<endl;
-    datacard_<<" tauId  lnN"<<setw(7)<<1.06<<setw(10)<<1.06<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<endl;
-    datacard_<<" jetTauMisId    lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
-    datacard_<<" fakesSyst      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.10<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl; // Take from shapes?
-    datacard_<<" fakesStat      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl; // FIXME?
-    datacard_<<" jes      lnN"<<setw(7)<< 
-      systHist_[1][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[0][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
-      systHist_[1][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[0][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
-      systHist_[1][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[0][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+    datacard_<<" tauId  lnN   "<<setw(7)<<
+      (sampleName_.size() > 9 ? "1.06      " : " " )<< 
+      1.06<<setw(10)<<
       1.00<<setw(10)<<
-      systHist_[1][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[0][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
-      systHist_[1][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[0][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
-      systHist_[1][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[0][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
-      systHist_[1][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[0][6]->Integral()  / hist_[6]->Integral()  <<endl;
-    datacard_<<" jer      lnN"<<setw(7)<< 
-      systHist_[5][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[4][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
-      systHist_[5][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[4][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
-      systHist_[5][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[4][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      1.06<<setw(10)<<
+      1.06<<setw(10)<<
+      1.06<<setw(10)<<
+      1.06<<setw(10)<<
+      1.06<<setw(10)<<
+      1.06<<endl;
+    datacard_<<" jetTauMisId    lnN  "<<setw(7)<<
+      (sampleName_.size() > 9 ? "1.00     " : " " )<<
       1.00<<setw(10)<<
-      systHist_[5][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[4][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
-      systHist_[5][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[4][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
-      systHist_[5][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[4][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
-      systHist_[5][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[4][6]->Integral()  / hist_[6]->Integral()  <<endl;
-    datacard_<<" met      lnN"<<setw(7)<< 
-      systHist_[3][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[2][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
-      systHist_[3][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[2][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
-      systHist_[3][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[2][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
       1.00<<setw(10)<<
-      systHist_[3][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[2][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
-      systHist_[3][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[2][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
-      systHist_[3][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[2][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
-      systHist_[3][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[2][6]->Integral()  / hist_[6]->Integral()  <<endl;
-    datacard_<<" leptEff        lnN"<<setw(7)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.00<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<endl;
-    datacard_<<" btagging      lnN"<<setw(7)<< 
-      systHist_[7][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[6][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
-      systHist_[7][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[6][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
-      systHist_[7][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[6][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
       1.00<<setw(10)<<
-      systHist_[7][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[6][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
-      systHist_[7][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[6][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
-      systHist_[7][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[6][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
-      systHist_[7][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[6][6]->Integral()  / hist_[6]->Integral()  <<endl;
-    datacard_<<" bmistagging      lnN"<<setw(7)<< 
-      systHist_[9][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[8][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
-      systHist_[9][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[8][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
-      systHist_[9][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[8][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      1.15<<setw(10)<<
       1.00<<setw(10)<<
-      systHist_[9][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[8][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
-      systHist_[9][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[8][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
-      systHist_[9][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[8][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
-      systHist_[9][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[8][6]->Integral()  / hist_[6]->Integral()  <<endl;
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.15<<endl;
+    datacard_<<" fakesSyst      lnN   "<<setw(7)<<
+      (sampleName_.size() > 9 ? "1.00      " : " " )<<
+      1.00<<setw(10)<<
+      1.15<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<endl; // Take from shapes?
+    datacard_<<" tes      shape   "<<setw(7)<< 
+      (sampleName_.size() > 9 ? "1       " : "" )<< 
+      "1"<<setw(10)<<//systHist_[1][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[0][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+      "-"<<setw(10)<<//1.00<<setw(10)<<
+      "1"<<setw(10)<<//systHist_[1][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[0][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[1][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[0][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[1][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[0][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[1][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[0][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[1][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[0][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+      "1"<<endl;//systHist_[1][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[0][6]->Integral()  / hist_[6]->Integral()  <<endl;
+    datacard_<<" topptunc      shape   "<<setw(7)<<  
+      (sampleName_.size() > 9 ? "-      " : "" )<< //systHist_[1][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[0][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+      "-"<<setw(10)<<//systHist_[1][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[0][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+      "-"<<setw(10)<<//systHist_[1][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[0][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[1][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[0][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[1][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[0][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      "-"<<setw(10)<<//1.00<<setw(10)<<
+      "-"<<setw(10)<<//systHist_[1][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[0][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+      "-"<<setw(10)<<//systHist_[1][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[0][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+      "-"<<endl;//systHist_[1][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[0][6]->Integral()  / hist_[6]->Integral()  <<endl;
+    datacard_<<" jes      shape   "<<setw(7)<< 
+      (sampleName_.size() > 9 ? "-       " : "" )<< 
+      "1"<<setw(10)<<//systHist_[1][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[0][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+      "-"<<setw(10)<<//1.00<<setw(10)<<
+      "1"<<setw(10)<<//systHist_[1][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[0][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[1][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[0][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[1][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[0][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[1][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[0][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[1][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[0][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+      "1"<<endl;//systHist_[1][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[0][6]->Integral()  / hist_[6]->Integral()  <<endl;
+    datacard_<<" jer      shape   "<<setw(7)<< 
+      (sampleName_.size() > 9 ? "-       " : "" )<< 
+      "1"<<setw(10)<<//systHist_[5][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[4][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+      "-"<<setw(10)<<//1.00<<setw(10)<<
+      "1"<<setw(10)<<//systHist_[5][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[4][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[5][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[4][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[5][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[4][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[5][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[4][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[5][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[4][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+      "1"<<endl;//systHist_[5][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[4][6]->Integral()  / hist_[6]->Integral()  <<endl;
+    datacard_<<" umet      shape   "<<setw(7)<< 
+      (sampleName_.size() > 9 ? "-      " : "" )<< 
+      "1"<<setw(10)<<//systHist_[3][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[2][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+      "-"<<setw(10)<<//1.00<<setw(10)<<
+      "1"<<setw(10)<<//systHist_[3][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[2][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[3][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[2][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[3][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[2][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[3][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[2][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[3][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[2][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+      "1"<<endl;//systHist_[3][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[2][6]->Integral()  / hist_[6]->Integral()  <<endl;
+    datacard_<<" leptEff        lnN   "<<setw(7)<<
+      (sampleName_.size() > 9 ? "1.02        " : "" )<<
+      1.02<<setw(10)<<
+      1.00<<setw(10)<<
+      1.02<<setw(10)<<
+      1.02<<setw(10)<<
+      1.02<<setw(10)<<
+      1.02<<setw(10)<<
+      1.02<<setw(10)<<
+      1.02<<endl;
+    datacard_<<" btag      shape   "<<setw(7)<< 
+      (sampleName_.size() > 9 ? "1      " : "" )<<
+      "1"<<setw(10)<<//systHist_[7][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[6][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+      "-"<<setw(10)<<//1.00<<setw(10)<<
+      "1"<<setw(10)<<//systHist_[7][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[6][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[7][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[6][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[7][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[6][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[7][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[6][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[7][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[6][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+      "1"<<endl;//systHist_[7][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[6][6]->Integral()  / hist_[6]->Integral()  <<endl;
+    datacard_<<" unbtag      shape   "<<setw(7)<< 
+      (sampleName_.size() > 9 ? "1         " : "" )<<
+      "1"<<setw(10)<<//systHist_[9][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[8][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+      "-"<<setw(10)<<//1.00<<setw(10)<<
+      "1"<<setw(10)<<//systHist_[9][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[8][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[9][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[8][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[9][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[8][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[9][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[8][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+      "1"<<setw(10)<<//systHist_[9][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[8][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+      "1"<<endl;//systHist_[9][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[8][6]->Integral()  / hist_[6]->Integral()  <<endl;
     // FIXME: NoNorm??
-    datacard_<<" tbhStatistics     lnN"<<setw(7)<<
-      histStatNoNorm_[1]->Integral()  / hist_[1]->Integral()<<setw(10)<<
+    datacard_<<" "<<sampleName_[1]<<"_Stat     shape   "<<setw(7)<<
+      "1"<<setw(10)<<//histStatNoNorm_[1]->Integral()  / hist_[1]->Integral()<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      (sampleName_.size() > 9 ? "-     " : "" )<<
+      "-"<<endl;
+    datacard_<<" "<<sampleName_[2]<<"_Stat     shape   "<<setw(7)<<
+      "-"<<setw(10)<<//histStatNoNorm_[1]->Integral()  / hist_[1]->Integral()<<setw(10)<<
+      "1"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      (sampleName_.size() > 9 ? "-     " : "" )<<
+      "-"<<endl;
+    datacard_<<sampleName_[3]<<"_Stat  shape   "<<setw(7)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<//histStatNoNorm_[3]->Integral()  / hist_[3]->Integral()<<setw(10)<<
+      "1"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      (sampleName_.size() > 9 ? "-     " : "" )<<"-"<<setw(10)<<
+      "-"<<endl;
+    datacard_<<sampleName_[4]<<"_Stat    shape   "<<setw(7)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<//histStatNoNorm_[4]->Integral()  / hist_[4]->Integral()<<setw(10)<<
+      "1"<<setw(10)<<//histStatNoNorm_[4]->Integral()  / hist_[4]->Integral()<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      (sampleName_.size() > 9 ? "-     " : "" )<<
+      "-"<<endl;
+    datacard_<<sampleName_[5]<<"_Stat     shape  "<<setw(7)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "1"<<setw(10)<<//histStatNoNorm_[8]->Integral()  / hist_[8]->Integral()<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      (sampleName_.size() > 9 ? "-     " : "" )<<
+      "-"<<endl;
+    datacard_<<sampleName_[6]<<"_Stat     shape"<<setw(7)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "1"<<setw(10)<<//histStatNoNorm_[7]->Integral()  / hist_[7]->Integral()<<setw(10)<<
+      "-"<<setw(10)<<
+      (sampleName_.size() > 9 ? "-     " : "" )<<
+      "-"<<endl;
+    datacard_<<sampleName_[7]<<"_Stat   shape   "<<setw(7)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "1"<<setw(10)<<
+      (sampleName_.size() > 9 ? "-     " : "" )<<
+      "-"<<endl;
+    datacard_<<sampleName_[8]<<"_Stat   shape   "<<setw(7)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "1"<<setw(10)<<
+      (sampleName_.size() > 9 ? "-     " : "" )<<
+      endl;
+    if(sampleName_.size() >9){
+      datacard_<<sampleName_[9]<<"_Stat     shape   "<<setw(7)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "-"<<setw(10)<<
+      "1"<<endl; //histStatNoNorm_[6]->Integral()  / hist_[6]->Integral()<<endl;
+    }
+
+    datacard_<<" singletopCrossSection lnN   "<<setw(7)<<
+      (sampleName_.size() > 9 ? "1.00     " : "" )<<\
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.08<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<endl;
+    datacard_<<" zllCrossSection       lnN   "<<setw(7)<<
+      (sampleName_.size() > 9 ? "1.00     " : "" )<<
       1.00<<setw(10)<<
       1.00<<setw(10)<<
       1.00<<setw(10)<<
       1.00<<setw(10)<<
       1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.04<<endl;
+    datacard_<<" dibosonCrossSection   lnN   "<<setw(7)<<
+      (sampleName_.size() > 9 ? "1.00     " : "" )<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.00<<setw(10)<<
+      1.04<<setw(10)<<
       1.00<<setw(10)<<
       1.00<<endl;
-    datacard_<<" ttltauStatistics  lnN"<<setw(7)<<
+    datacard_<<" lumi_8TeV                lnN   "<<setw(7)<<
+      (sampleName_.size() > 9 ? "1.026     " : "" )<<
+      1.026<<setw(10)<<
       1.00<<setw(10)<<
-      histStatNoNorm_[3]->Integral()  / hist_[3]->Integral()<<setw(10)<<
+      1.026<<setw(10)<<
+      1.026<<setw(10)<<
+      1.026<<setw(10)<<
+      1.026<<setw(10)<<
+      1.026<<setw(10)<<
+      1.026<<endl;
+    datacard_<<" pu               lnN   "<<setw(7)<<
+      (sampleName_.size() > 9 ? "1.040     " : "" )<<
+      1.04<<setw(10)<<
       1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<endl;
-    datacard_<<" ttllStatistics    lnN"<<setw(7)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      histStatNoNorm_[4]->Integral()  / hist_[4]->Integral()<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<endl;
-    datacard_<<" zeemumuStatistics     lnN"<<setw(7)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      histStatNoNorm_[8]->Integral()  / hist_[8]->Integral()<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<endl;
-    datacard_<<" ztautauStatistics     lnN"<<setw(7)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      histStatNoNorm_[7]->Integral()  / hist_[7]->Integral()<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<endl;
-    datacard_<<" singleTopStatistics   lnN"<<setw(7)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      histStatNoNorm_[5]->Integral()  / hist_[5]->Integral()<<setw(10)<<
-      1.00<<endl;
-    datacard_<<" dibosonStatistics     lnN"<<setw(7)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      1.00<<setw(10)<<
-      histStatNoNorm_[6]->Integral()  / hist_[6]->Integral()<<endl;
-    datacard_<<" wjetsCrossSection     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
-    datacard_<<" singletopCrossSection lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.08<<setw(10)<<1.00<<setw(10)<<endl;
-    datacard_<<" zllCrossSection       lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<setw(10)<<1.04<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
-    datacard_<<" dibosonCrossSection   lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<endl;
-    datacard_<<" lumiErr                lnN"<<setw(7)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.00<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<endl;
-    
-    datacard_<<" pileupErr               lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    pileup"<<endl;
-    
-    
+      1.02<<setw(10)<<
+      1.08<<setw(10)<<
+      1.02<<setw(10)<<
+      1.02<<setw(10)<<
+      1.04<<setw(10)<<
+      1.25<<endl;//"    pileup"<<endl;
     // Write and close datacard_
     datacard_.close();
     //    break;
     }
-    else
+ 
+
+//    if(ibin==0){
+//    datacard_.open (   (outFolder_+datacardsBaseName_+string("_")+massPointName_[currentMassPoint_] +string("_mutau.txt") ).c_str()     ); 
+//    datacard_<< fixed << showpoint <<setprecision(3); // fixed point, show 3 decimals
+//    datacard_<<"Data: "<<t->tm_mday<<"/"<<t->tm_mon+1<<"/"<<t->tm_year+1900<<endl;
+//    datacard_<<"Description: H+, mu-tau, mass "<<massPointName_[currentMassPoint_]<<" GeV, lumi=" << commondefinitions::LUM_<<" pb-1"<<endl;
+//    datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+//    datacard_<<"imax   1  number of channels"<<endl;
+//    datacard_<<"jmax   *  number of backgrounds"<<endl;
+//    datacard_<<"kmax   *  number of nuisance parameters"<<endl;
+//    datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+//    //      outfile<<"shapes * * shapes_m"<<HMass[im]<<"_rc_t.root $PROCESS $PROCESS_$SYSTEMATIC"<<endl;                                                                             
+//    datacard_<<"shapes * * shapes_"<<massPointName_[currentMassPoint_]<<"_btagmultiplicity_j.root $PROCESS $PROCESS_$SYSTEMATIC"<<endl;
+//    datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+//    datacard_<<"bin a"<<endl;
+//    datacard_<<"observation    "<<  hist_[0]->Integral() <<endl; // data yield
+//    testIntegral=hist_[0]->Integral(); cout << "Test Integral" << testIntegral << endl;
+//    datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+//    datacard_<<"bin              a          a          a           a           a           a           a         a         "<<endl;
+//    datacard_<<"process          "<<sampleName_[1]<<"   "<<sampleName_[3]<<"   "<<sampleName_[4]<<"   "<<sampleName_[2]<<"   "<<sampleName_[8]<<"   "<<sampleName_[7]<<"   "<<sampleName_[5]<<"   "<<sampleName_[6]<<endl; // Order matching values below
+//    datacard_<<"process          0          1          2           3           4           5           6         7         "<<endl;
+//    datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+//    datacard_<<"rate          "<<
+//      hist_[1]->Integral()<<setw(10)<<
+//      hist_[3]->Integral()<<setw(10)<<
+//      hist_[4]->Integral()<<setw(10)<<
+//      hist_[2]->Integral()<<setw(10)<<
+//      hist_[8]->Integral()<<setw(10)<<
+//      hist_[7]->Integral()<<setw(10)<<
+//      hist_[5]->Integral()<<setw(10)<<
+//      hist_[6]->Integral()<<endl;
+//    datacard_<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
+//    datacard_<<endl;
+//    datacard_<<" tauId  lnN"<<setw(7)<<1.06<<setw(10)<<1.06<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.06<<setw(10)<<1.06<<setw(10)<<1.06<<endl;
+//    datacard_<<" jetTauMisId    lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.15<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+//    datacard_<<" fakesSyst      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.10<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl; // Take from shapes?
+//    datacard_<<" fakesStat      lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl; // FIXME?
+//    datacard_<<" tes      shape"<<setw(7)<< 
+//      "1"<<setw(10)<<//systHist_[1][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[0][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[1][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[0][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[1][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[0][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+//      "-"<<setw(10)<<//1.00<<setw(10)<<
+//      "1"<<setw(10)<<//systHist_[1][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[0][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[1][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[0][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[1][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[0][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+//      "1"<<endl;//systHist_[1][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[0][6]->Integral()  / hist_[6]->Integral()  <<endl;
+//    datacard_<<" topptunc      shape"<<setw(7)<< 
+//      "-"<<setw(10)<<//systHist_[1][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[0][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[1][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[0][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[1][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[0][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+//      "-"<<setw(10)<<//1.00<<setw(10)<<
+//      "-"<<setw(10)<<//systHist_[1][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[0][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+//      "-"<<setw(10)<<//systHist_[1][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[0][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+//      "-"<<setw(10)<<//systHist_[1][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[0][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+//      "-"<<endl;//systHist_[1][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[0][6]->Integral()  / hist_[6]->Integral()  <<endl;
+//    datacard_<<" jes      shape"<<setw(7)<< 
+//      "1"<<setw(10)<<//systHist_[1][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[0][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[1][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[0][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[1][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[0][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+//      "-"<<setw(10)<<//1.00<<setw(10)<<
+//      "1"<<setw(10)<<//systHist_[1][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[0][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[1][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[0][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[1][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[0][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+//      "1"<<endl;//systHist_[1][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[0][6]->Integral()  / hist_[6]->Integral()  <<endl;
+//    datacard_<<" jer      shape"<<setw(7)<< 
+//      "1"<<setw(10)<<//systHist_[5][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[4][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[5][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[4][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[5][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[4][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+//      "-"<<setw(10)<<//1.00<<setw(10)<<
+//      "1"<<setw(10)<<//systHist_[5][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[4][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[5][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[4][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[5][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[4][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+//      "1"<<endl;//systHist_[5][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[4][6]->Integral()  / hist_[6]->Integral()  <<endl;
+//    datacard_<<" umet      shape"<<setw(7)<< 
+//      "1"<<setw(10)<<//systHist_[3][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[2][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[3][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[2][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[3][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[2][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+//      "-"<<setw(10)<<//1.00<<setw(10)<<
+//      "1"<<setw(10)<<//systHist_[3][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[2][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[3][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[2][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[3][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[2][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+//      "1"<<endl;//systHist_[3][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[2][6]->Integral()  / hist_[6]->Integral()  <<endl;
+//    datacard_<<" leptEff        lnN"<<setw(7)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.00<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<setw(10)<<1.02<<endl;
+//    datacard_<<" btag      shape"<<setw(7)<< 
+//      "1"<<setw(10)<<//systHist_[7][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[6][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[7][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[6][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[7][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[6][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+//      "-"<<setw(10)<<//1.00<<setw(10)<<
+//      "1"<<setw(10)<<//systHist_[7][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[6][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[7][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[6][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[7][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[6][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+//      "1"<<endl;//systHist_[7][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[6][6]->Integral()  / hist_[6]->Integral()  <<endl;
+//    datacard_<<" unbtag      shape"<<setw(7)<< 
+//      "1"<<setw(10)<<//systHist_[9][1]->Integral()  / hist_[1]->Integral()<<"/"<<  systHist_[8][1]->Integral()  / hist_[1]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[9][3]->Integral()  / hist_[3]->Integral()<<"/"<<  systHist_[8][3]->Integral()  / hist_[3]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[9][4]->Integral()  / hist_[4]->Integral()<<"/"<<  systHist_[8][4]->Integral()  / hist_[4]->Integral()  <<setw(7)<<
+//      "-"<<setw(10)<<//1.00<<setw(10)<<
+//      "1"<<setw(10)<<//systHist_[9][8]->Integral()  / hist_[8]->Integral()<<"/"<<  systHist_[8][8]->Integral()  / hist_[8]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[9][7]->Integral()  / hist_[7]->Integral()<<"/"<<  systHist_[8][7]->Integral()  / hist_[7]->Integral()  <<setw(7)<<
+//      "1"<<setw(10)<<//systHist_[9][5]->Integral()  / hist_[5]->Integral()<<"/"<<  systHist_[8][5]->Integral()  / hist_[5]->Integral()  <<setw(7)<<
+//      "1"<<endl;//systHist_[9][6]->Integral()  / hist_[6]->Integral()<<"/"<<  systHist_[8][6]->Integral()  / hist_[6]->Integral()  <<endl;
+//    // FIXME: NoNorm??
+//    datacard_<<" "<<sampleName_[1]<<"_Stat     shape"<<setw(7)<<
+//      "1"<<setw(10)<<//histStatNoNorm_[1]->Integral()  / hist_[1]->Integral()<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<endl;
+//    datacard_<<" tt_ltau_Stat  shape"<<setw(7)<<
+//      "-"<<setw(10)<<
+//      "1"<<setw(10)<<//histStatNoNorm_[3]->Integral()  / hist_[3]->Integral()<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<endl;
+//    datacard_<<" tt_ll_Stat    shape"<<setw(7)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "1"<<setw(10)<<//histStatNoNorm_[4]->Integral()  / hist_[4]->Integral()<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<endl;
+//    datacard_<<" Z_eemumu_Stat     shape"<<setw(7)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "1"<<setw(10)<<//histStatNoNorm_[8]->Integral()  / hist_[8]->Integral()<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<endl;
+//    datacard_<<" Z_tautau_Stat     shape"<<setw(7)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "1"<<setw(10)<<//histStatNoNorm_[7]->Integral()  / hist_[7]->Integral()<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<endl;
+//    datacard_<<" singleTop_Stat   shape"<<setw(7)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "1"<<setw(10)<<
+//      "-"<<endl;
+//    datacard_<<" di_boson_Stat     shape"<<setw(7)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "1"<<endl; //histStatNoNorm_[6]->Integral()  / hist_[6]->Integral()<<endl;
+//    datacard_<<" wjetsCrossSection     lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+//    datacard_<<" singletopCrossSection lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.08<<setw(10)<<1.00<<setw(10)<<endl;
+//    datacard_<<" zllCrossSection       lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<setw(10)<<1.04<<setw(10)<<1.00<<setw(10)<<1.00<<endl;
+//    datacard_<<" dibosonCrossSection   lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.04<<endl;
+//    datacard_<<" lumi_8TeV                lnN"<<setw(7)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.00<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<setw(10)<<1.026<<endl;
+//    
+//    datacard_<<" pu               lnN"<<setw(7)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<setw(10)<<1.00<<endl;//"    pileup"<<endl;
+//    
+//    
+//    // Write and close datacard_
+//    datacard_.close();
+//    //    break;
+//    }
+// 
+   else
     {
 
       stringstream sidx;

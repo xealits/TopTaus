@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monitor> 
+
+
+  <!-- jet distribution -->
+
+  <id tag="muCh_recow_pt" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{W, reco}_{T} [GeV]" yrange="10,30000000" xrange="0,250"  >
+    <item dir="PFlow/Bkg/lep_tau/">recow_pt_1</item>
+  </id> 
+
+
+
+  <id tag="muCh_wplusjets_pt" doratio="1" logy="0" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{jets}_{T} [GeV]" yrange="10,300000" xrange="0,250"  >
+    <item dir="PFlow/Bkg/lep_tau/">wplusjets_pt_1</item>
+  </id> 
+
+  <id tag="muCh_wplusjetsLog_pt" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{jets}_{T} [GeV]" yrange="10,300000" xrange="0,250"  >
+    <item dir="PFlow/Bkg/lep_tau/">wplusjets_pt_1</item>
+  </id> 
+
+
+  <id tag="muCh_wjets_wjmult" doratio="1" logy="0" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / bin" xtitle="Wjets multiplicity" yrange="10,300000" xrange="0,10"  >
+    <item dir="PFlow/Bkg/lep_tau/">wjets_wjmult_1</item>
+  </id> 
+
+  <id tag="muCh_wjets_jmult" doratio="1" logy="0" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="Jet multiplity" yrange="10,300000" xrange="0,10"  >
+    <item dir="PFlow/Bkg/lep_tau/">wjets_jmult_1</item>
+  </id> 
+
+
+
+<!-- 
+ <id tag="muCh_wplusjets_pt" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{jets}_{T} [GeV]" yrange="10,20000000" xrange="0,250"  >
+    <item dir="PFlow/Bkg/lep_tau/">wplusjets_pt_1</item>
+  </id> 
+-->
+  <id tag="muCh_wplusjets_eta" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}_{T} [GeV]" yrange="10,20000000" xrange="-3.05,3.05"  >
+    <item dir="PFlow/Bkg/lep_tau/">wplusjets_eta_1</item>
+  </id> 
+
+  <id tag="muCh_wplusjets_pt_gluon" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{jets}_{T} [GeV]" yrange="10,20000000" xrange="0,250" xbin="8" >
+    <item dir="PFlow/Bkg/lep_tau/">wplusjets_pt_gluon_1</item>
+  </id> 
+
+  <id tag="muCh_wplusjets_pt_quark" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{jets}_{T} [GeV]" yrange="10,20000000" xrange="0,250" xbin="8" >
+    <item dir="PFlow/Bkg/lep_tau/">wplusjets_pt_quark_1</item>
+  </id> 
+
+  <id tag="muCh_wplusjets_pt_bquark" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{jets}_{T} [GeV]" yrange="10,20000000" xrange="0,250" xbin="8" >
+    <item dir="PFlow/Bkg/lep_tau/">wplusjets_pt_bquark_1</item>
+  </id> 
+
+  <id tag="muCh_wplusjets_pt_unknown" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{jets}_{T} [GeV]" yrange="10,20000000" xrange="0,250" xbin="8" >
+    <item dir="PFlow/Bkg/lep_tau/">wplusjets_pt_unknown_1</item>
+  </id> 
+
+  <id tag="muCh_wplusjets_pt_allquark" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{jets}_{T} [GeV]" yrange="10,20000000" xrange="0,250" xbin="8" >
+    <item dir="PFlow/Bkg/lep_tau/">wplusjets_pt_allquark_1</item>
+  </id> 
+
+<!--
+  <id tag="muCh_wplusjets_ptR" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events / 10 GeV" xtitle="p^{jets}_{T} [GeV]" yrange="10,20000000" xrange="0,250" xbin="8" >
+    <item dir="PFlow/Bkg/lep_tau/">wplusjets_ptR_1</item>
+  </id> 
+
+  <id tag="muCh_wplusjets_etaR" doratio="1" logy="1" cmspublic="y"  oflow="1" uflow="0" title="" ytitle="Events" xtitle="#eta^{jets}_{T} [GeV]" yrange="10,20000000" xrange="-3.05,3.05" xbin="8" >
+    <item dir="PFlow/Bkg/lep_tau/">wplusjets_etaR_1</item>
+  </id> 
+-->
+
+
+
+
+
+
+</monitor>

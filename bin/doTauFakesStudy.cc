@@ -44,7 +44,7 @@ void printHelp()
 	   << "\t\t\t Options documentation:\n"
 	   << "\t\t\t\t\t all:\n"
 	   << "\t\t\t\t\t \t\t do all the following.\n"
-	   << "\t\t\t\t\t allTrees wmuTrees qctTrees:\n"
+	   << "\t\t\t\t\t allTrees wmuTrees qctTrees wmuDataTree wmuMCTree qcdDataTree qcdMCTree:\n"
 	   << "\t\t\t\t\t \t\t produce training trees.\n"
 	   << "\t\t\t\t\t trainAll trainWMuAll trainWMuData trainWMuMC trainQCDAll trainQCDData trainQCDMC:\n"
 	   << "\t\t\t\t\t \t\t train with nearest-neighbours algorithm.\n"
@@ -55,9 +55,12 @@ void printHelp()
 	   << "\t\t\t\t\t computeAll computeWMuFakes computeQCDFakes:\n"
 	   << "\t\t\t\t\t \t\t compute fakes.\n"
 	   << "\t\t\t\t\t produceDDfile:\n"
+	   << "\t\t\t\t\t \t\t do all the following:\n"
+	   << "\t\t\t\t\t produceDataDDfile:\n"
 	   << "\t\t\t\t\t \t\t produce final data driven file with data rescaled events.\n"
-	   << std::endl;
-  
+	   << "\t\t\t\t\t produceMCDDfile:\n"
+	   << "\t\t\t\t\t \t\t produce final data driven file with MC rescaled events.\n"
+    	   << std::endl;
 }
 //
 int main(int argc, char* argv[])
@@ -115,13 +118,19 @@ int main(int argc, char* argv[])
   
   for(size_t i=0; i<actions_.size(); i++){
     // Produce training trees
-    if(actions_[i] == "wmuTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
+    if(actions_[i] == "wmuDataTree" || actions_[i] == "wmuTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
       helper->ProcessEvents(TauFakesHelper::WMUDATA);
+    }
+
+    if(actions_[i] == "wmuMCTree" || actions_[i] == "wmuTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
       helper->ProcessEvents(TauFakesHelper::WMUMC);
     }
     
-    if(actions_[i] == "qcdTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
+    if(actions_[i] == "qcdDataTree" || actions_[i] == "qcdTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
       helper->ProcessEvents(TauFakesHelper::QCDDATA);
+    }
+
+    if(actions_[i] == "qcdMCTree" || actions_[i] == "qcdTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
       helper->ProcessEvents(TauFakesHelper::QCDMC);
     }
     
@@ -131,7 +140,7 @@ int main(int argc, char* argv[])
       helper->Monitor(TauFakesHelper::WMUDATA);
     }
     
-    if(actions_[i] == "trainWmuMC" || actions_[i] == "trainWmuAll" || actions_[i] == "trainAll" || actions_[i] == "all"){
+    if(actions_[i] == "trainWMuMC" || actions_[i] == "trainWMuAll" || actions_[i] == "trainAll" || actions_[i] == "all"){
       helper->Trainer(TauFakesHelper::WMUMC);
       helper->Monitor(TauFakesHelper::WMUMC);
     }
@@ -242,8 +251,12 @@ int main(int argc, char* argv[])
     }
     
     // Produce final data driven file with data rescaled events
-    if(actions_[i] == "produceDDfile" || actions_[i] == "all"){
-      helper->ProduceDataDrivenDistributions();
+    if(actions_[i] == "produceDDfile" || actions_[i] == "produceDataDDfile" || actions_[i] == "all"){
+      helper->ProduceDataDrivenDistributions(true,false);
+    }
+    
+    if(actions_[i] == "produceDDfile" || actions_[i] == "produceMCDDfile" || actions_[i] == "all"){
+      helper->ProduceDataDrivenDistributions(false,true);
     }
     
     

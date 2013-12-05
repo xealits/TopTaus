@@ -53,9 +53,14 @@ void HistogramBuilder::buildBkgHistograms(   TFile * outFile, map< TString, Sele
   wplusjetsPlots.push_back("wplusjets_eta");
 
 
+  wplusjetsPlots.push_back("recow_pt");
+
   vector<TString> wplusjetsPlots2; 
   wplusjetsPlots2.push_back("wplusjets_ptR");
   wplusjetsPlots2.push_back("wplusjets_etaR");
+
+
+  
 
 
 /*

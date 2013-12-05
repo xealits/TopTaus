@@ -66,7 +66,7 @@ public:
   void ComputeTauFake(string type , vector<double>& finalValues, double TauPt = 20., int option =1);
   void TauFakeEstimate(TString, TString, PhysicsTools::MVAComputer*, TH1F*, double*, double*);
 
-  void ProduceDataDrivenDistributions();
+  void ProduceDataDrivenDistributions(bool, bool );
 
 private:
   void SetParameters();

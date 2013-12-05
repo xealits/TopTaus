@@ -2218,10 +2218,22 @@ namespace tableutils{
 
   //  New estimate (through as): 2528.11 +/- 241.416 (9.54926%) 
 
-  double f_1tau(2528.1);
-  double fe_1tau(241.4);
+// preapp //  double f_1tau(2528.1);
+// preapp //  double fe_1tau(241.4);
 
-  double tau_fakes(f_1tau*0.699);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(fe_1tau*fe_1tau*0.699*0.699 + 0.02*0.02*f_1tau*f_1tau); // Preliminar from kNN
+  double f_1tau( 1925.1); //2741.7);//2328.3);
+  double fe_1tau(288.8);//192.4 ); //249.1);//357.7);
+
+  double oscuteff(0.72);
+  
+  // Eff mutau: 0.986143
+  // Eff ljets: 0.732214
+  // Eff wjets: 0.649645
+  // Eff sum:   0.724237
+
+
+
+  double tau_fakes(f_1tau*oscuteff);     double tau_fakes_stat2( 0 ); double tau_fakes_syst2(fe_1tau*fe_1tau*oscuteff*oscuteff + 0.02*0.02*f_1tau*f_1tau); // Preliminar from kNN
 
   taufakes_datacards.push_back(tau_fakes);
   taufakes_datacards.push_back(tau_fakes_stat2);

@@ -43,8 +43,8 @@ void ObjectSelector::SetLeptonPlusJetsSelection(){
   leptonPlusJetsSelection_=true;
   
   //Vertex //////
-  ZMAX_    = 1;
-  ZTAUMAX_ = 0.2;
+  ZMAX_    = 0.5;
+  ZTAUMAX_ = 0.5;
   ///////////////
   
   // Jets ///////////////////////////////////////////
@@ -53,41 +53,37 @@ void ObjectSelector::SetLeptonPlusJetsSelection(){
   JET_ETA_MAX_       = 2.4;       // dilepton is 2.5 
   JET_EMF_MIN_       = 0.01;       
   JET_LTK_           = 5.;
-  JET_LEPTON_DRMIN_  = 0.3;
+  JET_LEPTON_DRMIN_  = 0.4;
   applyJetLtkCut_    = true; // TODAY: false
   //////////////////////////////////////////////////
   
   
   // electron //////////////////////////////////////
-  // with 0.05 the agreement is mush better
-  E_RELISO_MAX_       = 0.1;//0.05 //test 0.1;//Value to be used(0.1)   // dilepton is 0.15 , //0.1
-  
+  // All values from TwikiTopRefEventSel#Electrons, lepton+jets selection
+  // Signal
+  E_RELISO_MAX_       = 0.1; // dilepton is 0.15
   E_ETA_MAX_          = 2.5;     
   E_ET_MIN_           = 35;      
-  E_D0_MAX_           = 0.02;   // dilepton is 0.04
-  
-  LOOSE_E_RELISO_MAX_ = 0.2;
+  E_D0_MAX_           = 0.02; // dilepton is 0.04
+  // Veto
+  LOOSE_E_RELISO_MAX_ = 0.15;
   LOOSE_E_ETA_MAX_    = 2.5;
-  LOOSE_E_ET_MIN_     = 15;
+  LOOSE_E_ET_MIN_     = 20;
   RHO_AEFF_E_         = 0.24;
-  
   //////////////////////////////////////////////////
   
-  
   // muon //////////////////////////////////////////
-  M_RELISO_MAX_  = 0.12; // Tight WP       //0.05;         // dilepton is 0.15
+  // All values from TwikiTopRefEventSel#Muons, lepton+jets selection
+  // Signal
+  M_RELISO_MAX_  = 0.12; // Tight WP    
   M_PT_MIN_      = 30; //30;  //WARNING M_PT_MIN_      = 20;               // dilepton is 20 // test on 70
-  M_ETA_MAX_     = 2.1;                 // dilepton is 2.5
-  M_D0_MAX_      = 0.02;                // dilepton is 0.02
-  
+  M_ETA_MAX_     = 2.1; // RunA trigger is still 2p1  -> 2.4 threshold means removing RunA. Trying that.
+  M_D0_MAX_      = 0.2;                // dilepton is 0.20
+  // Veto
   LOOSE_M_RELISO_MAX_ = 0.2; 
   LOOSE_M_ETA_MAX_    = 2.5; 
   LOOSE_M_PT_MIN_     = 10;
   RHO_AEFF_M_         = 0.112;
-  
-  if(commondefinitions::run2012_){
-    M_RELISO_MAX_  = 0.12; // tight WP //cone 0.4
-  }
   ///////////////////////////////////////////////////
   
   
@@ -174,7 +170,7 @@ bool ObjectSelector::LooseMuonVeto( int selectedMuon, const vector<PhysicsObject
     double mRelIso  = (*m)[18];
     
     //see if this muon is glogal (how to see if it is only global?)
-    bool isGlobalAndTracker ( (int( (*m)[3])>>1 & 0x3) == 3); 
+    bool isGlobalAndTracker ( (int( (*m)[3])>>1 & 0x3) == 3); // ( blah AND 0011 -> returns >0 only if both global and tracker (pos0 and pos1) are 1)
     
     if(! isGlobalAndTracker ) continue;
     
@@ -335,8 +331,8 @@ void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject
     
     // isobits
     
-    // position 0 (default) , position 1 (delta beta corrections), position 2 (combined iso)
-    int isobits              = vT[i][20];  int tau_dis_iso =  isobits & 0x1; 
+    // position 0 (default) , position 1 (delta beta corrections), position 2 (combined iso), position 3 (deltabeta 3hits)
+    int isobits              = vT[i][20];  int tau_dis_iso =  isobits & 0x8; // deltabeta 3hits is binary 100
     
     double tau_dis_muon      = vT[i][21];
     double tau_dis_electron  = vT[i][22];
@@ -474,7 +470,7 @@ void ObjectSelector::PreSelectTaus( vector<int>* t_i, const vector<PhysicsObject
     else if( type == PFLOWTAU  ){
       // WARNING DISCRIMINATOR BY DECAY MODE FINDING in 38x = LeadingTrackFinding > 0.5 (this is applied by default to all)
       /*double discByDecayModeFinding = vT[i][xxx]; */ 
-      int discByIsolation = ((int) vT[i][HPS_ISO_]) & 0x1;
+      int discByIsolation = ((int) vT[i][HPS_ISO_] >> 2) & 0x1;
       
       
       
