@@ -28,6 +28,7 @@
 #include <TColor.h>
 #include <TH1F.h>
 #include <TGraph.h>
+#include <TGraphErrors.h>
 #include <TLatex.h>
 #include <TSystem.h>
 
@@ -75,11 +76,11 @@ void produceLimitCard(
       if(inputDir.Contains("/tb/")) useMasses[i] = 1;
       if(inputDir.Contains("/taunu/") && myMasses[i] >300) useMasses[i]  =0;
       
-      massesN.push_back(myMasses[i]);
+      if(useMasses[i]) massesN.push_back(myMasses[i]);
       stringstream sMass;
       sMass<<myMasses[i];
       string mass=sMass.str();
-      masses.push_back(TString(mass));
+      if(useMasses[i]) masses.push_back(TString(mass));
 
 
     } 
@@ -96,13 +97,13 @@ void produceLimitCard(
     fStream.open ( outputDir+(limitsName+fNameInset[m].Data()+string(".json")).c_str());
     
     vector<TString> inputFiles; inputFiles.clear();
-    for(size_t i=0; i<sizeof(myMasses)/sizeof(double); ++i)
+    for(size_t i=0; i<massesN.size(); ++i)
       {
-	if(useMasses[i] == 0) continue;
-	stringstream sMass;
-	sMass<<myMasses[i];
-	string mass=sMass.str();
-	inputFiles.push_back(inputDir+mass+"/higgsCombine"+fNameInset[m]+"."+fMethod+".mH"+mass+".root"); // FIXME: rerun the limits with -m XXX. Default is 120 unfortunately
+	//	if(useMasses[i] == 0) continue;
+//	stringstream sMass;
+//	sMass<<myMasses[i];
+//	string mass=sMass.str();
+	inputFiles.push_back(inputDir+masses[i]+"/higgsCombine"+fNameInset[m]+"."+fMethod+".mH"+masses[i]+".root"); // FIXME: rerun the limits with -m XXX. Default is 120 unfortunately
       } 
     
     // One vector per each type of limit
@@ -118,12 +119,15 @@ void produceLimitCard(
       double bufLimit, bufLimitErr;
       inputTree->SetBranchAddress("limit", &bufLimit);
       inputTree->SetBranchAddress("limitErr", &bufLimitErr);
+      cout << "=============================="<<endl;
       for(unsigned int entry=0; entry<inputTree->GetEntries(); ++entry){
 	inputTree->GetEntry(entry);
-	myLimits.push_back(bufLimit);// cout << "limit " << entry << ", value " << myLimits[entry] << ", buf " << bufLimit << endl;
-      myLimitErrs.push_back(bufLimitErr);
+	if(entry==0) myLimits.push_back(bufLimit);// cout << "limit " << entry << ", value " << myLimits[entry] << ", buf " << bufLimit << endl;
+	if(entry==3) myLimitErrs.push_back(bufLimitErr);
+
+	cout << bufLimit << " +/- " << bufLimitErr << endl;
       }    
-      
+            cout << "=============================="<<endl;
       //    delete inputFile;
       //    delete inputTree;
     }
@@ -155,24 +159,48 @@ void produceLimitCard(
     
     fStream.close(); 
 
+    
   }
   
   // Write table
+///  ofstream fStreamTab;
+///  fStreamTab.open ( outputDir+(limitsName+string(".tex")).c_str());
+///  fStreamTab << "\\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}"<<endl;
+///  fStreamTab << "\\hline" << endl;
+///  fStreamTab << "    \\multicolumn{10}{|c|}{Signal injection test for $\\sigma\\times\\mathcal{B}$ [pb] } \\\\ ";
+///  fStreamTab << "    \\hline"<<endl;
+///  fStreamTab << "    \\hline"<<endl;
+///  fStreamTab << "    $m_{H^{+}}$   &  Observed & Prefit & Prefit (sig:1x) & Prefit (sig:5x) & Prefit (sig:10x) & Postfit & Postfit (sig:1x) & Postfit (sig:5x) & Postfit (sig:10x)    \\\\"<<endl;
+///  fStreamTab << "    \\hline"<<endl;
+///  fStreamTab << "    \\hline    "<<endl; 
+///  for(size_t i=0; i<masses.size(); ++i)
+///    fStreamTab << setprecision(5) << "    "<< masses[i] << " & " << limits[0][i] << " & " << limits[1][i] << " & " << limits[2][i] << " & " << limits[3][i] << " & " << limits[4][i] << " & " << limits[5][i] << " & " << limits[6][i] << " & " << limits[7][i] << " & " << limits[8][i] << " \\\\" << endl; 
+///  fStreamTab << "    \\hline" << endl;
+///  fStreamTab << "\\end{tabular}" << endl;
+///  fStreamTab.close();
+
+  // Write table
   ofstream fStreamTab;
-  fStreamTab.open ( outputDir+(limitsName+string(".tex")).c_str());
+  fStreamTab.open ( outputDir+(limitsName+string("_vert.tex")).c_str());
   fStreamTab << "\\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}"<<endl;
   fStreamTab << "\\hline" << endl;
-  fStreamTab << "    \\multicolumn{10}{|c|}{Signal injection test for $\\sigma\\times\\mathcal{B}$ [pb] } \\\\ ";
+  fStreamTab << "    \\multicolumn{10}{|c|}{Signal injection test for signal strength } \\\\ ";
   fStreamTab << "    \\hline"<<endl;
   fStreamTab << "    \\hline"<<endl;
-  fStreamTab << "    $m_{\\PH^{+}}$   &  Observed & Prefit & Prefit (sig:1x) & Prefit (sig:5x) & Prefit (sig:10x) & Postfit & Postfit (sig:1x) & Postfit (sig:5x) & Postfit (sig:10x)    \\\\"<<endl;
-  fStreamTab << "    \\hline"<<endl;
-  fStreamTab << "    \\hline    "<<endl; 
-//  for(size_t i=0; i<masses.size(); ++i)
-//    fStreamTab << setprecision(5) << "    "<< masses[i] << " & " << limits[0][i] << " & " << limits[1][i] << " & " << limits[2][i] << " & " << limits[3][i] << " & " << limits[4][i] << " & " << limits[5][i] << " & " << limits[6][i] << " & " << limits[7][i] << " & " << limits[8][i] << " \\\\" << endl; 
+  fStreamTab << "  Type ";
+  for(size_t i=0; i<masses.size(); ++i) fStreamTab << "&  $m_{H^{+}}$ = " << masses[i] << " ";
+  fStreamTab << " \\\\" << endl;
+  for(size_t k=0; k<limits.size(); ++k){ // Per each method
+    std::string lineName = legLabel[k].Data();
+    if(lineName.find("_")!=std::string::npos)lineName.replace(lineName.find("_"),1,"\\_");
+    fStreamTab << " " << lineName << " " ;
+    for(size_t i=0; i<masses.size(); ++i){ // Per each mass point
+      fStreamTab << setprecision(3) << " & " << limits[k][i] << " $\\\pm$ " << limitErrs[k][i] << " " ;
+    }
+    fStreamTab << " \\\\" << endl;
+  }
   fStreamTab << "    \\hline" << endl;
   fStreamTab << "\\end{tabular}" << endl;
-  
   fStreamTab.close();
   
   // Draw
@@ -197,10 +225,14 @@ void produceLimitCard(
    limitsBr->SetFrameBorderMode(0);
 
  
-   TH1F *hframe__1 = new TH1F("hframe__1","",1000,myMasses[0]-0.1,myMasses[(sizeof(myMasses)/sizeof(double))-1]+0.1);
+   //TH1F *hframe__1 = new TH1F("hframe__1","",1000,massesN[0]-0.1,massesN[massesN.size()-1]+0.1);
+   TH1F *hframe__1 = new TH1F("hframe__1","",1000,massesN[0]-20,massesN[massesN.size()-1]+20);
    hframe__1->SetMinimum(0.01); // For logy
    hframe__1->SetMaximum(500);
-   if(inputDir.Contains("/tb/")) hframe__1->SetMaximum(500);
+   if(inputDir.Contains("/tb/") && !logy){ hframe__1->SetMaximum(20); hframe__1->SetMinimum(0.);}
+   if(inputDir.Contains("/tb/") && logy){ hframe__1->SetMaximum(200); hframe__1->SetMinimum(0.01);}
+   if(inputDir.Contains("/taunu/") && !logy){ hframe__1->SetMaximum(20); hframe__1->SetMinimum(0.);}
+   if(inputDir.Contains("/taunu/") && logy){ hframe__1->SetMaximum(200); hframe__1->SetMinimum(0.01);}
    if(inputDir.Contains("/mutau/taunu/")) hframe__1->SetMaximum(100);
    if(inputDir.Contains("/mutau/taunu/")) hframe__1->SetMinimum(4);
    hframe__1->SetDirectory(0);
@@ -215,7 +247,7 @@ void produceLimitCard(
    hframe__1->GetXaxis()->SetTitleOffset(0.9);
    hframe__1->GetXaxis()->SetTitleFont(43);
    //   hframe__1->GetYaxis()->SetTitle("95% CL limit for #sigma#times#it{B}(#tau#nu,tb) [pb]");
-   hframe__1->GetYaxis()->SetTitle("95% CL limits for #sigma#times#it{B} [pb]");
+   hframe__1->GetYaxis()->SetTitle("Signal strength (MaxLikelihoodFit)");//"95% CL limits for #sigma#times#it{B} [pb]");
    hframe__1->GetYaxis()->SetLabelFont(43);
    hframe__1->GetYaxis()->SetLabelOffset(0.007);
    hframe__1->GetYaxis()->SetLabelSize(27);
@@ -239,9 +271,9 @@ void produceLimitCard(
    gPad->Modified();
    gPad->Update();
 
-   vector<TGraph*> graph; graph.clear();
+   vector<TGraphErrors*> graph; graph.clear();
    for(size_t m=0; m<fNameInset.size(); ++m){
-     graph.push_back(new TGraph(massesN.size()) );
+     graph.push_back(new TGraphErrors(massesN.size()) );
      graph[m]->SetName("valueFrom"+fNameInset[m]);
      graph[m]->SetTitle("Graph"+fNameInset[m]);
      graph[m]->SetFillColor(colours[m]);
@@ -251,9 +283,10 @@ void produceLimitCard(
      graph[m]->SetMarkerStyle(20);
      for(size_t i=0; i<massesN.size(); ++i){
        graph[m]->SetPoint(i,massesN[i], limits[m][i]);
+       graph[m]->SetPointError(i, (fNameInset.size() -m)*1.5 , limitErrs[m][i]);
      }
-     graph[m]->SetMinimum(myMasses[0]-0.1);
-     graph[m]->SetMaximum(myMasses[(sizeof(myMasses)/sizeof(double))-1]+0.1);
+     //graph[m]->SetMinimum(myMasses[0]-0.1);
+     //graph[m]->SetMaximum(myMasses[(sizeof(myMasses)/sizeof(double))-1]+0.1);
      
    }
 
@@ -274,8 +307,8 @@ void produceLimitCard(
 
 
    TH1F *Expected3__4 = new TH1F("Expected3__4","Graph",100,128,752);
-   Expected3__4->SetMinimum(0);
-   Expected3__4->SetMaximum(4.904986);
+//   Expected3__4->SetMinimum(0);
+//   Expected3__4->SetMaximum(4.904986);
    Expected3__4->SetDirectory(0);
    Expected3__4->SetStats(0);
    Expected3__4->SetLineStyle(0);
@@ -311,7 +344,8 @@ void produceLimitCard(
    
    for(size_t m=0; m<fNameInset.size(); ++m){
      graph[m]->SetHistogram(Expected3__4);
-     graph[m]->Draw("l ");
+     graph[m]->Draw("2");//l ");
+     graph[m]->Draw("p");//l ");
      TLegendEntry *entry=leg->AddEntry("Graph"+fNameInset[m],legLabel[m],"fl");   
      entry->SetLineColor(colours[m]);
      entry->SetLineStyle(lineStyles[m]);
@@ -326,8 +360,8 @@ void produceLimitCard(
    leg->Draw();
    
    TH1F *hframe__5 = new TH1F("hframe__5","",1000,180,700);
-   hframe__5->SetMinimum(0);
-   hframe__5->SetMaximum(10);
+//   hframe__5->SetMinimum(0);
+//   hframe__5->SetMaximum(10);
    hframe__5->SetDirectory(0);
    hframe__5->SetStats(0);
    hframe__5->SetLineStyle(0);
@@ -339,7 +373,7 @@ void produceLimitCard(
    hframe__5->GetXaxis()->SetTitleSize(33);
    hframe__5->GetXaxis()->SetTitleOffset(0.9);
    hframe__5->GetXaxis()->SetTitleFont(43);
-   hframe__5->GetYaxis()->SetTitle("95% CL limit for #sigma#times#it{B}(#tau#nu,tb) [pb]");
+   hframe__5->GetYaxis()->SetTitle("Signal strength (MaxLikelihoodFit)");//"95% CL limit for #sigma#times#it{B}(#tau#nu,tb) [pb]");
    hframe__5->GetYaxis()->SetLabelFont(43);
    hframe__5->GetYaxis()->SetLabelOffset(0.007);
    hframe__5->GetYaxis()->SetLabelSize(27);
@@ -383,13 +417,13 @@ tex->SetNDC();
    tex->Draw();
    //      tex = new TLatex(0.2,0.64,"#splitline{m_{h}max scenario, tan#beta=5}{H^{+}#rightarrow#tau#nu and H^{+}#rightarrow tb decays}");
    if(expectedOnly){
-     if(inputDir.Contains("/tb/"))       tex = new TLatex(0.2,/*0.64*/0.80,"#splitline{H^{+}#rightarrow tb decay}{Expected pre-fit (Asimov)}");
-     if(inputDir.Contains("/taunu/"))    tex = new TLatex(0.2,/*0.64*/0.80,"#splitline{H^{+}#rightarrow#tau#nu decay}{Expected pre-fit (Asimov)}");
-     if(inputDir.Contains("/cmb/"))      tex = new TLatex(0.2,/*0.64*/0.80,"#splitline{H^{+}#rightarrow#tau#nu and H^{+}#rightarrow tb decays}{Expected pre-fit (Asimovsxc)}");
+     if(inputDir.Contains("/tb/"))       tex = new TLatex(0.2,/*0.64*/0.80,"#splitline{H^{+}#rightarrow tb decay}{Fitted signal strength}");
+     if(inputDir.Contains("/taunu/"))    tex = new TLatex(0.2,/*0.64*/0.80,"#splitline{H^{+}#rightarrow#tau#nu decay}{Fitted signal strength}");
+     if(inputDir.Contains("/combined/")) tex = new TLatex(0.2,/*0.64*/0.80,"#splitline{H^{+}#rightarrow#tau#nu and H^{+}#rightarrow tb decays}{Fitted signal strength}");
    }
      
-     
-tex->SetNDC();
+   
+   tex->SetNDC();
    tex->SetTextFont(63);
    tex->SetTextSize(20);
    tex->SetLineWidth(2);
@@ -868,7 +902,7 @@ tex->SetNDC();
    fStreamTab << "    \\hline"<<endl;
    fStreamTab << "    $m_{\\PH^{+}}$   & \\multicolumn{5}{c|}{Expected limit}      & Observed  \\\\\\cline{2-6}  (\\GeVns)   & $-2\\sigma$  & $-1\\sigma$ & median & +1$\\sigma$ & +2$\\sigma$  & limit  \\\\"<<endl;
    fStreamTab << "    \\hline"<<endl;
-   fStreamTab << "    \\hline    "<<endl; 
+   fStreamTab << "    \\hline    "<<endl;
    for(size_t i=0; i<masses.size(); ++i)
      fStreamTab << setprecision(5) << "    "<< masses[i] << " & " << limits[i][0] << " & " << limits[i][1] << " & " << limits[i][2] << " & " << limits[i][3] << " & " << limits[i][4] << " & " << limits[i][5] << " \\\\" << endl; 
    fStreamTab << "    \\hline" << endl;
@@ -895,7 +929,7 @@ int main(int argc, char* argv[])
   bool logy(false);
   
   string sExpectedOnly("");
-  bool expectedOnly(true);
+  bool expectedOnly(false);
   
   for(int i=1;i<argc;i++){
     string arg(argv[i]);
@@ -912,7 +946,7 @@ int main(int argc, char* argv[])
   if(sExpectedOnly=="true")
     expectedOnly=true;
   else if(sExpectedOnly=="")
-    cout << "No ExpectedOnly specified. Defaulting to true" << endl;
+    cout << "No ExpectedOnly specified. Defaulting to false" << endl;
   
   //string parSet(argv[1]);
   //string runOn(argv[2]);
@@ -927,15 +961,15 @@ int main(int argc, char* argv[])
   vector<Int_t> colours; colours.clear();
   vector<Int_t> lineStyles; lineStyles.clear();
   vector<TString> labels; labels.clear();
-  if(!expectedOnly){ insets.push_back("HybridObserved"             ); colours.push_back(kBlack);    lineStyles.push_back(2); labels.push_back("Observed"); }
-  insets.push_back("HybridAsimovPrefit"         );                   colours.push_back(kRed);      lineStyles.push_back(2); labels.push_back("No injection");
-  insets.push_back("HybridAsimovPrefit_sig1x"   );                   colours.push_back(kOrange);   lineStyles.push_back(4); labels.push_back("1#times signal injection");
-  insets.push_back("HybridAsimovPrefit_sig5x"   );                   colours.push_back(kOrange+2); lineStyles.push_back(4); labels.push_back("5#times signal injection");
-  insets.push_back("HybridAsimovPrefit_sig10x"  );                   colours.push_back(kOrange+4); lineStyles.push_back(4); labels.push_back("10#times signal injection");
-  if(!expectedOnly){ insets.push_back("HybridAsimovPostfit"        ); colours.push_back(kBlue);	   lineStyles.push_back(2); labels.push_back("No injection");                      }
-  if(!expectedOnly){ insets.push_back("HybridAsimovPostfit_sig1x"  ); colours.push_back(kAzure);   lineStyles.push_back(4); labels.push_back("1#times signal injection");  }
-  if(!expectedOnly){ insets.push_back("HybridAsimovPostfit_sig5x"  ); colours.push_back(kAzure+2);  lineStyles.push_back(4);labels.push_back("5#times signal injection");	       }
-  if(!expectedOnly){ insets.push_back("HybridAsimovPostfit_sig10x" ); colours.push_back(kAzure+4);  lineStyles.push_back(4);labels.push_back("10#times signal injection");        } 
+//  if(!expectedOnly){ insets.push_back("HybridObserved"             ); colours.push_back(kBlack);    lineStyles.push_back(2); labels.push_back("Observed"); }
+//  insets.push_back("HybridAsimovPrefit"         );                   colours.push_back(kRed);      lineStyles.push_back(2); labels.push_back("No injection");
+//  insets.push_back("HybridAsimovPrefit_sig1x"   );                   colours.push_back(kOrange);   lineStyles.push_back(4); labels.push_back("1#times signal injection");
+//  insets.push_back("HybridAsimovPrefit_sig5x"   );                   colours.push_back(kOrange+2); lineStyles.push_back(4); labels.push_back("5#times signal injection");
+//  insets.push_back("HybridAsimovPrefit_sig10x"  );                   colours.push_back(kOrange+4); lineStyles.push_back(4); labels.push_back("10#times signal injection");
+//  if(!expectedOnly){ insets.push_back("HybridAsimovPostfit"        ); colours.push_back(kBlack);   lineStyles.push_back(2); labels.push_back("No injection");                      }
+  if(!expectedOnly){ insets.push_back("HybridAsimovPostfit_sig1x"  ); colours.push_back(kRed);     lineStyles.push_back(4); labels.push_back("1#times signal injection");  }
+  if(!expectedOnly){ insets.push_back("HybridAsimovPostfit_sig5x"  ); colours.push_back(kBlue);    lineStyles.push_back(4);labels.push_back("5#times signal injection");	       }
+  if(!expectedOnly){ insets.push_back("HybridAsimovPostfit_sig10x" ); colours.push_back(kGreen-4); lineStyles.push_back(4);labels.push_back("10#times signal injection");        } 
 
 
  
@@ -959,7 +993,8 @@ int main(int argc, char* argv[])
   for(size_t j=0; j<inDir.size(); ++j){
     gSystem->Exec("mkdir -p "+outDir[j]);
     logy=false;
-    produceLimitCard(outDir[j], inDir[j] , "signalInjectionTest", insets, labels, colours, lineStyles, "HybridNew", "19.7", expectedOnly, logy );
+    //produceLimitCard(outDir[j], inDir[j] , "signalInjectionTest", insets, labels, colours, lineStyles, "HybridNew", "19.7", expectedOnly, logy );
+    produceLimitCard(outDir[j], inDir[j] , "signalInjectionTest", insets, labels, colours, lineStyles, "MaxLikelihoodFit", "19.7", expectedOnly, logy );
   }
 
   inDir.clear();
@@ -975,7 +1010,8 @@ int main(int argc, char* argv[])
   for(size_t j=0; j<inDir.size(); ++j){
     gSystem->Exec("mkdir -p "+outDir[j]);
     logy=true;
-    produceLimitCard(outDir[j], inDir[j] , "signalInjectionTest", insets, labels, colours, lineStyles, "HybridNew", "19.7", expectedOnly, logy );
+    //produceLimitCard(outDir[j], inDir[j] , "signalInjectionTest", insets, labels, colours, lineStyles, "HybridNew", "19.7", expectedOnly, logy );
+    produceLimitCard(outDir[j], inDir[j] , "signalInjectionTest", insets, labels, colours, lineStyles, "MaxLikelihoodFit", "19.7", expectedOnly, logy );
   }
 
 
