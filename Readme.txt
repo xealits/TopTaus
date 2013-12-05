@@ -139,6 +139,7 @@ See lipcms/Physics/datacards/Readme.txt for additional info
 
 
 CHANGELOG for major updates:
+2013-10-07: Added signal injection plotting (plotLimits.cc)
 2013-09-19: Finally all the new electron ntuples are working with the already working splitting system
 	    Bloody hell, 2 weeks of hadding and re-hadding to tune them!
 2013-09-06: Cosmetics. Tag for preapproval of HIG-13-026 (V13-09-06)
