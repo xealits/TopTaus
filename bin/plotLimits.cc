@@ -355,26 +355,26 @@ void produceLimitCard(
 
    TLatex *   tex = new TLatex(0.15,0.96,"CMS Preliminary");
 tex->SetNDC();
-   tex->SetTextFont(43);
+   tex->SetTextFont(42);
    tex->SetTextSize(27);
    tex->SetLineWidth(2);
    tex->Draw();
       tex = new TLatex(0.48,0.96,"#sqrt{s} = 8 TeV");
 tex->SetNDC();
-   tex->SetTextFont(43);
+   tex->SetTextFont(42);
    tex->SetTextSize(27);
    tex->SetLineWidth(2);
    tex->Draw();
       tex = new TLatex(0.71,0.96,"L="+lumi+" fb^{-1}");
 tex->SetNDC();
-   tex->SetTextFont(43);
+   tex->SetTextFont(42);
    tex->SetTextSize(27);
    tex->SetLineWidth(2);
    tex->Draw();
    //      tex = new TLatex(0.2,0.84,"#splitline{e#mu+#mu#tau_{h} final state}{tan#beta=5}");
    if(inputDir.Contains("/emu/"))      tex = new TLatex(0.2,/*0.84*/0.90,"e#mu final state");
    if(inputDir.Contains("/mutau/"))    tex = new TLatex(0.2,/*0.84*/0.90,"#mu#tau_{h} final state");
-   if(inputDir.Contains("/complete/")) tex = new TLatex(0.2,/*0.84*/0.90,"e#mu+#mu#tau_{h} final states");
+   if(inputDir.Contains("/combined/")) tex = new TLatex(0.2,/*0.84*/0.90,"e#mu+#mu#tau_{h} final states");
    //tex = new TLatex(0.2,0.84,"e#mu final state");
 tex->SetNDC();
    tex->SetTextFont(63);
@@ -959,7 +959,7 @@ int main(int argc, char* argv[])
   for(size_t j=0; j<inDir.size(); ++j){
     gSystem->Exec("mkdir -p "+outDir[j]);
     logy=false;
-    produceLimitCard(outDir[j], inDir[j] , "signalInjectionTest", insets, labels, colours, lineStyles, "HybridNew", "19.3-19.7", expectedOnly, logy );
+    produceLimitCard(outDir[j], inDir[j] , "signalInjectionTest", insets, labels, colours, lineStyles, "HybridNew", "19.7", expectedOnly, logy );
   }
 
   inDir.clear();
@@ -975,7 +975,7 @@ int main(int argc, char* argv[])
   for(size_t j=0; j<inDir.size(); ++j){
     gSystem->Exec("mkdir -p "+outDir[j]);
     logy=true;
-    produceLimitCard(outDir[j], inDir[j] , "signalInjectionTest", insets, labels, colours, lineStyles, "HybridNew", "19.3-19.7", expectedOnly, logy );
+    produceLimitCard(outDir[j], inDir[j] , "signalInjectionTest", insets, labels, colours, lineStyles, "HybridNew", "19.7", expectedOnly, logy );
   }
 
 
