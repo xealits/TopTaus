@@ -195,6 +195,8 @@ void LandSShapesProducer::Init(){
   hmax_        = mFitPars.getParameter<vector<double> >("hmax");
   unbinned_    = mFitPars.getParameter<vector<Int_t> >("unbinned");
   smoothOrder_ = mFitPars.getParameter<vector<Int_t> >("smoothOrder");
+  bool toNorm  = mFitPars.getParameter<bool>("toNorm");     
+  doLogy_      = mFitPars.getParameter<vector<Int_t> >("doLogy");
   
   // Open files and get trees
   // ddBkg is the only to be taken from data driven estimation (tree)
@@ -206,7 +208,7 @@ void LandSShapesProducer::Init(){
   
   
   for(size_t i=0; i<nVars_; i++){
-    fitVars_.push_back( new FitVar(vars_[i], mins_[i], maxs_[i], bins_[i], hmin_[i], hmax_[i], unbinned_[i], smoothOrder_[i]));
+    fitVars_.push_back( new FitVar(vars_[i], mins_[i], maxs_[i], bins_[i], hmin_[i], hmax_[i], unbinned_[i], smoothOrder_[i], toNorm, doLogy_[i]));
     fitVars_[i]->setFancyName(fancyNames_[i]); // Temporary. Must put that in constructor in the whole package
     fitVars_[i]->setBinNames(binNames_);
     cout << "\t Acquired parameters for variable: " << fitVars_[i]->getVarName() << endl;
@@ -218,7 +220,7 @@ void LandSShapesProducer::Init(){
   gStyle->SetPadBottomMargin(0.20);
   gStyle->SetPadRightMargin (0.16);
   gStyle->SetPadLeftMargin  (0.14);
-  
+  gStyle->SetLabelSize(0.07, "XYZ");
 
   canvas_ = new TCanvas("canvas","My plots ",0,0,1000,1000);
   canvas_->cd();
@@ -606,9 +608,11 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     hist_[f]->SetFillStyle(sampleFillStyle_[f]); //1001 for background and data, 0 for signal // 3017);
  
 
-    if(sampleName_[f] == "tt_ltau" || sampleName_[f] == "tt_ll")
+    if(sampleName_[f] == "tt_ltau" )
       hist_[f]->Scale(2776./hist_[f]->Integral());
-   
+    else if(sampleName_[f] == "tt_ll")   
+      hist_[f]->Scale(94./hist_[f]->Integral());
+
     if(isDDbkg_[f]){
       hist_[f]->Scale(1386./hist_[f]->Integral());
       ddbkgHistUp_ =   (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Up") );
@@ -1156,8 +1160,8 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     // With ratio
     canvas_->Divide(1,2);
     canvas_->cd(1);
-    gPad->SetBottomMargin(0);
-    gPad->SetPad(0,0.3,1,1); 
+    gPad->SetBottomMargin(0.1);
+    gPad->SetPad(0,0.2,1,1); 
     gPad->cd();
     gPad->Draw();
 
@@ -1213,12 +1217,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
     hist_[0]->GetYaxis()->SetTitle("Events/bin");
     hist_[0]->GetYaxis()->SetTitleOffset(0.85);
-    hist_[0]->GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
+    hist_[0]->GetXaxis()->SetTitle(fitVars_[i]->getFancyName().c_str());
     hist_[0]->GetXaxis()->SetTitleOffset(0.85);
     
     hist_[1]->GetYaxis()->SetTitle("Events/bin");
     hist_[1]->GetYaxis()->SetTitleOffset(0.85);
-    hist_[1]->GetXaxis()->SetTitle("p_{T}^{lead.track}/E^{#tau}");
+    hist_[1]->GetXaxis()->SetTitle(fitVars_[i]->getFancyName().c_str());
     hist_[1]->GetXaxis()->SetTitleOffset(0.85);
     
     
@@ -1243,30 +1247,38 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     }
     
     //    cout << "dd integral: " << hist_[3]->Integral() << endl;
-    // do not normalize btagmulti
-    normalize(hs, 1.);
-    hs.SetMaximum(0.4);
-    // do not normalize btagmulti
-    //hs.SetMaximum(1.2); 
-    //hs.SetMaximum(20000);
+    //  normalize rc t
+    if(fitVars_[i]->getToNorm()){
+      normalize(hs, 1.);
+      hs.SetMaximum(0.4);
+    } else{
+      // do not normalize btagmulti
+      hs.SetMaximum(1.2); 
+      hs.SetMaximum(20000);
+      
+      hs.SetMinimum(0.1);
+    }
     hs.Draw("hist");
     hs.GetXaxis()->SetRange(displayMin_,displayMax_);    
     hs.GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
+    hs.GetXaxis()->SetTitleSize(0.05);
+    hs.GetXaxis()->SetLabelSize(0.05);
     hs.GetYaxis()->SetTitle("Events/bin");
     hs.GetXaxis()->SetTitle((fitVars_[i]->getFancyName()).c_str());
     //  hs.GetXaxis()->SetTitleOffset(1.5);
     
     // do not normalize btagmulti
-    hist_[0]->Scale(1./hist_[0]->Integral());
+    if(fitVars_[i]->getToNorm()) hist_[0]->Scale(1./hist_[0]->Integral());
     
     hist_[0]->GetXaxis()->SetRange(displayMin_,displayMax_);    
     hist_[0]->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
   
     hist_[0]->Draw("same");
-    // do not normalize btagmulti    
-    higgsH_->Scale(1./higgsH_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
-    higgsH2_->Scale(1./higgsH2_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
-    
+    // do not normalize btagmulti 
+    if(fitVars_[i]->getToNorm()){
+      higgsH_->Scale(1./higgsH_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
+      higgsH2_->Scale(1./higgsH2_->Integral());    /// ??? was signalHistWH_->Integral()); instead of higgsH->Integral());
+    }
     higgsH_->GetXaxis()->SetRange(displayMin_,displayMax_);    
     higgsH_->GetXaxis()->SetRangeUser(displayMin_,displayMax_);    
     higgsH_->Draw("histsame");
@@ -1339,9 +1351,9 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     pt->SetFillColor(19);
     pt->SetFillStyle(0);
     pt->SetLineColor(0);
-    pt->SetTextFont(132);
+    pt->SetTextFont(42);
     pt->SetTextSize(0.045);
-    TText *textPrel = pt->AddText("CMS Preliminary, #sqrt{s} = 8 TeV,  19.3 fb^{-1}");
+    TText *textPrel = pt->AddText("CMS Preliminary, #sqrt{s} = 8 TeV,  19.7 fb^{-1}");
     textPrel->SetTextAlign(11);
     pt->Draw("same");
     
@@ -1360,19 +1372,21 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     
     leg_->Draw("same");
 
-    //    gPad->SetLogy();
-
-
+    if(fitVars_[i]->getDoLogy())
+      gPad->SetLogy();
+    
+    
     canvas_->Modified();
     canvas_->Update();
 
     //    canvas_->cd();
     canvas_->cd(2);
     gPad->SetFillColor(0);
-    gPad->SetPad(0,0,1,0.3);
+    gPad->SetPad(0,0,1,0.2);
+    gPad->SetBottomMargin(0.4);
     gPad->SetGridx();
     gPad->SetGridy();
-
+    
     // Build denominator
     TH1* denominator;
     for(size_t f=3; f<nSamples_+2; f++){
@@ -1386,7 +1400,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     TGraphErrors myRelError = myBkgError;
     //    getErrorBands(myBkgError, myRelError);
     scaleErrorBands(myRelError, *iRatio, *denominator);
-    iRatio->GetYaxis()->SetTitle("data/MC");
+    iRatio->GetYaxis()->SetTitle("Data/#Sigma MC");
+    iRatio->GetYaxis()->SetTitleSize(0.17);
+    iRatio->GetYaxis()->SetTitleOffset(0.2);
+    iRatio->GetYaxis()->SetLabelSize(0.1);
+    iRatio->GetXaxis()->SetTitleSize(0.15);
+    iRatio->GetXaxis()->SetLabelSize(0.1);
     iRatio->Divide(denominator);
     sumErrorBands(myRelError, *iRatio);
     iRatio->SetMarkerSize(1);
@@ -1395,6 +1414,7 @@ void LandSShapesProducer::DrawTemplates(size_t i){
     iRatio->SetFillColor(0);
     iRatio->SetMarkerStyle(20);
     iRatio->GetYaxis()->SetRangeUser(0.1, 2.);
+    iRatio->GetYaxis()->SetNdivisions(5);
     iRatio->Draw();
     myRelError.SetName("bl");
     myRelError.SetTitle("mmbm");
