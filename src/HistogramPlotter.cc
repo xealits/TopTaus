@@ -228,6 +228,7 @@ void HistogramPlotter::processPlots(int i){
 
     /*if(!ratioOptions.first)*/ stack->GetHistogram()->GetXaxis()->SetTitleOffset(0.8);
     /*if(!ratioOptions.first)*/ stack->GetHistogram()->GetXaxis()->SetTitleSize(0.05);
+    /*if(!ratioOptions.first)*/ stack->GetHistogram()->GetXaxis()->SetLabelSize(0.05);
     
     setStackIdProperties(stack,i);
     
