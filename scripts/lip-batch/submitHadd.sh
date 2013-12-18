@@ -25,6 +25,7 @@ elif [ "${2}" = "2" ]; then
     qsub batchHadd.sh ${1} mc2_6
     qsub batchHadd.sh ${1} mc2_7
     qsub batchHadd.sh ${1} mc2_8
+    qsub batchHadd.sh ${1} mc2_9 
 elif [ "${2}" = "3" ]; then
     qsub batchHadd.sh ${1} mc3_1
 fi

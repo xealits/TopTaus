@@ -48,6 +48,14 @@ if [ "${1}" = "1" ]; then
 elif [ "${1}" = "2" ]; then
 ### #####qsub -v LIPCMS_BASE${LIPCMS_BASE}/    ./job-ttbar-unc.sh
 
+    for i in $(seq 0 9); do
+	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-MissingRunB.sh ${i}
+	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-MissingRunC1.sh ${i}
+	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-MissingRunC2.sh ${i}
+	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-MissingRunD1.sh ${i}
+	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-data-MissingRunD2.sh ${i}
+    done
+
     for i in $(seq 0 99); do
     # 700 jobs
 	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-qcd.sh 1 ${i}

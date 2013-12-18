@@ -17,7 +17,7 @@ if [ "${2}" = "hadd" ]; then
  #   hadd -f out-data.root out-Muon_RunA_*.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root &
 	
 	
-	hadd -f out-data.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root 
+	hadd -f out-data.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root out-MuonMissing_RunB_*.root out-MuonMissing_RunC_1_*.root out-MuonMissing_RunC_1_*.root out-MuonMissing_RunD_2_*.root out-MuonMissing_RunD_2_*.root 
 	
 	
 #    fi
@@ -123,6 +123,8 @@ if [ "${2}" = "hadd" ]; then
 	cp  $DATAPLACE/out-htb-pythia-m500.root $DATAPLACE/out-heavyHiggs-pythia-m500.root                                         
 	cp  $DATAPLACE/out-htb-pythia-m600.root $DATAPLACE/out-heavyHiggs-pythia-m600.root                                         
 	cp  $DATAPLACE/out-htb-pythia-m700.root $DATAPLACE/out-heavyHiggs-pythia-m700.root                                         
+    elif [ "${3}" = "mc2_9" ]; then
+	hadd -f $DATAPLACE/out-wmultijets.root $DATAPLACE/out-wjets.root $DATAPLACE/out-qcd.root
     fi
 	
 elif [ "${2}" = "clean" ]; then
