@@ -101,6 +101,13 @@ int main(int argc, char* argv[])
     else if (runOn == "data_muonC2_"+idx) analyzer->process_data_RunC2(i);
     else if (runOn == "data_muonD1_"+idx) analyzer->process_data_RunD1(i);
     else if (runOn == "data_muonD2_"+idx) analyzer->process_data_RunD2(i);
+
+    else if (runOn == "data_missingmuonB_"+idx)  analyzer->process_data_MissingRunB( i);
+    else if (runOn == "data_missingmuonC1_"+idx) analyzer->process_data_MissingRunC1(i);
+    else if (runOn == "data_missingmuonC2_"+idx) analyzer->process_data_MissingRunC2(i);
+    else if (runOn == "data_missingmuonD1_"+idx) analyzer->process_data_MissingRunD1(i);
+    else if (runOn == "data_missingmuonD2_"+idx) analyzer->process_data_MissingRunD2(i);
+
     else if(runOn == "ww_"+idx)            analyzer->process_diboson(0, i);
     else if(runOn == "wz_"+idx)            analyzer->process_diboson(1, i);
     else if(runOn == "zz_"+idx)            analyzer->process_diboson(2, i);

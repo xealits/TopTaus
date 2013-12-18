@@ -1372,6 +1372,98 @@ void SampleProcessor::process_data_RunD2(int i){
 }
 
 
+
+
+
+
+void SampleProcessor::process_data_MissingRunB(int i){
+
+  url_ = DATA_URL;
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+  if( ! eChONmuChOFF_ && run2012_) 
+    process(true,url_,iDFolder_+TString("MuonMissing_RunB_"+idx+".root"),oDFolder_+TString("out-MuonMissing_RunB_"+idx+".root"),keys_);
+
+}
+void SampleProcessor::process_data_MissingRunC1(int i){
+
+  url_ = DATA_URL;
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+  if( ! eChONmuChOFF_ && run2012_) 
+    process(true,url_,iDFolder_+TString("MuonMissing_RunC_1_"+idx+".root"),oDFolder_+TString("out-MuonMissing_RunC_1_"+idx+".root"),keys_);
+
+}
+
+void SampleProcessor::process_data_MissingRunC2(int i){
+
+  url_ = DATA_URL;
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+  if( ! eChONmuChOFF_ && run2012_) 
+    process(true,url_,iDFolder_+TString("MuonMissing_RunC_2_"+idx+".root"),oDFolder_+TString("out-MuonMissing_RunC_2_"+idx+".root"),keys_);
+
+}
+
+void SampleProcessor::process_data_MissingRunD1(int i){
+
+  url_ = DATA_URL;
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+  if( ! eChONmuChOFF_ && run2012_) 
+    process(true,url_,iDFolder_+TString("MuonMissing_RunD_1_"+idx+".root"),oDFolder_+TString("out-MuonMissing_RunD_1_"+idx+".root"),keys_);
+
+}
+
+void SampleProcessor::process_data_MissingRunD2(int i){
+
+  url_ = DATA_URL;
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [0,49]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+  if( ! eChONmuChOFF_ && run2012_) 
+    process(true,url_,iDFolder_+TString("MuonMissing_RunD_2_"+idx+".root"),oDFolder_+TString("out-MuonMissing_RunD_2_"+idx+".root"),keys_);
+
+}
+
+
+
+
+
 void SampleProcessor::process_hhhtautaubb_higgs(int sample, int i){
  
   if(i>30){

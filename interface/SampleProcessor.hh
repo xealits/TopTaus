@@ -77,6 +77,12 @@ public :
   void process_data_RunD1(int);
   void process_data_RunD2(int);
 
+  void process_data_MissingRunB(int);
+  void process_data_MissingRunC1(int);
+  void process_data_MissingRunC2(int);
+  void process_data_MissingRunD1(int);
+  void process_data_MissingRunD2(int);
+
   
   void process_ttbar(int);
   void process_ttbar_scaleup(int);
