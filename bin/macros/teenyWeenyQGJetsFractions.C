@@ -112,7 +112,7 @@ void teenyWeenyQGJetsFractions(){
   tdrStyle->SetTitleSize(0.05, "XYZ");
   // tdrStyle->SetTitleXSize(Float_t size = 0.02); // Another way to set the size?
   // tdrStyle->SetTitleYSize(Float_t size = 0.02);
-  tdrStyle->SetTitleXOffset(0.9);
+  tdrStyle->SetTitleXOffset(1.1);
   tdrStyle->SetTitleYOffset(1.25);
   // tdrStyle->SetTitleOffset(1.1, "Y"); // Another way to set the Offset
 //  tdrStyle->SetTitleOffset(.3, "X"); // Another way to set the Offset
@@ -344,10 +344,14 @@ void teenyWeenyQGJetsFractions(){
     myCanva->cd();
 
     if(i<2){
+      numQ->GetXaxis()->SetTitleOffset(1.0);
+      numQ->GetYaxis()->SetTitleOffset(1.0);
       numQ->Draw("hist");
       numG->Draw("histsame");
     }
     else{
+      numG->GetXaxis()->SetTitleOffset(1.0);
+      numG->GetYaxis()->SetTitleOffset(1.0);
       numG->Draw("hist");
       numQ->Draw("histsame");
     }
@@ -411,7 +415,13 @@ void teenyWeenyQGJetsFractions(){
   //  TText *text = pt1->AddText("#splitline{m_{H^{#pm}} = 120 GeV/c^{2},}{BR(t #rightarrow H^{+}b) = 0.05}");
   TCanvas* myCanva = new TCanvas("mainsel","Main selection",2000,2000);
   myCanva->cd();
-  
+
+  finalNum_qf->GetYaxis()->SetTitle("Jet content");	 
+  finalNum_qf->GetXaxis()->SetTitleSize(0.05);	 
+  finalNum_qf->GetYaxis()->SetTitleSize(0.05);	 
+  finalNum_qf->GetXaxis()->SetTitleOffset(1.0);
+  finalNum_qf->GetYaxis()->SetTitleOffset(1.0);
+    
   finalNum_qf->Draw("hist");
   finalNum_gf->Draw("histsame");
   
