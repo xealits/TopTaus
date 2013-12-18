@@ -124,28 +124,28 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[HH160_URL]              = 245.8;                                                                                 
       
       // This yields include branching ratio (which for the light charged higgs was identically 1 and thus not included)
-      defaultXSections_[TBH180_URL]             = 22.6975  * 0.831852  ; 
-      defaultXSections_[TBH190_URL]             = 20.4088  * 0.407966  ;   
-      defaultXSections_[TBH200_URL]             = 18.4811  * 0.228564  ;   
-      defaultXSections_[TBH220_URL]             = 15.4027  * 0.106446  ;  
-      defaultXSections_[TBH250_URL]             = 11.9413  * 0.04129783; 
-      defaultXSections_[TBH300_URL]             = 07.91902 * 0.02514242; 
+      defaultXSections_[TBH180_URL]             = 2 * 22.6975  * 0.831852  ; 
+      defaultXSections_[TBH190_URL]             = 2 * 20.4088  * 0.407966  ;   
+      defaultXSections_[TBH200_URL]             = 2 * 18.4811  * 0.228564  ;   
+      defaultXSections_[TBH220_URL]             = 2 * 15.4027  * 0.106446  ;  
+      defaultXSections_[TBH250_URL]             = 2 * 11.9413  * 0.04129783; 
+      defaultXSections_[TBH300_URL]             = 2 * 07.91902 * 0.02514242; 
 
 
-      defaultXSections_[HTB180_URL]             = 22.6975  * (1 - 0.831852   ) ;/// 30.; 
-      defaultXSections_[HTB190_URL]             = 20.4088  * (1 - 0.407966   ) ;/// 30.;   
-      defaultXSections_[HTB200_URL]             = 18.4811  * (1 - 0.228564   ) ;/// 30.;   
-      defaultXSections_[HTB220_URL]             = 15.4027  * (1 - 0.106446   ) ;/// 30.;  
-      defaultXSections_[HTB240_URL]             = 12.9842  * (1 - 0.04902523 ) ;/// 30.; 
-      defaultXSections_[HTB250_URL]             = 11.9413  * (1 - 0.04129783 ) ;/// 30.; 
-      defaultXSections_[HTB260_URL]             = 10.9879  * (1 - 0.0361988  ) ;/// 30.;  
-      defaultXSections_[HTB280_URL]             = 09.31608 * (1 - 0.02984434 ) ;/// 30.; 
-      defaultXSections_[HTB300_URL]             = 07.91902 * (1 - 0.02514242 ) ;/// 30.; 
-      defaultXSections_[HTB350_URL]             = 0.0536621 * (1.-0.01838561  ) ;/// 30.; 
-      defaultXSections_[HTB400_URL]             = 0.0371904 * (1.-0.01402549  ) ;/// 30.; 
-      defaultXSections_[HTB500_URL]             = 0.0187822 * (1.-0.006268037 ) ;/// 30.; 
-      defaultXSections_[HTB600_URL]             = 0.0100715 * (1.-0.004805924 ) ;/// 30.; 
-      defaultXSections_[HTB700_URL]             = 0.0056681 * (1.-0.004234392 ) ;/// 30.; 
+      defaultXSections_[HTB180_URL]             = 2 * 22.6975  * (1 - 0.831852   ) ;/// 30.; 
+      defaultXSections_[HTB190_URL]             = 2 * 20.4088  * (1 - 0.407966   ) ;/// 30.;   
+      defaultXSections_[HTB200_URL]             = 2 * 18.4811  * (1 - 0.228564   ) ;/// 30.;   
+      defaultXSections_[HTB220_URL]             = 2 * 15.4027  * (1 - 0.106446   ) ;/// 30.;  
+      defaultXSections_[HTB240_URL]             = 2 * 12.9842  * (1 - 0.04902523 ) ;/// 30.; 
+      defaultXSections_[HTB250_URL]             = 2 * 11.9413  * (1 - 0.04129783 ) ;/// 30.; 
+      defaultXSections_[HTB260_URL]             = 2 * 10.9879  * (1 - 0.0361988  ) ;/// 30.;  
+      defaultXSections_[HTB280_URL]             = 2 * 09.31608 * (1 - 0.02984434 ) ;/// 30.; 
+      defaultXSections_[HTB300_URL]             = 2 * 07.91902 * (1 - 0.02514242 ) ;/// 30.; 
+      defaultXSections_[HTB350_URL]             = 2 * 0.0536621 * (1.-0.01838561  ) ;/// 30.; 
+      defaultXSections_[HTB400_URL]             = 2 * 0.0371904 * (1.-0.01402549  ) ;/// 30.; 
+      defaultXSections_[HTB500_URL]             = 2 * 0.0187822 * (1.-0.006268037 ) ;/// 30.; 
+      defaultXSections_[HTB600_URL]             = 2 * 0.0100715 * (1.-0.004805924 ) ;/// 30.; 
+      defaultXSections_[HTB700_URL]             = 2 * 0.0056681 * (1.-0.004234392 ) ;/// 30.; 
 
 
       defaultXSections_[HHHTAUTAUBB260_URL]             = 0.06 ;// 60 fb 
