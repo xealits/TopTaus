@@ -247,6 +247,33 @@ void ObjectSelector::PreSelectMuons( event::Reader* reader, vector<int>* m_i, co
   
 }
 
+void ObjectSelector::PreSelectUltraLooseMuons( event::Reader* reader, vector<int>* m_i, const vector<PhysicsObject>& vM, PhysicsObject& vertex) {
+  
+  for( int i=0;i< (int) vM.size();++i){
+    
+    const PhysicsObject * m = &vM[i];
+    
+    double mEta     = TMath::Abs(m->Eta());
+    double mPt      = TMath::Abs(m->Pt());
+    double mD0      = fabs((*m)[11]);
+    double mRelIso  = (*m)[18];
+    
+    bool id = reader->MuonId((PhysicsObject &) (*m));     
+    
+    
+    double zvertex   = vertex[7];
+    double zmuon     = (*m)[23];
+    bool   z(false); 
+    if ( fabs(zvertex-zmuon) < 1. ){ z = true;}
+    if(!z){ continue;}
+    
+    
+    if(id && mD0 < M_D0_MAX_&&  mPt > M_PT_MIN_ && mEta < M_ETA_MAX_ && mRelIso < 0.2){ m_i->push_back(i);}        
+    
+  }
+  
+}
+
 void ObjectSelector::PreSelectJets( bool isData, vector<double>& jerFactors, double jes, JetCorrectionUncertainty* junc, int jetAlgo, vector<int>* j_i, const vector<PhysicsObject>& vJ) {
   
   for(unsigned int i=0;i<vJ.size();++i){
