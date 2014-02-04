@@ -20,4 +20,4 @@ cd $LIPCMS_BASE;
 cd ../../
 eval `scramv1 runtime -sh`;
 cd LIP/TopTaus/
-doTauFakesStudy test/physicsAnalysisParSets_cfg.py --do allTrees
+doTauFakesStudy test/physicsAnalysisParSets_cfg.py --do computeAll 
