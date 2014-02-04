@@ -609,12 +609,12 @@ void LandSShapesProducer::DrawTemplates(size_t i){
  
 
     if(sampleName_[f] == "tt_ltau" )
-      hist_[f]->Scale(2776./hist_[f]->Integral());
+      hist_[f]->Scale(2839./hist_[f]->Integral());
     else if(sampleName_[f] == "tt_ll")   
       hist_[f]->Scale(94./hist_[f]->Integral());
 
     if(isDDbkg_[f]){
-      hist_[f]->Scale(1386./hist_[f]->Integral());
+      hist_[f]->Scale(1544./hist_[f]->Integral());
       ddbkgHistUp_ =   (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Up") );
       ddbkgHistDown_ = (TH1*) hist_[f]->Clone(hist_[f]->GetName() + TString("Down") );
       
@@ -1884,7 +1884,7 @@ void LandSShapesProducer::ShapesToDatacard(){
     datacard_<<" fakesSyst      lnN   "<<setw(7)<<
       (sampleName_.size() > 9 ? "1.00      " : " " )<<
       1.00<<setw(10)<<
-      1.15<<setw(10)<<
+      1.11<<setw(10)<<
       1.00<<setw(10)<<
       1.00<<setw(10)<<
       1.00<<setw(10)<<
@@ -2042,6 +2042,16 @@ void LandSShapesProducer::ShapesToDatacard(){
       "1"<<setw(10)<<
       (sampleName_.size() > 9 ? "-     " : "" )<<
       "-"<<endl;
+//    datacard_<<sampleName_[7]<<"_embedded   lnN   "<<setw(7)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "-"<<setw(10)<<
+//      "1.99"<<setw(10)<<
+//      (sampleName_.size() > 9 ? "-     " : "" )<<
+//      "-"<<endl;
     datacard_<<sampleName_[8]<<"_Stat   shape   "<<setw(7)<<
       "-"<<setw(10)<<
       "-"<<setw(10)<<
@@ -2065,7 +2075,6 @@ void LandSShapesProducer::ShapesToDatacard(){
       "-"<<setw(10)<<
       "1"<<endl; //histStatNoNorm_[6]->Integral()  / hist_[6]->Integral()<<endl;
     }
-
     datacard_<<" singletopCrossSection lnN   "<<setw(7)<<
       (sampleName_.size() > 9 ? "1.00     " : "" )<<\
       1.00<<setw(10)<<
@@ -2432,6 +2441,15 @@ void LandSShapesProducer::ShapesToDatacard(){
 	1.00<<setw(10)<<
 	1.00<<setw(10)<<
 	histStatNoNorm_[7]->GetBinContent(ibin)  / hist_[7]->GetBinContent(ibin)<<setw(10)<<
+	1.00<<setw(10)<<
+	1.00<<endl;
+      datacard_<<" ztautauEmbeddedSimul     lnN"<<setw(7)<<
+	1.00<<setw(10)<<
+	1.00<<setw(10)<<
+	1.00<<setw(10)<<
+	1.00<<setw(10)<<
+	1.00<<setw(10)<<
+	1.50<<setw(10)<<
 	1.00<<setw(10)<<
 	1.00<<endl;
       datacard_<<" singleTopStatistics   lnN"<<setw(7)<<
