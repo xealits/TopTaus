@@ -89,12 +89,15 @@ int main(int argc, char* argv[])
   
   std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;
 
+  if(runOn == "testEmbedding") analyzer->process_embeddedData();
+
 
   for(int i=0; i<400; ++i){
     stringstream sidx;
     sidx<<i;
     string idx=sidx.str();
     // 50 from 0
+    
     if      (runOn == "data_muonA_"+idx)  analyzer->process_data_RunA( i);
     else if (runOn == "data_muonB_"+idx)  analyzer->process_data_RunB( i);
     else if (runOn == "data_muonC1_"+idx) analyzer->process_data_RunC1(i);

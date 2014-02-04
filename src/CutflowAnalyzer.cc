@@ -375,7 +375,6 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
     if(tausColl[iorigtau][17] == tauType ){ taus.push_back(tausColl[iorigtau]); }
   }
 
-
   if(i_ == 45){ // Debug event
     cout<<endl<< "JETS IN EVENT " << i_ << endl;
     for(size_t ijet=0; ijet<jets.size(); ++ijet){
@@ -397,6 +396,13 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   PhysicsObject & primaryVertex = vertices[0];
 
   TVectorD *classif = (TVectorD *)ev->eventClassif->At(0);
+
+
+
+  if(url_ == EMBEDDED_DATA_URL){
+    // Debugging temporary lines
+    cout << "Event: " << i_ << ", New embedded weight: " << (*classif)[9] << "           old embedded weight: " << (*classif)[10] << endl;
+  }
 
   if(! isData_ ) if(classif==0) return;  
 

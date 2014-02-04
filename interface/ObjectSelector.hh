@@ -50,6 +50,7 @@ class ObjectSelector{
   // see if this event has other loose muons
   // note if selectedMuon is -1 it will run over all muons else it will skip the selectedMuon
   bool LooseMuonVeto( int, const vector<PhysicsObject> &);
+  bool UltraLooseMuonVeto( int, const vector<PhysicsObject> &);
 
   // setting new cuts 
   inline void Emf_Jet( double emf )          { JET_EMF_MIN_ =  emf;    }

@@ -151,7 +151,8 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[HHHTAUTAUBB260_URL]             = 0.06 ;// 60 fb 
       defaultXSections_[HHHTAUTAUBB300_URL]             = 0.06 ;// 60 fb 
       defaultXSections_[HHHTAUTAUBB350_URL]             = 0.06 ;// 60 fb
-      
+
+      defaultXSections_[EMBEDDED_DATA_URL]      = 0.;               
    
     } else {
       
@@ -566,8 +567,6 @@ int SampleProcessor::tdChannel(int i){
   return ret;
 
 }
-
-
 
 
 
@@ -1200,6 +1199,14 @@ void SampleProcessor::process_diboson(int sample, int i){
   
 }
 
+
+void SampleProcessor::process_embeddedData(){
+  url_ = EMBEDDED_DATA_URL;
+  
+  if( !eChONmuChOFF_ && run2012_)
+    process(true,url_,TString("/exper-sw/cmst3/cmssw/users/vischia/chiggs/CMSSW_5_3_9/src/lipcms/EventSelection/test/Monitor_data_Embedded.root"),oDFolder_+TString("out-embeddedData.root"), keys_);
+
+}
 
 void SampleProcessor::process_data_RunA(int i){
 
