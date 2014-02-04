@@ -182,6 +182,34 @@ bool ObjectSelector::LooseMuonVeto( int selectedMuon, const vector<PhysicsObject
   
 }
 
+bool ObjectSelector::UltraLooseMuonVeto( int selectedMuon, const vector<PhysicsObject>& vM){
+
+  bool looseVeto(false);
+  
+  for(int i=0;i< (int)vM.size();++i){
+    
+    if( i==selectedMuon ){continue;}
+    
+    const PhysicsObject * m = &vM[i];
+    
+    double mEta     = TMath::Abs(m->Eta());
+    double mPt      = TMath::Abs(m->Pt());
+    //double mD0      = fabs( (*m)[11]);
+    double mRelIso  = (*m)[18];
+    
+    //see if this muon is glogal (how to see if it is only global?)
+    bool isGlobalAndTracker ( (int( (*m)[3])>>1 & 0x3) == 3); // ( blah AND 0011 -> returns >0 only if both global and tracker (pos0 and pos1) are 1)
+    
+    if(! isGlobalAndTracker ) continue;
+    
+    if( mEta<LOOSE_M_ETA_MAX_  && mPt> LOOSE_M_PT_MIN_ && mRelIso < 0.4 ){ looseVeto = true; }
+    
+  }
+  
+  return looseVeto;
+  
+}
+
 void ObjectSelector::PreSelectElectrons( event::Reader* reader, vector<int>* e_i, const vector<PhysicsObject>& vE, PhysicsObject& vertex) {
   
   for(unsigned int i=0;i<vE.size();++i){
