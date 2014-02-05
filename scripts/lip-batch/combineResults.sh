@@ -17,9 +17,25 @@ if [ "${2}" = "hadd" ]; then
  #   hadd -f out-data.root out-Muon_RunA_*.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root &
 	
 	
-	hadd -f out-data.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root out-MuonMissing_RunB_*.root out-MuonMissing_RunC_1_*.root out-MuonMissing_RunC_1_*.root out-MuonMissing_RunD_2_*.root out-MuonMissing_RunD_2_*.root 
+	hadd -f out-data.root out-Muon_RunA_*.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root out-MuonMissing_RunB_*.root out-MuonMissing_RunC_1_*.root out-MuonMissing_RunC_1_*.root out-MuonMissing_RunD_2_*.root out-MuonMissing_RunD_2_*.root 
 	
 	
+#    fi
+	
+    fi
+
+    if [ "${3}" = "embed" ]; then
+	DATAPLACE="${1}/nomt-2012-V1-data-MU-20GeV/"
+     #DATAPLACE="/lustre/data3/cmslocal/vischia/tau_dilepton/outputFiles444_3/mt-2011-V1-data-MU-20GeV/"
+	cd $DATAPLACE
+#    if [ "${3}" = "AB" ]; then
+#    	hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root
+#    elif ["${3}" = "ABC" ]; then
+#        hadd -f out-data.root out-Muon_RunA.root out-Muon_RunA_06AugRecover.root out-Muon_RunB_*.root out-Muon_RunC1.root out-Muon_RunC2_*.root
+#    elif ["${3}" = "ABCD" ]; then
+ #   hadd -f out-data.root out-Muon_RunA_*.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root &
+	
+	hadd -f out-embedded-data.root out-Embedded_RunA_*.root out-Embedded_RunB_*.root out-Embedded_RunC_1_*.root out-Embedded_RunC_2_*.root out-Embedded_RunD_1_*.root out-Embedded_RunD_2_*.root 	
 #    fi
 	
     fi

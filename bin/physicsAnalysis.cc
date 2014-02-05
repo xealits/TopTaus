@@ -89,6 +89,7 @@ int main(int argc, char* argv[])
   
   std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;
 
+  
   if(runOn == "testEmbedding") analyzer->process_embeddedData();
 
 
@@ -154,6 +155,16 @@ int main(int argc, char* argv[])
     else if(runOn == "hhhtautaubb_higgs_260_"+idx)           analyzer->process_hhhtautaubb_higgs(260, i);
     else if(runOn == "hhhtautaubb_higgs_300_"+idx)           analyzer->process_hhhtautaubb_higgs(300, i);
     else if(runOn == "hhhtautaubb_higgs_350_"+idx)           analyzer->process_hhhtautaubb_higgs(350, i);
+
+
+    // 10 from 0
+    else if (runOn == "data_embedA_"+idx)  analyzer->process_data_EmbeddedRunA(i);
+    else if (runOn == "data_embedB_"+idx)  analyzer->process_data_EmbeddedRunB(i);
+    else if (runOn == "data_embedC1_"+idx) analyzer->process_data_EmbeddedRunC1(i);
+    else if (runOn == "data_embedC2_"+idx) analyzer->process_data_EmbeddedRunC2(i);
+    else if (runOn == "data_embedD1_"+idx) analyzer->process_data_EmbeddedRunD1(i);
+    else if (runOn == "data_embedD2_"+idx) analyzer->process_data_EmbeddedRunD2(i);
+
 
     // 30 from 0
     else if(runOn == "qcd_10_"+idx)                 analyzer->process_qcd(10, i)                ;
@@ -224,9 +235,13 @@ int main(int argc, char* argv[])
       
     TString samples("data/plotter/samples.xml");
     TString samples_datadriven("data/plotter/samples_datadriven.xml"); 
+    TString samples_embedded("data/plotter/samples_embedded.xml"); 
     TString outFolder("plots/"); // move to input line
+    TString outFolderEmbedded("plotsEmbedded/"); // move to input line
     TString cmd = "mkdir -p "+outFolder+"; cp data/plotter/index.html+"+outFolder+";";
+    TString cmdEmbedded = "mkdir -p "+outFolderEmbedded;
     gSystem->Exec(cmd);
+    gSystem->Exec(cmdEmbedded);
     TString limits("data/plotter/limits.xml");
     TString leptons("data/plotter/leptons.xml");
     TString met("data/plotter/met.xml");
@@ -251,6 +266,7 @@ int main(int argc, char* argv[])
     a.parse(samples,jets,outFolder); 
     a.parse(samples,yields,outFolder);
     a.parse(samples_datadriven,wplusjets,outFolder);
+    a.parse(samples_embedded,yields,outFolderEmbedded);
     //a.parse(samples,limits,outFolder);      
     //a.parse(samples,debug,outFolder);  
     //a.parse(samples,afterR,outFolder);

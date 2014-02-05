@@ -72,6 +72,13 @@ public :
   
   void process_embeddedData();
 
+  void process_data_EmbeddedRunA(int);
+  void process_data_EmbeddedRunB(int);
+  void process_data_EmbeddedRunC1(int);
+  void process_data_EmbeddedRunC2(int);
+  void process_data_EmbeddedRunD1(int);
+  void process_data_EmbeddedRunD2(int);
+
   void process_data_RunA(int);
   void process_data_RunB(int);
   void process_data_RunC1(int);

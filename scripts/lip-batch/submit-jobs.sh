@@ -125,8 +125,16 @@ elif [ "${1}" = "2" ]; then
 	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-hhhtautaubb-higgs.sh 300 0
 	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-hhhtautaubb-higgs.sh 350 0
     done
-    
+elif [ "${1}" = "embed" ]; then
+    echo "Submitting embedding jobs..." 
+    for i in $(seq 0 9); do
+        # tau embedding jobs
+	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-embed-data-RunA.sh ${i}
+	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-embed-data-RunB.sh ${i}
+	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-embed-data-RunC1.sh ${i}
+	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-embed-data-RunC2.sh ${i}
+	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-embed-data-RunD1.sh ${i}
+	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-embed-data-RunD2.sh ${i}
 
+    done    
 fi
-
-exit 0
