@@ -135,6 +135,7 @@ elif [ "${1}" = "embed" ]; then
 	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-embed-data-RunC2.sh ${i}
 	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-embed-data-RunD1.sh ${i}
 	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-embed-data-RunD2.sh ${i}
+	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-embed-ttbar.sh ${i}
 
     done    
 fi

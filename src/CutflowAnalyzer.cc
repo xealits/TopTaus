@@ -399,7 +399,7 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
 
 
 
-  if(url_ == EMBEDDED_DATA_URL && i_ == 45){ // Debug event
+  if( (url_ == EMBEDDED_DATA_URL || url_ == EMBEDDED_TTBAR_URL) && i_ == 45){ // Debug event
     // Debugging temporary lines
     cout << "Event: " << i_ << ", New embedded weight: " << (*classif)[9] << "           old embedded weight: " << (*classif)[10] << endl;
   }
@@ -577,8 +577,8 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   if( hasMutrig ){ numb_m = m_init.size(); if(numb_m){ evType_ = MUTAU_; if(!isData_) w_ = intimepuWeight_*scale_; }}
   
 
-  if(url_ == EMBEDDED_DATA_URL) w_ *= (*classif)[9];  // Tau embedding weight
-  
+  // Tau embedding weight
+  if(url_ == EMBEDDED_DATA_URL || url_ == EMBEDDED_TTBAR_URL) w_ *= (*classif)[9];
 
   TVectorD * classifMC(0);
   // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////

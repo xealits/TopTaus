@@ -37,7 +37,10 @@ if [ "${2}" = "hadd" ]; then
 	
 	hadd -f out-embedded-data.root out-Embedded_RunA_*.root out-Embedded_RunB_*.root out-Embedded_RunC_1_*.root out-Embedded_RunC_2_*.root out-Embedded_RunD_1_*.root out-Embedded_RunD_2_*.root 	
 #    fi
-	
+
+	DATAPLACE="${1}/nomt-2012-V1-mc-MU-20GeV/"
+	cd $DATAPLACE
+        hadd -f out-embedded-ttbar.root out-embedded-ttbar_*.root
     fi
 
     DATAPLACE="${1}/nomt-2012-V1-mc-MU-20GeV/"

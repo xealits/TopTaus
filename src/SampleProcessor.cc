@@ -147,12 +147,13 @@ SampleProcessor::SampleProcessor(double tauPtCut, TString inputArea, TString out
       defaultXSections_[HTB600_URL]             = 2 * 0.0100715 * (1.-0.004805924 ) ;/// 30.; 
       defaultXSections_[HTB700_URL]             = 2 * 0.0056681 * (1.-0.004234392 ) ;/// 30.; 
 
-
+      
       defaultXSections_[HHHTAUTAUBB260_URL]             = 0.06 ;// 60 fb 
       defaultXSections_[HHHTAUTAUBB300_URL]             = 0.06 ;// 60 fb 
       defaultXSections_[HHHTAUTAUBB350_URL]             = 0.06 ;// 60 fb
 
       defaultXSections_[EMBEDDED_DATA_URL]      = 0.;               
+      defaultXSections_[EMBEDDED_TTBAR_URL]     = defaultXSections_[TTBAR_URL];               
    
     } else {
       
@@ -377,7 +378,7 @@ void SampleProcessor::init(){
     listOfEvents_[i] = (listOfHistos_[i])->GetBinContent(1);
 
     //    double unsplitNumber(1.);
-    if     (listOfurls_[i].Contains("ttbar_"              ))    listOfEvents_[i] =  8272517   ;
+    if     (listOfurls_[i].Contains("ttbar_"              ))    listOfEvents_[i] =  8272517   ; // Works for embedded too (embedded ttbar must be normalized using the original number of events from the base sample)
     else if(listOfurls_[i].Contains("stop_s_"             ))    listOfEvents_[i] =  259960    ;
     else if(listOfurls_[i].Contains("stop_t_"             ))    listOfEvents_[i] =  3741874   ;
     else if(listOfurls_[i].Contains("stop_tW-DR_"         ))    listOfEvents_[i] =  497657    ;
@@ -594,6 +595,35 @@ void SampleProcessor::process_ttbar(int i){
   string idx=sidx.str();
 
   process(false, url_, iFolder_ + TString("ttbar_"+idx+".root"), oFolder_+TString("out-ttbar_"+idx+".root"),keys_);
+
+  //SAMPLE WITH WEIGHTS
+  //pdfweights_=true; process(false, url_, iFolder_ + TString("ttbar-pdf.root"), oFolder_+TString("out-ttbar-pdf.root"),keys_); pdfweights_=false;
+  //pdfweights_=true; process(false, url_, iFolder_ + TString("ttbar-pdf-nofilter-B.root"), oFolder_+TString("out-ttbar-pdf.root"),keys_); pdfweights_=false;
+  ///lustre/data3/cmslocal/samples/CMSSW_4_2_X/mc/mTrees-v3-B/ttbar-pdf-nofilter-B.root
+
+  // Trigger efficiencies study ////////////////////////////////////////////////////////////////////////
+  //iFolder_ = TString("/lustre/lip.pt/data/cmslocal/samples/CMSSW_4_2_X/mc/mTrees-v3/");
+  //process(false, url_, iFolder_ + TString("trig-ttbar.root"), oFolder_+TString("out-ttbar.root"),keys_);
+  //////////////////////////////////////////////////////////////////////////////////////////////////////    
+
+}
+
+void SampleProcessor::process_ttbar_Embedded(int i){
+
+  url_= TTBAR_URL; 
+
+  if(i>49){
+    cout << "ERROR CODE - must be in the range [1,18]" << endl;
+    return;
+  }
+  
+  stringstream sidx;
+  sidx<<i;
+  string idx=sidx.str();
+
+    process(true,url_,TString(),oDFolder_+TString("out-Embedded_RunA_"+idx+".root"),keys_);
+
+  process(false, url_, TString("/lustre/ncg.ingrid.pt/cmslocal/vischia/tau_dilepton/goodEmbedYourAss/out/Embedded_ttbar_"+idx+".root"), oFolder_+TString("out-embedded-ttbar_"+idx+".root"),keys_);
 
   //SAMPLE WITH WEIGHTS
   //pdfweights_=true; process(false, url_, iFolder_ + TString("ttbar-pdf.root"), oFolder_+TString("out-ttbar-pdf.root"),keys_); pdfweights_=false;

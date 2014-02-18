@@ -79,6 +79,8 @@ public :
   void process_data_EmbeddedRunD1(int);
   void process_data_EmbeddedRunD2(int);
 
+  void process_ttbar_Embedded(int);
+
   void process_data_RunA(int);
   void process_data_RunB(int);
   void process_data_RunC1(int);
