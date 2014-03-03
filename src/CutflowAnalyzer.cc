@@ -399,10 +399,12 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
 
 
 
-  if(url_ == EMBEDDED_DATA_URL){
+  if( (url_ == EMBEDDED_DATA_URL || url_ == EMBEDDED_TTBAR_URL) && i_ == 45){ // Debug event
     // Debugging temporary lines
     cout << "Event: " << i_ << ", New embedded weight: " << (*classif)[9] << "           old embedded weight: " << (*classif)[10] << endl;
   }
+
+
 
   if(! isData_ ) if(classif==0) return;  
 
@@ -574,6 +576,10 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   if( hasEGtrig ){ numb_e = e_init.size(); if(numb_e){ evType_ = ETAU_ ; if(!isData_) w_ = intimepuWeight_*scale_; }}
   if( hasMutrig ){ numb_m = m_init.size(); if(numb_m){ evType_ = MUTAU_; if(!isData_) w_ = intimepuWeight_*scale_; }}
   
+
+  // Tau embedding weight
+  if(url_ == EMBEDDED_DATA_URL || url_ == EMBEDDED_TTBAR_URL) w_ *= (*classif)[9];
+
   TVectorD * classifMC(0);
   // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////
   // fill weighted events and reset selected events vector weights
@@ -1128,7 +1134,8 @@ void CutflowAnalyzer::tauDileptonSelection(
     for(uint j=0; j<j_final.size(); ++j){  
       int j_ind = j_final[j]; 
       double btagvalue = jets[j_ind][BTAGIND_] ;
-      if( btagvalue>BTAG_CUT_){nbtags_taus++;} 
+      if( btagvalue>BTAG_CUT_){nbtags_taus++; }
+      cout << "DEBUG: jet number " << j << " has btag discriminator " << btagvalue << ". Currently we have already selected " << nbtags_taus << " btags" << endl; 
     }
   }
   else {

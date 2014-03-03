@@ -289,7 +289,8 @@ namespace commondefinitions{
    HHHTAUTAUBB300_URL,
    HHHTAUTAUBB350_URL,
 
-   EMBEDDED_DATA_URL
+   EMBEDDED_DATA_URL,
+   EMBEDDED_TTBAR_URL
   };
 
   
