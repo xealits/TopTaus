@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LIPCMS_BASE=/exper-sw/cmst3/cmssw/users/vischia/chiggs/CMSSW_5_3_9/src/LIP/TopTaus/
+LIPCMS_BASE=/exper-sw/cmst3/cmssw/users/olek/CMSSW_5_3_9/src/LIP/TopTaus/
 myFolder=${LIPCMS_BASE}/scripts/lip-batch/
 
 cd $myFolder;
@@ -10,6 +10,7 @@ if [ "${1}" = "1" ]; then
     for i in $(seq 0 49); do
         # 1400 jobs
 	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar.sh ${i}
+#exit
 	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mutau.sh ${i}    
 	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-mumu.sh ${i}    
 	qsub -v LIPCMS_BASE=${LIPCMS_BASE}    ./job-ttbar-emu.sh ${i}    
