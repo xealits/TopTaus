@@ -49,7 +49,7 @@ using namespace std;
 
 // FIXME: have a single class for all the four tree producing
 
-class TauFakesHelper : public ObjectSelector, UncertaintyCalculator, PlotStyle {
+class TauFakesHelper : public ObjectSelector, UncertaintyCalculator {
 public:
   TauFakesHelper(double, TString, TString, TString, TString, TString, TString, TString);
   ~TauFakesHelper(){}
@@ -66,7 +66,7 @@ public:
   void ComputeTauFake(string type , vector<double>& finalValues, double TauPt = 20., int option =1);
   void TauFakeEstimate(TString, TString, PhysicsTools::MVAComputer*, TH1F*, double*, double*);
 
-  void ProduceDataDrivenDistributions(bool, bool );
+  void ProduceDataDrivenDistributions();
 
 private:
   void SetParameters();

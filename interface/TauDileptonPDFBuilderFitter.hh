@@ -7,7 +7,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.13 2012/11/08 14:40:14 vischia Exp $                                                                                                       
+  \version  $Id: TauDileptonPDFBuilderFitter.hh,v 1.14 2013/01/22 10:44:01 vischia Exp $                                                                                                       
 */
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -119,6 +119,8 @@ private:
 
   TString minitreeSelected_;
   TString minitreeDataDriven_;
+  TString minitreeUnc_;
+
   
   // Input files
   TFile * signalFileWH_;
@@ -150,6 +152,8 @@ private:
 
   double osCutEff_;
   double cHiggsBR_;
+
+  int catNBtags_;
 
   TCanvas* canvas_;
 
@@ -244,6 +248,7 @@ private:
 
   TH1* signalHist_;
   TH1* ddbkgHist_;
+  TH1* dataHist_;
   TH1* ttbarmcbkgHist_;
   TH1* mcbkgHist_;
   TLegend* leg_;

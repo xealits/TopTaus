@@ -6,7 +6,7 @@
   
   \author   Pietro Vischia
 
-  \version  $Id: FitVar.hh,v 1.2 2012/09/23 14:21:56 vischia Exp $                                                                                                       
+  \version  $Id: FitVar.hh,v 1.3 2012/11/17 04:40:45 vischia Exp $                                                                                                       
 */
 
 //#if !defined(__CINT__) || defined(__MAKECINT__)
@@ -17,7 +17,7 @@
 
 // System headers
 #include <string>
-#include <vector>
+
 
 // ROOT headers
 #include "TString.h"
@@ -27,17 +27,11 @@
 class FitVar{
   
 public:
-  FitVar(std::string, double, double, int, double, double, Int_t, Int_t, bool, Int_t);
-  void setFancyName(std::string);
-  void setBinNames(std::vector<std::string>);
-  bool getToNorm();
-  Int_t getDoLogy();
+  FitVar(std::string, double, double, int, double, double, Int_t, Int_t);
   std::string getVarName();
-  std::string getFancyName();
   double getMin();
   double getMax();
   int getBins();
-  std::string getBinName(int);
   double getBinStep();
   double getHmin();
   double getHmax();
@@ -45,17 +39,13 @@ public:
   Int_t getSmoothOrder();
 private:
   std::string varName_;
-  std::string fancyName_;
   double min_;
   double max_;
   int bins_;
-  std::vector<std::string> binNames_;
   double hmin_;
   double hmax_;
   Int_t unbinned_;
   Int_t smoothOrder_;
-  bool toNorm_;
-  Int_t doLogy_;
 };
 
 #endif //_FitVar_hh

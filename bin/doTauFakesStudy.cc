@@ -5,7 +5,7 @@
       
       \author   Pietro Vischia
       
-      \version  $Id: doTauFakesStudy.cc,v 1.3 2013/04/19 12:44:04 vischia Exp $                                                                                                       
+      \version  $Id: doTauFakesStudy.cc,v 1.4 2013/04/22 16:58:36 vischia Exp $                                                                                                       
 */
 
 #include "LIP/TopTaus/interface/TauFakesHelper.hh"
@@ -44,23 +44,18 @@ void printHelp()
 	   << "\t\t\t Options documentation:\n"
 	   << "\t\t\t\t\t all:\n"
 	   << "\t\t\t\t\t \t\t do all the following.\n"
-	   << "\t\t\t\t\t allTrees wmuTrees qctTrees wmuDataTree wmuMCTree qcdDataTree qcdMCTree:\n"
+	   << "\t\t\t\t\t allTrees wmuTrees qctTrees:\n"
 	   << "\t\t\t\t\t \t\t produce training trees.\n"
 	   << "\t\t\t\t\t trainAll trainWMuAll trainWMuData trainWMuMC trainQCDAll trainQCDData trainQCDMC:\n"
 	   << "\t\t\t\t\t \t\t train with nearest-neighbours algorithm.\n"
-	   << "\t\t\t\t\t monitorAll:\n"
-	   << "\t\t\t\t\t \t\t Create all monitoring plots. Don't use with trainAll (it is already included in it).\n"
 	   << "\t\t\t\t\t prepareAll prepareWMuAll prepareWMuData prepareWMuMC prepareQCDAll prepareQCDData prepareQCDMC:\n"
 	   << "\t\t\t\t\t \t\t prepare reweighted files for fakes computation.\n"
 	   << "\t\t\t\t\t computeAll computeWMuFakes computeQCDFakes:\n"
 	   << "\t\t\t\t\t \t\t compute fakes.\n"
 	   << "\t\t\t\t\t produceDDfile:\n"
-	   << "\t\t\t\t\t \t\t do all the following:\n"
-	   << "\t\t\t\t\t produceDataDDfile:\n"
 	   << "\t\t\t\t\t \t\t produce final data driven file with data rescaled events.\n"
-	   << "\t\t\t\t\t produceMCDDfile:\n"
-	   << "\t\t\t\t\t \t\t produce final data driven file with MC rescaled events.\n"
-    	   << std::endl;
+	   << std::endl;
+  
 }
 //
 int main(int argc, char* argv[])
@@ -118,19 +113,13 @@ int main(int argc, char* argv[])
   
   for(size_t i=0; i<actions_.size(); i++){
     // Produce training trees
-    if(actions_[i] == "wmuDataTree" || actions_[i] == "wmuTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
+    if(actions_[i] == "wmuTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
       helper->ProcessEvents(TauFakesHelper::WMUDATA);
-    }
-
-    if(actions_[i] == "wmuMCTree" || actions_[i] == "wmuTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
       helper->ProcessEvents(TauFakesHelper::WMUMC);
     }
     
-    if(actions_[i] == "qcdDataTree" || actions_[i] == "qcdTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
+    if(actions_[i] == "qcdTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
       helper->ProcessEvents(TauFakesHelper::QCDDATA);
-    }
-
-    if(actions_[i] == "qcdMCTree" || actions_[i] == "qcdTrees" || actions_[i] == "allTrees" || actions_[i] == "all"){
       helper->ProcessEvents(TauFakesHelper::QCDMC);
     }
     
@@ -154,21 +143,13 @@ int main(int argc, char* argv[])
       helper->Trainer(TauFakesHelper::QCDMC);
       helper->Monitor(TauFakesHelper::QCDMC);
     }
-
-    // MonitorOnly
-    if(actions_[i] == "monitorAll" ){
-      helper->Monitor(TauFakesHelper::WMUDATA);
-      helper->Monitor(TauFakesHelper::WMUMC);
-      helper->Monitor(TauFakesHelper::QCDDATA);
-      helper->Monitor(TauFakesHelper::QCDMC);
-    }
-        
+    
     // Prepare reweighted files for fake computation
     if(actions_[i] == "prepareWMuData" || actions_[i] == "prepareWMuAll" || actions_[i] == "prepareAll" || actions_[i] == "all"){
       helper->PrepareFiles(TauFakesHelper::WMUDATA);
     }
     
-    if(actions_[i] == "prepareWmuMC" || actions_[i] == "prepareWmuAll" || actions_[i] == "prepareAll" || actions_[i] == "all"){
+    if(actions_[i] == "prepareWMuMC" || actions_[i] == "prepareWMuAll" || actions_[i] == "prepareAll" || actions_[i] == "all"){
       helper->PrepareFiles(TauFakesHelper::WMUMC);
     }
 
@@ -235,7 +216,7 @@ int main(int argc, char* argv[])
       
       cout << "exp: " << expFinal << " +/- " << expErrFinal << endl;
       cout << "mc: " << mc << " +/- " << mcErr << endl;
-      cout << "data: " << dataErr << " +/- " << dataErr << endl;
+      cout << "data: " << data << " +/- " << dataErr << endl;
       
       cout<<"--------------------------------------- LATEX SUMMARY  --------------------------------------" << endl<<endl;
       cout<<"\\begin{tabular}{c|c|c|c}"<<endl;
@@ -251,12 +232,8 @@ int main(int argc, char* argv[])
     }
     
     // Produce final data driven file with data rescaled events
-    if(actions_[i] == "produceDDfile" || actions_[i] == "produceDataDDfile" || actions_[i] == "all"){
-      helper->ProduceDataDrivenDistributions(true,false);
-    }
-    
-    if(actions_[i] == "produceDDfile" || actions_[i] == "produceMCDDfile" || actions_[i] == "all"){
-      helper->ProduceDataDrivenDistributions(false,true);
+    if(actions_[i] == "produceDDfile" || actions_[i] == "all"){
+      helper->ProduceDataDrivenDistributions();
     }
     
     

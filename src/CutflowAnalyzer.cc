@@ -9,49 +9,36 @@
 
 #include "PhysicsTools/Utilities/interface/LumiReweightingStandAlone.h"
 
+
 using namespace std;
 
-CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis, TString inputArea, TString outputArea, TString puFileName, TString runRange, vector<double> brHtaunu, vector<double> brHtb) :
-  UncertaintyCalculator(),  
-  AnalysisMonitoring(tauPtCut, inputArea, outputArea), 
-  ObjectSelector(tauPtCut),
-  noUncertainties_(noUncertainties),
-  doWPlusJetsAnalysis_(doWPlusJetsAnalysis),
-  testMe_(0),
-  testMe_Nev_(0)
-
+CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis, TString inputArea, TString outputArea, TString puFileName, TString runRange) : UncertaintyCalculator(),  
+																				AnalysisMonitoring(tauPtCut, inputArea, outputArea), 
+																				ObjectSelector(tauPtCut),
+																				noUncertainties_(noUncertainties),
+																				doWPlusJetsAnalysis_(doWPlusJetsAnalysis),
+																				testMe_(0),
+																				testMe_Nev_(0)
 {    
-  brHtaunu_ = brHtaunu;
-  brHtb_    = brHtb;
-
-  cout << "------- BR(H+->taunu) -------" << endl;
-  for(size_t i=0; i<brHtaunu_.size(); ++i)
-    cout<< brHtaunu_[i] << endl;
-
-  cout << "------- BR(H+->tb) -------" << endl;
-  for(size_t i=0; i<brHtb_.size(); ++i)
-    cout<< brHtb_[i] << endl;
-
+  
+  //  inputArea_  = inputArea; // Moved to AnalysisMonitoring -> SampleProcessor // FIXME: check if it is possible to initialize them in the constructor init list
+  //  outputArea_ = outputArea;
   puFileName_ = puFileName ;
+  // runRange_ = runRange;    // save time
 
   // Default is ABCD in CommonDefinitions.cc
-  if(runRange=="ABCD")     LUM_ = 19696.; // 2012 ABCD 539 ReReco.
-  //  if(runRange=="ABCD")     LUM_ = 18282; // 2012 BCD 539 ReReco.
-
-  // RunA: 876.225
-  // RunB: 4311
-  // RunC1: 3598
-  // RunC2: 3283
-  // RunD1: 3061
-  // RunD2: 4129
-  else if(runRange=="AB")  LUM_ = 0.; // Must update
-  else if(runRange=="ABC") LUM_ = 0.; // Must update
-  else if(runRange=="A")   LUM_ = 0.; // Must update
-  else if(runRange=="B")   LUM_ = 0.; // Must update
-  else if(runRange=="C1")  LUM_ = 0.; // Must update
-  else if(runRange=="C2")  LUM_ = 0.; // Must update
-  else if(runRange=="D")   LUM_ = 0.; // Must update
-  
+  if(runRange=="ABCD")     LUM_ = 18072.17; // 2012 ABCD final ntuples
+  else if(runRange=="AB")  LUM_ = 5040.32; // 2013 AB final ntuples
+  else if(runRange=="ABC") LUM_ = 11514.17; // 2012 ABC final ntuples
+  else if(runRange=="A")   LUM_ = 803.38+82.52; // 2012 A final ntuples
+  //  else if(runRange=="Ar")  LUM_ = 82.52; // 2012 Ar final ntuples	
+  else if(runRange=="B")   LUM_ = 4154.; // 2012 B final ntuples	
+  else if(runRange=="C1")  LUM_ = 482.26; // 2012 C1 final ntuples	
+  else if(runRange=="C2")  LUM_ = 5992.; // 2012 C2 final ntuples	
+  else if(runRange=="D")   LUM_ = 6558.; // 2012 D final ntuples   
+  else { cout << "taking LUM_ in CommonDefinitions" << endl; }
+   
+ 
   // Acquire pileup weights
   float dataDist[100] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
 			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
@@ -64,7 +51,8 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
 			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
 			 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.}; 
   TFile* dataWeightsFile =0;
-  if(run2012_) dataWeightsFile = new TFile(puFileName_);
+  if(run2012_) dataWeightsFile = new TFile(puFileName_); //MyDataPileupHistogram_All_70500.root");//MyDataPileupHistogram_All_73500.root");
+  //  else dataWeightsFile = new TFile("");
   if(!dataWeightsFile){ cout<<endl<<"File : " << puFileName_ << " not found or run2012_ not set."<<endl; exit(0);}
   TH1D* hist = (TH1D*) dataWeightsFile->Get("pileup");
   for(int i=0; i<50;++i)
@@ -74,9 +62,9 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   /////////////////////////  
 
 
-  // lepton efficiencies assumed to be ~100%.
+  // lepton efficiencies initialized at 100%
   electrontriggerefficiency_= 1;
-
+  electronidisoefficiency_  = 1;
   muontriggerefficiency_    = 1;   
   leptontriggerefficiency_  = 1;
   ////////////////////////////////////////
@@ -85,11 +73,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   is_os_=0.; // Stored in tree for fitters
 
   // Minimum distance b/ween objects ////////////////////////////////////////////////////////////////
-  DRMIN_JET_E_ = 0.4; 
-  DRMIN_JET_M_ = 0.4; 
-  DRMIN_T_E_   = 0.4; 
-  DRMIN_T_M_   = 0.4; 
-  DRMIN_T_J_   = 0.3;
+  DRMIN_JET_E_ = 0.4; DRMIN_JET_M_ = 0.4; DRMIN_T_E_   = 0.4; DRMIN_T_M_   = 0.4; DRMIN_T_J_   = 0.3;
   ///////////////////////////////////////////////////////////////////////////////////////////////////    
   
   MT_CUT_    = 40;  
@@ -98,7 +82,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   TAUPRONGS_ = 1;    
   
   // Uncertainties //////////////////////////////////////////////////// FIXME: update this
-  JES_ = 0.05; UNC_ = 0.10; JER_ = 1; BTAGUNC_= 0.10; UNBTAGUNC_=0.10; TES_ = 0.03; TOPPTUNC_ = 1.;
+  JES_ = 0.05; UNC_ = 0.10; JER_ = 1; BTAGUNC_= 0.10; UNBTAGUNC_=0.10; TES_ = 0.03; TOPPTUNC_=1.;
   ////////////////////////////////////////////////////////////////////
   
   
@@ -128,20 +112,27 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
   jerUnc_ak5_pf_pt_  = new JetResolution(jerFolder+string("/Spring10_PtResolution_AK5PF.txt"),true); // Temporarily disabled
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
-  // Poisson shifter for number of vertices ///////// Not used anymore. Shifting minbias xsec in the pileup distributions given as an input
-  PShiftDown_ = reweight::PoissonMeanShifter(-0.6); // FIXME: remember to recalculate (10% of the mean number of vertices))
+  // Poisson shifter for number of vertices /////////
+  PShiftDown_ = reweight::PoissonMeanShifter(-0.6);
   PShiftUp_   = reweight::PoissonMeanShifter(0.6);
   ///////////////////////////////////////////////////
   
   // New BTAG uncertainty method /////////////////////////////////
+  ////////////////////////////////////////  
   // New BTAG: >= Moriond 2013
   BTagSF_     = 0.966; err_BTagSF_     = 0.025;
   LightJetSF_ = 1.16;  err_LightJetSF_ = sqrt(0.02*0.02+0.014*0.014);
+  // Old BTAG: < HCP 2012
+  //  BTagSF_     = 0.95; err_BTagSF_     = 0.03;
+  //  LightJetSF_ = 1.1;  err_LightJetSF_ = sqrt(0.01*0.01+0.011*0.11);
+  /////////////////////////////////////////////////////////////////
+  
   
 }
 
 void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TString outhistograms, vector<TString> & keys, uint ttbarLike ){
-
+  
+  
   isData_             = isData;
   ttbarLike_          = ttbarLike;
   outFileName_        = outhistograms;
@@ -160,7 +151,8 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
   
   // Builds event readers and open files and fills debug info if full processing is enabled ////////////////////////////////////////
   // third parameter is isFullStatistics. If it's set to true, the last parameter (number of events to be processed) is ignored.
-  init(urls,xsec,true,LUM_,1); // No need to differentiate between channels. Will differentiate channels in the code (faster: only one access to event vars per event)
+  init(urls,xsec,true,LUM_,30000); // No need to differentiate between channels. Will differentiate channels in the code (faster: only one access to event vars per event)
+   //  init(urls,xsec,false,LUM_,1000); // No need to differentiate between channels. Will differentiate channels in the code (faster: only one access to event vars per event)
   ///  if(     !eChONmuChOFF_                                       ) init(urls,xsec,true,LUM_,10000);
   ///  else if( eChONmuChOFF_ && MODE_ == STARTING_AT_LJETS_        ) init(urls,xsec,true,LUM_,10000);   //single lepton trigger
   ///  else if( eChONmuChOFF_ && MODE_ == STARTING_AT_LJETSPLUSMET_ ) init(urls,xsec,true,LUM_,100);     //electron+2jets+met trigger
@@ -168,6 +160,7 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
   
   scale_=listOfScales_[0];
+
 
   // gets the reader for this sample and the number of events to be processed
   evR_   = listOfReaders_[0];   nevents_   = listOfEventsToProcess_[0];
@@ -178,20 +171,30 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
   // values for mu + tau///
   if( TAU_PT_MIN_== 20 ){
     
-    //Muon with MT. FIXME: check these values 
-    //BTAG_eff_R_ = 0.81376;         
-    //BTAG_eff_F_ = 0.163441;
-
-
-    // Muons without mt cut, 2013-08-24. Following twiki, gluon contribution not considered for ratios.
-    // passage ntuples //     BTAG_eff_R_ = 0.656;         
-    // passage ntuples //     BTAG_eff_F_ = 0.054;
+    //Electrons Ele27_WP80 in 5_3_9 @ 8 TeV
+    //BTAG_eff_R_ = .6576;
+    //BTAG_eff_F_ = 0.035;
     
-    // new ntuples
-    BTAG_eff_R_ = 0.396856;
-    BTAG_eff_F_ = 0.031894;
+    if (eChONmuChOFF_) {
+      //Electrons exclusive Following twiki, gluon contribution not considered for ratios.
+      BTAG_eff_R_ = 0.6578; //0.820309;
+      BTAG_eff_F_ = 0.03594; //0.180834;
+    } else {
+      //Muons exclusive Following Pietro
+      BTAG_eff_R_ = 0.396856;
+      BTAG_eff_F_ = 0.031894;
+    }
+    //Electrons exclusive MT
+    //BTAG_eff_R_ = 0.819873;
+    //BTAG_eff_F_ = 0.177778;
     
-
+    //Muon with MT. FIXME: check these values
+    //    BTAG_eff_R_ = 0.81376;         
+    //    BTAG_eff_F_ = 0.163441;
+    
+    //Muons
+    //BTAG_eff_R_ = 0.810935;
+    //BTAG_eff_F_ = 0.167423;
     
   }else { // Zeroed
     BTAG_eff_R_ = 0.00000; //811112;
@@ -225,51 +228,55 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
   // Main event loop ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   for(i_=0; i_< nevents_; ++i_){
     
-    //    event::MiniEvent_t*  ev   = evR_->GetNewMiniEvent(i_,"data");  if( ev == 0 ) continue;
-    event::MiniEvent_t*  ev(0);
-    evR_->GetNewMiniEvent_try(ev, i_,"data");  if( ev == 0 ) continue;
+    //    ev_   = evR_->GetNewMiniEvent(i_,"data");  if( ev_ == 0 ) continue;
+    event::MiniEvent_t *ev   = evR_->GetNewMiniEvent(i_,"data");  if( ev == 0 ) continue;
 
-
-
+    //    if (ev->minEventQualityToStore < 2) continue; 
+    
     is_os_=0.; // Stored in tree for fitters // Reset for each event
     tauR_=-1; // Reset for each event
-    if( ! (i_% 1000 ) ){cout<<" -> Processing ... : "<<(i_+1)<<endl;}
+    if( ! (i_% 10000 ) ){cout<<" -> Processing ... : "<<(i_+1)<<endl;}
+    //    if( ! (i_% 100 ) ){cout<<" -> Processing ... : "<<(i_+1)<<endl;}
 
     // TAU DILEPTON ANALYZER ////////////////////////////////////////////////////////
     vector<TString>::iterator it;
     for(it=keys.begin();it!=keys.end();++it){   
       // tau dilepton analysis (newphys,tau algo, miniEvent, jes, unc, jer )
       myKey_ = (*it);
-      eventAnalysis( false, (*it),ev,         0 ,        0,        0  ,             0,                0,         0, 0); 
+      tauDileptonAnalysis( false, (*it),ev,         0 ,         0,          0,             0,               0,                     0,           0); 
       if(!isData_)
 	if(!noUncertainties_){
-	  eventAnalysis( false, (*it),ev,      JES_ ,        0,        0  ,             0,                0,           0,          0);        
-	  eventAnalysis( false, (*it),ev, (-1)*JES_ ,        0,        0  ,             0,                0,           0,          0);
-	  eventAnalysis( false, (*it),ev,        0  ,     UNC_,        0  ,             0,                0,           0,          0);
-	  eventAnalysis( false, (*it),ev,        0  ,(-1)*UNC_,        0  ,             0,                0,           0,          0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,      JER_ ,             0,                0,           0,          0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0, (-1)*JER_ ,             0,                0,           0,          0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,      BTAGUNC_,                0,           0,          0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  , (-1)*BTAGUNC_,                0,           0,          0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,       UNBTAGUNC_,           0,          0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_,           0,          0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,        TES_,          0);
-	  eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,   (-1)*TES_,          0);
-
-	  if( url_ == TTBAR_URL){
-	    eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,        0,          TOPPTUNC_);
-	    eventAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,        0,     (-1)*TOPPTUNC_);
-	  }
+	  tauDileptonAnalysis( false, (*it),ev,      JES_ ,        0,        0  ,             0,                0,                 0,               0);       
+	  tauDileptonAnalysis( false, (*it),ev, (-1)*JES_ ,        0,        0  ,             0,                0,                 0,               0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,     UNC_,        0  ,             0,                0,                 0,               0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,(-1)*UNC_,        0  ,             0,                0,                 0,               0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,      JER_ ,             0,                0,                 0,               0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0, (-1)*JER_ ,             0,                0,                 0,               0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,      BTAGUNC_,                0,                 0,               0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  , (-1)*BTAGUNC_,                0,                 0,               0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,       UNBTAGUNC_,                 0,               0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,  (-1)*UNBTAGUNC_,                 0,               0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,              TES_,               0);
+	  tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,         (-1)*TES_,               0);
+// 	  if( url_ == TTBAR_URL){	    
+// 	    tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,                 0,       TOPPTUNC_);
+// 	    tauDileptonAnalysis( false, (*it),ev,        0  ,        0,        0  ,             0,                0,                 0,  (-1)*TOPPTUNC_);
+// 	  }
 	}
       
+      
       // WARNING : we only store WplusJets info for PFlow (HPS Pftopat based jets) 
-      if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev, 0,0,0,0,0,0); }
+      //fn if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev, 0,0,0,0,0); }
+      if( (*it) == TString("PFlow") && doWPlusJetsAnalysis_ ){  wPlusJetAnalysis( (*it), ev, 0,0,0,0,0,0,0); }
+      
     }
     //////////////////////////////////////////////////////////////////////////////////
+
+
   }
 
   //SPY /////////////// FIXME: examine this
-  //evR_->EndSpyEvents();
+  evR_->EndSpyEvents();
   /////////////////////
 
 
@@ -296,27 +303,360 @@ void CutflowAnalyzer::process(bool isData, urlCodes urlCode, TString path, TStri
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-void CutflowAnalyzer::eventAnalysis(bool newPhys,
-				    TString myKey,
-				    event::MiniEvent_t *ev,
-				    double jes ,
-				    double unc, 
-				    double jer, 
-				    double btagunc, 
-				    double unbtagunc,
-				    double tes, 
-				    double topptunc
-				    ){
-
-
+void CutflowAnalyzer::eventAnalysis(bool newPhys, double jes , double unc, double jer, double btagunc, double unbtagunc)
+{
   jes_=jes;
   unc_=unc;
   jer_=jer;
-  btagunc_=btagunc; 
+  btagunc_=btagunc;
   unbtagunc_=unbtagunc;
-  tes_=tes;
-  topptunc_=topptunc;
+  sys_ = jes_ || unc_ || jer_ || btagunc_ || unbtagunc_;
+
+  CleanStoreObjects();
+
+  // Set default lepton + jet selection
+  SetLeptonPlusJetsSelection();
+  setSelectionParameters();
+  //////////////////////////////////////
+
+  //trigger ///////////////////////////////////////////////////////
+  TVectorD* trig = (TVectorD *)ev_->triggerColl->At(0);
+  bool hasMutrig( ((*trig)[0]>0) );
+  bool hasEGtrig( ((*trig)[1]>0) );
+  /////////////////////////////////////////////////////////////////
+
+  //cout<<" trigger bits : "<<hasMutrig<<endl;
+
+  
+  unsigned int jetAlgo,tauType, leptonType;
+  TString mcTag("");
+
+  junc_=0; JetResolution* jerc(0);
+  //  unsigned int metAlgo; // unused
+  
+  if( myKey_.Contains("PFlow")   ) { // Moved up for optimization
+    jetAlgo=event::AK5PFLOW, leptonType=event::PFLOWLEPTON; tauType = PFLOWTAU; if(!isData_){junc_=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc_=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PFLOWMET;  
+  } 
+  else if( myKey_=="PF"               ) { 
+    jetAlgo=event::AK5PF;  leptonType=event::STDLEPTON;    tauType = PFTAU;    if(!isData_){junc_=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc_=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;   
+  }
+  else if( myKey_.Contains("TaNC")    ) { 
+    jetAlgo=event::AK5PF;   leptonType=event::STDLEPTON;   tauType = PFTAU;    if(!isData_){junc_=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc_=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;  
+  }
+  else if( myKey_.Contains("HPS")     ) { 
+    jetAlgo=event::AK5PF,    leptonType=event::STDLEPTON;   tauType = HPSTAU;   if(!isData_){junc_=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc_=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;  
+  } 
+
+  unsigned int jetCorr;
+  if(isData_){ jetCorr = event::Reader::VTXCONSTRAINED | event::Reader::RESJECCORR; }
+  else       { jetCorr = event::Reader::VTXCONSTRAINED;                             }
+  
+  
+  // get physics objects ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  vertices_                 = evR_->GetVertexCollection(ev_);
+  jets_without_arbitration_ = evR_->GetPhysicsObjectsFrom(ev_,event::JET, jetAlgo  ); 
+  jets_                     = evR_->GetJetsWithArbitration( jets_without_arbitration_, jetCorr); 
+  muons_                    = evR_->GetPhysicsObjectsFrom(ev_,event::MUON, leptonType);     
+  electrons_                = evR_->GetPhysicsObjectsFrom(ev_,event::ELECTRON, leptonType); 
+  tausColl_                 = evR_->GetPhysicsObjectsFrom(ev_,event::TAU);
+  taus_.clear();
+  //  cout << "tau size tausColl.size(): " << tausColl.size() << " PFLOWTAU: " << PFLOWTAU << ", PFTAU: " << PFTAU << " HPSTAU: " << HPSTAU << endl; // Debug
+  
+  for(size_t iorigtau=0; iorigtau<tausColl_.size(); ++iorigtau){ // Get taus from leptons collection
+    //    cout << tausColl[iorigtau][17] << ", " << tauType << endl; // Debug 
+    if(tausColl_[iorigtau][17] == tauType ){ taus_.push_back(tausColl_[iorigtau]); }
+  }
+  if(i_ == 45){
+    cout<<endl<< "JETS IN EVENT " << i_ << endl;
+    for(size_t ijet=0; ijet<jets_.size(); ++ijet){
+      cout << setprecision(6) << "\t\t jet " << ijet << ", pt " << jets_[ijet].Pt() <<", eta " << jets_[ijet].Eta() << ", phi " << jets_[ijet].Phi() << endl;
+      
+    }
+  }
+
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  if(vertices_.size()==0){ cout<<endl<<" Vertex was zero ???????"<<endl; return; }
+  PhysicsObject & primaryVertex = vertices_[0];
+
+  TVectorD *classif = (TVectorD *)ev_->eventClassif->At(0);
+
+  if(! isData_ ) if(classif==0) return;  
+
+  // pileup reweighting /////////////////////////////////////////////////////////////////////////
+  if(! isData_ ){ 
+    outtimepuWeight_= 1;     /*outtimepuWeight_ = eventPUWeight( (*classif)[3] );*/ 
+    int npv = (*classif)[2]; //intime pu vertices
+    intimepuWeight_ = LumiWeights_.ITweight(npv);
+
+    // why outtime pu? why this formula
+    //int ave_nvtx = int((*classif)[2] + (*classif)[3])/3;
+    int ave_nvtx = npv;
+    if     ( pu_ == PUPLUS  ) intimepuWeight_ = intimepuWeight_*PShiftUp_.ShiftWeight( ave_nvtx );
+    else if( pu_ == PUMINUS ) intimepuWeight_ = intimepuWeight_*PShiftDown_.ShiftWeight( ave_nvtx );
+  } 
+  else  { intimepuWeight_ = 1;  outtimepuWeight_= 1; }
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  //jet resolution corrections ////////////////////////////////////////////////////////////////////////////////
+
+  // Add here allinone met propagation and do stuff here for that yaya.
+  uint metAlgo;
+  if( myKey_.Contains("PFlow")   ) { metAlgo=event::PFLOWMET;  } 
+  else if( myKey_=="PF"               ) { metAlgo=event::PF;        }
+  else if( myKey_.Contains("TaNC")    ) { metAlgo=event::PF;        }
+  else if( myKey_.Contains("HPS")     ) { metAlgo=event::PF;        } 
+
+  
+  mets_.clear();
+  mets_ = evR_->GetPhysicsObjectsFrom(ev_,event::MET,metAlgo);           
+  if(mets_.size()==0) { cout << "No met available for " << myKey_ <<" analysis type ! "<< endl;  return;}
+  met_ = mets_[0]; 
+
+  if(i_ == 45) cout<<endl<< "MET: pt " << met_.Pt() << ", eta " << met_.Eta() << ", phi " << met_.Phi() << endl;
+  doPropagations( jerFactors_, jes_, jer_, junc_, jets_ , met_, isData_);
+  if(i_ == 45){
+    cout<<endl<< "RESCALED JETS IN EVENT " << i_ << endl;
+    for(size_t ijet=0; ijet<jets_.size(); ++ijet){
+      cout << setprecision(6) << "\t\t jet " << ijet << ", pt " << jets_[ijet].Pt() <<", eta " << jets_[ijet].Eta() << ", phi " << jets_[ijet].Phi() << endl;
+      
+    }
+    cout<<endl<< "PROPAGATED MET: pt " << met_.Pt() << ", eta " << met_.Eta() << ", phi " << met_.Phi() << endl;
+  }
+
+  metValue_ = met_.Pt();
+  //  // WORKING HERE
+  //  //  double metValue = jetMETScaling( jerFactors, jes_, junc , jets ,met.Px(), met.Py());
+  //  metValue_ = jetMETScalingTest( oldJerFactorsForMet_, jes_, junc_, oldJetsForMet_  , met_);
+  // rescaling of met based on unclustered energy ////////////////////////////////////////////////
+  //  if( unc_ ){ metValue = jetMETUnclustered( jerFactors, lep_obj, unc_, jets, met.Px(), met.Py());}
+  //  if( jer_ ){ metValue = jetMETResolution( jerFactors, jets, met.Px(), met.Py());}
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  //preselect low energy jets (this is used for MHT computation in the electron channel) /////////
+  if(hasEGtrig){
+    DisableLtkCutOnJets(); Pt_Jet(15); 
+    jetsForTrigger_.clear();
+    PreSelectJets( isData_, jerFactors_, jes, junc_,jetAlgo,&jetsForTrigger_,jets_);
+  } else jetsForTrigger_.clear();
+  ///////////////////////////////////////////////////////////////////////////
+  
+  
+  // preselect main objects ///////////////////////////////////////////////
+  e_init_.clear();
+  m_init_.clear();
+  j_init_.clear();
+  t_init_.clear();
+
+  PreSelectMuons(     evR_, &m_init_, muons_    , primaryVertex ); 
+  PreSelectElectrons( evR_, &e_init_, electrons_, primaryVertex );
+  DisableLtkCutOnJets(); 
+  Pt_Jet( JET_PT_CUT_ );     
+  //DisableLtkCutOnJets(); Pt_Jet(20); // WARNING pt_jetcut set to 20 for trigger studies
+  PreSelectJets( isData_, jerFactors_, jes, junc_,jetAlgo,&j_init_,jets_ );
+  PreSelectTaus( &t_init_,taus_,TAUPRONGS_, myKey_, primaryVertex, 0.);
+  ////////////////////////////////////////////////////////////////////////
+
+
+  // only accept jets if dr > drmin in respect to electrons and muons //////////////////////////////////////////////////
+  vector<int> emptyColl, j_toRemove; 
+  vector<int> j_afterLeptonRemoval;
+  emptyColl.clear();
+  j_toRemove.clear();
+  j_afterLeptonRemoval.clear();
+
+  ProcessCleaning(&j_init_, &j_toRemove, &e_init_, &emptyColl, jets_, electrons_, DRMIN_JET_E_ );
+  ProcessCleaning(&j_init_, &j_toRemove, &m_init_, &emptyColl, jets_, muons_,     DRMIN_JET_M_ );
+  ApplyCleaning(  &j_init_, &j_toRemove, &j_afterLeptonRemoval);
+  // do the same cleaning for jets that will be used in MHT computation 
+  vector<int> jetsForMHT_emptyColl, jetsForMHT_toRemove; 
+  vector<int> jetsForMHT_afterLeptonRemoval;
+  jetsForMHT_emptyColl.clear();
+  jetsForMHT_toRemove.clear();
+  jetsForMHT_afterLeptonRemoval.clear();
+
+  if(hasEGtrig){ // only for electron channel
+    ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &e_init_, &jetsForMHT_emptyColl, jets_, electrons_, DRMIN_JET_E_ );
+    ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &m_init_, &jetsForMHT_emptyColl, jets_, muons_,     DRMIN_JET_M_ );
+    ApplyCleaning(  &jetsForTrigger_, &jetsForMHT_toRemove, &jetsForMHT_afterLeptonRemoval);  
+  } else{
+    jetsForMHT_emptyColl.clear();
+    jetsForMHT_toRemove.clear(); 
+    jetsForMHT_afterLeptonRemoval.clear();
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  // only accept taus if dr > drmin in respect to electrons and muons /////////////////////
+  vector<int> t_toRemove;
+  vector<int> t_afterLeptonRemoval; 
+  t_toRemove.clear();
+  t_afterLeptonRemoval.clear();
+  ProcessCleaning(&t_init_, &t_toRemove, &e_init_, &emptyColl, taus_, electrons_, DRMIN_T_E_ );
+  ProcessCleaning(&t_init_, &t_toRemove, &m_init_, &emptyColl, taus_, muons_,     DRMIN_T_M_ );
+  ApplyCleaning(&t_init_, &t_toRemove, &t_afterLeptonRemoval);
+  /////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  // remove jets if dr < drmin in respect to taus ////////////////////////////////////////////////////////////
+  j_toRemove.clear(); t_toRemove.clear();
+  j_final_.clear();
+  ProcessCleaning(&j_afterLeptonRemoval, &j_toRemove, &t_afterLeptonRemoval, &t_toRemove, jets_, taus_, DRMIN_T_J_ );
+  ApplyCleaning(&j_afterLeptonRemoval, &j_toRemove, &j_final_);
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  // extra jet collection //////////////////////////////////////////////////////////////////////////////////////
+  Pt_Jet(TAU_PT_MIN_); 
+  j_init2_.clear();
+  PreSelectJets( isData_, jerFactors_, jes, junc_,jetAlgo,&j_init2_,jets_);
+  // only accept jets if dr > drmin in respect to electrons and muons 
+  vector<int> emptyColl2, j_toRemove2; 
+  vector<int> j_afterLeptonRemoval2;
+  emptyColl2.clear();
+  j_toRemove2.clear();
+  j_afterLeptonRemoval2.clear();
+  ProcessCleaning(&j_init2_, &j_toRemove2, &e_init_, &emptyColl2, jets_, electrons_, DRMIN_JET_E_ );
+  ProcessCleaning(&j_init2_, &j_toRemove2, &m_init_, &emptyColl2, jets_, muons_,     DRMIN_JET_M_ );
+  ApplyCleaning(&j_init2_, &j_toRemove2, &j_afterLeptonRemoval2);
+  int numbJets(0);
+  // number of jets between TAU_PT_MIN_ and jet pt cut....
+  if( j_afterLeptonRemoval2.size() > j_final_.size()){ numbJets = j_afterLeptonRemoval2.size() - j_final_.size(); }
+  if(TAU_PT_MIN_< JET_PT_CUT_ ) Pt_Jet(JET_PT_CUT_); 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // DEBUG *****************************************************************************
+  /*
+  cout<<"\n Physics object debug     : "<<endl; 
+  cout<<"\n vertices                 : "<<vertices.size()                         <<endl; 
+  cout<<"\n jets_without_arbitration : "<<jets_without_arbitration.size()         <<endl;
+  cout<<"\n jets                     : "<<jets.size()                             <<" jets after Lepton Removal --> "<<j_afterLeptonRemoval.size()<<endl;
+  cout<<"\n muons                    : "<<muons.size()                            <<" selected muons            --> "<<m_init.size()<<endl;
+  cout<<"\n electrons                : "<<electrons.size()                        <<" selected electrons        --> "<<e_init.size()<<endl;
+  cout<<"\n tausColl                 : "<<tausColl.size()                         <<endl;
+  cout<<"\n taus                     : "<<taus.size()                             <<" taus after Lepton removal --> "<<t_afterLeptonRemoval.size()<<endl;
+  */
+  //////////////////////////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  int numb_e(0), numb_m(0);
+  bool lepReq(true);
+
+  // To measure ttbar efficiencies we force EGTrig and hasMuTrig to true (it will be applied later on) // FIXME: what the fuck?? Must check why, whenever doing that
+  if(trigEffStudy_ ){ hasEGtrig = true; hasMutrig = true; }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  //cout<<endl<<" Muon trigger is : "<<hasMutrig<<endl;
+ 
+  
+  if( hasEGtrig ){ numb_e = e_init_.size(); if(numb_e){ evType_ = ETAU_ ; if(!isData_) w_ = intimepuWeight_*scale_; }}
+  if( hasMutrig ){ numb_m = m_init_.size(); if(numb_m){ evType_ = MUTAU_; if(!isData_) w_ = intimepuWeight_*scale_; }}
+
+  
+  //if(hasMuTrig_) cout<<endl<<debug<<" has muon trigger... "<<endl;
+
+  
+  TVectorD * classifMC(0);
+  // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // fill weighted events and reset selected events vector weights
+  if( !isData_ && pdfweights_ && !jes && !unc && !jer && !btagunc){
+    event::MiniEvent_t *evMC = evRMC_->GetNewMiniEvent(i_,"mc");  if( evMC == 0 ){ cout<<"\n empty event"<<endl; return;}
+    classifMC = (TVectorD *)evMC->eventClassif->At(0);
+    //originalPDFEvents_ += 1.*w_;
+    originalPDFEvents_ += 1.;  
+    if( weightedPDFEvents_.size() == 0 ){
+      for(int i=14; i<classifMC->GetNoElements();++i ){
+	//weightedPDFEvents_.push_back( ( (*classifMC)[i])*w_  );
+        weightedPDFEvents_.push_back( ( (*classifMC)[i]) );
+	weightedPDFSelectedEvents_.push_back(0);
+        weighted2PDFSelectedEvents_.push_back(0);
+      }
+    }
+    //else{ for(int i=6; i<classifMC->GetNoElements();i++ ){ weightedPDFEvents_[i-6] += ((*classifMC)[i])*w_ ; } }
+    else{ for(int i=14; i<classifMC->GetNoElements();++i ){ weightedPDFEvents_[i-14] += (*classifMC)[i] ; } }
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  // see if we are processing electron channel or muon channel /////////////////////////////////
+  if (  ( !eChONmuChOFF_ && evType_ == ETAU_) || (eChONmuChOFF_ && evType_ == MUTAU_  ) ) return;
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  // are triggers exclusive ?///////////////////////////////////////////////////
+  //if( hasEGtrig && hasMuTrig ){ if( num_e==1 && numb_m== 1 ){ evType_ = EMU_; }
+  //////////////////////////////////////////////////////////////////////////////
+  
+  // is muon/electron veto satisfied? ///////////////////////////////////////////////////////////////////
+  if( numb_e + numb_m != 1){  lepReq=false; }
+  if(      lepReq && evType_ == MUTAU_){
+    if( LooseMuonVeto( m_init_[0], muons_ )           ){ lepReq=false; }   //see if we have loose muons
+    if( LooseElectronVeto(evR_,-1,electrons_)        ){ lepReq=false; }   //see if we have loose electrons
+  }   
+  else if( lepReq && evType_ == ETAU_){
+    //see if we have loose muons
+    if( LooseMuonVeto(-1,muons_) )                    { lepReq=false; }   //see if we have loose muons
+    if( LooseElectronVeto(evR_,e_init_[0],electrons_) ){ lepReq=false; }   //see if we have loose electrons
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  // MHT computation ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  mht_=-2; mhtb_=-2; //initial value 
+  if     (   lepReq && evType_ == MUTAU_ ){ computeMHT( jets_, jetsForMHT_afterLeptonRemoval, muons_[0]);      computeMHTb( jets_, jetsForMHT_afterLeptonRemoval); }
+  else if(   lepReq && evType_ == ETAU_  ){ computeMHT( jets_, jetsForMHT_afterLeptonRemoval, electrons_[0]);  computeMHTb( jets_, jetsForMHT_afterLeptonRemoval); }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+
+  if(newPhys){ newPhysics(vertices_, muons_,m_init_,electrons_,e_init_,taus_,t_afterLeptonRemoval,jets_,j_final_,numbJets,junc_,jerFactors_,myKey_);}
+
+  tauDileptonSelection(lepReq, t_afterLeptonRemoval, numbJets);
+  //  tauDileptonEventAnalysis(lepReq, vertices_, muons_,m_init_,electrons_,e_init_,taus_,t_afterLeptonRemoval,jets_,j_final_,numbJets,junc,jerFactors_,myKey_,ev_, oldJetsForMet_, oldJerFactorsForMet_);
+
+}
+
+void CutflowAnalyzer::CleanStoreObjects(){
+
+  junc_=0;
+  vertices_                 .clear();
+  jets_without_arbitration_ .clear();
+  jets_                     .clear();
+  muons_                    .clear();
+  electrons_                .clear();
+  tausColl_                 .clear();
+  taus_                     .clear(); 
+  mets_.clear();
+  met_ = PhysicsObject( new TLorentzVector(0,0,0,0), new TVectorD(0));
+  metValue_ = -10;
+  jerFactors_.clear();
+  //  oldJerFactorsForMet_.clear();
+  //  newJets_.clear();
+  //  oldJetsForMet_.clear();
+  e_init_.clear();
+  m_init_.clear();
+  j_init_.clear();
+  t_init_.clear();
+  j_final_.clear();
+  
+  j_init2_.clear();
+
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void CutflowAnalyzer::tauDileptonAnalysis(bool newPhys, TString myKey, event::MiniEvent_t *ev, double jes , double unc, double jer,
+					  double btagunc, double unbtagunc, double tes, double topptunc){
+
+
+  jes_=jes; unc_=unc; jer_=jer, btagunc_=btagunc; unbtagunc_=unbtagunc; tes_ = tes; topptunc_ = topptunc;
 
 
   // see if we run with systematics...////////////////////////////////////////// 
@@ -334,14 +674,14 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   bool hasMutrig = ((*trig)[0]>0); bool hasEGtrig = ((*trig)[1]>0);
   /////////////////////////////////////////////////////////////////
 
-  //cout<<" trigger bits : "<<hasMutrig<<endl;
+  //  cout<<" trigger bits : "<<hasEGtrig<<endl;
 
   
   unsigned int jetAlgo,tauType, leptonType;
   TString mcTag("");
 
   JetCorrectionUncertainty * junc(0);   JetResolution  * jerc(0);
-  //   unsigned int metAlgo; // unused
+  //  unsigned int metAlgo; // unused
   
   if( myKey.Contains("PFlow")   ) { // Moved up for optimization
     jetAlgo=event::AK5PFLOW, leptonType=event::PFLOWLEPTON; tauType = PFLOWTAU; if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PFLOWMET;  
@@ -366,16 +706,36 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   std::vector<PhysicsObject> vertices                 = evR_->GetVertexCollection(ev);
   std::vector<PhysicsObject> jets_without_arbitration = evR_->GetPhysicsObjectsFrom(ev,event::JET, jetAlgo  ); 
   std::vector<PhysicsObject> jets                     = evR_->GetJetsWithArbitration( jets_without_arbitration, jetCorr); 
+//   std::vector<PhysicsObject> filteredJets;
+//   for(std::vector<PhysicsObject> ::iterator jIt=jets.begin(); jIt!= jets.end(); jIt++)
+//     {
+//       float minDR(99999.);
+//       for(std::vector<PhysicsObject>::iterator jjIt=filteredJets.begin(); jjIt!=filteredJets.end(); jjIt++){
+// 	float dR=jIt->DeltaR(*jjIt);
+// 	if(dR<minDR) minDR=dR;
+//       }
+//       if(minDR<0.1) { continue; }
+//       //      cout << jIt->Pt() << " (" << minDR << ") | " << flush;
+//       filteredJets.push_back(*jIt);
+//     }
+//   //  cout << endl;
+//   //  cout << jets.size() << " ---> " << filteredJets.size() << endl;
+//   jets=filteredJets;
+
   std::vector<PhysicsObject> muons                    = evR_->GetPhysicsObjectsFrom(ev,event::MUON, leptonType);     
   std::vector<PhysicsObject> electrons                = evR_->GetPhysicsObjectsFrom(ev,event::ELECTRON, leptonType); 
   std::vector<PhysicsObject> tausColl                 = evR_->GetPhysicsObjectsFrom(ev,event::TAU);
   std::vector<PhysicsObject> taus; 
   
+  //  cout << "tau size tausColl.size(): " << tausColl.size() << " PFLOWTAU: " << PFLOWTAU << ", PFTAU: " << PFTAU << " HPSTAU: " << HPSTAU << endl; // Debug
+  
   for(size_t iorigtau=0; iorigtau<tausColl.size(); ++iorigtau){ // Get taus from leptons collection
+    //    cout << tausColl[iorigtau][17] << ", " << tauType << endl; // Debug 
     if(tausColl[iorigtau][17] == tauType ){ taus.push_back(tausColl[iorigtau]); }
   }
 
-  if(i_ == 45){ // Debug event
+
+  if(i_ == 45 && !sys_){
     cout<<endl<< "JETS IN EVENT " << i_ << endl;
     for(size_t ijet=0; ijet<jets.size(); ++ijet){
       cout << setprecision(6) << "\t\t jet " << ijet << ", pt " << jets[ijet].Pt() <<", eta " << jets[ijet].Eta() << ", phi " << jets[ijet].Phi() << endl;
@@ -390,31 +750,20 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   
 
   if(vertices.size()==0){ cout<<endl<<" Vertex was zero ???????"<<endl; return; }
-
-  //  if(vertices.size()>30 || vertices.size()<5) return; // Vertex cut
-
   PhysicsObject & primaryVertex = vertices[0];
 
   TVectorD *classif = (TVectorD *)ev->eventClassif->At(0);
-
-
-
-  if( (url_ == EMBEDDED_DATA_URL || url_ == EMBEDDED_TTBAR_URL) && i_ == 45){ // Debug event
-    // Debugging temporary lines
-    cout << "Event: " << i_ << ", New embedded weight: " << (*classif)[9] << "           old embedded weight: " << (*classif)[10] << endl;
-  }
-
-
 
   if(! isData_ ) if(classif==0) return;  
 
   // pileup reweighting /////////////////////////////////////////////////////////////////////////
   if(! isData_ ){ 
     outtimepuWeight_= 1;     /*outtimepuWeight_ = eventPUWeight( (*classif)[3] );*/ 
-    int npv = (*classif)[2]; //8 True number of interactions // 2]; //intime pu vertices
+    int npv = (*classif)[2]; //intime pu vertices
     intimepuWeight_ = LumiWeights_.ITweight(npv);
 
-    //int ave_nvtx = int((*classif)[2] + (*classif)[3])/3; // OOT pileup
+    // why outtime pu? why this formula
+    //int ave_nvtx = int((*classif)[2] + (*classif)[3])/3;
     int ave_nvtx = npv;
     if     ( pu_ == PUPLUS  ) intimepuWeight_ = intimepuWeight_*PShiftUp_.ShiftWeight( ave_nvtx );
     else if( pu_ == PUMINUS ) intimepuWeight_ = intimepuWeight_*PShiftDown_.ShiftWeight( ave_nvtx );
@@ -438,11 +787,10 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
   PhysicsObject met = mets[0]; 
 
-  if(i_ == 45) // Debug event
-    cout<<endl<< "MET: pt " << met.Pt() << ", eta " << met.Eta() << ", phi " << met.Phi() << endl;
+  if(i_ == 45 && !sys_) cout<<endl<< "MET: pt " << met.Pt() << ", eta " << met.Eta() << ", phi " << met.Phi() << endl;
   vector<double> jerFactors;
   doPropagations( jerFactors, jes, jer, junc, jets , met, isData_);
-  if(i_ == 45){ // Debug event
+  if(i_ == 45 && !sys_){
     cout<<endl<< "RESCALED JETS IN EVENT " << i_ << endl;
     for(size_t ijet=0; ijet<jets.size(); ++ijet){
       cout << setprecision(6) << "\t\t jet " << ijet << ", pt " << jets[ijet].Pt() <<", eta " << jets[ijet].Eta() << ", phi " << jets[ijet].Phi() << endl;
@@ -451,16 +799,78 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
     cout<<endl<< "PROPAGATED MET: pt " << met.Pt() << ", eta " << met.Eta() << ", phi " << met.Phi() << endl;
   }
 
+  //double metValue = met.Pt();
   mets[0] = met;
+/// test ///   //jet energy corrections ////////////////////////////////////////////////////////////////////////////////
+/// test ///   vector<double> jerFactors;
+/// test ///   vector<double> oldJerFactorsForMet;
+/// test ///   vector<PhysicsObject> newJets;
+/// test ///   vector<PhysicsObject> oldJetsForMet;
+/// test /// ///  // Old jet energy resolution factors
+/// test /// ///  if(jerc){ // Split condition for optimizazion
+/// test /// ///    fast_=false;
+/// test /// ///    if(!fast_ ) {
+/// test /// ///      for(unsigned int i=0;i<jets.size();i++){ 
+/// test /// ///  	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
+/// test /// ///  	double scaleFactor(0.1);  //bias correction
+/// test /// ///  	double corr_jer(1);
+/// test /// ///  	if( jer < 0 ){ scaleFactor = 0.;  }
+/// test /// ///  	if( jer > 0 ){ scaleFactor = 0.2; }
+/// test /// ///  	
+/// test /// ///  	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
+/// test /// ///  	
+/// test /// ///  	if( corr_jer < 0 ){ corr_jer = 1; }
+/// test /// ///  	jerFactors.push_back(corr_jer);
+/// test /// ///      }
+/// test /// ///    }  
+/// test /// ///    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
+/// test /// ///  }
+/// test ///   // Base scale factors must be applied in any case (modify code above then)
+/// test /// 
+/// test /// 
+/// test ///   jerFactors.clear();
+/// test ///   oldJerFactorsForMet.clear();
+/// test ///   newJets.clear();
+/// test ///   oldJetsForMet.clear();
+/// test ///   if(i_ == 45) cout<<endl<< "CORR JETS IN EVENT " << i_ << endl;
+/// test ///   for(unsigned int i=0;i<jets.size();++i){ 
+/// test ///     double corr_jer(1.);
+/// test ///     if(!isData_){
+/// test ///       if(jer_== 0) newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+/// test ///       if(jer_> 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+/// test ///       if(jer_< 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+/// test ///     }
+/// test ///     jerFactors.push_back(1.);
+/// test ///     oldJerFactorsForMet.push_back(corr_jer);
+/// test ///     //    std::cout << " jerfac: " << corr_jer << std::endl;
+/// test ///     if(!isData_ && i_ == 45) cout << setprecision(6) << "\t\t jet " << i << ", pt " << newJets[i].Pt() <<", eta " << newJets[i].Eta() << ", phi " << newJets[i].Phi() << endl;
+/// test ///     
+/// test ///   } 
+/// test ///   oldJetsForMet=jets;
+/// test ///   if(!isData_) jets=newJets;
+/// test /// 
+/// test ///   // DEBUG (successful)
+/// test ///   //    if(isData_) for(size_t i=0; i<jerFactors.size(); i++)
+/// test ///   //      std::cout << "factor " << jerFactors[i] << std::endl;
+/// test /// 
+/// test /// 
+/// test ///   // Test new MET all-in-one propagation
+/// test ///   //   jets
+/// test ///   // met = mets[0] (defined later)
+/// test /// 
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   
-  
+
+
+  //fn18-07-13 no longer used  
   //preselect low energy jets (this is used for MHT computation in the electron channel) /////////
-  if(hasEGtrig){
-    DisableLtkCutOnJets(); Pt_Jet(15); 
-    jetsForTrigger_.clear();
-    PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&jetsForTrigger_,jets);
-  } else jetsForTrigger_.clear();
+//   if(hasEGtrig){
+//     DisableLtkCutOnJets(); Pt_Jet(15); 
+//     jetsForTrigger_.clear();
+//     PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&jetsForTrigger_,jets);
+//   } else jetsForTrigger_.clear();
+  jetsForTrigger_.clear();
   ///////////////////////////////////////////////////////////////////////////
   
   
@@ -475,11 +885,12 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   PreSelectElectrons( evR_, &e_init, electrons, primaryVertex );
   DisableLtkCutOnJets(); 
   Pt_Jet( JET_PT_CUT_ );     
+  //DisableLtkCutOnJets(); Pt_Jet(20); // WARNING pt_jetcut set to 20 for trigger studies
   PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&j_init,jets );
   PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex, tes );
   ////////////////////////////////////////////////////////////////////////
 
-  
+
   // only accept jets if dr > drmin in respect to electrons and muons //////////////////////////////////////////////////
   vector<int> emptyColl, j_toRemove; 
   vector<int> j_afterLeptonRemoval;
@@ -497,15 +908,16 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   jetsForMHT_toRemove.clear();
   jetsForMHT_afterLeptonRemoval.clear();
 
-  if(hasEGtrig){ // only for electron channel
-    ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &e_init, &jetsForMHT_emptyColl, jets, electrons, DRMIN_JET_E_ );
-    ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &m_init, &jetsForMHT_emptyColl, jets, muons,     DRMIN_JET_M_ );
-    ApplyCleaning(  &jetsForTrigger_, &jetsForMHT_toRemove, &jetsForMHT_afterLeptonRemoval);  
-  } else{
-    jetsForMHT_emptyColl.clear();
-    jetsForMHT_toRemove.clear(); 
-    jetsForMHT_afterLeptonRemoval.clear();
-  }
+  //fn18-07-13 no longer used  
+//   if(hasEGtrig){ // only for electron channel
+//     ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &e_init, &jetsForMHT_emptyColl, jets, electrons, DRMIN_JET_E_ );
+//     ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &m_init, &jetsForMHT_emptyColl, jets, muons,     DRMIN_JET_M_ );
+//     ApplyCleaning(  &jetsForTrigger_, &jetsForMHT_toRemove, &jetsForMHT_afterLeptonRemoval);  
+//   } else{
+//     jetsForMHT_emptyColl.clear();
+//     jetsForMHT_toRemove.clear(); 
+//     jetsForMHT_afterLeptonRemoval.clear();
+//   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   
@@ -551,8 +963,13 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+
+
+
+
   // DEBUG *****************************************************************************
   /*
+  if (!sys_) {
   cout<<"\n Physics object debug     : "<<endl; 
   cout<<"\n vertices                 : "<<vertices.size()                         <<endl; 
   cout<<"\n jets_without_arbitration : "<<jets_without_arbitration.size()         <<endl;
@@ -561,8 +978,12 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   cout<<"\n electrons                : "<<electrons.size()                        <<" selected electrons        --> "<<e_init.size()<<endl;
   cout<<"\n tausColl                 : "<<tausColl.size()                         <<endl;
   cout<<"\n taus                     : "<<taus.size()                             <<" taus after Lepton removal --> "<<t_afterLeptonRemoval.size()<<endl;
+  }
   */
   //////////////////////////////////////////////////////////////////////////////////////
+
+
+
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -573,13 +994,16 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   if(trigEffStudy_ ){ hasEGtrig = true; hasMutrig = true; }
   ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  //cout<<endl<<" Muon trigger is : "<<hasMutrig<<endl;
+ 
+  
   if( hasEGtrig ){ numb_e = e_init.size(); if(numb_e){ evType_ = ETAU_ ; if(!isData_) w_ = intimepuWeight_*scale_; }}
   if( hasMutrig ){ numb_m = m_init.size(); if(numb_m){ evType_ = MUTAU_; if(!isData_) w_ = intimepuWeight_*scale_; }}
+
   
+  //if(hasMuTrig_) cout<<endl<<debug<<" has muon trigger... "<<endl;
 
-  // Tau embedding weight
-  if(url_ == EMBEDDED_DATA_URL || url_ == EMBEDDED_TTBAR_URL) w_ *= (*classif)[9];
-
+  
   TVectorD * classifMC(0);
   // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////
   // fill weighted events and reset selected events vector weights
@@ -596,6 +1020,327 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
         weighted2PDFSelectedEvents_.push_back(0);
       }
     }
+    //else{ for(int i=6; i<classifMC->GetNoElements();i++ ){ weightedPDFEvents_[i-6] += ((*classifMC)[i])*w_ ; } }
+    else{ for(int i=14; i<classifMC->GetNoElements();++i ){ weightedPDFEvents_[i-14] += (*classifMC)[i] ; } }
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  // see if we are processing electron channel or muon channel /////////////////////////////////
+  if (  ( !eChONmuChOFF_ && evType_ == ETAU_) || (eChONmuChOFF_ && evType_ == MUTAU_  ) ) return;
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  // are triggers exclusive ?///////////////////////////////////////////////////
+  //if( hasEGtrig && hasMuTrig ){ if( num_e==1 && numb_m== 1 ){ evType_ = EMU_; }
+  //////////////////////////////////////////////////////////////////////////////
+  
+  // is muon/electron veto satisfied? ///////////////////////////////////////////////////////////////////
+  if( numb_e + numb_m != 1){  lepReq=false; }
+  if(      lepReq && evType_ == MUTAU_){
+    if( LooseMuonVeto( m_init[0], muons )           ){ lepReq=false; }   //see if we have loose muons
+    if( LooseElectronVeto(evR_,-1,electrons)        ){ lepReq=false; }   //see if we have loose electrons
+  }   
+  else if( lepReq && evType_ == ETAU_){
+    //see if we have loose muons
+    if( LooseMuonVeto(-1,muons) )                    { lepReq=false; }   //see if we have loose muons
+    if( LooseElectronVeto(evR_,e_init[0],electrons) ){ lepReq=false; }   //see if we have loose electrons
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+//   // MHT computation ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//   mht_=-2; mhtb_=-2; //initial value 
+//   if     (   lepReq && evType_ == MUTAU_ ){ computeMHT( jets, jetsForMHT_afterLeptonRemoval, muons[0]);      computeMHTb( jets, jetsForMHT_afterLeptonRemoval); }
+//   else if(   lepReq && evType_ == ETAU_  ){ computeMHT( jets, jetsForMHT_afterLeptonRemoval, electrons[0]);  computeMHTb( jets, jetsForMHT_afterLeptonRemoval); }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+
+  if(newPhys){ newPhysics(vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey);}
+  
+  tauDileptonEventAnalysis(lepReq, vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey,ev, mets);
+
+}
+
+
+void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniEvent_t *ev, double jes , double unc, double jer, double btagunc,
+				       double unbtagunc, double tes){
+
+
+  jes_=jes; unc_=unc; jer_=jer, btagunc_=btagunc; unbtagunc_=unbtagunc; tes_ = tes;
+
+
+  // see if we run with systematics...////////////////////////////////////////// 
+  if( jes_|| unc_|| jer_|| btagunc_|| unbtagunc_ || tes_) sys_ = true; else sys_= false;
+  ///////////////////////////////////////////////////////////////////////////////
+
+
+  // Set default lepton + jet selection (inherited from ObjectSelector)
+  // SetLeptonPlusJetsSelection();
+  // Set default dilepton selection (inherited from ObjectSelector)
+  SetDileptonSelection();
+  setSelectionParameters();
+  //////////////////////////////////////
+
+  //trigger ///////////////////////////////////////////////////////
+  TVectorD *trig = (TVectorD *)ev->triggerColl->At(0);
+  bool hasMutrig = ((*trig)[0]>0); bool hasEGtrig = ((*trig)[1]>0);
+  /////////////////////////////////////////////////////////////////
+
+  //cout<<" trigger bits : "<<hasMutrig<<endl;
+
+  
+  unsigned int jetAlgo,tauType, leptonType;
+  TString mcTag("");
+  
+  JetCorrectionUncertainty * junc(0);   JetResolution  * jerc(0);
+  //  unsigned int metAlgo;  // unused
+  
+  if( myKey.Contains("PFlow")   ) { // Moved up for optimization
+    jetAlgo=event::AK5PFLOW, leptonType=event::PFLOWLEPTON; tauType = PFLOWTAU; if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PFLOWMET;  
+  } 
+  else if( myKey=="PF"               ) { 
+    jetAlgo=event::AK5PF;  leptonType=event::STDLEPTON;    tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;   
+  }
+  else if( myKey.Contains("TaNC")    ) { 
+    jetAlgo=event::AK5PF;   leptonType=event::STDLEPTON;   tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;  
+  }
+  else if( myKey.Contains("HPS")     ) { 
+    jetAlgo=event::AK5PF,    leptonType=event::STDLEPTON;   tauType = HPSTAU;   if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;  
+  } 
+  
+  
+  unsigned int jetCorr;
+  if(isData_){ jetCorr = event::Reader::VTXCONSTRAINED | event::Reader::RESJECCORR; }
+  else       { jetCorr = event::Reader::VTXCONSTRAINED;                             }
+  
+  
+  // get physics objects ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  std::vector<PhysicsObject> vertices                 = evR_->GetVertexCollection(ev);
+  std::vector<PhysicsObject> jets_without_arbitration = evR_->GetPhysicsObjectsFrom(ev,event::JET, jetAlgo  ); 
+  std::vector<PhysicsObject> jets                     = evR_->GetJetsWithArbitration( jets_without_arbitration, jetCorr); 
+  std::vector<PhysicsObject> muons                    = evR_->GetPhysicsObjectsFrom(ev,event::MUON, leptonType);     
+  std::vector<PhysicsObject> electrons                = evR_->GetPhysicsObjectsFrom(ev,event::ELECTRON, leptonType); 
+  std::vector<PhysicsObject> tausColl                 = evR_->GetPhysicsObjectsFrom(ev,event::TAU);
+  std::vector<PhysicsObject> taus; 
+  //  cout << "PFLOWTAU: " << PFLOWTAU << ", PFTAU: " << PFTAU << "HPSTAU: " << HPSTAU << endl; // Debug
+  for(size_t iorigtau=0; iorigtau<tausColl.size(); ++iorigtau){ // Get taus from leptons collection
+    //cout << tausColl[iorigtau][17] << ", " << tauType << endl; // Debug 
+    if(tausColl[iorigtau][17] == tauType ){ taus.push_back(tausColl[iorigtau]); }
+  }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  
+  
+
+  if(vertices.size()==0){ cout<<endl<<" Vertex was zero ???????"<<endl; return; }
+  PhysicsObject & primaryVertex = vertices[0];
+  
+  TVectorD *classif = (TVectorD *)ev->eventClassif->At(0);
+  
+  if(! isData_ ) if(classif==0) return;  
+  
+  // pileup reweighting /////////////////////////////////////////////////////////////////////////
+  if(! isData_ ){ 
+    outtimepuWeight_= 1;     /*outtimepuWeight_ = eventPUWeight( (*classif)[3] );*/ 
+    int npv = (*classif)[2]; //intime pu vertices
+    intimepuWeight_ = LumiWeights_.ITweight(npv);
+    
+    // why outtime pu? why this formula
+    //int ave_nvtx = int((*classif)[2] + (*classif)[3])/3;
+    int ave_nvtx = npv;
+    if     ( pu_ == PUPLUS  ) intimepuWeight_ = intimepuWeight_*PShiftUp_.ShiftWeight( ave_nvtx );
+    else if( pu_ == PUMINUS ) intimepuWeight_ = intimepuWeight_*PShiftDown_.ShiftWeight( ave_nvtx );
+  } 
+  else  { intimepuWeight_ = 1;  outtimepuWeight_= 1; }
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  //jet energy corrections ////////////////////////////////////////////////////////////////////////////////
+  vector<double> jerFactors;
+  vector<PhysicsObject> newJets;
+   ///  // Old jet energy resolution factors
+  ///  if(jerc){ // Split condition for optimizazion
+  ///    fast_=false;
+  ///    if(!fast_ ) {
+  ///      for(unsigned int i=0;i<jets.size();i++){ 
+  ///  	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
+  ///  	double scaleFactor(0.1);  //bias correction
+  ///  	double corr_jer(1);
+  ///  	if( jer < 0 ){ scaleFactor = 0.;  }
+  ///  	if( jer > 0 ){ scaleFactor = 0.2; }
+  ///  	
+  ///  	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
+  ///  	
+  ///  	if( corr_jer < 0 ){ corr_jer = 1; }
+  ///  	jerFactors.push_back(corr_jer);
+  ///      }
+  ///    }  
+  ///    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
+  ///  }
+  // Base scale factors must be applied in any case (modify code above then)
+  
+  
+  jerFactors.clear();
+  newJets.clear();
+  for(unsigned int i=0;i<jets.size();++i){ 
+    double corr_jer(1.);
+    if(!isData_){
+      if(jer_== 0) newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      if(jer_> 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      if(jer_< 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+    }
+    //    jerFactors.push_back(corr_jer);
+    jerFactors.push_back(1.);
+    //    std::cout << " jerfac: " << corr_jer << std::endl;
+  }
+  jets=newJets;
+
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  //preselect low energy jets (this is used for MHT computation in the electron channel) /////////
+  if(hasEGtrig){
+    DisableLtkCutOnJets(); Pt_Jet(15); 
+    jetsForTrigger_.clear();
+    PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&jetsForTrigger_,jets);
+  } else jetsForTrigger_.clear();
+  ///////////////////////////////////////////////////////////////////////////
+  
+  
+  // preselect main objects ///////////////////////////////////////////////
+  vector<int> e_init, m_init, j_init, t_init;
+  PreSelectMuons(     evR_, &m_init, muons    , primaryVertex ); 
+  PreSelectElectrons( evR_, &e_init, electrons, primaryVertex );
+  DisableLtkCutOnJets(); 
+  Pt_Jet( JET_PT_CUT_ );     
+  //DisableLtkCutOnJets(); Pt_Jet(20); // WARNING pt_jetcut set to 20 for trigger studies
+  PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&j_init,jets );
+  PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex, tes);
+  ////////////////////////////////////////////////////////////////////////
+  
+
+  // only accept jets if dr > drmin in respect to electrons and muons //////////////////////////////////////////////////
+  vector<int> emptyColl, j_toRemove; 
+  vector<int> j_afterLeptonRemoval;
+  ProcessCleaning(&j_init, &j_toRemove, &e_init, &emptyColl, jets, electrons, DRMIN_JET_E_ );
+  ProcessCleaning(&j_init, &j_toRemove, &m_init, &emptyColl, jets, muons,     DRMIN_JET_M_ );
+  ApplyCleaning(  &j_init, &j_toRemove, &j_afterLeptonRemoval);
+  // do the same cleaning for jets that will be used in MHT computation 
+  vector<int> jetsForMHT_emptyColl, jetsForMHT_toRemove; 
+  vector<int> jetsForMHT_afterLeptonRemoval;
+  if(hasEGtrig){ // only for electron channel
+    ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &e_init, &jetsForMHT_emptyColl, jets, electrons, DRMIN_JET_E_ );
+    ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &m_init, &jetsForMHT_emptyColl, jets, muons,     DRMIN_JET_M_ );
+    ApplyCleaning(  &jetsForTrigger_, &jetsForMHT_toRemove, &jetsForMHT_afterLeptonRemoval);  
+  } else{
+    jetsForMHT_emptyColl.clear();
+    jetsForMHT_toRemove.clear(); 
+    jetsForMHT_afterLeptonRemoval.clear();
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  // only accept taus if dr > drmin in respect to electrons and muons /////////////////////
+  vector<int> t_toRemove;
+  vector<int> t_afterLeptonRemoval; 
+  ProcessCleaning(&t_init, &t_toRemove, &e_init, &emptyColl, taus, electrons, DRMIN_T_E_ );
+  ProcessCleaning(&t_init, &t_toRemove, &m_init, &emptyColl, taus, muons,     DRMIN_T_M_ );
+  ApplyCleaning(&t_init, &t_toRemove, &t_afterLeptonRemoval);
+  /////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  // remove jets if dr < drmin in respect to taus ////////////////////////////////////////////////////////////
+  j_toRemove.clear(); t_toRemove.clear();
+  vector<int> j_final;
+  ProcessCleaning(&j_afterLeptonRemoval, &j_toRemove, &t_afterLeptonRemoval, &t_toRemove, jets, taus, DRMIN_T_J_ );
+  ApplyCleaning(&j_afterLeptonRemoval, &j_toRemove, &j_final);
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  // extra jet collection //////////////////////////////////////////////////////////////////////////////////////
+  Pt_Jet(TAU_PT_MIN_); 
+  vector<int> j_init2;
+  PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&j_init2,jets);
+  // only accept jets if dr > drmin in respect to electrons and muons 
+  vector<int> emptyColl2, j_toRemove2; 
+  vector<int> j_afterLeptonRemoval2;
+  ProcessCleaning(&j_init2, &j_toRemove2, &e_init, &emptyColl2, jets, electrons, DRMIN_JET_E_ );
+  ProcessCleaning(&j_init2, &j_toRemove2, &m_init, &emptyColl2, jets, muons,     DRMIN_JET_M_ );
+  ApplyCleaning(&j_init2, &j_toRemove2, &j_afterLeptonRemoval2);
+  int numbJets(0);
+  // number of jets between TAU_PT_MIN_ and jet pt cut....
+  if( j_afterLeptonRemoval2.size() > j_final.size()){ numbJets = j_afterLeptonRemoval2.size() - j_final.size(); }
+  if(TAU_PT_MIN_< JET_PT_CUT_ ) Pt_Jet(JET_PT_CUT_); 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+  // DEBUG *****************************************************************************
+  /*
+  cout<<"\n Physics object debug     : "<<endl; 
+  cout<<"\n vertices                 : "<<vertices.size()                         <<endl; 
+  cout<<"\n jets_without_arbitration : "<<jets_without_arbitration.size()         <<endl;
+  cout<<"\n jets                     : "<<jets.size()                             <<" jets after Lepton Removal --> "<<j_afterLeptonRemoval.size()<<endl;
+  cout<<"\n muons                    : "<<muons.size()                            <<" selected muons            --> "<<m_init.size()<<endl;
+  cout<<"\n electrons                : "<<electrons.size()                        <<" selected electrons        --> "<<e_init.size()<<endl;
+  cout<<"\n tausColl                 : "<<tausColl.size()                         <<endl;
+  cout<<"\n taus                     : "<<taus.size()                             <<" taus after Lepton removal --> "<<t_afterLeptonRemoval.size()<<endl;
+  */
+  //////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  int numb_e(0), numb_m(0);
+  bool lepReq(true);
+
+  // To measure ttbar efficiencies we force EGTrig and hasMuTrig to true (it will be applied later on) // FIXME: what the fuck?? Must check why, whenever doing that
+  if(trigEffStudy_ ){ hasEGtrig = true; hasMutrig = true; }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  //cout<<endl<<" Muon trigger is : "<<hasMutrig<<endl;
+ 
+  //  cout<<endl<<" Muon trigger is : "<<hasMutrig<<", EG trigger is : "<<hasEGtrig<<endl;
+  if( hasEGtrig ){ numb_e = e_init.size(); if(numb_e){ evType_ = ETAU_ ; if(!isData_) w_ = intimepuWeight_*scale_; }}
+  if( hasMutrig ){ numb_m = m_init.size(); if(numb_m){ evType_ = MUTAU_; if(!isData_) w_ = intimepuWeight_*scale_; }}
+  
+  
+  //  if( hasMutrig ){ 
+  //    numb_m = m_init.size();
+  //    
+  //    if(numb_m){ evType_ = MUTAU_; 
+  //      if(!isData_) w_ = intimepuWeight_*scale_; 
+  //    }
+  //  }
+  
+  
+  //if(hasMuTrig_) cout<<endl<<debug<<" has muon trigger... "<<endl;
+
+  
+  TVectorD * classifMC(0);
+  // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // fill weighted events and reset selected events vector weights
+  if( !isData_ && pdfweights_ && !jes && !unc && !jer && !btagunc){
+    event::MiniEvent_t *evMC = evRMC_->GetNewMiniEvent(i_,"mc");  if( evMC == 0 ){ cout<<"\n empty event"<<endl; return;}
+    classifMC = (TVectorD *)evMC->eventClassif->At(0);
+    //originalPDFEvents_ += 1.*w_;
+    originalPDFEvents_ += 1.;  
+    if( weightedPDFEvents_.size() == 0 ){
+      for(int i=14; i<classifMC->GetNoElements();++i ){
+	//weightedPDFEvents_.push_back( ( (*classifMC)[i])*w_  );
+        weightedPDFEvents_.push_back( ( (*classifMC)[i]) );
+	weightedPDFSelectedEvents_.push_back(0);
+        weighted2PDFSelectedEvents_.push_back(0);
+      }
+    }
+    //else{ for(int i=6; i<classifMC->GetNoElements();i++ ){ weightedPDFEvents_[i-6] += ((*classifMC)[i])*w_ ; } }
     else{ for(int i=14; i<classifMC->GetNoElements();++i ){ weightedPDFEvents_[i-14] += (*classifMC)[i] ; } }
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -630,287 +1375,758 @@ void CutflowAnalyzer::eventAnalysis(bool newPhys,
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
 
-  if(newPhys){ newPhysics(vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey,ev);}
+  if(newPhys){ newPhysics(vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey);}
   
-  tauDileptonSelection(lepReq, vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey,ev, mets);
+  dileptonEventAnalysis(lepReq, vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey,ev);
+
 
 }
 
 
-
-// to be removed //void CutflowAnalyzer::dileptonAnalysis(bool newPhys, TString myKey, event::MiniEvent_t *ev, double jes , double unc, double jer, double btagunc, double unbtagunc, double tes){
-// to be removed //
-// to be removed //
-// to be removed //  jes_=jes; unc_=unc; jer_=jer, btagunc_=btagunc; unbtagunc_=unbtagunc; tes_=tes;
-// to be removed //
-// to be removed //
-// to be removed //  // see if we run with systematics...////////////////////////////////////////// 
-// to be removed //  if( jes_|| unc_|| jer_|| btagunc_|| unbtagunc_) sys_ = true; else sys_= false;
-// to be removed //  ///////////////////////////////////////////////////////////////////////////////
-// to be removed //
-// to be removed //
-// to be removed //  // Set default lepton + jet selection (inherited from ObjectSelector)
-// to be removed //  // SetLeptonPlusJetsSelection();
-// to be removed //  // Set default dilepton selection (inherited from ObjectSelector)
-// to be removed //  SetDileptonSelection();
-// to be removed //  setSelectionParameters();
-// to be removed //  //////////////////////////////////////
-// to be removed //
-// to be removed //  //trigger ///////////////////////////////////////////////////////
-// to be removed //  TVectorD *trig = (TVectorD *)ev->triggerColl->At(0);
-// to be removed //  bool hasMutrig = ((*trig)[0]>0); bool hasEGtrig = ((*trig)[1]>0);
-// to be removed //  /////////////////////////////////////////////////////////////////
-// to be removed //
-// to be removed //  //cout<<" trigger bits : "<<hasMutrig<<endl;
-// to be removed //
-// to be removed //  
-// to be removed //  unsigned int jetAlgo,tauType, leptonType;
-// to be removed //  TString mcTag("");
-// to be removed //  
-// to be removed //  JetCorrectionUncertainty * junc(0);   JetResolution  * jerc(0);
-// to be removed //  //  unsigned int metAlgo;  // unused
-// to be removed //  
-// to be removed //  if( myKey.Contains("PFlow")   ) { // Moved up for optimization
-// to be removed //    jetAlgo=event::AK5PFLOW, leptonType=event::PFLOWLEPTON; tauType = PFLOWTAU; if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PFLOWMET;  
-// to be removed //  } 
-// to be removed //  else if( myKey=="PF"               ) { 
-// to be removed //    jetAlgo=event::AK5PF;  leptonType=event::STDLEPTON;    tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;   
-// to be removed //  }
-// to be removed //  else if( myKey.Contains("TaNC")    ) { 
-// to be removed //    jetAlgo=event::AK5PF;   leptonType=event::STDLEPTON;   tauType = PFTAU;    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;  
-// to be removed //  }
-// to be removed //  else if( myKey.Contains("HPS")     ) { 
-// to be removed //    jetAlgo=event::AK5PF,    leptonType=event::STDLEPTON;   tauType = HPSTAU;   if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{junc=jecUnc_data_ak5_pf_ ;}// metAlgo=event::PF;  
-// to be removed //  } 
-// to be removed //  
-// to be removed //  
-// to be removed //  unsigned int jetCorr;
-// to be removed //  if(isData_){ jetCorr = event::Reader::VTXCONSTRAINED | event::Reader::RESJECCORR; }
-// to be removed //  else       { jetCorr = event::Reader::VTXCONSTRAINED;                             }
-// to be removed //  
-// to be removed //  
-// to be removed //  // get physics objects ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  std::vector<PhysicsObject> vertices                 = evR_->GetVertexCollection(ev);
-// to be removed //  std::vector<PhysicsObject> jets_without_arbitration = evR_->GetPhysicsObjectsFrom(ev,event::JET, jetAlgo  ); 
-// to be removed //  std::vector<PhysicsObject> jets                     = evR_->GetJetsWithArbitration( jets_without_arbitration, jetCorr); 
-// to be removed //  std::vector<PhysicsObject> muons                    = evR_->GetPhysicsObjectsFrom(ev,event::MUON, leptonType);     
-// to be removed //  std::vector<PhysicsObject> electrons                = evR_->GetPhysicsObjectsFrom(ev,event::ELECTRON, leptonType); 
-// to be removed //  std::vector<PhysicsObject> tausColl                 = evR_->GetPhysicsObjectsFrom(ev,event::TAU);
-// to be removed //  std::vector<PhysicsObject> taus; 
-// to be removed //  //  cout << "PFLOWTAU: " << PFLOWTAU << ", PFTAU: " << PFTAU << "HPSTAU: " << HPSTAU << endl; // Debug
-// to be removed //  for(size_t iorigtau=0; iorigtau<tausColl.size(); ++iorigtau){ // Get taus from leptons collection
-// to be removed //    //cout << tausColl[iorigtau][17] << ", " << tauType << endl; // Debug 
-// to be removed //    if(tausColl[iorigtau][17] == tauType ){ taus.push_back(tausColl[iorigtau]); }
-// to be removed //  }
-// to be removed //  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  
-// to be removed //  
-// to be removed //  
-// to be removed //  
-// to be removed //
-// to be removed //  if(vertices.size()==0){ cout<<endl<<" Vertex was zero ???????"<<endl; return; }
-// to be removed //  PhysicsObject & primaryVertex = vertices[0];
-// to be removed //  
-// to be removed //  TVectorD *classif = (TVectorD *)ev->eventClassif->At(0);
-// to be removed //  
-// to be removed //  if(! isData_ ) if(classif==0) return;  
-// to be removed //  
-// to be removed //  // pileup reweighting /////////////////////////////////////////////////////////////////////////
-// to be removed //  if(! isData_ ){ 
-// to be removed //    outtimepuWeight_= 1;     /*outtimepuWeight_ = eventPUWeight( (*classif)[3] );*/ 
-// to be removed //    int npv = (*classif)[2]; //intime pu vertices
-// to be removed //    intimepuWeight_ = LumiWeights_.ITweight(npv);
-// to be removed //    
-// to be removed //    // why outtime pu? why this formula
-// to be removed //    //int ave_nvtx = int((*classif)[2] + (*classif)[3])/3;
-// to be removed //    int ave_nvtx = npv;
-// to be removed //    if     ( pu_ == PUPLUS  ) intimepuWeight_ = intimepuWeight_*PShiftUp_.ShiftWeight( ave_nvtx );
-// to be removed //    else if( pu_ == PUMINUS ) intimepuWeight_ = intimepuWeight_*PShiftDown_.ShiftWeight( ave_nvtx );
-// to be removed //  } 
-// to be removed //  else  { intimepuWeight_ = 1;  outtimepuWeight_= 1; }
-// to be removed //  //////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //
-// to be removed //  //jet energy corrections ////////////////////////////////////////////////////////////////////////////////
-// to be removed //  vector<double> jerFactors;
-// to be removed //  vector<PhysicsObject> newJets;
-// to be removed //  
-// to be removed //  jerFactors.clear();
-// to be removed //  newJets.clear();
-// to be removed //  for(unsigned int i=0;i<jets.size();++i){ 
-// to be removed //    double corr_jer(1.);
-// to be removed //    if(!isData_){
-// to be removed //      if(jer_== 0) newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-// to be removed //      if(jer_> 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-// to be removed //      if(jer_< 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
-// to be removed //    }
-// to be removed //    jerFactors.push_back(1.);
-// to be removed //  }
-// to be removed //  jets=newJets;
-// to be removed //
-// to be removed //
-// to be removed //  ///////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  
-// to be removed //  
-// to be removed //  //preselect low energy jets (this is used for MHT computation in the electron channel) /////////
-// to be removed //  if(hasEGtrig){
-// to be removed //    DisableLtkCutOnJets(); Pt_Jet(15); 
-// to be removed //    jetsForTrigger_.clear();
-// to be removed //    PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&jetsForTrigger_,jets);
-// to be removed //  } else jetsForTrigger_.clear();
-// to be removed //  ///////////////////////////////////////////////////////////////////////////
-// to be removed //  
-// to be removed //  
-// to be removed //  // preselect main objects ///////////////////////////////////////////////
-// to be removed //  vector<int> e_init, m_init, j_init, t_init;
-// to be removed //  PreSelectMuons(     evR_, &m_init, muons    , primaryVertex ); 
-// to be removed //  PreSelectElectrons( evR_, &e_init, electrons, primaryVertex );
-// to be removed //  DisableLtkCutOnJets(); 
-// to be removed //  Pt_Jet( JET_PT_CUT_ );     
-// to be removed //  PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&j_init,jets );
-// to be removed //  PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex, tes );
-// to be removed //  ////////////////////////////////////////////////////////////////////////
-// to be removed //  
-// to be removed //
-// to be removed //  // only accept jets if dr > drmin in respect to electrons and muons //////////////////////////////////////////////////
-// to be removed //  vector<int> emptyColl, j_toRemove; 
-// to be removed //  vector<int> j_afterLeptonRemoval;
-// to be removed //  ProcessCleaning(&j_init, &j_toRemove, &e_init, &emptyColl, jets, electrons, DRMIN_JET_E_ );
-// to be removed //  ProcessCleaning(&j_init, &j_toRemove, &m_init, &emptyColl, jets, muons,     DRMIN_JET_M_ );
-// to be removed //  ApplyCleaning(  &j_init, &j_toRemove, &j_afterLeptonRemoval);
-// to be removed //  // do the same cleaning for jets that will be used in MHT computation 
-// to be removed //  vector<int> jetsForMHT_emptyColl, jetsForMHT_toRemove; 
-// to be removed //  vector<int> jetsForMHT_afterLeptonRemoval;
-// to be removed //  if(hasEGtrig){ // only for electron channel
-// to be removed //    ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &e_init, &jetsForMHT_emptyColl, jets, electrons, DRMIN_JET_E_ );
-// to be removed //    ProcessCleaning(&jetsForTrigger_, &jetsForMHT_toRemove, &m_init, &jetsForMHT_emptyColl, jets, muons,     DRMIN_JET_M_ );
-// to be removed //    ApplyCleaning(  &jetsForTrigger_, &jetsForMHT_toRemove, &jetsForMHT_afterLeptonRemoval);  
-// to be removed //  } else{
-// to be removed //    jetsForMHT_emptyColl.clear();
-// to be removed //    jetsForMHT_toRemove.clear(); 
-// to be removed //    jetsForMHT_afterLeptonRemoval.clear();
-// to be removed //  }
-// to be removed //  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  
-// to be removed //  
-// to be removed //  // only accept taus if dr > drmin in respect to electrons and muons /////////////////////
-// to be removed //  vector<int> t_toRemove;
-// to be removed //  vector<int> t_afterLeptonRemoval; 
-// to be removed //  ProcessCleaning(&t_init, &t_toRemove, &e_init, &emptyColl, taus, electrons, DRMIN_T_E_ );
-// to be removed //  ProcessCleaning(&t_init, &t_toRemove, &m_init, &emptyColl, taus, muons,     DRMIN_T_M_ );
-// to be removed //  ApplyCleaning(&t_init, &t_toRemove, &t_afterLeptonRemoval);
-// to be removed //  /////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  
-// to be removed //  
-// to be removed //  // remove jets if dr < drmin in respect to taus ////////////////////////////////////////////////////////////
-// to be removed //  j_toRemove.clear(); t_toRemove.clear();
-// to be removed //  vector<int> j_final;
-// to be removed //  ProcessCleaning(&j_afterLeptonRemoval, &j_toRemove, &t_afterLeptonRemoval, &t_toRemove, jets, taus, DRMIN_T_J_ );
-// to be removed //  ApplyCleaning(&j_afterLeptonRemoval, &j_toRemove, &j_final);
-// to be removed //  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //
-// to be removed //
-// to be removed //
-// to be removed //  // extra jet collection //////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  Pt_Jet(TAU_PT_MIN_); 
-// to be removed //  vector<int> j_init2;
-// to be removed //  PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&j_init2,jets);
-// to be removed //  // only accept jets if dr > drmin in respect to electrons and muons 
-// to be removed //  vector<int> emptyColl2, j_toRemove2; 
-// to be removed //  vector<int> j_afterLeptonRemoval2;
-// to be removed //  ProcessCleaning(&j_init2, &j_toRemove2, &e_init, &emptyColl2, jets, electrons, DRMIN_JET_E_ );
-// to be removed //  ProcessCleaning(&j_init2, &j_toRemove2, &m_init, &emptyColl2, jets, muons,     DRMIN_JET_M_ );
-// to be removed //  ApplyCleaning(&j_init2, &j_toRemove2, &j_afterLeptonRemoval2);
-// to be removed //  int numbJets(0);
-// to be removed //  // number of jets between TAU_PT_MIN_ and jet pt cut....
-// to be removed //  if( j_afterLeptonRemoval2.size() > j_final.size()){ numbJets = j_afterLeptonRemoval2.size() - j_final.size(); }
-// to be removed //  if(TAU_PT_MIN_< JET_PT_CUT_ ) Pt_Jet(JET_PT_CUT_); 
-// to be removed //  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //
-// to be removed //  // DEBUG *****************************************************************************
-// to be removed //  /*
-// to be removed //  cout<<"\n Physics object debug     : "<<endl; 
-// to be removed //  cout<<"\n vertices                 : "<<vertices.size()                         <<endl; 
-// to be removed //  cout<<"\n jets_without_arbitration : "<<jets_without_arbitration.size()         <<endl;
-// to be removed //  cout<<"\n jets                     : "<<jets.size()                             <<" jets after Lepton Removal --> "<<j_afterLeptonRemoval.size()<<endl;
-// to be removed //  cout<<"\n muons                    : "<<muons.size()                            <<" selected muons            --> "<<m_init.size()<<endl;
-// to be removed //  cout<<"\n electrons                : "<<electrons.size()                        <<" selected electrons        --> "<<e_init.size()<<endl;
-// to be removed //  cout<<"\n tausColl                 : "<<tausColl.size()                         <<endl;
-// to be removed //  cout<<"\n taus                     : "<<taus.size()                             <<" taus after Lepton removal --> "<<t_afterLeptonRemoval.size()<<endl;
-// to be removed //  */
-// to be removed //  //////////////////////////////////////////////////////////////////////////////////////
-// to be removed //
-// to be removed //  ////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  int numb_e(0), numb_m(0);
-// to be removed //  bool lepReq(true);
-// to be removed //
-// to be removed //  // To measure ttbar efficiencies we force EGTrig and hasMuTrig to true (it will be applied later on) // FIXME: what the fuck?? Must check why, whenever doing that
-// to be removed //  if(trigEffStudy_ ){ hasEGtrig = true; hasMutrig = true; }
-// to be removed //  ////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //
-// to be removed //  if( hasEGtrig ){ numb_e = e_init.size(); if(numb_e){ evType_ = ETAU_ ; if(!isData_) w_ = intimepuWeight_*scale_; }}
-// to be removed //  if( hasMutrig ){ numb_m = m_init.size(); if(numb_m){ evType_ = MUTAU_; if(!isData_) w_ = intimepuWeight_*scale_; }}
-// to be removed //  
-// to be removed //  
-// to be removed //  TVectorD * classifMC(0);
-// to be removed //  // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  // fill weighted events and reset selected events vector weights
-// to be removed //  if( !isData_ && pdfweights_ && !jes && !unc && !jer && !btagunc){
-// to be removed //    event::MiniEvent_t *evMC = evRMC_->GetNewMiniEvent(i_,"mc");  if( evMC == 0 ){ cout<<"\n empty event"<<endl; return;}
-// to be removed //    classifMC = (TVectorD *)evMC->eventClassif->At(0);
-// to be removed //    //originalPDFEvents_ += 1.*w_;
-// to be removed //    originalPDFEvents_ += 1.;  
-// to be removed //    if( weightedPDFEvents_.size() == 0 ){
-// to be removed //      for(int i=14; i<classifMC->GetNoElements();++i ){
-// to be removed //	//weightedPDFEvents_.push_back( ( (*classifMC)[i])*w_  );
-// to be removed //        weightedPDFEvents_.push_back( ( (*classifMC)[i]) );
-// to be removed //	weightedPDFSelectedEvents_.push_back(0);
-// to be removed //        weighted2PDFSelectedEvents_.push_back(0);
-// to be removed //      }
-// to be removed //    }
-// to be removed //    else{ for(int i=14; i<classifMC->GetNoElements();++i ){ weightedPDFEvents_[i-14] += (*classifMC)[i] ; } }
-// to be removed //  }
-// to be removed //  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  
-// to be removed //  // see if we are processing electron channel or muon channel /////////////////////////////////
-// to be removed //  if (  ( !eChONmuChOFF_ && evType_ == ETAU_) || (eChONmuChOFF_ && evType_ == MUTAU_  ) ) return;
-// to be removed //  //////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  
-// to be removed //  
-// to be removed //  // are triggers exclusive ?///////////////////////////////////////////////////
-// to be removed //  //if( hasEGtrig && hasMuTrig ){ if( num_e==1 && numb_m== 1 ){ evType_ = EMU_; }
-// to be removed //  //////////////////////////////////////////////////////////////////////////////
-// to be removed //  
-// to be removed //  // is muon/electron veto satisfied? ///////////////////////////////////////////////////////////////////
-// to be removed //  if( numb_e + numb_m != 1){  lepReq=false; }
-// to be removed //  if(      lepReq && evType_ == MUTAU_){
-// to be removed //    if( LooseMuonVeto( m_init[0], muons )           ){ lepReq=false; }   //see if we have loose muons
-// to be removed //    if( LooseElectronVeto(evR_,-1,electrons)        ){ lepReq=false; }   //see if we have loose electrons
-// to be removed //  }   
-// to be removed //  else if( lepReq && evType_ == ETAU_){
-// to be removed //    //see if we have loose muons
-// to be removed //    if( LooseMuonVeto(-1,muons) )                    { lepReq=false; }   //see if we have loose muons
-// to be removed //    if( LooseElectronVeto(evR_,e_init[0],electrons) ){ lepReq=false; }   //see if we have loose electrons
-// to be removed //  }
-// to be removed //  ////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  
-// to be removed //  
-// to be removed //  // MHT computation ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  mht_=-2; mhtb_=-2; //initial value 
-// to be removed //  if     (   lepReq && evType_ == MUTAU_ ){ computeMHT( jets, jetsForMHT_afterLeptonRemoval, muons[0]);      computeMHTb( jets, jetsForMHT_afterLeptonRemoval); }
-// to be removed //  else if(   lepReq && evType_ == ETAU_  ){ computeMHT( jets, jetsForMHT_afterLeptonRemoval, electrons[0]);  computeMHTb( jets, jetsForMHT_afterLeptonRemoval); }
-// to be removed //  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //  
-// to be removed //
-// to be removed //  if(newPhys){ newPhysics(vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey,ev);}
-// to be removed //  
-// to be removed //  dileptonEventAnalysis(lepReq, vertices, muons,m_init,electrons,e_init,taus,t_afterLeptonRemoval,jets,j_final,numbJets,junc,jerFactors,myKey,ev);
-// to be removed //
-// to be removed //
-// to be removed //}
-// to be removed //
-// to be removed //
-
 void CutflowAnalyzer::tauDileptonSelection(
+					   bool lepReq,
+					   vector<int>  & t_afterLeptonRemoval, 
+					   int totalJets
+					   )
+{
+  
+  
+  TString add("");
+  
+  
+  if(isData_) applybtagweight_ =false;
+
+  // only compute uncertainty due to the trigger when others unc are switched off /////////////////
+  bool terr( jes_== 0 && unc_== 0 && jer_==0 && btagunc_== 0 && unbtagunc_ );
+  TString triggErr("cutflow_triggErr");
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  if( jes_       > 0 ){ add = TString("_plus");       }if( jes_       < 0 ){ add = TString("_minus");      }
+  if( unc_       > 0 ){ add = TString("_uncplus");    }if( unc_       < 0 ){ add = TString("_uncminus");   } 
+  if( jer_       > 0 ){ add = TString("_jerplus");    }if( jer_       < 0 ){ add = TString("_jerminus");   }
+  if( btagunc_   > 0 ){ add = TString("_bplus");      }if( btagunc_   < 0 ){ add = TString("_bminus");     }
+  if( unbtagunc_ > 0 ){ add = TString("_unbplus");    }if( unbtagunc_ < 0 ){ add = TString("_unbminus");   }
+  
+  
+  TString evYields          = TString("cutflow_yields")    + add;     
+  TString evYieldsMC        = TString("cutflow_yields_mc") + add;   
+  TString evYieldsMCTrigger = TString("cutflow_mc_triggErr");
+  TString opt("optimization");
+  
+  SelectionMonitor * myMon    = tauDileptonYieldsMons_[myKey_];    // monitor for the event yields
+  SelectionMonitor * myMCMon(0);                                  // monitor for the event yields for MC
+  
+  
+  // see if we are processing data, if we are processing MC get channel code ////////////////////////////////
+  int input_channel = (int)(*(TVectorD *)ev_->eventClassif->At(0))[0];
+  int channel(-1); int tauDilCh;
+  //bool isSignal(false), isBkg(false);
+  if(  !isData_ ){ 
+    channel  = codeChannel(input_channel,urlCode_); 
+    if(channel==WQQ_CH || channel==WENU_CH || channel==WTAUNU_CH || channel==WMUNU_CH ){ channel = WJETS_CH; }
+    tauDilCh = tdChannel(channel);  
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  cout<<endl<<" input channel is "<<input_channel<<" out channel is "<<channel<<endl;
+  
+  
+  TString mcTag(""); 
+  if( !isData_ ){ mcTag = myKey_ + TString(" yields mc");  myMCMon = tauDileptonMCYieldsMons_[myKey_]; }
+  SelectionMonitor& mon    = *myMon;
+  SelectionMonitor& mcmon  = *myMCMon;
+  SelectionMonitor& debmon = *(tauDileptonDebugMons_[myKey_]);
+  
+  
+  // mini tree stats /////////////////////////////////////////////////////////////////
+  
+  if( myMCMon ){ mcmon.fill2DHisto( evYieldsMC , mcTag, MINITREE_STEP1, tauDilCh,w_); }  
+  
+  //cout<<" EvYields is "<<evYields<<" key is "<<(myKey+TString(" lep_tau yields"))<<" step is "<<MINITREE_STEP2<<" weight is "<<w_<<endl;
+  
+  mon.fillHisto(evYields, myKey_+TString(" lep_tau yields"),MINITREE_STEP2,w_);
+  mon.fillHisto(evYields, myKey_+TString(" e_tau yields"),  MINITREE_STEP2,w_); 
+  mon.fillHisto(evYields, myKey_+TString(" m_tau yields"),  MINITREE_STEP2,w_);
+  ///////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+  //debug
+  //if(evType_ == ETAU_) cout<<endl<<" ETAU input at minitree step "<<endl;   
+  if( ! lepReq ){ return; }
+
+  //debug
+  //if(evType_ == ETAU_) cout<<endl<<" pass dilepton and loose veto cuts 2) "<<tauDilCh<<endl;
+  
+  
+  // in case we are processing MC see if we require a specific channel //////////////////////////////
+  // TODO INCLUDE TTBAR LIKE EMU_???????
+  if( !isData_ ){
+    // tau dilepton analysis //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+           if(  ttbarLike_ == ETAU_  && channel != ETAU_CH  )                                                                             { return; }
+      else if(  ttbarLike_ == MUTAU_ && channel != MUTAU_CH )                                                                             { return; }
+      else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
+      else if(  ttbarLike_ == TTBAR_DDBKG_ && (channel != EJETS_CH && channel!= MUJETS_CH ) )                                             { return; }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+   if( checkleptonsFromTauDecay_ ){
+     event::MiniEvent_t *evmc = evRMC_->GetNewMiniEvent(i_,"mc");  if( evmc == 0 ){ cout<<"\n empty event"<<endl; return;}
+     std::vector<PhysicsObject> mctausColl = evRMC_->GetPhysicsObjectsFrom(evmc,event::CHLEPTON);
+     //get the charged lepton from tau //////////////////////////////////////////////////////////////////////////////////////////////////
+     std::vector<PhysicsObject> mcleps;  mcleps.clear();
+     for(size_t igtau = 0; igtau < mctausColl.size(); ++igtau){
+       if(fabs(mctausColl[igtau][1]) != double(11) && fabs(mctausColl[igtau][1]) != double(13)) continue; // if it is not electron or muon
+	 if(mctausColl[igtau].Pt() < 20 || fabs(mctausColl[igtau].Eta()) > 2.1) continue;
+  
+         //cout<<"\n debug we have found a lepton parent is : "<<(fabs(mctausColl[igtau][2]))<<endl;
+
+	 if(fabs(mctausColl[igtau][2]) != double(15)) continue; // check if lepton is from a tau decay
+	 mcleps.push_back(mctausColl[igtau]);
+       }
+     if( !( mcleps.size() == 1 && mcleps[0].Pt() > 20) )return ;
+     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   }
+   
+  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // Fill debug info ///////////////////////////////////////////////////
+  fillDebugHistograms(myKey_,m_init_,muons_,e_init_,electrons_,j_final_,jets_); 
+  //////////////////////////////////////////////////////////////////////
+  
+
+  // finding leading lepton and qualify tag ////////////////////////////////////////////////////////////////////////////////////////////////
+  double lepton_pt(0); double lepton_charge(0); uint lepton_ind(0);
+  vector<int> * p_i ; vector<PhysicsObject> * p_obj; PhysicsObject * lep_obj;
+
+  if     ( evType_ == MUTAU_ ){ p_i = & m_init_ ; p_obj = &muons_;    }
+  else if( evType_ == ETAU_  ){ p_i = & e_init_ ; p_obj = &electrons_;}
+   
+  for(uint myi=0; myi < (*p_i).size(); ++myi){
+    int ind = (*p_i)[myi]; double lPt = TMath::Abs((*p_obj)[ind].Pt()); double charge = (*p_obj)[ind][0]; PhysicsObject * tmp_obj= &( (*p_obj)[ind] );
+    if( lPt > lepton_pt ){ lepton_pt = lPt; lepton_charge = charge; lepton_ind = ind; lep_obj = tmp_obj;}                                   
+  }
+
+  std::vector<TString> evTags; 
+  if     (evType_ == ETAU_  ){ evTags.push_back(myKey_+TString(" lep_tau")); evTags.push_back(myKey_+TString(" e_tau")); }
+  else if(evType_ == MUTAU_ ){ evTags.push_back(myKey_+TString(" lep_tau")); evTags.push_back(myKey_+TString(" m_tau"));  }
+  
+  
+  double tau_charge(0); // , tau_pt(0); // unused 
+  int tau_i;
+  PhysicsObject * tau_obj;
+  if(t_afterLeptonRemoval.size() == 1){ tau_i = t_afterLeptonRemoval[0]; tau_charge = taus_[tau_i][0]; 
+    // tau_pt = taus[tau_i].Pt(); // unused
+    tau_obj = &(taus_[tau_i]); }
+  
+  // Muon trigger/ID/Iso scale factors for efficiency from https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceEffs 
+  LeadMuonTriggerEfficiency(muons_, lepton_ind, muontriggerefficiency_);
+  
+  // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
+  // on MC   : we apply a trigger efficiency
+  // on data : we require that the two highest pt jet should fire the trigger (returned eff from the method is either 0/1)
+ 
+
+  // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
+  // on MC   : we apply a trigger efficiency
+  // on data : we require that the two highest pt jet should fire the trigger (returned eff from the method is either 0/1)
+  double errorOnEff(0); pair<double,double> eff(0,0);
+  
+
+//   if( eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETSPLUSMET_ ){
+//     pair<double,double> efftemp( getEfficiencyAndError( jets_,j_final_,junc_,jerFactors_));
+//     eff.first = efftemp.first; eff.second = efftemp.second;
+    
+//     if ( eff.first == 0 ) return;
+//     else{ 
+//       electrontriggerefficiency_ = eff.first;  
+//       if( !isData_ ){ leptontriggerefficiency_ = electrontriggerefficiency_; w_= w_*leptontriggerefficiency_; errorOnEff =  w_*(eff.second); } // get trigger efficiency for electrons 
+      
+//       // take into account weights into efficiency error
+//     }
+//   }
+//   else if (eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETS_ ) { if( !isData_ )leptontriggerefficiency_ = electrontriggerefficiency_;}
+//   else{                                                      if( !isData_ ){
+//       leptontriggerefficiency_ = muontriggerefficiency_;  
+//       w_=w_*leptontriggerefficiency_;}
+//   }
+
+  if(!eChONmuChOFF_ && !isData_ ) { 
+    leptontriggerefficiency_ = muontriggerefficiency_;  
+      w_=w_*leptontriggerefficiency_;
+  }
+  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  
+
+  // events with 1 lepton /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  for( size_t itag=0; itag<evTags.size();  ++itag ) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),LEP_STEP2,w_); 
+  if (terr){
+    for( size_t itag=0; itag<evTags.size(); ++itag ) mon.fillHisto(triggErr , evTags[itag]+TString(" yields"),LEP_STEP2,errorOnEff);
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,LEP_STEP2,tauDilCh,errorOnEff); }
+  }
+  if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,LEP_STEP2,tauDilCh,w_); }
+  fillTauDileptonObjHistograms(junc_,vertices_,mets_[0],tauDilCh,myKey_,"init",m_init_,muons_,e_init_,electrons_,t_afterLeptonRemoval,taus_,j_final_,jets_,jerFactors_,metValue_);
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  // events with 1 jets //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if(j_final_.size()==0) return;
+  for(size_t itag=0; itag<evTags.size() ; ++itag) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),JET1_STEP2,w_); 
+  
+  if (terr){
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),JET1_STEP2,errorOnEff);
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET1_STEP2,tauDilCh,errorOnEff); }
+  }
+  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,JET1_STEP2,tauDilCh,w_); }
+  fillTauDileptonObjHistograms(junc_,vertices_,mets_[0],tauDilCh,myKey_,"#geq 1 jet",m_init_,muons_,e_init_,electrons_,t_afterLeptonRemoval,taus_,j_final_,jets_,jerFactors_,metValue_);
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  // events with at least 2 jets///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if(j_final_.size()<2 ) return;                                       
+  for(size_t itag=0; itag<evTags.size();  ++itag) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),JET2_STEP2,w_);  
+  if (terr){
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),JET2_STEP2,errorOnEff);
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET2_STEP2,tauDilCh,errorOnEff); }
+  }
+  if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,JET2_STEP2,tauDilCh, w_);}
+  fillTauDileptonObjHistograms(junc_,vertices_,mets_[0],tauDilCh,myKey_,"#geq 2 jet",m_init_,muons_,e_init_,electrons_,t_afterLeptonRemoval,taus_,j_final_,jets_,jerFactors_,metValue_);
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  //trigger efficiencies studies on data (MET part) /////////////////////////////////////////////////////////////////////////////////////
+  // /lustre/data3/cmslocal/samples/CMSSW_4_2_X/data/mTrees-v3/Ele_MetTrig_X.root
+  // 1) Events selected with trigger : HLT_EleY_CaloIdVT_TrkIdT_CentralJet30_CentralJet25_vX 
+  // HLT_EleY_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT15_vX is placed at the 3rd position of trigger information.
+  // These data is for measuring only the MHT part of trigger efficiency.
+  if(isData_ && trigEffStudy_ ){
+
+    //trigger /////////////////////////////////////////
+    TVectorD *trig = (TVectorD *)ev_->triggerColl->At(0);
+    bool hasTesttrig = ((*trig)[3]>0); 
+    ///////////////////////////////////////////////////
+ 
+    //overall trigger efficiency
+    for(int mymetcut = 5; mymetcut<150; ++mymetcut){
+      if( metValue_ > mymetcut ){
+	
+        //denominator
+        debmon.fillHisto("den_eff_trigger_met", myKey_+TString(" e_tau debug"), mymetcut);
+ 
+        if(hasTesttrig){
+          //numerator
+          debmon.fillHisto("num_eff_trigger_met", myKey_+TString(" e_tau debug"), mymetcut);
+        }
+
+
+        if( j_final_.size() + totalJets >= 3 ){
+          //denominator
+          debmon.fillHisto("den_eff_trigger_met3j", myKey_+TString(" e_tau debug"), mymetcut);
+ 
+          if(hasTesttrig){
+            //numerator
+            debmon.fillHisto("num_eff_trigger_met3j", myKey_+TString(" e_tau debug"), mymetcut);
+          }
+
+        }
+
+      }
+    }
+
+    // absolute efficiencies
+    debmon.fillHisto("abs_den_eff_trigger_met", myKey_+TString(" e_tau debug"), metValue_);
+ 
+    // numerator
+    if(hasTesttrig){ debmon.fillHisto("abs_num_eff_trigger_met", myKey_+TString(" e_tau debug"), metValue_ ); }
+
+  
+    if( j_final_.size() + totalJets >= 3){
+      // absolute efficiencies
+      debmon.fillHisto("abs_den_eff_trigger_met3j", myKey_+TString(" e_tau debug"), metValue_);
+ 
+      // numerator
+      if(hasTesttrig){ debmon.fillHisto("abs_num_eff_trigger_met3j", myKey_+TString(" e_tau debug"), metValue_ ); }
+
+    }
+
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  //trigger efficiencies studies on data (JET part) /////////////////////////////////////////////////////////////////////////////////////
+  // /lustre/data3/cmslocal/samples/CMSSW_4_2_X/data/mTrees-v3/Ele_JetMetTrig_X.root
+  // 2) Events selected with trigger : HLT_Ele32_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_vX
+  // HLT_EleY_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT15_vX is placed at the 3rd position of trigger information.
+  // These data is to be used for measuring combined Jet+MHT part of trigger efficiency from which we can extract jet efficiency part.
+  // The files  4 and 5 have
+  // HLT_Ele17_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT15
+  // Files 6, 7, 8 and 9 have
+  // HLT_Ele22_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT20
+  // File 10 have HLT_Ele27_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT20
+  // They correspond to different run numbers and different trigger
+  // thresholds. So the efficiency should be measured separately.
+  // NOTE jet cut should be at 20 !!!!
+  //
+  // note : the tau is removed from the trigger list  
+  //
+  if(isData_ && trigEffStudy_ && metValue_ > 45 ){
+    
+    //trigger /////////////////////////////////////////
+    // TVectorD *trig = (TVectorD *)ev->triggerColl->At(0); // unused
+    // bool hasTesttrig = ((*trig)[3]>0);  // unused
+    ///////////////////////////////////////////////////
+
+
+ 
+    /*
+    for(int jetPtCut = 20;jetPtCut<100; jetPtCut++){
+
+      int numbjets(0);     
+      for(uint i=0; i< jetsForTrigger_.size(); i++){
+        int ind=jetsForTrigger_[i];
+        double jetPt =  getJetPt( jets[ind], junc,0, jes_);
+        bool triggeredJet = jets[ind][4];
+        if(jetPt>jetPtCut && triggeredJet ) numbjets++;
+      }
+      if( numbjets>1 ){
+   
+        //denominator
+        debmon.fillHisto("den_eff_trigger_jetptcut", myKey+TString(" e_tau debug"), jetPtCut);
+
+ 
+        if(hasTesttrig){
+          //denominator
+          debmon.fillHisto("num_eff_trigger_jetptcut", myKey+TString(" e_tau debug"), jetPtCut);
+        }
+      }
+    }
+    */
+
+    // absolute efficiencies get the 2 most energetic jet ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    double jetPt1(0),jetPt2(0); int ind2(-1), ind1(-1);
+    for(uint i=0; i<j_final_.size(); ++i){
+      int ind=j_final_[i];
+      double jetPt =  getJetPt( jets_[ind], junc_,0, jes_);
+      if( jetPt > jetPt1       ){ jetPt2=jetPt1; ind2=ind1; jetPt1=jetPt; ind1=ind; }
+      else if( jetPt > jetPt2  ){ jetPt2=jetPt;  ind2=ind;                          }
+    }
+    
+    if(jetPt2){
+      //denominator
+      debmon.fillHisto("abs_den_eff_trigger_jetptcut1", myKey_+TString(" e_tau debug"), jetPt1);
+      debmon.fillHisto("abs_den_eff_trigger_jetptcut2", myKey_+TString(" e_tau debug"), jetPt2);
+
+      //if(hasTesttrig){
+
+        //if(jetPt2>20){ cout<<" jetPt is : "<<jetPt2<<" triggeredJet2 is : "<<(jets[ind2][4])<<endl;}
+
+        //numerator
+        double triggeredJet1 = jets_[ind1][4];  // most energetic jet
+        double triggeredJet2 = jets_[ind2][4];  // second most energetic jet
+
+        //if( triggeredJet1 && triggeredJet2 ){ debmon.fillHisto("abs_num_eff_trigger_jetptcut", myKey+TString(" e_tau debug"), jetPt2 ); }
+
+        if( triggeredJet1 ){ debmon.fillHisto("abs_num_eff_trigger_jetptcut1", myKey_+TString(" e_tau debug"), jetPt1 ); }
+        if( triggeredJet2 ){ debmon.fillHisto("abs_num_eff_trigger_jetptcut2", myKey_+TString(" e_tau debug"), jetPt2 ); }
+
+      //}
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  }
+
+
+  // trigger efficiencies studies ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if( evType_==ETAU_ && trigEffStudy_ && t_afterLeptonRemoval.size()<2 && jes_==0){
+
+    int jmult = t_afterLeptonRemoval.size() + j_final_.size();
+
+    //trigger ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    bool trigger(false); TVectorD *trig = (TVectorD *)ev_->triggerColl->At(0); 
+    bool hasEGtrig( ((*trig)[1]>0) ); if( hasEGtrig ){ trigger =true;}
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // efficiencies on electron + tau + jets channels //////////////////////////////////////////////////////////////////////////////////////////////
+    if( channel == ETAU_CH && t_afterLeptonRemoval.size()== 1 ){
+
+      // get the highest third pt jet /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      double jetPtMax1(0),jetPtMax2(0),jetPtMax3(0),jetEtaPtMax1(0),jetEtaPtMax2(0),jetEtaPtMax3(0);
+      for(uint j_i=0; j_i<j_final_.size(); ++j_i){
+        int ind = j_final_[j_i];
+        double jetPt =  getJetPt( jets_[ind], junc_,0, jes_); double jetEta = fabs( jets_[ind].Eta());
+        
+        if     ( jetPt > jetPtMax1 ){jetPtMax3=jetPtMax2; jetEtaPtMax3 = jetEtaPtMax2; jetPtMax2=jetPtMax1; jetEtaPtMax2=jetEtaPtMax1; jetPtMax1=jetPt; jetEtaPtMax1=jetEta; }
+        else if( jetPt > jetPtMax2 ){jetPtMax3=jetPtMax2; jetEtaPtMax3 = jetEtaPtMax2; jetPtMax2=jetPt;     jetEtaPtMax2=jetEta;                                             }
+        else if( jetPt > jetPtMax3 ){jetPtMax3=jetPt;     jetEtaPtMax3 = jetEta;                                                                                             }
+        
+      }
+      if(t_afterLeptonRemoval.size()==1){ // this condition was already verified...
+        //jer assumed to be 1
+        int ind = t_afterLeptonRemoval[0];
+        double jetPt = taus_[ind][7]; double jetEta = taus_[ind][8]; 
+        junc_->setJetEta(jetEta); junc_->setJetPt(jetPt); double corr=junc_->getUncertainty(true); 
+        jetPt = (1+corr)*jetPt;
+        //if we have only 2 jets in the event....
+        if(jetPtMax3==0){ 
+          if(jetPt<jetPtMax2){    jetPtMax3=jetPt;     jetEtaPtMax3=fabs(jetEta); }
+          else{                   jetPtMax3=jetPtMax2; jetEtaPtMax3=jetEtaPtMax2; }
+        }
+        else if(jetPt<jetPtMax3){ jetPtMax3=jetPt;     jetEtaPtMax3=fabs(jetEta); }
+        
+      }
+      //////////////////////////////////////////////////////////////////////////////////////////
+
+
+      debmon.fillHisto("jmult_den_eta", myKey_+TString(" e_tau debug"), jetEtaPtMax3);
+      debmon.fillHisto("jmult_den_pt",  myKey_+TString(" e_tau debug"), jetPtMax3);
+      debmon.fillHisto("jmult_den",     myKey_+TString(" e_tau debug"), jmult,1);
+
+      if(trigger){  
+        debmon.fillHisto("jmult_num_eta", myKey_+TString(" e_tau debug"), jetEtaPtMax3);
+        debmon.fillHisto("jmult_num_pt",  myKey_+TString(" e_tau debug"), jetPtMax3); 
+        debmon.fillHisto("jmult_num",     myKey_+TString(" e_tau debug"), jmult,1);
+      }
+
+    }
+
+    // efficiencies on electron + jets
+    if(channel == WJETS_CH && jmult >=3 ){
+
+      // get the highest third pt jet /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      double jetPtMax1(0),jetPtMax2(0),jetPtMax3(0),jetEtaPtMax1(0),jetEtaPtMax2(0),jetEtaPtMax3(0);
+      for(uint j_i=0; j_i<j_final_.size(); ++j_i){
+        int ind = j_final_[j_i];
+        double jetPt   =  getJetPt( jets_[ind], junc_,0, jes_); double jetEta  = fabs( jets_[ind].Eta());
+        
+        if     ( jetPt > jetPtMax1 ){jetPtMax3=jetPtMax2; jetEtaPtMax3 = jetEtaPtMax2; jetPtMax2=jetPtMax1; jetEtaPtMax2=jetEtaPtMax1; jetPtMax1=jetPt; jetEtaPtMax1=jetEta;}
+        else if( jetPt > jetPtMax2 ){jetPtMax3=jetPtMax2; jetEtaPtMax3 = jetEtaPtMax2; jetPtMax2=jetPt;     jetEtaPtMax2=jetEta;                                            }
+        else if( jetPt > jetPtMax3 ){jetPtMax3=jetPt;     jetEtaPtMax3 = jetEta;                                                                                            }
+        
+      }
+      if(t_afterLeptonRemoval.size()==1){
+        //jer assumed to be 1
+        int ind = t_afterLeptonRemoval[0];
+        double jetPt(taus_[ind][7]);
+	double jetEta(taus_[ind][8]); 
+        junc_->setJetEta(jetEta); junc_->setJetPt(jetPt); double corr=junc_->getUncertainty(true); 
+        jetPt = (1+corr)*jetPt;
+        //if we have only 2 jets in the event....
+        if(jetPt<jetPtMax3){ jetPtMax3=jetPt;     jetEtaPtMax3=fabs(jetEta); }
+        
+      }
+      //////////////////////////////////////////////////////////////////////////////////////////
+
+      
+      
+      debmon.fillHisto("jmult_den_eta", myKey_+TString(" e_tau debug"), jetEtaPtMax3 );
+      debmon.fillHisto("jmult_den_pt",  myKey_+TString(" e_tau debug"), jetPtMax3    );
+      debmon.fillHisto("jmult_den",     myKey_+TString(" e_tau debug"), jmult,1      );
+
+      if(trigger){  
+        debmon.fillHisto("jmult_num_eta", myKey_+TString(" e_tau debug"), jetEtaPtMax3);
+        debmon.fillHisto("jmult_num_pt",  myKey_+TString(" e_tau debug"), jetPtMax3   ); 
+        debmon.fillHisto("jmult_num",     myKey_+TString(" e_tau debug"), jmult,1);
+      }
+
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  // events with at least 2 jets+1 jet>20GeV ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // number of jets above jet pt cut and extra jet between tau pt and jet pt cut 
+  if( j_final_.size() + totalJets <3) return;
+  for(size_t itag=0; itag<evTags.size();  ++itag) mon.fillHisto(evYields ,evTags[itag]+TString(" yields"),    JET3_STEP2,w_);  
+  if (terr){ 
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),JET3_STEP2,errorOnEff);  
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET3_STEP2,tauDilCh,errorOnEff); }
+  }
+  if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,JET3_STEP2,tauDilCh,w_);}
+  fillTauDileptonObjHistograms(junc_,vertices_,mets_[0],tauDilCh,myKey_,"#geq 3 jet",m_init_,muons_,e_init_,electrons_,t_afterLeptonRemoval,taus_,j_final_,jets_,jerFactors_,metValue_);
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  // events passing MET cut //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if( metValue_ < MET_CUT_) return;
+  for(size_t itag=0; itag<evTags.size();  ++itag) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),    MET_STEP2,w_);  
+  if (terr){
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),MET_STEP2,errorOnEff);
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,MET_STEP2,tauDilCh,errorOnEff); }
+  }
+  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,MET_STEP2,tauDilCh,w_);}
+  fillTauDileptonObjHistograms(junc_,vertices_,mets_[0],tauDilCh,myKey_,"MET",m_init_,muons_,e_init_,electrons_,t_afterLeptonRemoval,taus_,j_final_,jets_,jerFactors_,metValue_);  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  //testMe_+=errorOnEff2; testMe_Nev_++;
+  //cout<<endl<<" Deb :  eff  = "<<setprecision (5)<<(eff.first)<<" +- "<<(eff.second)<<" errorOnEff2  = "<<errorOnEff2<<" total is "<<testMe_<<" in N events : "<<testMe_Nev_<<endl;
+
+
+
+
+
+
+
+  // MT cut /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  double deltaPhi = (*p_obj)[lepton_ind].DeltaPhi( mets_[0] );  
+  double mt = sqrt (  2*lepton_pt*metValue_*(1 - cos(deltaPhi) ) ) ;
+  if( APPLY_MT_CUT_){ 
+    if( mt<MT_CUT_ ){ return; } 
+    for(size_t itag=0; itag<evTags.size();  ++itag) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"), MT_STEP2,w_);  
+    if (terr){
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),MT_STEP2,errorOnEff);
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,MT_STEP2,tauDilCh,errorOnEff); }
+    }
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,MT_STEP2,tauDilCh,w_);}
+    fillTauDileptonObjHistograms(junc_,vertices_,mets_[0],tauDilCh,myKey_,"MT",m_init_,muons_,e_init_,electrons_,t_afterLeptonRemoval,taus_,j_final_,jets_,jerFactors_,metValue_);
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  // New way to deal with btag uncertainies //////////////////
+  int nbtags_taus(0);
+  bool nbtag1(false),  nbtag2(false); // ENABLED BTAGGING CUT
+  ////////////////////////////////////////////////////////////
+
+
+
+  // new way to compute btag uncertainty //////////////////////////////////////////
+  if( isData_ || !  applybtagweight_){
+    for(uint j=0; j<j_final_.size(); ++j){  
+      int j_ind = j_final_[j]; 
+      double btagvalue = jets_[j_ind][BTAGIND_] ;
+      if( btagvalue>BTAG_CUT_){nbtags_taus++;} 
+    }
+  }
+  else {
+    for(uint j=0; j<j_final_.size(); ++j){  
+      int    j_ind     = j_final_[j]; 
+      double btagvalue = jets_[j_ind][BTAGIND_];
+      bool   isTagged = false;
+      
+      if( btagvalue > BTAG_CUT_) isTagged = true;
+
+      double newBTagSF     = BTagSF_;
+      double newLightJetSF = LightJetSF_;
+      
+      // get flavour of the jet
+
+      int jet_flavor = TMath::Abs(jets_[j_ind][jetpgid_]);
+      double err_newBTagSF = err_BTagSF_;
+      
+      if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
+      
+      if(btagunc_   > 0){ newBTagSF     = BTagSF_+ err_newBTagSF; }
+      else              { newBTagSF     = BTagSF_- err_newBTagSF; }
+
+      if(unbtagunc_ > 0){ newLightJetSF = LightJetSF_ + err_LightJetSF_;}
+      else              { newLightJetSF = LightJetSF_ - err_LightJetSF_;}
+      
+      double BTagEff     = newBTagSF*BTAG_eff_R_;
+      double LightJeteff = newLightJetSF*BTAG_eff_F_;
+      
+      double jet_phi = jets_[j_ind].Phi();
+      
+      double sin_phi = sin(jet_phi*1000000);
+      double seed = abs(static_cast<int>(sin_phi*100000));
+      
+      //Initialize class
+      BTagSFUtil btsfutil(seed);
+      
+      //modify tags
+      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, BTagEff, newLightJetSF, LightJeteff);
+      
+      if(isTagged) nbtags_taus++;
+      
+    }
+  }
+  if(nbtags_taus > 0 ) nbtag1=true;
+  if(nbtags_taus > 1)  nbtag2=true;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+
+
+
+
+  //cout<<endl<<"tau dilepton event analysis H"<<endl;
+  //taus ////////////////////////////////////////////
+  bool taucut( t_afterLeptonRemoval.size()== 1 );
+
+  int numbProngs(0);
+  double tauP(0),tauE,r(0);
+  tauR_ = -1;
+  
+  if( taucut ){ 
+    numbProngs = GetNumbProngs(taus_[tau_i]);
+    tauP = taus_[tau_i][16];  // lead charged hadron P
+    tauE = taus_[tau_i].E();  // tau energy
+    if(tauE){ r= tauP/tauE; tauR_ = r;} // tau polarization
+    
+  }
+  ///////////////////////////////////////////////////
+   
+
+  //cout<<endl<<"tau dilepton event analysis I"<<endl;
+  //Opposite sign //////////////////////////////////
+  bool oscut(false);
+  if( lepton_charge * tau_charge < 0 ) oscut = true; 
+  if(oscut) is_os_ = 1.;
+  //////////////////////////////////////////////////
+  
+
+  // 1 btag option ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if( nbtag1 ) {
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    BTAG1_STEP2, w_); 
+    if (terr){
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),BTAG1_STEP2, errorOnEff);  
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,BTAG1_STEP2,tauDilCh,errorOnEff); }
+    }
+    if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,BTAG1_STEP2,tauDilCh,w_); } 
+    fillTauDileptonObjHistograms(junc_,vertices_,mets_[0],tauDilCh,myKey_,"1 btag",m_init_,muons_,e_init_,electrons_,t_afterLeptonRemoval,taus_,j_final_,jets_,jerFactors_,metValue_,nbtags_taus);
+  }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+  // TAU ID selection step //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if(nbtag1 && taucut){
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    TAU_STEP2,w_);  
+    if (terr){
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),TAU_STEP2, errorOnEff); 
+      if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,TAU_STEP2,tauDilCh,errorOnEff); }
+    }
+    
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,TAU_STEP2,tauDilCh,w_); }
+    fillTauDileptonObjHistograms(junc_,vertices_,mets_[0],tauDilCh,myKey_,"1 Tau",m_init_,muons_,e_init_,electrons_,t_afterLeptonRemoval,taus_,j_final_,jets_,jerFactors_,metValue_,nbtags_taus);
+
+    
+    for(size_t itag=0; itag<evTags.size(); ++itag){ 
+      //Build Tree quantites based on tau jet 
+      PhysicsObject tauJet; 
+      double tauJetPt  = (*tau_obj)[7];
+      double tauJetEta = (*tau_obj)[8];
+      double tauJetPhi = (*tau_obj)[9];
+      tauJet.SetPtEtaPhiE(tauJetPt,tauJetEta,tauJetPhi,tauJetPt);
+      tauJetPt =  getJetPt( tauJet, junc_, 0, jes_); //correct pt
+      tauJet.SetPtEtaPhiE(tauJetPt,tauJetEta,tauJetPhi,tauJetPt);
+      double tauJetRadius(0); //Warning this needs to be changed (not needed)
+      TString treeOption("Selected"); treeOption += add;
+      fillTauDileptonObjTree(ev_,treeOption,evTags[itag],junc_,mets_[0],tauDilCh,TString("1 Tau"),lep_obj,tauJetRadius, tau_obj, j_final_, jets_, jerFactors_, metValue_,nbtags_taus);
+    }
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+   // SPY events for the w+jet and ttbar other contribution//////////////////////////////////////////////
+   //if(  (!applybtagweight_  && nbtag1 && taucut ) ||  (applybtagweight_ && taucut )  ){
+   //    if(jes_== 0 && unc_== 0 && jer_== 0 && btagunc_==0 && pu_ == NOPU ) listOfReaders_[0]->SpyEvent();
+   //}
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  if(  nbtag1 && taucut && oscut ){
+
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),OS_STEP2,w_);
+    if (terr){
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),OS_STEP2, errorOnEff);
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,OS_STEP2,tauDilCh,errorOnEff); }
+    }
+
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,OS_STEP2,tauDilCh,w_); }
+    fillTauDileptonObjHistograms(junc_,vertices_,mets_[0],tauDilCh,myKey_,"OS",m_init_,muons_,e_init_,electrons_,t_afterLeptonRemoval,taus_,j_final_,jets_,jerFactors_,metValue_,nbtags_taus);
+
+    //SPY AFTER TAU ID AND OS /////////////////////////////////////////////////////////////////////////
+    //if(jes_== 0 && unc_== 0 && jer_== 0 && btagunc_==0 && pu_ == NOPU ) listOfReaders_[0]->SpyEvent();
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+   
+
+
+    // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // fill weighted events and reset selected events vector weightsMS Emeri
+    if( !isData_ && pdfweights_ && !sys_){
+      TVectorD * classifMC(0);
+      //PDFSelectedEvents_ += (w_); 
+      PDFSelectedEvents_ += 1.;
+      event::MiniEvent_t *evMC = evRMC_->GetNewMiniEvent(i_,"mc");  if( evMC == 0 ){ cout<<"\n empty event"<<endl; return;}
+      classifMC = (TVectorD *)evMC->eventClassif->At(0);
+  
+      for(int i=14; i<classifMC->GetNoElements();++i ){
+        cout.precision(3);
+        myWeights_[i-14] += (*classifMC)[i]/(*classifMC)[14];        
+        cout<<endl<<" sel. Evnt :"<<i_<<", (i-14) = "<<(i-14)<<" w : "<<(*classifMC)[i]<<" rel w : "<<((*classifMC)[i]/(*classifMC)[i-14])<<" total w : "<<myWeights_[i-14];
+        //weightedPDFSelectedEvents_[i-6]  += ( ( (*classifMC)[i] ) * w_ * w1b_ ); weighted2PDFSelectedEvents_[i-6] += ( ( (*classifMC)[i] ) * w_ )*( ((*classifMC)[i])*w_);
+        weightedPDFSelectedEvents_[i-14]  += (*classifMC)[i] ;  weighted2PDFSelectedEvents_[i-14] += ( (*classifMC)[i] ) * ( ( *classifMC)[i] );
+      }
+
+    } 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    // Polarization //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    if( numbProngs==1 && r > 0.7 ){
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),R_STEP2,w_);
+      if (terr){
+        for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),R_STEP2, errorOnEff);
+        if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,OS_STEP2,tauDilCh,errorOnEff); }
+      }
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,R_STEP2,tauDilCh,w_); }
+      fillTauDileptonObjHistograms(junc_,vertices_,mets_[0],tauDilCh,myKey_,"R",m_init_,muons_,e_init_,electrons_,t_afterLeptonRemoval,taus_,j_final_,jets_,jerFactors_,metValue_,nbtags_taus);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  }
+
+  
+  if( taucut && oscut && nbtag2 ){
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),BTAG2_STEP2,w_); 
+    if (terr){
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),BTAG2_STEP2, errorOnEff); 
+       if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,BTAG2_STEP2,tauDilCh,errorOnEff); }
+    }
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,BTAG2_STEP2,tauDilCh,w_); } 
+    fillTauDileptonObjHistograms(junc_,vertices_,mets_[0],tauDilCh,myKey_,"2 btag",m_init_,muons_,e_init_,electrons_,t_afterLeptonRemoval,taus_,j_final_,jets_,jerFactors_,metValue_,nbtags_taus);
+  }
+
+
+  //optimization ////////////////////////////////////////////////////////////////
+  /*
+  int cutIndex;
+  for(uint i=0;i<5;i++){ //index running on tau pt
+    for(uint j=0;j<5;j++){
+      double metThreshold   = 30 + i*5;
+      double tauPtThreshold = 20 + j*5;
+      int index = i + 5*j;
+      bool passMet(false);
+      bool passTauPt(false);
+
+      if( metValue > metThreshold   ){ passMet   = true; }
+      if( tau_pt   > tauPtThreshold ){ passTauPt = true; }
+
+      if( passMet  && nbtag1 && passTauPt && oscut ){ 
+        for(size_t itag=0; itag<evTags.size(); itag++){
+          debmon.fillHisto("optSelection",evTags[itag]+TString(" debug"),index,w_);
+        }
+      }
+    }
+  }
+   */
+  ////////////////////////////////////////////////////////////////////////////////
+
+}
+
+void CutflowAnalyzer::tauDileptonEventAnalysis(
   bool lepReq,
   std::vector<PhysicsObject> & v, 
   std::vector<PhysicsObject> & muons,     vector<int>  & m_init,  
@@ -929,7 +2145,7 @@ void CutflowAnalyzer::tauDileptonSelection(
   if(isData_) applybtagweight_ =false;
 
   // only compute uncertainty due to the trigger when others unc are switched off /////////////////
-  bool terr(false); if ( jes_== 0 && unc_== 0 && jer_==0 && btagunc_== 0 && unbtagunc_ && tes_==0) terr=true;
+  bool terr(false); if ( jes_== 0 && unc_== 0 && jer_==0 && btagunc_== 0 && unbtagunc_ && tes_==0 && topptunc_==0) terr=true;
   TString triggErr   = TString("cutflow_triggErr");
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -938,8 +2154,942 @@ void CutflowAnalyzer::tauDileptonSelection(
   if( jer_       > 0 ){ add = TString("_jerplus");    }if( jer_       < 0 ){ add = TString("_jerminus");   }
   if( btagunc_   > 0 ){ add = TString("_bplus");      }if( btagunc_   < 0 ){ add = TString("_bminus");     }
   if( unbtagunc_ > 0 ){ add = TString("_unbplus");    }if( unbtagunc_ < 0 ){ add = TString("_unbminus");   }
-  if( tes_       > 0 ){ add = TString("_tesplus");    }if( tes_       < 0 ){ add = TString("_tesminus");   }
-  if( topptunc_  > 0 ){ add = TString("_topptuncplus");  }if( topptunc_  < 0 ){ add = TString("_topptuncminus");   }
+  if( tes_ > 0 ){ add = TString("_tesplus");    }if( tes_ < 0 ){ add = TString("_tesminus");   }
+  if( topptunc_  > 0 ){ add = TString("_topptplus");  }if( topptunc_  < 0 ){ add = TString("_topptminus");   }
+  
+  TString evYields          = TString("cutflow_yields")    + add;     
+  TString evYieldsMC        = TString("cutflow_yields_mc") + add;   
+  TString evYieldsMCTrigger = TString("cutflow_mc_triggErr");
+  TString opt("optimization");
+  
+  SelectionMonitor * myMon    = tauDileptonYieldsMons_[myKey];    // monitor for the event yields
+  SelectionMonitor * myMCMon(0);                                  // monitor for the event yields for MC
+  
+
+  // Single Top classification
+  //  if( url_ == W_URL || url_ == A_W_URL){    
+  //fn  cout << "Start of new event" << endl;
+  //fn  cout << "event n." << i_ << endl;
+//     event::MiniEvent_t *evmontecarlo = evRMC_->GetNewMiniEvent(i_,"mc");
+    
+//     if( evmontecarlo == 0 ){ cout<<"\n empty event"<<endl; }
+    
+//     else{
+//       std::vector<PhysicsObject> mcLepColl = evRMC_->GetPhysicsObjectsFrom(evmontecarlo,event::CHLEPTON);
+//       int ippo = mcLepColl.size();
+//       cout << setprecision(6) << "mcLepColl.size() =" << ippo << endl;      
+//     }
+      
+
+  // see if we are processing data, if we are processing MC get channel code ////////////////////////////////
+  int input_channel = (int)(*(TVectorD *)ev->eventClassif->At(0))[0];
+  int channel(-1); int tauDilCh;
+  //bool isSignal(false), isBkg(false);
+  if(  !isData_ ){ 
+    channel  = codeChannel(input_channel,urlCode_); 
+    if(channel==WQQ_CH || channel==WENU_CH || channel==WTAUNU_CH || channel==WMUNU_CH ){ channel = WJETS_CH; }
+    tauDilCh = tdChannel(channel);  
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//   cout<<endl<<" input channel  is "<<input_channel<<" out channel is "<<channel<<endl;
+//   cout << "End of new event" << endl;
+//   cout << "---------------" << endl;
+//   cout << " " << endl;
+//   cout << " " << endl;
+//   cout << " " << endl;
+
+  
+  TString mcTag(""); 
+  if( !isData_ ){ mcTag = myKey + TString(" yields mc");  myMCMon = tauDileptonMCYieldsMons_[myKey]; }
+  SelectionMonitor& mon    = *myMon;
+  SelectionMonitor& mcmon  = *myMCMon;
+  SelectionMonitor& debmon = *(tauDileptonDebugMons_[myKey]);
+
+
+  double mytoppt(1.);
+
+//   // Top pt reweighting
+//   if( url_ == TTBAR_URL){
+//     double tPt(99999.), tbarPt(99999.);
+//     event::MiniEvent_t *evmontecarlo = evRMC_->GetNewMiniEvent(i_,"mc");
+//     if( evmontecarlo == 0 ){ cout<<"\n empty event"<<endl; }
+//     else{
+//       std::vector<PhysicsObject> mcquarksColl = evRMC_->GetPhysicsObjectsFrom(evmontecarlo,event::QUARK);
+//       for( size_t iquark=0; iquark<mcquarksColl.size(); iquark++){
+// 	if( i_ == 45) cout << "pdg id: " << mcquarksColl[iquark][2] << endl;
+// 	if(mcquarksColl[iquark][2] == 6) tPt = mcquarksColl[iquark].Pt();
+// 	if(mcquarksColl[iquark][2] == -6) tbarPt = mcquarksColl[iquark].Pt();
+//       }
+      
+//     }
+    
+//     pTrew_ = 0.; pTre2_ = 0.;
+//     pTrew_ = ttbarReweight(tPt,tbarPt);
+//     pTre2_ = pTrew_*pTrew_;
+//     fillDebugHistograms(myKey,m_init,muons,e_init,electrons,j_final,jets);
+    
+//     //    if (!sys_ ) {
+//     //      cout << "Start of new event" << endl;
+//     //      cout << "event n." << i_ << endl;
+//     //      cout << setprecision(6) << "topptunc: (" << tPt << ", " << tbarPt << ") ---> " <<  pTrew_ <<endl;
+//     //      //pT ReWeights
+//     //      cout << "End of new event" << endl;
+//     //      cout << "---------------" << endl;
+//     //      cout << " " << endl;
+//     //      cout << " " << endl;
+//     //      cout << " " << endl;
+//     //    }
+    
+//     // down: no reweighting
+//     // central: weight -> weight * reweight
+//     // up: weight -> weight * reweight * reweight
+//     if(topptunc_ == 0.) { mytoppt = ttbarReweight(tPt,tbarPt); /* cout << "topptunc_ =" << topptunc_ << " --    w_ =" << w_ <<endl; */ }
+//     else if(topptunc_ > 0.) { mytoppt = ttbarReweight(tPt,tbarPt)*ttbarReweight(tPt,tbarPt); /* cout << "topptunc_ =" << topptunc_ << " --    w_ =" << w_ <<endl; */ }
+//     else if(topptunc_ < 0.) { mytoppt = 1.; /* cout << "topptunc_ =" << topptunc_ << " --    w_ =" << w_ <<endl; */ }
+    
+//     if(i_ == 45) cout << "topptunc: (" << tPt << ", " << tbarPt << ") ---> " <<  ttbarReweight(tPt,tbarPt) <<endl;
+
+
+//   }
+//   /////////////////////////////////////////////
+
+  w_ *= mytoppt;
+
+
+  
+  // mini tree stats /////////////////////////////////////////////////////////////////
+  
+  if( myMCMon ){ mcmon.fill2DHisto( evYieldsMC , mcTag, MINITREE_STEP1, tauDilCh,w_); }  
+
+  //cout<<" EvYields is "<<evYields<<" key is "<<(myKey+TString(" lep_tau yields"))<<" step is "<<MINITREE_STEP2<<" weight is "<<w_<<endl;
+
+  mon.fillHisto(evYields, myKey+TString(" lep_tau yields"),MINITREE_STEP2,w_);
+  mon.fillHisto(evYields, myKey+TString(" e_tau yields"),  MINITREE_STEP2,w_); 
+  mon.fillHisto(evYields, myKey+TString(" m_tau yields"),  MINITREE_STEP2,w_);
+ 
+
+  ///////////////////////////////////////////////////////////////////////////////////
+
+
+  int ntaus_h(0), ntaus_h_accept(0);
+
+
+  //debug
+  //if(evType_ == ETAU_) cout<<endl<<" ETAU input at minitree step "<<endl;   
+  if( ! lepReq ){ return; }
+
+  //debug
+  //if(evType_ == ETAU_) cout<<endl<<" pass dilepton and loose veto cuts 2) "<<tauDilCh<<endl;
+
+
+  // in case we are processing MC see if we require a specific channel //////////////////////////////
+  // TODO INCLUDE TTBAR LIKE EMU_???????
+//   cout << "Beginning of Event" << endl;   
+//   cout << " " << endl;
+  if( !isData_ ){
+    // tau dilepton analysis //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+           if(  ttbarLike_ == ETAU_  && channel != ETAU_CH  )                                                                             { return; }
+      else if(  ttbarLike_ == MUTAU_ && channel != MUTAU_CH )                                                                             { return; }
+      else if(  ttbarLike_ == MUMU_ && channel != MUMU_CH )                                                                             { return; }
+      else if(  ttbarLike_ == EMU_ && channel != EMU_CH )                                                                             { return; }
+      else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
+      else if(  ttbarLike_ == TTBAR_DDBKG_ && (channel != EJETS_CH && channel!= MUJETS_CH ) )                                             { return; }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    // Top pt reweighting was here
+
+
+   if( checkleptonsFromTauDecay_ ){
+     event::MiniEvent_t *evmc = evRMC_->GetNewMiniEvent(i_,"mc");  if( evmc == 0 ){ cout<<"\n empty event"<<endl; return;}
+     std::vector<PhysicsObject> mctausColl = evRMC_->GetPhysicsObjectsFrom(evmc,event::CHLEPTON);
+     //get the charged lepton from tau //////////////////////////////////////////////////////////////////////////////////////////////////
+     std::vector<PhysicsObject> mcleps;  mcleps.clear();
+     for(size_t igtau = 0; igtau < mctausColl.size(); ++igtau){
+       if(fabs(mctausColl[igtau][1]) != double(11) && fabs(mctausColl[igtau][1]) != double(13)) continue; // if it is not electron or muon
+	 if(mctausColl[igtau].Pt() < 20 || fabs(mctausColl[igtau].Eta()) > 2.1) continue;
+  
+         //cout<<"\n debug we have found a lepton parent is : "<<(fabs(mctausColl[igtau][2]))<<endl;
+
+	 if(fabs(mctausColl[igtau][2]) != double(15)) continue; // check if lepton is from a tau decay
+	 mcleps.push_back(mctausColl[igtau]);
+       }
+     if( !( mcleps.size() == 1 && mcleps[0].Pt() > 20) )return ;
+     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   }
+
+   event::MiniEvent_t *evmc = evRMC_->GetNewMiniEvent(i_,"mc");  if( evmc == 0 ){ cout<<"\n empty event"<<endl; return;}
+   std::vector<PhysicsObject> mctausColl = evRMC_->GetPhysicsObjectsFrom(evmc,event::CHLEPTON);
+
+   for(size_t igtau = 0; igtau < mctausColl.size(); ++igtau){
+//      cout <<  setprecision(6) << igtau << "-th lepton ID =" << mctausColl[igtau][1] << endl;
+//      cout << " " << endl;
+//      cout <<  setprecision(6) << "parent ID =" << mctausColl[igtau][2] << endl;
+     if(fabs(mctausColl[igtau][1]) == double(15)) {
+       ntaus_h++;
+       if (mctausColl[igtau].Pt() > 20 && fabs(mctausColl[igtau].Eta()) < 2.3) ntaus_h_accept++;
+     }
+
+   }
+//    cout <<  setprecision(6) << "ntaus_h =" << ntaus_h << endl;
+//    cout <<  setprecision(6) << "ntaus_h_accept =" << ntaus_h_accept << endl;   
+
+  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+//   cout << "End of Event" << endl;
+//   cout << " " << endl;
+//   cout << " " << endl;
+//   cout << " " << endl;
+//   cout << " " << endl;
+   
+   
+  // Fill debug info ///////////////////////////////////////////////////
+  /*  fillDebugHistograms(myKey,m_init,muons,e_init,electrons,j_final,jets);  */
+  //////////////////////////////////////////////////////////////////////
+
+  
+
+
+/// test ///  uint metAlgo;
+/// test ///       if( myKey=="PF"               ) { metAlgo=event::PF;        }
+/// test ///  else if( myKey.Contains("TaNC")    ) { metAlgo=event::PF;        }
+/// test ///  else if( myKey.Contains("HPS")     ) { metAlgo=event::PF;        } 
+/// test ///  else if( myKey.Contains("PFlow")   ) { metAlgo=event::PFLOWMET;  } 
+/// test ///
+/// test ///  PhysicsObjectCollection mets = evR_->GetPhysicsObjectsFrom(ev,event::MET,metAlgo);           
+/// test ///  if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
+  PhysicsObject met = mets[0]; 
+
+  // finding leading lepton and qualify tag ////////////////////////////////////////////////////////////////////////////////////////////////
+  double lepton_pt(0); double lepton_charge(0); uint lepton_ind(0); double myeta(-999.); //
+  vector<int> * p_i ; vector<PhysicsObject> * p_obj; PhysicsObject * lep_obj;
+
+  if     ( evType_ == MUTAU_ ){ p_i = & m_init ; p_obj = &muons;    }
+  else if( evType_ == ETAU_  ){ p_i = & e_init ; p_obj = &electrons;}
+
+  for(uint myi=0; myi < (*p_i).size(); ++myi){
+    int ind = (*p_i)[myi]; double lPt = TMath::Abs((*p_obj)[ind].Pt()); double charge = (*p_obj)[ind][0]; PhysicsObject * tmp_obj= &( (*p_obj)[ind] );
+    //
+    if( lPt > lepton_pt )
+      { 
+	lepton_pt = lPt; lepton_charge = charge; lepton_ind = ind; lep_obj = tmp_obj;
+	//
+      }                                   
+  }
+
+
+  std::vector<TString> evTags; 
+  if     (evType_ == ETAU_  ){ evTags.push_back(myKey+TString(" lep_tau"));  evTags.push_back(myKey+TString(" e_tau")); }
+  else if(evType_ == MUTAU_ ){ evTags.push_back(myKey+TString(" lep_tau")); evTags.push_back(myKey+TString(" m_tau"));  }
+ 
+  // WORKING HERE
+  //  double metValue = jetMETScaling( jerFactors, jes_, junc , jets ,met.Px(), met.Py());
+  double metValue = met.Pt(); /// test /// jetMETScalingTest( oldJerFactorsForMet, jes_, junc, oldJetsForMet  , met);
+  // rescaling of met based on unclustered energy ////////////////////////////////////////////////
+//  if( unc_ ){ metValue = jetMETUnclustered( jerFactors, lep_obj, unc_, jets, met.Px(), met.Py());}
+//  if( jer_ ){ metValue = jetMETResolution( jerFactors, jets, met.Px(), met.Py());}
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+
+  double tau_charge(0); // , tau_pt(0); // unused 
+  int tau_i;
+  PhysicsObject * tau_obj;
+  if(t_afterLeptonRemoval.size() == 1){ tau_i = t_afterLeptonRemoval[0]; tau_charge = taus[tau_i][0]; 
+    // tau_pt = taus[tau_i].Pt(); // unused
+    tau_obj = &(taus[tau_i]); }
+
+  // Muon trigger/ID/Iso scale factors for efficiency from https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceEffs 
+  if(!eChONmuChOFF_) { LeadMuonTriggerEfficiency(muons, lepton_ind, muontriggerefficiency_); }
+
+  // Electron trigger/ID/Iso scale factors for efficiency from https://twiki.cern.ch/twiki/bin/view/CMS/KoPFAElectronTagAndProbe
+  else {
+    LeadElectronTriggerEfficiency(electrons,lepton_ind, electrontriggerefficiency_);
+    LeadElectronIDIsoEfficiency(electrons,lepton_ind, electronidisoefficiency_);    
+  }
+
+
+ // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
+  // on MC   : we apply a trigger efficiency
+  // on data : we require that the two highest pt jet should fire the trigger (returned eff from the method is either 0/1)
+  double errorOnEff(0); pair<double,double> eff(0,0);
+  
+
+//   if( eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETSPLUSMET_ ){
+//     pair<double,double> efftemp( getEfficiencyAndError( jets_,j_final_,junc_,jerFactors_));
+//     eff.first = efftemp.first; eff.second = efftemp.second;
+    
+//     if ( eff.first == 0 ) return;
+//     else{ 
+//       electrontriggerefficiency_ = eff.first;  
+//       if( !isData_ ){ leptontriggerefficiency_ = electrontriggerefficiency_; w_= w_*leptontriggerefficiency_; errorOnEff =  w_*(eff.second); } // get trigger efficiency for electrons 
+      
+//       // take into account weights into efficiency error
+//     }
+//   }
+//   else if (eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETS_ ) { if( !isData_ )leptontriggerefficiency_ = electrontriggerefficiency_;}
+//   else{                                                      if( !isData_ ){
+//       leptontriggerefficiency_ = muontriggerefficiency_;  
+//       w_=w_*leptontriggerefficiency_;}
+//   }
+
+  if(!isData_ ) {
+
+    if (!eChONmuChOFF_) { leptontriggerefficiency_ = muontriggerefficiency_; }
+    else { leptontriggerefficiency_ =  electrontriggerefficiency_ /* electrontriggerefficiency_*electronidisoefficiency_ */ 
+	; } 
+
+    w_=w_*leptontriggerefficiency_;
+  }
+
+  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  /* Commenting out stuff for the ELECTRON case */
+
+
+//   // events with 1 lepton /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//   for( size_t itag=0; itag<evTags.size();  ++itag ) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),LEP_STEP2,w_); 
+//   if (terr){
+//     for( size_t itag=0; itag<evTags.size(); ++itag ) mon.fillHisto(triggErr , evTags[itag]+TString(" yields"),LEP_STEP2,errorOnEff);
+//     if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,LEP_STEP2,tauDilCh,errorOnEff); }
+//   }
+//   if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,LEP_STEP2,tauDilCh,w_); }
+//   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"init",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+//   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//   // events with 1 jets //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if(j_final.size()==0) return;
+//   for(size_t itag=0; itag<evTags.size() ; ++itag) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),JET1_STEP2,w_); 
+
+//   if (terr){
+//     for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),JET1_STEP2,errorOnEff);
+//     if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET1_STEP2,tauDilCh,errorOnEff); }
+//   }
+//   if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,JET1_STEP2,tauDilCh,w_); }
+//   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 1 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+//   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//   // events with at least 2 jets///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if(j_final.size()<2 ) return;                                       
+//   for(size_t itag=0; itag<evTags.size();  ++itag) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),JET2_STEP2,w_);  
+//   if (terr){
+//     for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),JET2_STEP2,errorOnEff);
+//     if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET2_STEP2,tauDilCh,errorOnEff); }
+//   }
+//   if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,JET2_STEP2,tauDilCh, w_);}
+//   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 2 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+//   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//   //trigger efficiencies studies on data (MET part) /////////////////////////////////////////////////////////////////////////////////////
+//   // /lustre/data3/cmslocal/samples/CMSSW_4_2_X/data/mTrees-v3/Ele_MetTrig_X.root
+//   // 1) Events selected with trigger : HLT_EleY_CaloIdVT_TrkIdT_CentralJet30_CentralJet25_vX 
+//   // HLT_EleY_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT15_vX is placed at the 3rd position of trigger information.
+//   // These data is for measuring only the MHT part of trigger efficiency.
+//   if(isData_ && trigEffStudy_ ){
+
+//     //trigger /////////////////////////////////////////
+//     TVectorD *trig = (TVectorD *)ev->triggerColl->At(0);
+//     bool hasTesttrig = ((*trig)[3]>0); 
+//     ///////////////////////////////////////////////////
+ 
+//     //overall trigger efficiency
+//     for(int mymetcut = 5; mymetcut<150; ++mymetcut){
+//       if( metValue > mymetcut ){
+
+//         //denominator
+//         debmon.fillHisto("den_eff_trigger_met", myKey+TString(" e_tau debug"), mymetcut);
+ 
+//         if(hasTesttrig){
+//           //numerator
+//           debmon.fillHisto("num_eff_trigger_met", myKey+TString(" e_tau debug"), mymetcut);
+//         }
+
+
+//         if( j_final.size() + totalJets >= 3 ){
+//           //denominator
+//           debmon.fillHisto("den_eff_trigger_met3j", myKey+TString(" e_tau debug"), mymetcut);
+ 
+//           if(hasTesttrig){
+//             //numerator
+//             debmon.fillHisto("num_eff_trigger_met3j", myKey+TString(" e_tau debug"), mymetcut);
+//           }
+
+//         }
+
+//       }
+//     }
+
+//     // absolute efficiencies
+//     debmon.fillHisto("abs_den_eff_trigger_met", myKey+TString(" e_tau debug"), metValue);
+ 
+//     // numerator
+//     if(hasTesttrig){ debmon.fillHisto("abs_num_eff_trigger_met", myKey+TString(" e_tau debug"), metValue ); }
+
+  
+//     if( j_final.size() + totalJets >= 3){
+//       // absolute efficiencies
+//       debmon.fillHisto("abs_den_eff_trigger_met3j", myKey+TString(" e_tau debug"), metValue);
+ 
+//       // numerator
+//       if(hasTesttrig){ debmon.fillHisto("abs_num_eff_trigger_met3j", myKey+TString(" e_tau debug"), metValue ); }
+
+//     }
+
+//   }
+//   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//   //trigger efficiencies studies on data (JET part) /////////////////////////////////////////////////////////////////////////////////////
+//   // /lustre/data3/cmslocal/samples/CMSSW_4_2_X/data/mTrees-v3/Ele_JetMetTrig_X.root
+//   // 2) Events selected with trigger : HLT_Ele32_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_vX
+//   // HLT_EleY_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT15_vX is placed at the 3rd position of trigger information.
+//   // These data is to be used for measuring combined Jet+MHT part of trigger efficiency from which we can extract jet efficiency part.
+//   // The files  4 and 5 have
+//   // HLT_Ele17_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT15
+//   // Files 6, 7, 8 and 9 have
+//   // HLT_Ele22_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT20
+//   // File 10 have HLT_Ele27_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT20
+//   // They correspond to different run numbers and different trigger
+//   // thresholds. So the efficiency should be measured separately.
+//   // NOTE jet cut should be at 20 !!!!
+//   //
+//   // note : the tau is removed from the trigger list  
+//   //
+//   if(isData_ && trigEffStudy_ && metValue > 45 ){
+    
+//     //trigger /////////////////////////////////////////
+//     //TVectorD *trig = (TVectorD *)ev->triggerColl->At(0);
+//     //bool hasTesttrig = ((*trig)[3]>0); 
+//     ///////////////////////////////////////////////////
+
+
+ 
+//     /*
+//     for(int jetPtCut = 20;jetPtCut<100; jetPtCut++){
+
+//       int numbjets(0);     
+//       for(uint i=0; i< jetsForTrigger_.size(); i++){
+//         int ind=jetsForTrigger_[i];
+//         double jetPt =  getJetPt( jets[ind], junc,0, jes_);
+//         bool triggeredJet = jets[ind][4];
+//         if(jetPt>jetPtCut && triggeredJet ) numbjets++;
+//       }
+//       if( numbjets>1 ){
+   
+//         //denominator
+//         debmon.fillHisto("den_eff_trigger_jetptcut", myKey+TString(" e_tau debug"), jetPtCut);
+
+ 
+//         if(hasTesttrig){
+//           //denominator
+//           debmon.fillHisto("num_eff_trigger_jetptcut", myKey+TString(" e_tau debug"), jetPtCut);
+//         }
+//       }
+//     }
+//     */
+
+//     // absolute efficiencies get the 2 most energetic jet ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//     double jetPt1(0),jetPt2(0); int ind2(-1), ind1(-1);
+//     for(uint i=0; i<j_final.size(); ++i){
+//       int ind=j_final[i];
+//       double jetPt =  getJetPt( jets[ind], junc,0, jes_);
+//       if( jetPt > jetPt1       ){ jetPt2=jetPt1; ind2=ind1; jetPt1=jetPt; ind1=ind; }
+//       else if( jetPt > jetPt2  ){ jetPt2=jetPt;  ind2=ind;                          }
+//     }
+    
+//     if(jetPt2){
+//       //denominator
+//       debmon.fillHisto("abs_den_eff_trigger_jetptcut1", myKey+TString(" e_tau debug"), jetPt1);
+//       debmon.fillHisto("abs_den_eff_trigger_jetptcut2", myKey+TString(" e_tau debug"), jetPt2);
+
+//       //if(hasTesttrig){
+
+//         //if(jetPt2>20){ cout<<" jetPt is : "<<jetPt2<<" triggeredJet2 is : "<<(jets[ind2][4])<<endl;}
+
+//         //numerator
+//         double triggeredJet1 = jets[ind1][4];  // most energetic jet
+//         double triggeredJet2 = jets[ind2][4];  // second most energetic jet
+
+//         //if( triggeredJet1 && triggeredJet2 ){ debmon.fillHisto("abs_num_eff_trigger_jetptcut", myKey+TString(" e_tau debug"), jetPt2 ); }
+
+//         if( triggeredJet1 ){ debmon.fillHisto("abs_num_eff_trigger_jetptcut1", myKey+TString(" e_tau debug"), jetPt1 ); }
+//         if( triggeredJet2 ){ debmon.fillHisto("abs_num_eff_trigger_jetptcut2", myKey+TString(" e_tau debug"), jetPt2 ); }
+
+//       //}
+//     }
+//     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//   }
+
+
+//   // trigger efficiencies studies ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//   if( evType_==ETAU_ && trigEffStudy_ && t_afterLeptonRemoval.size()<2 && jes_==0){
+
+//     int jmult = t_afterLeptonRemoval.size() + j_final.size();
+
+//     //trigger ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//     bool trigger(false); TVectorD *trig = (TVectorD *)ev->triggerColl->At(0); bool hasEGtrig = ((*trig)[1]>0); if( hasEGtrig ){ trigger =true;}
+//     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//     // efficiencies on electron + tau + jets channels //////////////////////////////////////////////////////////////////////////////////////////////
+//     if( channel == ETAU_CH && t_afterLeptonRemoval.size()== 1 ){
+
+//       // get the highest third pt jet /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//       double jetPtMax1(0),jetPtMax2(0),jetPtMax3(0),jetEtaPtMax1(0),jetEtaPtMax2(0),jetEtaPtMax3(0);
+//       for(uint j_i=0; j_i<j_final.size(); ++j_i){
+//         int ind = j_final[j_i];
+//         double jetPt =  getJetPt( jets[ind], junc,0, jes_); double jetEta = fabs( jets[ind].Eta());
+        
+//         if     ( jetPt > jetPtMax1 ){jetPtMax3=jetPtMax2; jetEtaPtMax3 = jetEtaPtMax2; jetPtMax2=jetPtMax1; jetEtaPtMax2=jetEtaPtMax1; jetPtMax1=jetPt; jetEtaPtMax1=jetEta; }
+//         else if( jetPt > jetPtMax2 ){jetPtMax3=jetPtMax2; jetEtaPtMax3 = jetEtaPtMax2; jetPtMax2=jetPt;     jetEtaPtMax2=jetEta;                                             }
+//         else if( jetPt > jetPtMax3 ){jetPtMax3=jetPt;     jetEtaPtMax3 = jetEta;                                                                                             }
+        
+//       }
+//       if(t_afterLeptonRemoval.size()==1){ // this condition was already verified...
+//         //jer assumed to be 1
+//         int ind = t_afterLeptonRemoval[0];
+//         double jetPt = taus[ind][7]; double jetEta = taus[ind][8]; 
+//         junc->setJetEta(jetEta); junc->setJetPt(jetPt); double corr=junc->getUncertainty(true); 
+//         jetPt = (1+corr)*jetPt;
+//         //if we have only 2 jets in the event....
+//         if(jetPtMax3==0){ 
+//           if(jetPt<jetPtMax2){    jetPtMax3=jetPt;     jetEtaPtMax3=fabs(jetEta); }
+//           else{                   jetPtMax3=jetPtMax2; jetEtaPtMax3=jetEtaPtMax2; }
+//         }
+//         else if(jetPt<jetPtMax3){ jetPtMax3=jetPt;     jetEtaPtMax3=fabs(jetEta); }
+        
+//       }
+//       //////////////////////////////////////////////////////////////////////////////////////////
+
+
+//       debmon.fillHisto("jmult_den_eta", myKey+TString(" e_tau debug"), jetEtaPtMax3);
+//       debmon.fillHisto("jmult_den_pt",  myKey+TString(" e_tau debug"), jetPtMax3);
+//       debmon.fillHisto("jmult_den",     myKey+TString(" e_tau debug"), jmult,1);
+
+//       if(trigger){  
+//         debmon.fillHisto("jmult_num_eta", myKey+TString(" e_tau debug"), jetEtaPtMax3);
+//         debmon.fillHisto("jmult_num_pt",  myKey+TString(" e_tau debug"), jetPtMax3); 
+//         debmon.fillHisto("jmult_num",     myKey+TString(" e_tau debug"), jmult,1);
+//       }
+
+//     }
+
+//     // efficiencies on electron + jets
+//     if(channel == WJETS_CH && jmult >=3 ){
+
+//       // get the highest third pt jet /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//       double jetPtMax1(0),jetPtMax2(0),jetPtMax3(0),jetEtaPtMax1(0),jetEtaPtMax2(0),jetEtaPtMax3(0);
+//       for(uint j_i=0; j_i<j_final.size(); ++j_i){
+//         int ind = j_final[j_i];
+//         double jetPt   =  getJetPt( jets[ind], junc,0, jes_); double jetEta  = fabs( jets[ind].Eta());
+        
+//         if     ( jetPt > jetPtMax1 ){jetPtMax3=jetPtMax2; jetEtaPtMax3 = jetEtaPtMax2; jetPtMax2=jetPtMax1; jetEtaPtMax2=jetEtaPtMax1; jetPtMax1=jetPt; jetEtaPtMax1=jetEta;}
+//         else if( jetPt > jetPtMax2 ){jetPtMax3=jetPtMax2; jetEtaPtMax3 = jetEtaPtMax2; jetPtMax2=jetPt;     jetEtaPtMax2=jetEta;                                            }
+//         else if( jetPt > jetPtMax3 ){jetPtMax3=jetPt;     jetEtaPtMax3 = jetEta;                                                                                            }
+        
+//       }
+//       if(t_afterLeptonRemoval.size()==1){
+//         //jer assumed to be 1
+//         int ind = t_afterLeptonRemoval[0];
+//         double jetPt = taus[ind][7]; double jetEta = taus[ind][8]; 
+//         junc->setJetEta(jetEta); junc->setJetPt(jetPt); double corr=junc->getUncertainty(true); 
+//         jetPt = (1+corr)*jetPt;
+//         //if we have only 2 jets in the event....
+//         if(jetPt<jetPtMax3){ jetPtMax3=jetPt;     jetEtaPtMax3=fabs(jetEta); }
+        
+//       }
+//       //////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//       debmon.fillHisto("jmult_den_eta", myKey+TString(" e_tau debug"), jetEtaPtMax3 );
+//       debmon.fillHisto("jmult_den_pt",  myKey+TString(" e_tau debug"), jetPtMax3    );
+//       debmon.fillHisto("jmult_den",     myKey+TString(" e_tau debug"), jmult,1      );
+
+//       if(trigger){  
+//         debmon.fillHisto("jmult_num_eta", myKey+TString(" e_tau debug"), jetEtaPtMax3);
+//         debmon.fillHisto("jmult_num_pt",  myKey+TString(" e_tau debug"), jetPtMax3   ); 
+//         debmon.fillHisto("jmult_num",     myKey+TString(" e_tau debug"), jmult,1);
+//       }
+
+//     }
+//     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//   }
+//   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/* End of commenting out - ELECTRON CASE */
+
+
+
+  // events with at least 2 jets+1 jet>20GeV ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // number of jets above jet pt cut and extra jet between tau pt and jet pt cut 
+  if( j_final.size() + totalJets < 3 ) return;
+
+  //
+
+  //CHECK high electron pT if( ((j_final.size() + totalJets) < 3 ) || lepton_pt < 150) return;
+  for(size_t itag=0; itag<evTags.size();  ++itag) mon.fillHisto(evYields ,evTags[itag]+TString(" yields"),    JET3_STEP2,w_);  
+  if (terr){ 
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),JET3_STEP2,errorOnEff);  
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET3_STEP2,tauDilCh,errorOnEff); }
+  }
+  if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,JET3_STEP2,tauDilCh,w_);}
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 3 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  // events passing MET cut //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if( metValue < MET_CUT_) return;
+  for(size_t itag=0; itag<evTags.size();  ++itag) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),    MET_STEP2,w_);  
+  if (terr){
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),MET_STEP2,errorOnEff);
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,MET_STEP2,tauDilCh,errorOnEff); }
+  }
+  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,MET_STEP2,tauDilCh,w_);}
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MET",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  //testMe_+=errorOnEff2; testMe_Nev_++;
+  //cout<<endl<<" Deb :  eff  = "<<setprecision (5)<<(eff.first)<<" +- "<<(eff.second)<<" errorOnEff2  = "<<errorOnEff2<<" total is "<<testMe_<<" in N events : "<<testMe_Nev_<<endl;
+
+
+
+
+
+  // MT cut /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  double deltaPhi = (*p_obj)[lepton_ind].DeltaPhi( mets[0] );  
+  double mt = sqrt (  2*lepton_pt*metValue*(1 - cos(deltaPhi) ) ) ;
+  if( APPLY_MT_CUT_){ 
+    if( mt<MT_CUT_ ){ return; } 
+    for(size_t itag=0; itag<evTags.size();  ++itag) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"), MT_STEP2,w_);  
+    if (terr){
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),MT_STEP2,errorOnEff);
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,MT_STEP2,tauDilCh,errorOnEff); }
+    }
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,MT_STEP2,tauDilCh,w_);}
+    fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MT",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  //  if (ntaus_h_accept < 1) { return; }
+
+  // New way to deal with btag uncertainies //////////////////
+  int nbtags_taus(0);
+  bool nbtag1(false),  nbtag2(false); // ENABLED BTAGGING CUT
+  ////////////////////////////////////////////////////////////
+
+
+
+  // new way to compute btag uncertainty //////////////////////////////////////////
+  if( isData_ || !  applybtagweight_){
+    for(uint j=0; j<j_final.size(); ++j){  
+      int j_ind = j_final[j]; 
+      double btagvalue = jets[j_ind][BTAGIND_] ;
+      if( btagvalue>BTAG_CUT_){nbtags_taus++;} 
+    }
+  }
+  else {
+    for(uint j=0; j<j_final.size(); ++j){  
+      int    j_ind     = j_final[j]; 
+      double btagvalue = jets[j_ind][BTAGIND_];
+      bool   isTagged = false;
+      double bjpt(jets[j_ind].Pt()), bjeta(jets[j_ind].Eta()); 
+      
+      if( btagvalue > BTAG_CUT_) isTagged = true;
+
+      double newBTagSF     = getSFb(bjpt, BTAGIND_); //double newBTagSF     = BTagSF_;
+      double newLightJetSF = getSFlight(bjpt, bjeta, BTAGIND_); //double newLightJetSF = LightJetSF_;
+
+      // get flavour of the jet
+
+      int jet_flavor = TMath::Abs(jets[j_ind][jetpgid_]);
+      double err_newBTagSF = err_BTagSF_;
+
+      if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
+
+      if(btagunc_   > 0){ newBTagSF     = newBTagSF + err_newBTagSF; }
+      else if (btagunc_   < 0)  { newBTagSF     = newBTagSF - err_newBTagSF; }
+
+      if(unbtagunc_ > 0){ newLightJetSF = newLightJetSF + err_LightJetSF_;}
+      else if (btagunc_   < 0)  { newLightJetSF = newLightJetSF - err_LightJetSF_;}
+
+//       double BTagEff     = newBTagSF*BTAG_eff_R_;
+//       double LightJeteff = newLightJetSF*BTAG_eff_F_;
+
+      double jet_phi = jets[j_ind].Phi();
+
+      double sin_phi = sin(jet_phi*1000000);
+      double seed = abs(static_cast<int>(sin_phi*100000));
+
+      //Initialize class
+      BTagSFUtil btsfutil(seed);
+    
+      //modify tags
+      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, BTAG_eff_R_, newLightJetSF, BTAG_eff_F_);
+      //      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, BTagEff, newLightJetSF, LightJeteff);
+
+      if(isTagged) nbtags_taus++;
+
+    }
+  }
+  if(nbtags_taus > 0 ) nbtag1=true;
+  if(nbtags_taus > 1)  nbtag2=true;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+  //cout<<endl<<"tau dilepton event analysis H"<<endl;
+  //taus ////////////////////////////////////////////
+  bool taucut(false);
+  if( t_afterLeptonRemoval.size()== 1 ) taucut =true;
+
+  int numbProngs(0);
+  double tauP(0),tauE,r(0);
+  tauR_ = -1;
+  maxmtlet_ = -999; minmtlet_ = -999;
+
+  if( taucut ){ 
+    numbProngs = GetNumbProngs(taus[tau_i]);
+    tauP = taus[tau_i][16];  // lead charged hadron P
+    tauE = taus[tau_i].E();  // tau energy
+    if(tauE){ r= tauP/tauE; tauR_ = r;} // tau polarization
+    
+  }
+  ///////////////////////////////////////////////////
+   
+
+  //cout<<endl<<"tau dilepton event analysis I"<<endl;
+  //Opposite sign //////////////////////////////////
+  bool oscut(false);
+  if( lepton_charge * tau_charge < 0 ) oscut = true; 
+  if(oscut) is_os_ = 1.;
+  //////////////////////////////////////////////////
+
+  // 1 btag option ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  int BTAG1_NOMT;
+  if ( ! APPLY_MT_CUT_ ) { BTAG1_NOMT = BTAG1_STEP2 - 1; }
+  else { BTAG1_NOMT = BTAG1_STEP2; }
+  if( nbtag1 ) {
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),BTAG1_NOMT, w_); 
+    if (terr){
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),BTAG1_NOMT, errorOnEff);  
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,BTAG1_NOMT,tauDilCh,errorOnEff); }
+    }
+    if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,BTAG1_NOMT,tauDilCh,w_); } 
+    fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"1 btag",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
+  }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  // TAU ID selection step //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  int TAU_NOMT;
+  if ( ! APPLY_MT_CUT_ ) { TAU_NOMT = TAU_STEP2 - 1; }
+  else { TAU_NOMT = TAU_STEP2; }
+  if(nbtag1 && taucut){
+    
+    if (!isData_) {
+      if ( !eChONmuChOFF_ && channel==EMU_CH ) {
+	if (fabs(taus[tau_i].Eta()) < 1.442) w_=w_*0.85;
+	else if(fabs(taus[tau_i].Eta()) > 1.566) w_=w_*0.65;
+      }
+      else if ( eChONmuChOFF_ && channel==EE_CH ) {
+        if (fabs(taus[tau_i].Eta()) < 1.442) w_=w_*0.85;
+        else if(fabs(taus[tau_i].Eta()) > 1.566) w_=w_*0.65;
+      }
+
+      // 
+    }
+    
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),TAU_NOMT,w_);  
+    if (terr){
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),TAU_NOMT, errorOnEff); 
+      if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,TAU_NOMT,tauDilCh,errorOnEff); }
+    }
+
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,TAU_NOMT,tauDilCh,w_); }
+    fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"1 Tau",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
+
+    for(size_t itag=0; itag<evTags.size(); ++itag){ 
+      //Build Tree quantites based on tau jet 
+      PhysicsObject tauJet; 
+      double tauJetPt  = (*tau_obj)[7];
+      double tauJetEta = (*tau_obj)[8];
+      double tauJetPhi = (*tau_obj)[9];
+      tauJet.SetPtEtaPhiE(tauJetPt,tauJetEta,tauJetPhi,tauJetPt);
+      tauJetPt =  getJetPt( tauJet, junc, 0, jes_); //correct pt
+      tauJet.SetPtEtaPhiE(tauJetPt,tauJetEta,tauJetPhi,tauJetPt);
+      double tauJetRadius(0); //Warning this needs to be changed (not needed)
+      TString treeOption("Selected"); treeOption += add;
+      fillTauDileptonObjTree(ev,treeOption,evTags[itag],junc,mets[0],tauDilCh,TString("1 Tau"),lep_obj,tauJetRadius, tau_obj, j_final, jets, jerFactors, metValue,nbtags_taus);
+    }
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+   // SPY events for the w+jet and ttbar other contribution//////////////////////////////////////////////
+   //if(  (!applybtagweight_  && nbtag1 && taucut ) ||  (applybtagweight_ && taucut )  ){
+   //    if(jes_== 0 && unc_== 0 && jer_== 0 && btagunc_==0 && pu_ == NOPU ) listOfReaders_[0]->SpyEvent();
+   //}
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  int OS_NOMT;
+  if ( ! APPLY_MT_CUT_ ) { OS_NOMT = OS_STEP2 - 1; }
+  else { OS_NOMT = OS_STEP2; }
+
+  if(  nbtag1 && taucut && oscut ){
+
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),OS_NOMT,w_);
+    if (terr){
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),OS_NOMT, errorOnEff);
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,OS_NOMT,tauDilCh,errorOnEff); }
+    }
+
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,OS_NOMT,tauDilCh,w_); }
+    fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"OS",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
+
+//     //SPY AFTER TAU ID AND OS /////////////////////////////////////////////////////////////////////////
+//     if(jes_== 0 && unc_== 0 && jer_== 0 && btagunc_==0 && pu_ == NOPU )
+//     evR_->SpyEvent();
+//     ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+   
+
+
+    // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // fill weighted events and reset selected events vector weightsMS Emeri
+    if( !isData_ && pdfweights_ && !sys_){
+      TVectorD * classifMC(0);
+      //PDFSelectedEvents_ += (w_); 
+      PDFSelectedEvents_ += 1.;
+      event::MiniEvent_t *evMC = evRMC_->GetNewMiniEvent(i_,"mc");  if( evMC == 0 ){ cout<<"\n empty event"<<endl; return;}
+      classifMC = (TVectorD *)evMC->eventClassif->At(0);
+  
+      for(int i=14; i<classifMC->GetNoElements();++i ){
+        cout.precision(3);
+        myWeights_[i-14] += (*classifMC)[i]/(*classifMC)[14];        
+        cout<<endl<<" sel. Evnt :"<<i_<<", (i-14) = "<<(i-14)<<" w : "<<(*classifMC)[i]<<" rel w : "<<((*classifMC)[i]/(*classifMC)[i-14])<<" total w : "<<myWeights_[i-14];
+        //weightedPDFSelectedEvents_[i-6]  += ( ( (*classifMC)[i] ) * w_ * w1b_ ); weighted2PDFSelectedEvents_[i-6] += ( ( (*classifMC)[i] ) * w_ )*( ((*classifMC)[i])*w_);
+        weightedPDFSelectedEvents_[i-14]  += (*classifMC)[i] ;  weighted2PDFSelectedEvents_[i-14] += ( (*classifMC)[i] ) * ( ( *classifMC)[i] );
+      }
+
+    } 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    // Polarization //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    if( numbProngs==1 && r > 0.7 ){
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),R_STEP2,w_);
+      if (terr){
+        for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),R_STEP2, errorOnEff);
+        if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,OS_STEP2,tauDilCh,errorOnEff); }
+      }
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,R_STEP2,tauDilCh,w_); }
+      fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"R",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  }
+
+  
+  if( taucut && oscut && nbtag2 ){
+    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),BTAG2_STEP2,w_); 
+    if (terr){
+      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),BTAG2_STEP2, errorOnEff); 
+       if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,BTAG2_STEP2,tauDilCh,errorOnEff); }
+    }
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,BTAG2_STEP2,tauDilCh,w_); } 
+    fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"2 btag",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
+    
+  }
+
+
+  //optimization ////////////////////////////////////////////////////////////////
+  /*
+  int cutIndex;
+  for(uint i=0;i<5;i++){ //index running on tau pt
+    for(uint j=0;j<5;j++){
+      double metThreshold   = 30 + i*5;
+      double tauPtThreshold = 20 + j*5;
+      int index = i + 5*j;
+      bool passMet(false);
+      bool passTauPt(false);
+
+      if( metValue > metThreshold   ){ passMet   = true; }
+      if( tau_pt   > tauPtThreshold ){ passTauPt = true; }
+
+      if( passMet  && nbtag1 && passTauPt && oscut ){ 
+        for(size_t itag=0; itag<evTags.size(); itag++){
+          debmon.fillHisto("optSelection",evTags[itag]+TString(" debug"),index,w_);
+        }
+      }
+    }
+  }
+   */
+  ////////////////////////////////////////////////////////////////////////////////
+
+}
+
+void CutflowAnalyzer::dileptonEventAnalysis(
+					    bool lepReq,
+					    std::vector<PhysicsObject> & v, 
+					    std::vector<PhysicsObject> & muons,     vector<int>  & m_init,  
+					    std::vector<PhysicsObject> & electrons, vector<int>  & e_init,
+					    std::vector<PhysicsObject> & taus,      vector<int>  & t_afterLeptonRemoval, 
+					    std::vector<PhysicsObject> & jets,      vector<int>  & j_final, 
+					    int totalJets, JetCorrectionUncertainty* junc, vector<double> & jerFactors, 
+					    TString myKey, event::MiniEvent_t *ev
+					    ) {
+
+//   std::vector<PhysicsObject> filteredJets;
+//   for(std::vector<PhysicsObject> ::iterator jIt=jets.begin(); jIt!= jets.end(); jIt++)
+//     {
+//       float minDR(99999.);
+//       for(std::vector<PhysicsObject>::iterator jjIt=filteredJets.begin(); jjIt!=filteredJets.end(); jjIt++){
+// 	float dR=jIt->DeltaR(*jjIt);
+// 	if(dR<minDR) minDR=dR;
+//       }
+//       if(minDR<0.1) { continue; }
+//       //      cout << jIt->Pt() << " (" << minDR << ") | " << flush;
+//       filteredJets.push_back(*jIt);
+//     }
+//   //  cout << endl;
+//   //  cout << jets.size() << " ---> " << filteredJets.size() << endl;
+//   jets=filteredJets;
+
+
+  TString add(""); 
+  
+  if(isData_) applybtagweight_ =false;
+
+  // only compute uncertainty due to the trigger when others unc are switched off /////////////////
+  bool terr(false); if ( jes_== 0 && unc_== 0 && jer_==0 && btagunc_== 0 && unbtagunc_ ) terr=true;
+  TString triggErr   = TString("cutflow_triggErr");
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  if( jes_       > 0 ){ add = TString("_plus");       }if( jes_       < 0 ){ add = TString("_minus");      }
+  if( unc_       > 0 ){ add = TString("_uncplus");    }if( unc_       < 0 ){ add = TString("_uncminus");   } 
+  if( jer_       > 0 ){ add = TString("_jerplus");    }if( jer_       < 0 ){ add = TString("_jerminus");   }
+  if( btagunc_   > 0 ){ add = TString("_bplus");      }if( btagunc_   < 0 ){ add = TString("_bminus");     }
+  if( unbtagunc_ > 0 ){ add = TString("_unbplus");    }if( unbtagunc_ < 0 ){ add = TString("_unbminus");   }
+  
   
   TString evYields          = TString("cutflow_yields")    + add;     
   TString evYieldsMC        = TString("cutflow_yields_mc") + add;   
@@ -953,12 +3103,20 @@ void CutflowAnalyzer::tauDileptonSelection(
   // see if we are processing data, if we are processing MC get channel code ////////////////////////////////
   int input_channel = (int)(*(TVectorD *)ev->eventClassif->At(0))[0];
   int channel(-1); int tauDilCh;
+  //bool isSignal(false), isBkg(false);
   if(  !isData_ ){ 
-   channel  = codeChannel(input_channel,urlCode_); 
+    channel  = codeChannel(input_channel,urlCode_); 
+    //    if(channel==MUMU_CH) cout<<endl<<"Channel: MUMU"<<endl; // Ok, they are all there (ttbar)
+    //    if(channel==EMU_CH) cout<<endl<<"Channel: EMU"<<endl;
+    //    if(channel==EE_CH) cout<<endl<<"Channel: EE"<<endl;
+    //    if(channel==ETAU_CH) cout<<endl<<"Channel: ETAU"<<endl;
+    //    if(channel==MUTAU_CH) cout<<endl<<"Channel: MUTAU"<<endl;
     if(channel==WQQ_CH || channel==WENU_CH || channel==WTAUNU_CH || channel==WMUNU_CH ){ channel = WJETS_CH; }
     tauDilCh = tdChannel(channel);  
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //cout<<endl<<" input channel is "<<input_channel<<" out channel is "<<channel<<endl;
+
   
   TString mcTag(""); 
   if( !isData_ ){ mcTag = myKey + TString(" yields mc");  myMCMon = tauDileptonMCYieldsMons_[myKey]; }
@@ -967,85 +3125,61 @@ void CutflowAnalyzer::tauDileptonSelection(
   SelectionMonitor& debmon = *(tauDileptonDebugMons_[myKey]);
 
   
-  // Top pt reweighting
-  if( url_ == TTBAR_URL){
-    double tPt(99999.), tbarPt(99999.);
-    event::MiniEvent_t *evmontecarlo = evRMC_->GetNewMiniEvent(i_,"mc");
-    if( evmontecarlo == 0 ){ cout<<"\n empty event"<<endl; }
-    else{
-      std::vector<PhysicsObject> mcquarksColl = evRMC_->GetPhysicsObjectsFrom(evmontecarlo,event::QUARK);
-      for( size_t iquark=0; iquark<mcquarksColl.size(); iquark++){
-	if( i_ == 45) cout << "pdg id: " << mcquarksColl[iquark][2] << endl;
-	if(mcquarksColl[iquark][2] == 6) tPt = mcquarksColl[iquark].Pt();
-	if(mcquarksColl[iquark][2] == -6) tbarPt = mcquarksColl[iquark].Pt();
-      }
-      
-    }
-    
-    // down: no reweighting
-    // central: weight -> weight * reweight
-    // up: weight -> weight * reweight * reweight
-    if(topptunc_ >=0) 
-      w_  *= ttbarReweight(tPt,tbarPt);    
-    if( topptunc_>0)
-      w_  *= ttbarReweight(tPt,tbarPt);
-    
-    if(i_ == 45) cout << "topptunc: (" << tPt << ", " << tbarPt << ") ---> " <<  ttbarReweight(tPt,tbarPt) <<endl;
-  }
-  /////////////////////////////////////////////
-  
-  
   // mini tree stats /////////////////////////////////////////////////////////////////
   
-  if( myMCMon ){ mcmon.fill2DHisto( evYieldsMC , mcTag, MINITREE_STEP1, tauDilCh,w_); }  
-
+  if( myMCMon ){ mcmon.fill2DHisto( evYieldsMC , mcTag, DIL_MINITREE_STEP1, tauDilCh,w_); }  
+  
   //cout<<" EvYields is "<<evYields<<" key is "<<(myKey+TString(" lep_tau yields"))<<" step is "<<MINITREE_STEP2<<" weight is "<<w_<<endl;
-
-  mon.fillHisto(evYields, myKey+TString(" lep_tau yields"),MINITREE_STEP2,w_);
-  mon.fillHisto(evYields, myKey+TString(" e_tau yields"),  MINITREE_STEP2,w_); 
-  mon.fillHisto(evYields, myKey+TString(" m_tau yields"),  MINITREE_STEP2,w_);
-  //  mon.fillHisto(evYields, myKey+TString(" m_m yields"),  MINITREE_STEP2,w_);  // dilepton yields (preparation)
-  //  mon.fillHisto(evYields, myKey+TString(" m_e yields"),  MINITREE_STEP2,w_);  // dilepton yields (preparation)
-  //  mon.fillHisto(evYields, myKey+TString(" e_e yields"),  MINITREE_STEP2,w_);  // dilepton yields (preparation)
   
-  
+  mon.fillHisto(evYields, myKey+TString(" lep_tau yields"),DIL_MINITREE_STEP2,w_);
+  mon.fillHisto(evYields, myKey+TString(" e_tau yields"),  DIL_MINITREE_STEP2,w_); 
+  mon.fillHisto(evYields, myKey+TString(" m_tau yields"),  DIL_MINITREE_STEP2,w_);
   ///////////////////////////////////////////////////////////////////////////////////
   
   
   
   
   //debug
-  if( ! lepReq ){ return; }
+  //if(evType_ == ETAU_) cout<<endl<<" ETAU input at minitree step "<<endl;   
   
+  // >1 leptons veto disabled REENABLE CONSISTENT WAY
+  //  if( ! lepReq ){ return; }
+  
+  //debug
+  //if(evType_ == ETAU_) cout<<endl<<" pass dilepton and loose veto cuts 2) "<<tauDilCh<<endl;
+
+
   // in case we are processing MC see if we require a specific channel //////////////////////////////
   // TODO INCLUDE TTBAR LIKE EMU_???????
+  // FIXME: include in channels the etau and mutau and mumu and emu. LoL.
   if( !isData_ ){
     // tau dilepton analysis //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if(  ttbarLike_ == ETAU_  && channel != ETAU_CH  )                                                                             { return; }
     else if(  ttbarLike_ == MUTAU_ && channel != MUTAU_CH )                                                                             { return; }
-    else if(  ttbarLike_ == MUMU_  && channel != MUMU_CH  )                                                                             { return; }
-    else if(  ttbarLike_ == EMU_   && channel != EMU_CH  )                                                                              { return; }
-    else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
+    else if(  ttbarLike_ == MUMU_ && channel != MUMU_CH )                                                                             { return; }
+    else if(  ttbarLike_ == EMU_ && channel != EMU_CH )                                                                             { return; }
+    else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel == MUMU_CH || channel == EMU_CH || channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
     else if(  ttbarLike_ == TTBAR_DDBKG_ && (channel != EJETS_CH && channel!= MUJETS_CH ) )                                             { return; }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-
-    // Top pt reweighting was here
-
-
+    // FIXME: remove personalization
+    checkleptonsFromTauDecay_ = false;
     if( checkleptonsFromTauDecay_ ){
       event::MiniEvent_t *evmc = evRMC_->GetNewMiniEvent(i_,"mc");  if( evmc == 0 ){ cout<<"\n empty event"<<endl; return;}
       std::vector<PhysicsObject> mctausColl = evRMC_->GetPhysicsObjectsFrom(evmc,event::CHLEPTON);
       //get the charged lepton from tau //////////////////////////////////////////////////////////////////////////////////////////////////
-     std::vector<PhysicsObject> mcleps;  mcleps.clear();
-     for(size_t igtau = 0; igtau < mctausColl.size(); ++igtau){
-       if(fabs(mctausColl[igtau][1]) != double(11) && fabs(mctausColl[igtau][1]) != double(13)) continue; // if it is not electron or muon
-       if(mctausColl[igtau].Pt() < 20 || fabs(mctausColl[igtau].Eta()) > 2.1) continue;
-       if(fabs(mctausColl[igtau][2]) != double(15)) continue; // check if lepton is from a tau decay
-       mcleps.push_back(mctausColl[igtau]);
-     }
-     if( !( mcleps.size() == 1 && mcleps[0].Pt() > 20) )return ;
-     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      std::vector<PhysicsObject> mcleps;  mcleps.clear();
+      for(size_t igtau = 0; igtau < mctausColl.size(); igtau++){
+	if(fabs(mctausColl[igtau][1]) != double(11) && fabs(mctausColl[igtau][1]) != double(13)) continue; // if it is not electron or muon
+	if(mctausColl[igtau].Pt() < 20 || fabs(mctausColl[igtau].Eta()) > 2.1) continue;
+  
+	//cout<<"\n debug we have found a lepton parent is : "<<(fabs(mctausColl[igtau][2]))<<endl;
+	
+	if(fabs(mctausColl[igtau][2]) != double(15)) continue; // check if lepton is from a tau decay
+	mcleps.push_back(mctausColl[igtau]);
+      }
+      if( !( mcleps.size() == 1 && mcleps[0].Pt() > 20) )return ;
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
     
   }
@@ -1054,47 +3188,59 @@ void CutflowAnalyzer::tauDileptonSelection(
   // Fill debug info ///////////////////////////////////////////////////
   fillDebugHistograms(myKey,m_init,muons,e_init,electrons,j_final,jets); 
   //////////////////////////////////////////////////////////////////////
+
   
+  uint metAlgo;
+  if( myKey=="PF"               ) { metAlgo=event::PF;        }
+  else if( myKey.Contains("TaNC")    ) { metAlgo=event::PF;        }
+  else if( myKey.Contains("HPS")     ) { metAlgo=event::PF;        } 
+  else if( myKey.Contains("PFlow")   ) { metAlgo=event::PFLOWMET;  } 
+  
+  PhysicsObjectCollection mets = evR_->GetPhysicsObjectsFrom(ev,event::MET,metAlgo);           
+  if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
   PhysicsObject met = mets[0]; 
-  
-  // finding leading lepton and qualify tag ////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // finding leading and subleading lepton and qualify tag ////////////////////////////////////////////////////////////////////////////////////////////////
   double lepton_pt(0); double lepton_charge(0); uint lepton_ind(0);
-  vector<int> * p_i ; vector<PhysicsObject> * p_obj; PhysicsObject * lep_obj;
+  double lepton2_pt(0); double lepton2_charge(0); uint lepton2_ind(0);
   
+  vector<int> * p_i ; vector<PhysicsObject> * p_obj; PhysicsObject * lep_obj;
+  PhysicsObject* lep2_obj;
   if     ( evType_ == MUTAU_ ){ p_i = & m_init ; p_obj = &muons;    }
   else if( evType_ == ETAU_  ){ p_i = & e_init ; p_obj = &electrons;}
-  else if( evType_ == MUMU_  ){ p_i = & m_init ; p_obj = &muons;    }
-  else if( evType_ == EMU_   ){ p_i = & e_init ; p_obj = &electrons; for(unsigned int si=0; si<m_init.size(); ++si){ (*p_i).push_back(m_init[si]); (*p_obj).push_back(muons[si]); } }
+  else if( evType_ == MUMU_ ){  p_i = & m_init ; p_obj = &muons;    }
+  else if( evType_ == EMU_  ){ p_i = & e_init ; p_obj = &electrons; for(unsigned int si=0; si<m_init.size(); si++){ (*p_i).push_back(m_init[si]); (*p_obj).push_back(muons[si]); }    }
   
-  for(uint myi=0; myi < (*p_i).size(); ++myi){
+
+   
+  for(uint myi=0; myi < (*p_i).size(); myi++){
     int ind = (*p_i)[myi]; double lPt = TMath::Abs((*p_obj)[ind].Pt()); double charge = (*p_obj)[ind][0]; PhysicsObject * tmp_obj= &( (*p_obj)[ind] );
+    if( (*p_i).size() > 1 && lPt > lepton2_pt && !( lPt>lepton_pt ) ){ lepton2_pt = lPt; lepton2_charge = charge; lepton2_ind = ind; lep2_obj = tmp_obj;}                                   
     if( lPt > lepton_pt ){ lepton_pt = lPt; lepton_charge = charge; lepton_ind = ind; lep_obj = tmp_obj;}                                   
   }
   
   std::vector<TString> evTags; 
   if     (evType_ == ETAU_  ){ evTags.push_back(myKey+TString(" lep_tau"));  evTags.push_back(myKey+TString(" e_tau")); }
   else if(evType_ == MUTAU_ ){ evTags.push_back(myKey+TString(" lep_tau")); evTags.push_back(myKey+TString(" m_tau"));  }
-  else if(evType_ == MUMU_  ){ evTags.push_back(myKey+TString(" lep_lep")); evTags.push_back(myKey+TString(" mu_mu")); }
-  else if(evType_ == EMU_   ){ evTags.push_back(myKey+TString(" lep_lep")); evTags.push_back(myKey+TString(" e_mu")); }
- 
-  // WORKING HERE
-  double metValue = met.Pt(); 
-
-  double tau_charge(0); // , tau_pt(0); // unused 
+  else if(evType_ == MUMU_  ){ evTags.push_back(myKey+TString(" mu_mu"));  evTags.push_back(myKey+TString(" mu_mu")); }
+  else if(evType_ == EMU_ )  { evTags.push_back(myKey+TString(" e_mu")); evTags.push_back(myKey+TString(" e_mu"));  }
+  
+  
+  //  double metValue = jetMETScaling( jerFactors, jes_, junc , jets ,met.Px(), met.Py());
+  double metValue = jetMETScalingTest( jerFactors, jes_, junc, jets  , met);
+  // rescaling of met based on unclustered energy ////////////////////////////////////////////////
+//  if( unc_ ){ metValue = jetMETUnclustered( jerFactors, lep_obj, unc_, jets, met.Px(), met.Py());}
+//  if( jer_ ){ metValue = jetMETResolution( jerFactors, jets, met.Px(), met.Py());}
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  double tau_charge(0);// , tau_pt(0); // unused
   int tau_i;
   PhysicsObject * tau_obj;
-  if(t_afterLeptonRemoval.size() == 1){ tau_i = t_afterLeptonRemoval[0]; tau_charge = taus[tau_i][0]; 
-    // tau_pt = taus[tau_i].Pt(); // unused
+  if(t_afterLeptonRemoval.size() == 1){ tau_i = t_afterLeptonRemoval[0]; tau_charge = taus[tau_i][0];
+    //    tau_pt = taus[tau_i].Pt();
     tau_obj = &(taus[tau_i]); }
   
-  // Muon trigger/ID/Iso scale factors for efficiency from https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceEffs 
-  if(!eChONmuChOFF_) LeadMuonTriggerEfficiency(muons, lepton_ind, muontriggerefficiency_);
-
-  // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
-  // on MC   : we apply a trigger efficiency
-  // on data : we require that the two highest pt jet should fire the trigger (returned eff from the method is either 0/1)
- 
-
+  
   // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
   // on MC   : we apply a trigger efficiency
   // on data : we require that the two highest pt jet should fire the trigger (returned eff from the method is either 0/1)
@@ -1114,117 +3260,66 @@ void CutflowAnalyzer::tauDileptonSelection(
     }
   }
   else if (eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETS_ ) { if( !isData_ )leptontriggerefficiency_ = electrontriggerefficiency_;}
-  else{                                                      if( !isData_ ){
-      leptontriggerefficiency_ = muontriggerefficiency_;  
-      w_=w_*leptontriggerefficiency_;}
-  }
+  else{                                                      if( !isData_ )leptontriggerefficiency_ = muontriggerefficiency_;    }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-  // New way to deal with btag uncertainies //////////////////
-  int nbtags_taus(0);
-  bool nbtag1(false),  nbtag2(false); // ENABLED BTAGGING CUT
-  ////////////////////////////////////////////////////////////
-
-
-
-  // new way to compute btag uncertainty //////////////////////////////////////////
-  if( isData_ || !  applybtagweight_){
-    for(uint j=0; j<j_final.size(); ++j){  
-      int j_ind = j_final[j]; 
-      double btagvalue = jets[j_ind][BTAGIND_] ;
-      if( btagvalue>BTAG_CUT_){nbtags_taus++; }
-      cout << "DEBUG: jet number " << j << " has btag discriminator " << btagvalue << ". Currently we have already selected " << nbtags_taus << " btags" << endl; 
-    }
-  }
-  else {
-    for(uint j=0; j<j_final.size(); ++j){  
-      int    j_ind     = j_final[j]; 
-      double btagvalue = jets[j_ind][BTAGIND_];
-      bool   isTagged = false;
-      double bjpt(jets[j_ind].Pt()), bjeta(jets[j_ind].Eta()); 
-
-      if( btagvalue > BTAG_CUT_) isTagged = true;
-
-      double newBTagSF     = getSFb(bjpt, BTAGIND_);
-      double newLightJetSF = getSFlight(bjpt, bjeta, BTAGIND_);
-      
-      // get flavour of the jet
-
-      int jet_flavor = TMath::Abs(jets[j_ind][jetpgid_]);
-      double err_newBTagSF = err_BTagSF_;
-
-      if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
-
-      if(btagunc_   > 0){ newBTagSF     = newBTagSF+ err_newBTagSF; }
-      else if (btagunc_   < 0){ newBTagSF     = newBTagSF- err_newBTagSF; }
-
-      if(unbtagunc_ > 0){ newLightJetSF = newLightJetSF + err_LightJetSF_;}
-      else if(unbtagunc_<0){ newLightJetSF = newLightJetSF - err_LightJetSF_;}
-
-      //       double BTagEff     = newBTagSF*    BTAG_eff_R_;
-      //       double LightJeteff = newLightJetSF*BTAG_eff_F_;
-
-      double jet_phi = jets[j_ind].Phi();
-
-      double sin_phi = sin(jet_phi*1000000);
-      double seed = abs(static_cast<int>(sin_phi*100000));
-
-      //Initialize class
-      BTagSFUtil btsfutil(seed);
-    
-      //modify tags
-      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, /*BTagEff*/ BTAG_eff_R_, newLightJetSF, /*LightJeteff*/ BTAG_eff_F_);
-
-      if(isTagged) nbtags_taus++;
-
-    }
-  }
-  if(nbtags_taus > 0 ) nbtag1=true;
-  if(nbtags_taus > 1)  nbtag2=true;
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-  
-
   // events with 1 lepton /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  for( size_t itag=0; itag<evTags.size();  ++itag ) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),LEP_STEP2,w_); 
+  for( size_t itag=0; itag<evTags.size();  itag++ ) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),DIL_LEP_STEP2,w_); 
   if (terr){
-    for( size_t itag=0; itag<evTags.size(); ++itag ) mon.fillHisto(triggErr , evTags[itag]+TString(" yields"),LEP_STEP2,errorOnEff);
-    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,LEP_STEP2,tauDilCh,errorOnEff); }
+    for( size_t itag=0; itag<evTags.size(); itag++ ) mon.fillHisto(triggErr , evTags[itag]+TString(" yields"),DIL_LEP_STEP2,errorOnEff);
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_LEP_STEP2,tauDilCh,errorOnEff); }
   }
-  if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,LEP_STEP2,tauDilCh,w_); }
-  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"init",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
+  if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_LEP_STEP2,tauDilCh,w_); }
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"init",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-  // events with 1 jets //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  if(j_final.size()==0) return;
-  for(size_t itag=0; itag<evTags.size() ; ++itag) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),JET1_STEP2,w_); 
-
+  // events with at least 2 leptons (replace 1 jet) //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if((*p_i).size() <2 ) return;
+  //  if(j_final.size()==0) return;
+  for(size_t itag=0; itag<evTags.size() ; itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),DIL_JET1_STEP2,w_); 
+  
   if (terr){
-    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),JET1_STEP2,errorOnEff);
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET1_STEP2,tauDilCh,errorOnEff); }
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),DIL_JET1_STEP2,errorOnEff);
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_JET1_STEP2,tauDilCh,errorOnEff); }
   }
-  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,JET1_STEP2,tauDilCh,w_); }
-  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 1 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
+  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_JET1_STEP2,tauDilCh,w_); }
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 2 leptons",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+  int firstLepInd = (*p_i)[0];
+  int secondLepInd= (*p_i)[1];
+  PhysicsObject dilL1 = (*p_obj)[firstLepInd];
+  PhysicsObject dilL2 = (*p_obj)[secondLepInd];
+  TLorentzVector dilVec(dilL1+dilL2);
+  double dileptonMass = dilVec.M();
+  
+  // events with mass outside of Z range and higher that 12GeV/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if( dileptonMass < 12 ){ return; } // Low dilepton mass resonances
+  if( fabs( dileptonMass - 91) < 15  ){ return; } // Z mass window
+  
+  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"), DIL_MT_STEP2,w_);  
+  if (terr){
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),DIL_MT_STEP2,errorOnEff);
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_MT_STEP2,tauDilCh,errorOnEff); }
+  }
+  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_MT_STEP2,tauDilCh,w_);}
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"Z and low mass veto",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
+  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
 
   // events with at least 2 jets///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if(j_final.size()<2 ) return;                                       
-  for(size_t itag=0; itag<evTags.size();  ++itag) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),JET2_STEP2,w_);  
+  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),DIL_JET2_STEP2,w_);  
   if (terr){
-    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),JET2_STEP2,errorOnEff);
-    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET2_STEP2,tauDilCh,errorOnEff); }
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),DIL_JET2_STEP2,errorOnEff);
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_JET2_STEP2,tauDilCh,errorOnEff); }
   }
-  if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,JET2_STEP2,tauDilCh, w_);}
-  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 2 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
+  if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_JET2_STEP2,tauDilCh, w_);}
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 2 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1242,7 +3337,7 @@ void CutflowAnalyzer::tauDileptonSelection(
     ///////////////////////////////////////////////////
  
     //overall trigger efficiency
-    for(int mymetcut = 5; mymetcut<150; ++mymetcut){
+    for(int mymetcut = 5; mymetcut<150; mymetcut++){
       if( metValue > mymetcut ){
 
         //denominator
@@ -1307,8 +3402,8 @@ void CutflowAnalyzer::tauDileptonSelection(
   if(isData_ && trigEffStudy_ && metValue > 45 ){
     
     //trigger /////////////////////////////////////////
-    // TVectorD *trig = (TVectorD *)ev->triggerColl->At(0); // unused
-    // bool hasTesttrig = ((*trig)[3]>0);  // unused
+    //    TVectorD *trig = (TVectorD *)ev->triggerColl->At(0); // unused
+    //    bool hasTesttrig = ((*trig)[3]>0);  // unused
     ///////////////////////////////////////////////////
 
 
@@ -1339,7 +3434,7 @@ void CutflowAnalyzer::tauDileptonSelection(
 
     // absolute efficiencies get the 2 most energetic jet ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     double jetPt1(0),jetPt2(0); int ind2(-1), ind1(-1);
-    for(uint i=0; i<j_final.size(); ++i){
+    for(uint i=0; i<j_final.size(); i++){
       int ind=j_final[i];
       double jetPt =  getJetPt( jets[ind], junc,0, jes_);
       if( jetPt > jetPt1       ){ jetPt2=jetPt1; ind2=ind1; jetPt1=jetPt; ind1=ind; }
@@ -1385,7 +3480,7 @@ void CutflowAnalyzer::tauDileptonSelection(
 
       // get the highest third pt jet /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       double jetPtMax1(0),jetPtMax2(0),jetPtMax3(0),jetEtaPtMax1(0),jetEtaPtMax2(0),jetEtaPtMax3(0);
-      for(uint j_i=0; j_i<j_final.size(); ++j_i){
+      for(uint j_i=0; j_i<j_final.size(); j_i++){
         int ind = j_final[j_i];
         double jetPt =  getJetPt( jets[ind], junc,0, jes_); double jetEta = fabs( jets[ind].Eta());
         
@@ -1428,7 +3523,7 @@ void CutflowAnalyzer::tauDileptonSelection(
 
       // get the highest third pt jet /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       double jetPtMax1(0),jetPtMax2(0),jetPtMax3(0),jetEtaPtMax1(0),jetEtaPtMax2(0),jetEtaPtMax3(0);
-      for(uint j_i=0; j_i<j_final.size(); ++j_i){
+      for(uint j_i=0; j_i<j_final.size(); j_i++){
         int ind = j_final[j_i];
         double jetPt   =  getJetPt( jets[ind], junc,0, jes_); double jetEta  = fabs( jets[ind].Eta());
         
@@ -1468,34 +3563,30 @@ void CutflowAnalyzer::tauDileptonSelection(
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-  //  double tempw(1.);
-  // Here temp
-  
   // events with at least 2 jets+1 jet>20GeV ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // number of jets above jet pt cut and extra jet between tau pt and jet pt cut 
   if( j_final.size() + totalJets <3) return;
-  for(size_t itag=0; itag<evTags.size();  ++itag) mon.fillHisto(evYields ,evTags[itag]+TString(" yields"),    JET3_STEP2,w_);  
+  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields ,evTags[itag]+TString(" yields"),    DIL_JET3_STEP2,w_);  
   if (terr){ 
-    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),JET3_STEP2,errorOnEff);  
-    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,JET3_STEP2,tauDilCh,errorOnEff); }
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_JET3_STEP2,errorOnEff);  
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_JET3_STEP2,tauDilCh,errorOnEff); }
   }
-  if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,JET3_STEP2,tauDilCh,w_);}
-  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 3 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
+  if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_JET3_STEP2,tauDilCh,w_);}
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 3 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
   // events passing MET cut //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if( metValue < MET_CUT_) return;
-  for(size_t itag=0; itag<evTags.size();  ++itag) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),    MET_STEP2,w_);  
+  for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),    DIL_MET_STEP2,w_);  
   if (terr){
-    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),MET_STEP2,errorOnEff);
-    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,MET_STEP2,tauDilCh,errorOnEff); }
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),DIL_MET_STEP2,errorOnEff);
+    if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_MET_STEP2,tauDilCh,errorOnEff); }
   }
-  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,MET_STEP2,tauDilCh,w_);}
-  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MET",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);  
+  if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_MET_STEP2,tauDilCh,w_);}
+  fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MET",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);  
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // Here temp
   //testMe_+=errorOnEff2; testMe_Nev_++;
   //cout<<endl<<" Deb :  eff  = "<<setprecision (5)<<(eff.first)<<" +- "<<(eff.second)<<" errorOnEff2  = "<<errorOnEff2<<" total is "<<testMe_<<" in N events : "<<testMe_Nev_<<endl;
 
@@ -1505,22 +3596,69 @@ void CutflowAnalyzer::tauDileptonSelection(
 
 
 
-  // MT cut /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  double deltaPhi = (*p_obj)[lepton_ind].DeltaPhi( mets[0] );  
-  double mt = sqrt (  2*lepton_pt*metValue*(1 - cos(deltaPhi) ) ) ;
-  if( APPLY_MT_CUT_){ 
-    if( mt<MT_CUT_ ){ return; } 
-    for(size_t itag=0; itag<evTags.size();  ++itag) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"), MT_STEP2,w_);  
-    if (terr){
-      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),MT_STEP2,errorOnEff);
-      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,MT_STEP2,tauDilCh,errorOnEff); }
-    }
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,MT_STEP2,tauDilCh,w_);}
-    fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MT",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
-  }
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // BTAG multiplicity was here.
+
+  // New way to deal with btag uncertainies //////////////////
+  int nbtags_taus(0);
+  bool nbtag1(false),  nbtag2(false); // ENABLED BTAGGING CUT
+  ////////////////////////////////////////////////////////////
+
+
+
+  // new way to compute btag uncertainty //////////////////////////////////////////
+  if( isData_ || !  applybtagweight_){
+    for(uint j=0; j<j_final.size(); j++){  
+      int j_ind = j_final[j]; 
+      double btagvalue = jets[j_ind][BTAGIND_] ;
+      if( btagvalue>BTAG_CUT_){nbtags_taus++;} 
+    }
+  }
+  else {
+    for(uint j=0; j<j_final.size(); j++){  
+      int    j_ind     = j_final[j]; 
+      double btagvalue = jets[j_ind][BTAGIND_];
+      bool   isTagged = false;
+      
+      if( btagvalue > BTAG_CUT_) isTagged = true;
+
+      double newBTagSF     = BTagSF_;
+      double newLightJetSF = LightJetSF_;
+
+      // get flavour of the jet
+
+      int jet_flavor = TMath::Abs(jets[j_ind][jetpgid_]);
+      double err_newBTagSF = err_BTagSF_;
+
+      if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
+
+      if(btagunc_   > 0){ newBTagSF     = BTagSF_+ err_newBTagSF; }
+      else              { newBTagSF     = BTagSF_- err_newBTagSF; }
+
+      if(unbtagunc_ > 0){ newLightJetSF = LightJetSF_ + err_LightJetSF_;}
+      else              { newLightJetSF = LightJetSF_ - err_LightJetSF_;}
+
+      double BTagEff     = newBTagSF*BTAG_eff_R_;
+      double LightJeteff = newLightJetSF*BTAG_eff_F_;
+
+      double jet_phi = jets[j_ind].Phi();
+
+      double sin_phi = sin(jet_phi*1000000);
+      double seed = abs(static_cast<int>(sin_phi*100000));
+
+      //Initialize class
+      BTagSFUtil btsfutil(seed);
+    
+      //modify tags
+      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, BTagEff, newLightJetSF, LightJeteff);
+
+      if(isTagged) nbtags_taus++;
+
+    }
+  }
+  if(nbtags_taus > 0 ) nbtag1=true;
+  if(nbtags_taus > 1)  nbtag2=true;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 
@@ -1533,7 +3671,7 @@ void CutflowAnalyzer::tauDileptonSelection(
   int numbProngs(0);
   double tauP(0),tauE,r(0);
   tauR_ = -1;
-  
+  maxmtlet_ = -999; minmtlet_ = -999;
 
   if( taucut ){ 
     numbProngs = GetNumbProngs(taus[tau_i]);
@@ -1554,18 +3692,13 @@ void CutflowAnalyzer::tauDileptonSelection(
 
 
   // 1 btag option ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // hack
-  int BTAG1_NOMT;
-  if(!APPLY_MT_CUT_) BTAG1_NOMT = BTAG1_STEP2 -1;
-  else               BTAG1_NOMT = BTAG1_STEP2;
-  // end hack
   if( nbtag1 ) {
-    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    BTAG1_NOMT, w_); 
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    DIL_BTAG1_STEP2, w_); 
     if (terr){
-      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),BTAG1_NOMT, errorOnEff);  
-      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,BTAG1_NOMT,tauDilCh,errorOnEff); }
+      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_BTAG1_STEP2, errorOnEff);  
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_BTAG1_STEP2,tauDilCh,errorOnEff); }
     }
-    if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,BTAG1_NOMT,tauDilCh,w_); } 
+    if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_BTAG1_STEP2,tauDilCh,w_); } 
     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"1 btag",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1574,31 +3707,18 @@ void CutflowAnalyzer::tauDileptonSelection(
 
 
   // TAU ID selection step //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // hack
-  int TAU_NOMT;
-  if(!APPLY_MT_CUT_) TAU_NOMT = TAU_STEP2 -1;
-  else               TAU_NOMT = TAU_STEP2;
-  // end hack
-  
-  
   if(nbtag1 && taucut){
-    // l->tau fakes rescaling
-    if(!isData_ &&   channel==EMU_CH ){
-      if(fabs(taus[tau_i].Eta()) < 1.442)      w_ *= 0.85;
-      else if (fabs(taus[tau_i].Eta()) > 1.566) w_ *= 0.65;
-    }
-    
-    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    TAU_NOMT,w_);  
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    DIL_TAU_STEP2,w_);  
     if (terr){
-      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),TAU_NOMT, errorOnEff); 
-      if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,TAU_NOMT,tauDilCh,errorOnEff); }
+      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_TAU_STEP2, errorOnEff); 
+      if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_TAU_STEP2,tauDilCh,errorOnEff); }
     }
 
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,TAU_NOMT,tauDilCh,w_); }
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_TAU_STEP2,tauDilCh,w_); }
     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"1 Tau",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
 
     
-    for(size_t itag=0; itag<evTags.size(); ++itag){ 
+    for(size_t itag=0; itag<evTags.size(); itag++){ 
       //Build Tree quantites based on tau jet 
       PhysicsObject tauJet; 
       double tauJetPt  = (*tau_obj)[7];
@@ -1609,7 +3729,7 @@ void CutflowAnalyzer::tauDileptonSelection(
       tauJet.SetPtEtaPhiE(tauJetPt,tauJetEta,tauJetPhi,tauJetPt);
       double tauJetRadius(0); //Warning this needs to be changed (not needed)
       TString treeOption("Selected"); treeOption += add;
-      fillTauDileptonObjTree(ev,treeOption,evTags[itag],junc,mets[0],tauDilCh,TString("1 Tau"),lep_obj,tauJetRadius, tau_obj, &(taus[tau_i]), j_final, jets, jerFactors, metValue,nbtags_taus);
+      fillTauDileptonObjTree(ev,treeOption,evTags[itag],junc,mets[0],tauDilCh,TString("1 Tau"),lep_obj,tauJetRadius, tau_obj, j_final, jets, jerFactors, metValue,nbtags_taus);
     }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1622,26 +3742,22 @@ void CutflowAnalyzer::tauDileptonSelection(
    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-  // hack
-  int OS_NOMT;
-  if(!APPLY_MT_CUT_) OS_NOMT = OS_STEP2 -1;
-  else               OS_NOMT = OS_STEP2;
-  // end hack
 
   if(  nbtag1 && taucut && oscut ){
 
-    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),OS_NOMT,w_);
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),DIL_OS_STEP2,w_);
     if (terr){
-      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),OS_NOMT, errorOnEff);
-      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,OS_NOMT,tauDilCh,errorOnEff); }
+      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_OS_STEP2, errorOnEff);
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_OS_STEP2,tauDilCh,errorOnEff); }
     }
 
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,OS_NOMT,tauDilCh,w_); }
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_OS_STEP2,tauDilCh,w_); }
     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"OS",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
 
-    //SPY AFTER TAU ID AND OS /////////////////////////////////////////////////////////////////////////
-    //if(jes_== 0 && unc_== 0 && jer_== 0 && btagunc_==0 && pu_ == NOPU ) listOfReaders_[0]->SpyEvent();
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+//     //SPY AFTER TAU ID AND OS /////////////////////////////////////////////////////////////////////////
+//     if(jes_== 0 && unc_== 0 && jer_== 0 && btagunc_==0 && pu_ == NOPU ) evR_->SpyEvent();
+//     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
    
 
@@ -1655,7 +3771,7 @@ void CutflowAnalyzer::tauDileptonSelection(
       event::MiniEvent_t *evMC = evRMC_->GetNewMiniEvent(i_,"mc");  if( evMC == 0 ){ cout<<"\n empty event"<<endl; return;}
       classifMC = (TVectorD *)evMC->eventClassif->At(0);
   
-      for(int i=14; i<classifMC->GetNoElements();++i ){
+      for(int i=14; i<classifMC->GetNoElements();i++ ){
         cout.precision(3);
         myWeights_[i-14] += (*classifMC)[i]/(*classifMC)[14];        
         cout<<endl<<" sel. Evnt :"<<i_<<", (i-14) = "<<(i-14)<<" w : "<<(*classifMC)[i]<<" rel w : "<<((*classifMC)[i]/(*classifMC)[i-14])<<" total w : "<<myWeights_[i-14];
@@ -1670,12 +3786,12 @@ void CutflowAnalyzer::tauDileptonSelection(
 
     // Polarization //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if( numbProngs==1 && r > 0.7 ){
-      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),R_STEP2,w_);
+      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),DIL_R_STEP2,w_);
       if (terr){
-        for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),R_STEP2, errorOnEff);
-        if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,OS_STEP2,tauDilCh,errorOnEff); }
+        for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_R_STEP2, errorOnEff);
+        if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_OS_STEP2,tauDilCh,errorOnEff); }
       }
-      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,R_STEP2,tauDilCh,w_); }
+      if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_R_STEP2,tauDilCh,w_); }
       fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"R",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1685,12 +3801,12 @@ void CutflowAnalyzer::tauDileptonSelection(
 
   
   if( taucut && oscut && nbtag2 ){
-    for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),BTAG2_STEP2,w_); 
+    for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),DIL_BTAG2_STEP2,w_); 
     if (terr){
-      for(size_t itag=0; itag<evTags.size(); ++itag) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),BTAG2_STEP2, errorOnEff); 
-       if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,BTAG2_STEP2,tauDilCh,errorOnEff); }
+      for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_BTAG2_STEP2, errorOnEff); 
+       if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_BTAG2_STEP2,tauDilCh,errorOnEff); }
     }
-    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,BTAG2_STEP2,tauDilCh,w_); } 
+    if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_BTAG2_STEP2,tauDilCh,w_); } 
     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"2 btag",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
   }
 
@@ -1722,788 +3838,13 @@ void CutflowAnalyzer::tauDileptonSelection(
 }
 
 
-// to be removed //   void CutflowAnalyzer::dileptonEventAnalysis(
-// to be removed // 					      bool lepReq,
-// to be removed // 					    std::vector<PhysicsObject> & v, 
-// to be removed // 					    std::vector<PhysicsObject> & muons,     vector<int>  & m_init,  
-// to be removed // 					    std::vector<PhysicsObject> & electrons, vector<int>  & e_init,
-// to be removed // 					    std::vector<PhysicsObject> & taus,      vector<int>  & t_afterLeptonRemoval, 
-// to be removed // 					    std::vector<PhysicsObject> & jets,      vector<int>  & j_final, 
-// to be removed // 					    int totalJets, JetCorrectionUncertainty* junc, vector<double> & jerFactors, 
-// to be removed // 					    TString myKey, event::MiniEvent_t *ev
-// to be removed // 					    ) {
-// to be removed //   
-// to be removed //   
-// to be removed //   TString add("");
-// to be removed //   
-// to be removed //   
-// to be removed //   if(isData_) applybtagweight_ =false;
-// to be removed // 
-// to be removed //   // only compute uncertainty due to the trigger when others unc are switched off /////////////////
-// to be removed //   bool terr(false); if ( jes_== 0 && unc_== 0 && jer_==0 && btagunc_== 0 && unbtagunc_ ) terr=true;
-// to be removed //   TString triggErr   = TString("cutflow_triggErr");
-// to be removed //   /////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed //   if( jes_       > 0 ){ add = TString("_plus");       }if( jes_       < 0 ){ add = TString("_minus");      }
-// to be removed //   if( unc_       > 0 ){ add = TString("_uncplus");    }if( unc_       < 0 ){ add = TString("_uncminus");   } 
-// to be removed //   if( jer_       > 0 ){ add = TString("_jerplus");    }if( jer_       < 0 ){ add = TString("_jerminus");   }
-// to be removed //   if( btagunc_   > 0 ){ add = TString("_bplus");      }if( btagunc_   < 0 ){ add = TString("_bminus");     }
-// to be removed //   if( unbtagunc_ > 0 ){ add = TString("_unbplus");    }if( unbtagunc_ < 0 ){ add = TString("_unbminus");   }
-// to be removed //   
-// to be removed //   
-// to be removed //   TString evYields          = TString("cutflow_yields")    + add;     
-// to be removed //   TString evYieldsMC        = TString("cutflow_yields_mc") + add;   
-// to be removed //   TString evYieldsMCTrigger = TString("cutflow_mc_triggErr");
-// to be removed //   TString opt("optimization");
-// to be removed //   
-// to be removed //   SelectionMonitor * myMon    = tauDileptonYieldsMons_[myKey];    // monitor for the event yields
-// to be removed //   SelectionMonitor * myMCMon(0);                                  // monitor for the event yields for MC
-// to be removed //   
-// to be removed //   
-// to be removed //   // see if we are processing data, if we are processing MC get channel code ////////////////////////////////
-// to be removed //   int input_channel = (int)(*(TVectorD *)ev->eventClassif->At(0))[0];
-// to be removed //   int channel(-1); int tauDilCh;
-// to be removed //   //bool isSignal(false), isBkg(false);
-// to be removed //   if(  !isData_ ){ 
-// to be removed //     channel  = codeChannel(input_channel,urlCode_); 
-// to be removed //     //    if(channel==MUMU_CH) cout<<endl<<"Channel: MUMU"<<endl; // Ok, they are all there (ttbar)
-// to be removed //     //    if(channel==EMU_CH) cout<<endl<<"Channel: EMU"<<endl;
-// to be removed //     //    if(channel==EE_CH) cout<<endl<<"Channel: EE"<<endl;
-// to be removed //     //    if(channel==ETAU_CH) cout<<endl<<"Channel: ETAU"<<endl;
-// to be removed //     //    if(channel==MUTAU_CH) cout<<endl<<"Channel: MUTAU"<<endl;
-// to be removed //     if(channel==WQQ_CH || channel==WENU_CH || channel==WTAUNU_CH || channel==WMUNU_CH ){ channel = WJETS_CH; }
-// to be removed //     tauDilCh = tdChannel(channel);  
-// to be removed //   }
-// to be removed //   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   //cout<<endl<<" input channel is "<<input_channel<<" out channel is "<<channel<<endl;
-// to be removed // 
-// to be removed //   
-// to be removed //   TString mcTag(""); 
-// to be removed //   if( !isData_ ){ mcTag = myKey + TString(" yields mc");  myMCMon = tauDileptonMCYieldsMons_[myKey]; }
-// to be removed //   SelectionMonitor& mon    = *myMon;
-// to be removed //   SelectionMonitor& mcmon  = *myMCMon;
-// to be removed //   SelectionMonitor& debmon = *(tauDileptonDebugMons_[myKey]);
-// to be removed // 
-// to be removed //   
-// to be removed //   // mini tree stats /////////////////////////////////////////////////////////////////
-// to be removed //   
-// to be removed //   if( myMCMon ){ mcmon.fill2DHisto( evYieldsMC , mcTag, DIL_MINITREE_STEP1, tauDilCh,w_); }  
-// to be removed //   
-// to be removed //   //cout<<" EvYields is "<<evYields<<" key is "<<(myKey+TString(" lep_tau yields"))<<" step is "<<MINITREE_STEP2<<" weight is "<<w_<<endl;
-// to be removed //   
-// to be removed //   mon.fillHisto(evYields, myKey+TString(" lep_tau yields"),DIL_MINITREE_STEP2,w_);
-// to be removed //   mon.fillHisto(evYields, myKey+TString(" e_tau yields"),  DIL_MINITREE_STEP2,w_); 
-// to be removed //   mon.fillHisto(evYields, myKey+TString(" m_tau yields"),  DIL_MINITREE_STEP2,w_);
-// to be removed //   ///////////////////////////////////////////////////////////////////////////////////
-// to be removed //   
-// to be removed //   
-// to be removed //   
-// to be removed //   
-// to be removed //   //debug
-// to be removed //   //if(evType_ == ETAU_) cout<<endl<<" ETAU input at minitree step "<<endl;   
-// to be removed //   
-// to be removed //   // >1 leptons veto disabled REENABLE CONSISTENT WAY
-// to be removed //   //  if( ! lepReq ){ return; }
-// to be removed //   
-// to be removed //   //debug
-// to be removed //   //if(evType_ == ETAU_) cout<<endl<<" pass dilepton and loose veto cuts 2) "<<tauDilCh<<endl;
-// to be removed // 
-// to be removed // 
-// to be removed //   // in case we are processing MC see if we require a specific channel //////////////////////////////
-// to be removed //   // TODO INCLUDE TTBAR LIKE EMU_???????
-// to be removed //   // FIXME: include in channels the etau and mutau and mumu and emu. LoL.
-// to be removed //   if( !isData_ ){
-// to be removed //     // tau dilepton analysis //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //     if(  ttbarLike_ == ETAU_  && channel != ETAU_CH  )                                                                             { return; }
-// to be removed //     else if(  ttbarLike_ == MUTAU_ && channel != MUTAU_CH )                                                                             { return; }
-// to be removed //     else if(  ttbarLike_ == MUMU_ && channel != MUMU_CH )                                                                             { return; }
-// to be removed //     else if(  ttbarLike_ == EMU_ && channel != EMU_CH )                                                                             { return; }
-// to be removed //     //else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel == MUMU_CH || channel == EMU_CH || channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
-// to be removed //     else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
-// to be removed //     else if(  ttbarLike_ == TTBAR_DDBKG_ && (channel != EJETS_CH && channel!= MUJETS_CH ) )                                             { return; }
-// to be removed //     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //     
-// to be removed //     // FIXME: remove personalization
-// to be removed //     checkleptonsFromTauDecay_ = false;
-// to be removed //     if( checkleptonsFromTauDecay_ ){
-// to be removed //       event::MiniEvent_t *evmc = evRMC_->GetNewMiniEvent(i_,"mc");  if( evmc == 0 ){ cout<<"\n empty event"<<endl; return;}
-// to be removed //       std::vector<PhysicsObject> mctausColl = evRMC_->GetPhysicsObjectsFrom(evmc,event::CHLEPTON);
-// to be removed //       //get the charged lepton from tau //////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //       std::vector<PhysicsObject> mcleps;  mcleps.clear();
-// to be removed //       for(size_t igtau = 0; igtau < mctausColl.size(); igtau++){
-// to be removed // 	if(fabs(mctausColl[igtau][1]) != double(11) && fabs(mctausColl[igtau][1]) != double(13)) continue; // if it is not electron or muon
-// to be removed // 	if(mctausColl[igtau].Pt() < 20 || fabs(mctausColl[igtau].Eta()) > 2.1) continue;
-// to be removed //   
-// to be removed // 	//cout<<"\n debug we have found a lepton parent is : "<<(fabs(mctausColl[igtau][2]))<<endl;
-// to be removed // 	
-// to be removed // 	if(fabs(mctausColl[igtau][2]) != double(15)) continue; // check if lepton is from a tau decay
-// to be removed // 	mcleps.push_back(mctausColl[igtau]);
-// to be removed //       }
-// to be removed //       if( !( mcleps.size() == 1 && mcleps[0].Pt() > 20) )return ;
-// to be removed //       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //     }
-// to be removed //     
-// to be removed //   }
-// to be removed //   ///////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   
-// to be removed //   // Fill debug info ///////////////////////////////////////////////////
-// to be removed //   fillDebugHistograms(myKey,m_init,muons,e_init,electrons,j_final,jets); 
-// to be removed //   //////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed //   
-// to be removed //   uint metAlgo;
-// to be removed //   if( myKey=="PF"               ) { metAlgo=event::PF;        }
-// to be removed //   else if( myKey.Contains("TaNC")    ) { metAlgo=event::PF;        }
-// to be removed //   else if( myKey.Contains("HPS")     ) { metAlgo=event::PF;        } 
-// to be removed //   else if( myKey.Contains("PFlow")   ) { metAlgo=event::PFLOWMET;  } 
-// to be removed //   
-// to be removed //   PhysicsObjectCollection mets = evR_->GetPhysicsObjectsFrom(ev,event::MET,metAlgo);           
-// to be removed //   if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
-// to be removed //   PhysicsObject met = mets[0]; 
-// to be removed // 
-// to be removed //   // finding leading and subleading lepton and qualify tag ////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   double lepton_pt(0); double lepton_charge(0); uint lepton_ind(0);
-// to be removed //   double lepton2_pt(0); double lepton2_charge(0); uint lepton2_ind(0);
-// to be removed //   
-// to be removed //   vector<int> * p_i ; vector<PhysicsObject> * p_obj; PhysicsObject * lep_obj;
-// to be removed //   PhysicsObject* lep2_obj;
-// to be removed //   if     ( evType_ == MUTAU_ ){ p_i = & m_init ; p_obj = &muons;    }
-// to be removed //   else if( evType_ == ETAU_  ){ p_i = & e_init ; p_obj = &electrons;}
-// to be removed //   else if( evType_ == MUMU_ ){  p_i = & m_init ; p_obj = &muons;    }
-// to be removed //   else if( evType_ == EMU_  ){ p_i = & e_init ; p_obj = &electrons; for(unsigned int si=0; si<m_init.size(); ++si){ (*p_i).push_back(m_init[si]); (*p_obj).push_back(muons[si]); }}
-// to be removed //   
-// to be removed //   
-// to be removed //   for(uint myi=0; myi < (*p_i).size(); myi++){
-// to be removed //     int ind = (*p_i)[myi]; double lPt = TMath::Abs((*p_obj)[ind].Pt()); double charge = (*p_obj)[ind][0]; PhysicsObject * tmp_obj= &( (*p_obj)[ind] );
-// to be removed //     if( (*p_i).size() > 1 && lPt > lepton2_pt && !( lPt>lepton_pt ) ){ lepton2_pt = lPt; lepton2_charge = charge; lepton2_ind = ind; lep2_obj = tmp_obj;}                             
-// to be removed //     if( lPt > lepton_pt ){ lepton_pt = lPt; lepton_charge = charge; lepton_ind = ind; lep_obj = tmp_obj;}                                   
-// to be removed //   }
-// to be removed //   
-// to be removed //   std::vector<TString> evTags; 
-// to be removed //   if     (evType_ == ETAU_  ){ evTags.push_back(myKey+TString(" lep_tau"));  evTags.push_back(myKey+TString(" e_tau")); }
-// to be removed //   else if(evType_ == MUTAU_ ){ evTags.push_back(myKey+TString(" lep_tau")); evTags.push_back(myKey+TString(" m_tau"));  }
-// to be removed //   else if(evType_ == MUMU_  ){ evTags.push_back(myKey+TString(" mu_mu"));  evTags.push_back(myKey+TString(" mu_mu")); }
-// to be removed //   else if(evType_ == EMU_ )  { evTags.push_back(myKey+TString(" e_mu")); evTags.push_back(myKey+TString(" e_mu"));  }
-// to be removed //   
-// to be removed //   
-// to be removed //   //  double metValue = jetMETScaling( jerFactors, jes_, junc , jets ,met.Px(), met.Py());
-// to be removed //   double metValue = jetMETScalingTest( jerFactors, jes_, junc, jets  , met);
-// to be removed //   // rescaling of met based on unclustered energy ////////////////////////////////////////////////
-// to be removed //   //  if( unc_ ){ metValue = jetMETUnclustered( jerFactors, lep_obj, unc_, jets, met.Px(), met.Py());}
-// to be removed //   //  if( jer_ ){ metValue = jetMETResolution( jerFactors, jets, met.Px(), met.Py());}
-// to be removed //   ////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   
-// to be removed //   double tau_charge(0);// , tau_pt(0); // unused
-// to be removed //   int tau_i;
-// to be removed //   PhysicsObject * tau_obj;
-// to be removed //   if(t_afterLeptonRemoval.size() == 1){ tau_i = t_afterLeptonRemoval[0]; tau_charge = taus[tau_i][0];
-// to be removed //     // tau_pt = taus[tau_i].Pt(); // unused
-// to be removed //     tau_obj = &(taus[tau_i]); }
-// to be removed //   
-// to be removed //   
-// to be removed //   // lepton requirement includes trigger selection requirement ( the two highest pt jets should fire the trigger ) //////////////////////////////////
-// to be removed //   // on MC   : we apply a trigger efficiency
-// to be removed //   // on data : we require that the two highest pt jet should fire the trigger (returned eff from the method is either 0/1)
-// to be removed //   double errorOnEff(0); pair<double,double> eff(0,0);
-// to be removed //   
-// to be removed // 
-// to be removed //   if( eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETSPLUSMET_ ){
-// to be removed //     pair<double,double> efftemp( getEfficiencyAndError( jets,j_final,junc,jerFactors));
-// to be removed //     eff.first = efftemp.first; eff.second = efftemp.second;
-// to be removed // 
-// to be removed //     if ( eff.first == 0 ) return;
-// to be removed //     else{ 
-// to be removed //       electrontriggerefficiency_ = eff.first;  
-// to be removed //       if( !isData_ ){ leptontriggerefficiency_ = electrontriggerefficiency_; w_= w_*leptontriggerefficiency_; errorOnEff =  w_*(eff.second); } // get trigger efficiency for electrons 
-// to be removed // 
-// to be removed //       // take into account weights into efficiency error
-// to be removed //     }
-// to be removed //   }
-// to be removed //   else if (eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETS_ ) { if( !isData_ )leptontriggerefficiency_ = electrontriggerefficiency_;}
-// to be removed //   else{                                                      if( !isData_ )leptontriggerefficiency_ = muontriggerefficiency_;    }
-// to be removed //   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed //   // events with 1 lepton /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   for( size_t itag=0; itag<evTags.size();  itag++ ) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),DIL_LEP_STEP2,w_); 
-// to be removed //   if (terr){
-// to be removed //     for( size_t itag=0; itag<evTags.size(); itag++ ) mon.fillHisto(triggErr , evTags[itag]+TString(" yields"),DIL_LEP_STEP2,errorOnEff);
-// to be removed //     if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_LEP_STEP2,tauDilCh,errorOnEff); }
-// to be removed //   }
-// to be removed //   if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_LEP_STEP2,tauDilCh,w_); }
-// to be removed //   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"init",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
-// to be removed //   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed //   // events with at least 2 leptons (replace 1 jet) //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   if((*p_i).size() <2 ) return;
-// to be removed //   //  if(j_final.size()==0) return;
-// to be removed //   for(size_t itag=0; itag<evTags.size() ; itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),DIL_JET1_STEP2,w_); 
-// to be removed //   
-// to be removed //   if (terr){
-// to be removed //     for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),DIL_JET1_STEP2,errorOnEff);
-// to be removed //     if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_JET1_STEP2,tauDilCh,errorOnEff); }
-// to be removed //   }
-// to be removed //   if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_JET1_STEP2,tauDilCh,w_); }
-// to be removed //   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 2 leptons",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
-// to be removed //   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed //   int firstLepInd = (*p_i)[0];
-// to be removed //   int secondLepInd= (*p_i)[1];
-// to be removed //   PhysicsObject dilL1 = (*p_obj)[firstLepInd];
-// to be removed //   PhysicsObject dilL2 = (*p_obj)[secondLepInd];
-// to be removed //   TLorentzVector dilVec(dilL1+dilL2);
-// to be removed //   double dileptonMass = dilVec.M();
-// to be removed //   
-// to be removed //   // events with mass outside of Z range and higher that 12GeV/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   if( dileptonMass < 12 ){ return; } // Low dilepton mass resonances
-// to be removed //   if( fabs( dileptonMass - 91) < 15  ){ return; } // Z mass window
-// to be removed //   
-// to be removed //   for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"), DIL_MT_STEP2,w_);  
-// to be removed //   if (terr){
-// to be removed //     for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),DIL_MT_STEP2,errorOnEff);
-// to be removed //     if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_MT_STEP2,tauDilCh,errorOnEff); }
-// to be removed //   }
-// to be removed //   if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_MT_STEP2,tauDilCh,w_);}
-// to be removed //   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"Z and low mass veto",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
-// to be removed //   
-// to be removed //   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   
-// to be removed // 
-// to be removed //   // events with at least 2 jets///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   if(j_final.size()<2 ) return;                                       
-// to be removed //   for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),DIL_JET2_STEP2,w_);  
-// to be removed //   if (terr){
-// to be removed //     for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),DIL_JET2_STEP2,errorOnEff);
-// to be removed //     if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_JET2_STEP2,tauDilCh,errorOnEff); }
-// to be removed //   }
-// to be removed //   if( myMCMon ){  mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_JET2_STEP2,tauDilCh, w_);}
-// to be removed //   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 2 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
-// to be removed //   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed //   //trigger efficiencies studies on data (MET part) /////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   // /lustre/data3/cmslocal/samples/CMSSW_4_2_X/data/mTrees-v3/Ele_MetTrig_X.root
-// to be removed //   // 1) Events selected with trigger : HLT_EleY_CaloIdVT_TrkIdT_CentralJet30_CentralJet25_vX 
-// to be removed //   // HLT_EleY_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT15_vX is placed at the 3rd position of trigger information.
-// to be removed //   // These data is for measuring only the MHT part of trigger efficiency.
-// to be removed //   if(isData_ && trigEffStudy_ ){
-// to be removed // 
-// to be removed //     //trigger /////////////////////////////////////////
-// to be removed //     TVectorD *trig = (TVectorD *)ev->triggerColl->At(0);
-// to be removed //     bool hasTesttrig = ((*trig)[3]>0); 
-// to be removed //     ///////////////////////////////////////////////////
-// to be removed //  
-// to be removed //     //overall trigger efficiency
-// to be removed //     for(int mymetcut = 5; mymetcut<150; mymetcut++){
-// to be removed //       if( metValue > mymetcut ){
-// to be removed // 
-// to be removed //         //denominator
-// to be removed //         debmon.fillHisto("den_eff_trigger_met", myKey+TString(" e_tau debug"), mymetcut);
-// to be removed //  
-// to be removed //         if(hasTesttrig){
-// to be removed //           //numerator
-// to be removed //           debmon.fillHisto("num_eff_trigger_met", myKey+TString(" e_tau debug"), mymetcut);
-// to be removed //         }
-// to be removed // 
-// to be removed // 
-// to be removed //         if( j_final.size() + totalJets >= 3 ){
-// to be removed //           //denominator
-// to be removed //           debmon.fillHisto("den_eff_trigger_met3j", myKey+TString(" e_tau debug"), mymetcut);
-// to be removed //  
-// to be removed //           if(hasTesttrig){
-// to be removed //             //numerator
-// to be removed //             debmon.fillHisto("num_eff_trigger_met3j", myKey+TString(" e_tau debug"), mymetcut);
-// to be removed //           }
-// to be removed // 
-// to be removed //         }
-// to be removed // 
-// to be removed //       }
-// to be removed //     }
-// to be removed // 
-// to be removed //     // absolute efficiencies
-// to be removed //     debmon.fillHisto("abs_den_eff_trigger_met", myKey+TString(" e_tau debug"), metValue);
-// to be removed //  
-// to be removed //     // numerator
-// to be removed //     if(hasTesttrig){ debmon.fillHisto("abs_num_eff_trigger_met", myKey+TString(" e_tau debug"), metValue ); }
-// to be removed // 
-// to be removed //   
-// to be removed //     if( j_final.size() + totalJets >= 3){
-// to be removed //       // absolute efficiencies
-// to be removed //       debmon.fillHisto("abs_den_eff_trigger_met3j", myKey+TString(" e_tau debug"), metValue);
-// to be removed //  
-// to be removed //       // numerator
-// to be removed //       if(hasTesttrig){ debmon.fillHisto("abs_num_eff_trigger_met3j", myKey+TString(" e_tau debug"), metValue ); }
-// to be removed // 
-// to be removed //     }
-// to be removed // 
-// to be removed //   }
-// to be removed //   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed //   //trigger efficiencies studies on data (JET part) /////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   // /lustre/data3/cmslocal/samples/CMSSW_4_2_X/data/mTrees-v3/Ele_JetMetTrig_X.root
-// to be removed //   // 2) Events selected with trigger : HLT_Ele32_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_vX
-// to be removed //   // HLT_EleY_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT15_vX is placed at the 3rd position of trigger information.
-// to be removed //   // These data is to be used for measuring combined Jet+MHT part of trigger efficiency from which we can extract jet efficiency part.
-// to be removed //   // The files  4 and 5 have
-// to be removed //   // HLT_Ele17_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT15
-// to be removed //   // Files 6, 7, 8 and 9 have
-// to be removed //   // HLT_Ele22_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT20
-// to be removed //   // File 10 have HLT_Ele27_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralJet30_CentralJet25_PFMHT20
-// to be removed //   // They correspond to different run numbers and different trigger
-// to be removed //   // thresholds. So the efficiency should be measured separately.
-// to be removed //   // NOTE jet cut should be at 20 !!!!
-// to be removed //   //
-// to be removed //   // note : the tau is removed from the trigger list  
-// to be removed //   //
-// to be removed //   if(isData_ && trigEffStudy_ && metValue > 45 ){
-// to be removed //     
-// to be removed //     //trigger /////////////////////////////////////////
-// to be removed //     //    TVectorD *trig = (TVectorD *)ev->triggerColl->At(0); // unused
-// to be removed //     //    bool hasTesttrig = ((*trig)[3]>0);  // unused
-// to be removed //     ///////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed //  
-// to be removed //     /*
-// to be removed //     for(int jetPtCut = 20;jetPtCut<100; jetPtCut++){
-// to be removed // 
-// to be removed //       int numbjets(0);     
-// to be removed //       for(uint i=0; i< jetsForTrigger_.size(); i++){
-// to be removed //         int ind=jetsForTrigger_[i];
-// to be removed //         double jetPt =  getJetPt( jets[ind], junc,0, jes_);
-// to be removed //         bool triggeredJet = jets[ind][4];
-// to be removed //         if(jetPt>jetPtCut && triggeredJet ) numbjets++;
-// to be removed //       }
-// to be removed //       if( numbjets>1 ){
-// to be removed //    
-// to be removed //         //denominator
-// to be removed //         debmon.fillHisto("den_eff_trigger_jetptcut", myKey+TString(" e_tau debug"), jetPtCut);
-// to be removed // 
-// to be removed //  
-// to be removed //         if(hasTesttrig){
-// to be removed //           //denominator
-// to be removed //           debmon.fillHisto("num_eff_trigger_jetptcut", myKey+TString(" e_tau debug"), jetPtCut);
-// to be removed //         }
-// to be removed //       }
-// to be removed //     }
-// to be removed //     */
-// to be removed // 
-// to be removed //     // absolute efficiencies get the 2 most energetic jet ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //     double jetPt1(0),jetPt2(0); int ind2(-1), ind1(-1);
-// to be removed //     for(uint i=0; i<j_final.size(); i++){
-// to be removed //       int ind=j_final[i];
-// to be removed //       double jetPt =  getJetPt( jets[ind], junc,0, jes_);
-// to be removed //       if( jetPt > jetPt1       ){ jetPt2=jetPt1; ind2=ind1; jetPt1=jetPt; ind1=ind; }
-// to be removed //       else if( jetPt > jetPt2  ){ jetPt2=jetPt;  ind2=ind;                          }
-// to be removed //     }
-// to be removed //     
-// to be removed //     if(jetPt2){
-// to be removed //       //denominator
-// to be removed //       debmon.fillHisto("abs_den_eff_trigger_jetptcut1", myKey+TString(" e_tau debug"), jetPt1);
-// to be removed //       debmon.fillHisto("abs_den_eff_trigger_jetptcut2", myKey+TString(" e_tau debug"), jetPt2);
-// to be removed // 
-// to be removed //       //if(hasTesttrig){
-// to be removed // 
-// to be removed //         //if(jetPt2>20){ cout<<" jetPt is : "<<jetPt2<<" triggeredJet2 is : "<<(jets[ind2][4])<<endl;}
-// to be removed // 
-// to be removed //         //numerator
-// to be removed //         double triggeredJet1 = jets[ind1][4];  // most energetic jet
-// to be removed //         double triggeredJet2 = jets[ind2][4];  // second most energetic jet
-// to be removed // 
-// to be removed //         //if( triggeredJet1 && triggeredJet2 ){ debmon.fillHisto("abs_num_eff_trigger_jetptcut", myKey+TString(" e_tau debug"), jetPt2 ); }
-// to be removed // 
-// to be removed //         if( triggeredJet1 ){ debmon.fillHisto("abs_num_eff_trigger_jetptcut1", myKey+TString(" e_tau debug"), jetPt1 ); }
-// to be removed //         if( triggeredJet2 ){ debmon.fillHisto("abs_num_eff_trigger_jetptcut2", myKey+TString(" e_tau debug"), jetPt2 ); }
-// to be removed // 
-// to be removed //       //}
-// to be removed //     }
-// to be removed //     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed //   }
-// to be removed // 
-// to be removed // 
-// to be removed //   // trigger efficiencies studies ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   if( evType_==ETAU_ && trigEffStudy_ && t_afterLeptonRemoval.size()<2 && jes_==0){
-// to be removed // 
-// to be removed //     int jmult = t_afterLeptonRemoval.size() + j_final.size();
-// to be removed // 
-// to be removed //     //trigger ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //     bool trigger(false); TVectorD *trig = (TVectorD *)ev->triggerColl->At(0); bool hasEGtrig = ((*trig)[1]>0); if( hasEGtrig ){ trigger =true;}
-// to be removed //     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed //     // efficiencies on electron + tau + jets channels //////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //     if( channel == ETAU_CH && t_afterLeptonRemoval.size()== 1 ){
-// to be removed // 
-// to be removed //       // get the highest third pt jet /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //       double jetPtMax1(0),jetPtMax2(0),jetPtMax3(0),jetEtaPtMax1(0),jetEtaPtMax2(0),jetEtaPtMax3(0);
-// to be removed //       for(uint j_i=0; j_i<j_final.size(); j_i++){
-// to be removed //         int ind = j_final[j_i];
-// to be removed //         double jetPt =  getJetPt( jets[ind], junc,0, jes_); double jetEta = fabs( jets[ind].Eta());
-// to be removed //         
-// to be removed //         if     ( jetPt > jetPtMax1 ){jetPtMax3=jetPtMax2; jetEtaPtMax3 = jetEtaPtMax2; jetPtMax2=jetPtMax1; jetEtaPtMax2=jetEtaPtMax1; jetPtMax1=jetPt; jetEtaPtMax1=jetEta; }
-// to be removed //         else if( jetPt > jetPtMax2 ){jetPtMax3=jetPtMax2; jetEtaPtMax3 = jetEtaPtMax2; jetPtMax2=jetPt;     jetEtaPtMax2=jetEta;                                             }
-// to be removed //         else if( jetPt > jetPtMax3 ){jetPtMax3=jetPt;     jetEtaPtMax3 = jetEta;                                                                                             }
-// to be removed //         
-// to be removed //       }
-// to be removed //       if(t_afterLeptonRemoval.size()==1){ // this condition was already verified...
-// to be removed //         //jer assumed to be 1
-// to be removed //         int ind = t_afterLeptonRemoval[0];
-// to be removed //         double jetPt = taus[ind][7]; double jetEta = taus[ind][8]; 
-// to be removed //         junc->setJetEta(jetEta); junc->setJetPt(jetPt); double corr=junc->getUncertainty(true); 
-// to be removed //         jetPt = (1+corr)*jetPt;
-// to be removed //         //if we have only 2 jets in the event....
-// to be removed //         if(jetPtMax3==0){ 
-// to be removed //           if(jetPt<jetPtMax2){    jetPtMax3=jetPt;     jetEtaPtMax3=fabs(jetEta); }
-// to be removed //           else{                   jetPtMax3=jetPtMax2; jetEtaPtMax3=jetEtaPtMax2; }
-// to be removed //         }
-// to be removed //         else if(jetPt<jetPtMax3){ jetPtMax3=jetPt;     jetEtaPtMax3=fabs(jetEta); }
-// to be removed //         
-// to be removed //       }
-// to be removed //       //////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed //       debmon.fillHisto("jmult_den_eta", myKey+TString(" e_tau debug"), jetEtaPtMax3);
-// to be removed //       debmon.fillHisto("jmult_den_pt",  myKey+TString(" e_tau debug"), jetPtMax3);
-// to be removed //       debmon.fillHisto("jmult_den",     myKey+TString(" e_tau debug"), jmult,1);
-// to be removed // 
-// to be removed //       if(trigger){  
-// to be removed //         debmon.fillHisto("jmult_num_eta", myKey+TString(" e_tau debug"), jetEtaPtMax3);
-// to be removed //         debmon.fillHisto("jmult_num_pt",  myKey+TString(" e_tau debug"), jetPtMax3); 
-// to be removed //         debmon.fillHisto("jmult_num",     myKey+TString(" e_tau debug"), jmult,1);
-// to be removed //       }
-// to be removed // 
-// to be removed //     }
-// to be removed // 
-// to be removed //     // efficiencies on electron + jets
-// to be removed //     if(channel == WJETS_CH && jmult >=3 ){
-// to be removed // 
-// to be removed //       // get the highest third pt jet /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //       double jetPtMax1(0),jetPtMax2(0),jetPtMax3(0),jetEtaPtMax1(0),jetEtaPtMax2(0),jetEtaPtMax3(0);
-// to be removed //       for(uint j_i=0; j_i<j_final.size(); j_i++){
-// to be removed //         int ind = j_final[j_i];
-// to be removed //         double jetPt   =  getJetPt( jets[ind], junc,0, jes_); double jetEta  = fabs( jets[ind].Eta());
-// to be removed //         
-// to be removed //         if     ( jetPt > jetPtMax1 ){jetPtMax3=jetPtMax2; jetEtaPtMax3 = jetEtaPtMax2; jetPtMax2=jetPtMax1; jetEtaPtMax2=jetEtaPtMax1; jetPtMax1=jetPt; jetEtaPtMax1=jetEta;}
-// to be removed //         else if( jetPt > jetPtMax2 ){jetPtMax3=jetPtMax2; jetEtaPtMax3 = jetEtaPtMax2; jetPtMax2=jetPt;     jetEtaPtMax2=jetEta;                                            }
-// to be removed //         else if( jetPt > jetPtMax3 ){jetPtMax3=jetPt;     jetEtaPtMax3 = jetEta;                                                                                            }
-// to be removed //         
-// to be removed //       }
-// to be removed //       if(t_afterLeptonRemoval.size()==1){
-// to be removed //         //jer assumed to be 1
-// to be removed //         int ind = t_afterLeptonRemoval[0];
-// to be removed //         double jetPt = taus[ind][7]; double jetEta = taus[ind][8]; 
-// to be removed //         junc->setJetEta(jetEta); junc->setJetPt(jetPt); double corr=junc->getUncertainty(true); 
-// to be removed //         jetPt = (1+corr)*jetPt;
-// to be removed //         //if we have only 2 jets in the event....
-// to be removed //         if(jetPt<jetPtMax3){ jetPtMax3=jetPt;     jetEtaPtMax3=fabs(jetEta); }
-// to be removed //         
-// to be removed //       }
-// to be removed //       //////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed //       debmon.fillHisto("jmult_den_eta", myKey+TString(" e_tau debug"), jetEtaPtMax3 );
-// to be removed //       debmon.fillHisto("jmult_den_pt",  myKey+TString(" e_tau debug"), jetPtMax3    );
-// to be removed //       debmon.fillHisto("jmult_den",     myKey+TString(" e_tau debug"), jmult,1      );
-// to be removed // 
-// to be removed //       if(trigger){  
-// to be removed //         debmon.fillHisto("jmult_num_eta", myKey+TString(" e_tau debug"), jetEtaPtMax3);
-// to be removed //         debmon.fillHisto("jmult_num_pt",  myKey+TString(" e_tau debug"), jetPtMax3   ); 
-// to be removed //         debmon.fillHisto("jmult_num",     myKey+TString(" e_tau debug"), jmult,1);
-// to be removed //       }
-// to be removed // 
-// to be removed //     }
-// to be removed //     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed //   }
-// to be removed //   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed //   // events with at least 2 jets+1 jet>20GeV ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   // number of jets above jet pt cut and extra jet between tau pt and jet pt cut 
-// to be removed //   if( j_final.size() + totalJets <3) return;
-// to be removed //   for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields ,evTags[itag]+TString(" yields"),    DIL_JET3_STEP2,w_);  
-// to be removed //   if (terr){ 
-// to be removed //     for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_JET3_STEP2,errorOnEff);  
-// to be removed //     if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_JET3_STEP2,tauDilCh,errorOnEff); }
-// to be removed //   }
-// to be removed //   if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_JET3_STEP2,tauDilCh,w_);}
-// to be removed //   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"#geq 3 jet",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);
-// to be removed //   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed //   // events passing MET cut //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   if( metValue < MET_CUT_) return;
-// to be removed //   for(size_t itag=0; itag<evTags.size();  itag++) mon.fillHisto(evYields,  evTags[itag]+TString(" yields"),    DIL_MET_STEP2,w_);  
-// to be removed //   if (terr){
-// to be removed //     for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr, evTags[itag]+TString(" yields"),DIL_MET_STEP2,errorOnEff);
-// to be removed //     if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_MET_STEP2,tauDilCh,errorOnEff); }
-// to be removed //   }
-// to be removed //   if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_MET_STEP2,tauDilCh,w_);}
-// to be removed //   fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"MET",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue);  
-// to be removed //   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed //   //testMe_+=errorOnEff2; testMe_Nev_++;
-// to be removed //   //cout<<endl<<" Deb :  eff  = "<<setprecision (5)<<(eff.first)<<" +- "<<(eff.second)<<" errorOnEff2  = "<<errorOnEff2<<" total is "<<testMe_<<" in N events : "<<testMe_Nev_<<endl;
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed //   // New way to deal with btag uncertainies //////////////////
-// to be removed //   int nbtags_taus(0);
-// to be removed //   bool nbtag1(false),  nbtag2(false); // ENABLED BTAGGING CUT
-// to be removed //   ////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed //   // new way to compute btag uncertainty //////////////////////////////////////////
-// to be removed //   if( isData_ || !  applybtagweight_){
-// to be removed //     for(uint j=0; j<j_final.size(); j++){  
-// to be removed //       int j_ind = j_final[j]; 
-// to be removed //       double btagvalue = jets[j_ind][BTAGIND_] ;
-// to be removed //       if( btagvalue>BTAG_CUT_){nbtags_taus++;} 
-// to be removed //     }
-// to be removed //   }
-// to be removed //   else {
-// to be removed //     for(uint j=0; j<j_final.size(); j++){  
-// to be removed //       int    j_ind     = j_final[j]; 
-// to be removed //       double btagvalue = jets[j_ind][BTAGIND_];
-// to be removed //       bool   isTagged = false;
-// to be removed //       double bjpt(jets[j_ind].Pt()), bjeta(jets[j_ind].Eta()); 
-// to be removed // 
-// to be removed //       if( btagvalue > BTAG_CUT_) isTagged = true;
-// to be removed // 
-// to be removed //       double newBTagSF     = getSFb(bjpt, BTAGIND_);
-// to be removed //       double newLightJetSF = getSFlight(bjpt, bjeta, BTAGIND_);
-// to be removed //       
-// to be removed // 
-// to be removed //       // get flavour of the jet
-// to be removed // 
-// to be removed //       int jet_flavor = TMath::Abs(jets[j_ind][jetpgid_]);
-// to be removed //       double err_newBTagSF = err_BTagSF_;
-// to be removed // 
-// to be removed //       if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
-// to be removed // 
-// to be removed //       if(btagunc_   > 0){ newBTagSF     = BTagSF_+ err_newBTagSF; }
-// to be removed //       else              { newBTagSF     = BTagSF_- err_newBTagSF; }
-// to be removed // 
-// to be removed //       if(unbtagunc_ > 0){ newLightJetSF = LightJetSF_ + err_LightJetSF_;}
-// to be removed //       else              { newLightJetSF = LightJetSF_ - err_LightJetSF_;}
-// to be removed // 
-// to be removed //       //      double BTagEff     = newBTagSF*BTAG_eff_R_;
-// to be removed //       //      double LightJeteff = newLightJetSF*BTAG_eff_F_;
-// to be removed // 
-// to be removed //       double jet_phi = jets[j_ind].Phi();
-// to be removed // 
-// to be removed //       double sin_phi = sin(jet_phi*1000000);
-// to be removed //       double seed = abs(static_cast<int>(sin_phi*100000));
-// to be removed // 
-// to be removed //       //Initialize class
-// to be removed //       BTagSFUtil btsfutil(seed);
-// to be removed //     
-// to be removed //       //modify tags
-// to be removed //       btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, /*BTagEff*/ BTAG_eff_R_, newLightJetSF, /*LightJeteff*/ BTAG_eff_F_);
-// to be removed // 
-// to be removed //       if(isTagged) nbtags_taus++;
-// to be removed // 
-// to be removed //     }
-// to be removed //   }
-// to be removed //   if(nbtags_taus > 0 ) nbtag1=true;
-// to be removed //   if(nbtags_taus > 1)  nbtag2=true;
-// to be removed //   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed //   //cout<<endl<<"tau dilepton event analysis H"<<endl;
-// to be removed //   //taus ////////////////////////////////////////////
-// to be removed //   bool taucut(false);
-// to be removed //   if( t_afterLeptonRemoval.size()== 1 ) taucut =true;
-// to be removed // 
-// to be removed //   int numbProngs(0);
-// to be removed //   double tauP(0),tauE,r(0);
-// to be removed //   tauR_ = -1;
-// to be removed // 
-// to be removed //   if( taucut ){ 
-// to be removed //     numbProngs = GetNumbProngs(taus[tau_i]);
-// to be removed //     tauP = taus[tau_i][16];  // lead charged hadron P
-// to be removed //     tauE = taus[tau_i].E();  // tau energy
-// to be removed //     if(tauE){ r= tauP/tauE; tauR_ = r;} // tau polarization
-// to be removed //     
-// to be removed //   }
-// to be removed //   ///////////////////////////////////////////////////
-// to be removed //    
-// to be removed // 
-// to be removed //   //cout<<endl<<"tau dilepton event analysis I"<<endl;
-// to be removed //   //Opposite sign //////////////////////////////////
-// to be removed //   bool oscut(false);
-// to be removed //   if( lepton_charge * tau_charge < 0 ) oscut = true; 
-// to be removed //   if(oscut) is_os_ = 1.;
-// to be removed //   //////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed //   // 1 btag option ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   if( nbtag1 ) {
-// to be removed //     for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    DIL_BTAG1_STEP2, w_); 
-// to be removed //     if (terr){
-// to be removed //       for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_BTAG1_STEP2, errorOnEff);  
-// to be removed //       if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_BTAG1_STEP2,tauDilCh,errorOnEff); }
-// to be removed //     }
-// to be removed //     if( myMCMon){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_BTAG1_STEP2,tauDilCh,w_); } 
-// to be removed //     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"1 btag",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
-// to be removed //   }
-// to be removed //   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed //   // TAU ID selection step //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //   if(nbtag1 && taucut){
-// to be removed //     for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),    DIL_TAU_STEP2,w_);  
-// to be removed //     if (terr){
-// to be removed //       for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_TAU_STEP2, errorOnEff); 
-// to be removed //       if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_TAU_STEP2,tauDilCh,errorOnEff); }
-// to be removed //     }
-// to be removed // 
-// to be removed //     if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_TAU_STEP2,tauDilCh,w_); }
-// to be removed //     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"1 Tau",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
-// to be removed // 
-// to be removed //     
-// to be removed //     for(size_t itag=0; itag<evTags.size(); itag++){ 
-// to be removed //       //Build Tree quantites based on tau jet 
-// to be removed //       PhysicsObject tauJet; 
-// to be removed //       double tauJetPt  = (*tau_obj)[7];
-// to be removed //       double tauJetEta = (*tau_obj)[8];
-// to be removed //       double tauJetPhi = (*tau_obj)[9];
-// to be removed //       tauJet.SetPtEtaPhiE(tauJetPt,tauJetEta,tauJetPhi,tauJetPt);
-// to be removed //       tauJetPt =  getJetPt( tauJet, junc, 0, jes_); //correct pt
-// to be removed //       tauJet.SetPtEtaPhiE(tauJetPt,tauJetEta,tauJetPhi,tauJetPt);
-// to be removed //       double tauJetRadius(0); //Warning this needs to be changed (not needed)
-// to be removed //       TString treeOption("Selected"); treeOption += add;
-// to be removed //       fillTauDileptonObjTree(ev,treeOption,evTags[itag],junc,mets[0],tauDilCh,TString("1 Tau"),lep_obj,tauJetRadius, tau_obj, &(taus[tau_i]), j_final, jets, jerFactors, metValue,nbtags_taus);
-// to be removed //     }
-// to be removed //   }
-// to be removed //   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed //    // SPY events for the w+jet and ttbar other contribution//////////////////////////////////////////////
-// to be removed //    //if(  (!applybtagweight_  && nbtag1 && taucut ) ||  (applybtagweight_ && taucut )  ){
-// to be removed //    //    if(jes_== 0 && unc_== 0 && jer_== 0 && btagunc_==0 && pu_ == NOPU ) listOfReaders_[0]->SpyEvent();
-// to be removed //    //}
-// to be removed //    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed //   if(  nbtag1 && taucut && oscut ){
-// to be removed // 
-// to be removed //     for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),DIL_OS_STEP2,w_);
-// to be removed //     if (terr){
-// to be removed //       for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_OS_STEP2, errorOnEff);
-// to be removed //       if( myMCMon ){ mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_OS_STEP2,tauDilCh,errorOnEff); }
-// to be removed //     }
-// to be removed // 
-// to be removed //     if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_OS_STEP2,tauDilCh,w_); }
-// to be removed //     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"OS",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
-// to be removed // 
-// to be removed //     //SPY AFTER TAU ID AND OS /////////////////////////////////////////////////////////////////////////
-// to be removed //     //if(jes_== 0 && unc_== 0 && jer_== 0 && btagunc_==0 && pu_ == NOPU ) listOfReaders_[0]->SpyEvent();
-// to be removed //     ///////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed //    
-// to be removed //     // PDF Uncertainties ////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //     // fill weighted events and reset selected events vector weightsMS Emeri
-// to be removed //     if( !isData_ && pdfweights_ && !sys_){
-// to be removed //       TVectorD * classifMC(0);
-// to be removed //       //PDFSelectedEvents_ += (w_); 
-// to be removed //       PDFSelectedEvents_ += 1.;
-// to be removed //       event::MiniEvent_t *evMC = evRMC_->GetNewMiniEvent(i_,"mc");  if( evMC == 0 ){ cout<<"\n empty event"<<endl; return;}
-// to be removed //       classifMC = (TVectorD *)evMC->eventClassif->At(0);
-// to be removed //   
-// to be removed //       for(int i=14; i<classifMC->GetNoElements();i++ ){
-// to be removed //         cout.precision(3);
-// to be removed //         myWeights_[i-14] += (*classifMC)[i]/(*classifMC)[14];        
-// to be removed //         cout<<endl<<" sel. Evnt :"<<i_<<", (i-14) = "<<(i-14)<<" w : "<<(*classifMC)[i]<<" rel w : "<<((*classifMC)[i]/(*classifMC)[i-14])<<" total w : "<<myWeights_[i-14];
-// to be removed //         //weightedPDFSelectedEvents_[i-6]  += ( ( (*classifMC)[i] ) * w_ * w1b_ ); weighted2PDFSelectedEvents_[i-6] += ( ( (*classifMC)[i] ) * w_ )*( ((*classifMC)[i])*w_);
-// to be removed //         weightedPDFSelectedEvents_[i-14]  += (*classifMC)[i] ;  weighted2PDFSelectedEvents_[i-14] += ( (*classifMC)[i] ) * ( ( *classifMC)[i] );
-// to be removed //       }
-// to be removed // 
-// to be removed //     } 
-// to be removed //     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed // 
-// to be removed //     // Polarization //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed //     if( numbProngs==1 && r > 0.7 ){
-// to be removed //       for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),DIL_R_STEP2,w_);
-// to be removed //       if (terr){
-// to be removed //         for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_R_STEP2, errorOnEff);
-// to be removed //         if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_OS_STEP2,tauDilCh,errorOnEff); }
-// to be removed //       }
-// to be removed //       if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_R_STEP2,tauDilCh,w_); }
-// to be removed //       fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"R",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
-// to be removed //     }
-// to be removed //     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // 
-// to be removed //   }
-// to be removed // 
-// to be removed //   
-// to be removed //   if( taucut && oscut && nbtag2 ){
-// to be removed //     for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(evYields,evTags[itag]+TString(" yields"),DIL_BTAG2_STEP2,w_); 
-// to be removed //     if (terr){
-// to be removed //       for(size_t itag=0; itag<evTags.size(); itag++) mon.fillHisto(triggErr,evTags[itag]+TString(" yields"),DIL_BTAG2_STEP2, errorOnEff); 
-// to be removed //        if( myMCMon ){  mcmon.fill2DHisto(evYieldsMCTrigger,mcTag,DIL_BTAG2_STEP2,tauDilCh,errorOnEff); }
-// to be removed //     }
-// to be removed //     if( myMCMon ){ mcmon.fill2DHisto(evYieldsMC,mcTag,DIL_BTAG2_STEP2,tauDilCh,w_); } 
-// to be removed //     fillTauDileptonObjHistograms(junc,v,mets[0],tauDilCh,myKey,"2 btag",m_init,muons,e_init,electrons,t_afterLeptonRemoval,taus,j_final,jets,jerFactors,metValue,nbtags_taus);
-// to be removed //   }
-// to be removed // 
-// to be removed // 
-// to be removed //   //optimization ////////////////////////////////////////////////////////////////
-// to be removed //   /*
-// to be removed //   int cutIndex;
-// to be removed //   for(uint i=0;i<5;i++){ //index running on tau pt
-// to be removed //     for(uint j=0;j<5;j++){
-// to be removed //       double metThreshold   = 30 + i*5;
-// to be removed //       double tauPtThreshold = 20 + j*5;
-// to be removed //       int index = i + 5*j;
-// to be removed //       bool passMet(false);
-// to be removed //       bool passTauPt(false);
-// to be removed // 
-// to be removed //       if( metValue > metThreshold   ){ passMet   = true; }
-// to be removed //       if( tau_pt   > tauPtThreshold ){ passTauPt = true; }
-// to be removed // 
-// to be removed //       if( passMet  && nbtag1 && passTauPt && oscut ){ 
-// to be removed //         for(size_t itag=0; itag<evTags.size(); itag++){
-// to be removed //           debmon.fillHisto("optSelection",evTags[itag]+TString(" debug"),index,w_);
-// to be removed //         }
-// to be removed //       }
-// to be removed //     }
-// to be removed //   }
-// to be removed //    */
-// to be removed //   ////////////////////////////////////////////////////////////////////////////////
-// to be removed // 
-// to be removed // }
-// to be removed // 
-// to be removed // 
 
 void CutflowAnalyzer::fillTauDileptonObjTree(
   event::MiniEvent_t *ev,
   TString qualifier, // Selected or DataDriven
   TString tag,
   JetCorrectionUncertainty * junc,
-  PhysicsObject & metObj ,TString key, TString step , PhysicsObject * lepton, double tauJetRadius, PhysicsObject * tauJet, 
-  PhysicsObject* theTau,
+  PhysicsObject & metObj ,TString key, TString step , PhysicsObject * lepton, double tauJetRadius, PhysicsObject * tauJet,
   vector<int> & j_v, vector<PhysicsObject> & jets, vector<double> & jerFactors, double met, int nbtags_taus
 ){
 
@@ -2512,16 +3853,95 @@ void CutflowAnalyzer::fillTauDileptonObjTree(
 
   int jmul = j_v.size();
 
+  PhysicsObject hptbjet; double ptbjet(-999.);// highest-pt bjet and its pt
+  PhysicsObject pt2bjet; double p2bjet(-999.);// 2nd highest-pt bjet and its pt
+  PhysicsObject hptnonb; double ptnonb(-999.);// highest-pt non-b and its pt
+  PhysicsObject btag1st, btag2nd;
+  double csv1st(-999.), csv2nd(-999.); // b-tags ranked through CSV
+
+
+  int nonbmul(0);    
   // for data driven produced in w+jets we should also compute the number of bjets
   if(qualifier.Contains("Data")){
     nbtags_taus = 0;
     for(uint j=0; j<j_v.size(); ++j){  
-      int j_ind = j_v[j]; 
+      int j_ind = j_v[j];
+      
       double btagvalue = jets[j_ind][BTAGIND_] ;
-      if( btagvalue>BTAG_CUT_){nbtags_taus++;} 
+      if( btagvalue>BTAG_CUT_)	nbtags_taus++; 
     }
   }
-  ////////////////////////////////////////////////////////////////////////////////
+  
+
+  for(uint j=0; j<j_v.size(); ++j){  
+    int j_ind = j_v[j]; double j_pt = jets[j_ind].Pt();
+    
+    if( ! isData_) j_pt = getJetPt( jets[j_ind], junc, jerFactors[j_ind], jes_);
+    else           j_pt = GetJetResidualPt(jets[j_ind]);
+    
+    double btagvalue = jets[j_ind][BTAGIND_] ;
+    if( btagvalue>BTAG_CUT_){
+      //      nbtags_taus++; 
+      if(j_pt>ptbjet){ // Fill ptbjet with the pt
+	hptbjet = jets[j_ind]; ptbjet=j_pt;
+	pt2bjet = hptbjet; p2bjet=ptbjet;
+      } else if (j_pt> p2bjet) {
+	pt2bjet = jets[j_ind]; p2bjet=j_pt;	  
+      }
+    }
+    else {  //if( btagvalue < BTAG_CUT_){
+      nonbmul++;
+      if(j_pt>ptnonb){ // Fill ptnonb with the pt
+	hptnonb = jets[j_ind];
+	ptnonb=j_pt;
+      }
+    }
+    
+    if ( btagvalue > csv1st ) {
+      csv2nd = csv1st;  csv1st = btagvalue; btag2nd = btag1st; btag1st = jets[j_ind];
+    } else if ( btagvalue > csv2nd ) {
+      csv2nd = btagvalue; btag2nd = jets[j_ind];      
+    }
+    
+  }
+  
+  double m_tbj(-999.), m_tnb(-999.), m_tcsv1(-999.), m_tcsv2(-999.);
+  double m_lbj(-999.), m_lnb(-999.), m_lcsv1(-999.), m_lcsv2(-999.);
+  // Tau-bjet - leading non-bjet invariant mass ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  double minm_tbj_tnb(-999.), maxm_tbj_tnb(-999.);
+  double minm_lbj_lnb(-999.), maxm_lbj_lnb(-999.);
+  TLorentzVector v_tnb, v_lnb;
+  
+  TLorentzVector v_tbj(*tauJet+hptbjet); m_tbj = v_tbj.M();
+  TLorentzVector v_lbj(*lepton+hptbjet); m_lbj = v_lbj.M();
+    
+  if (nonbmul) { v_tnb = *tauJet+hptnonb; v_lnb = *lepton+hptnonb; }
+  else { v_tnb = *tauJet+pt2bjet; v_lnb = *lepton+pt2bjet; }
+  m_tnb = v_tnb.M(); m_lnb = v_lnb.M();
+  
+  if (m_tbj > m_tnb) { maxm_tbj_tnb = m_tbj; minm_tbj_tnb = m_tnb; }
+  else { minm_tbj_tnb = m_tbj; maxm_tbj_tnb = m_tnb; }
+
+  if (m_lbj > m_lnb) { maxm_lbj_lnb = m_lbj; minm_lbj_lnb = m_lnb; }
+  else { minm_lbj_lnb = m_lbj; maxm_lbj_lnb = m_lnb; }
+
+  TLorentzVector v_t1stb(*tauJet+btag1st); m_tcsv1 = v_t1stb.M();
+  TLorentzVector v_l1stb(*lepton+btag1st); m_lcsv1 = v_l1stb.M();
+
+  TLorentzVector v_t2ndb, v_l2ndb;
+  if (csv2nd >= 0) { v_t2ndb = *tauJet+btag2nd; v_l2ndb = *lepton+btag2nd; }
+  else { v_t2ndb = *tauJet+hptnonb; v_l2ndb = *lepton+btag2nd; }
+
+  m_tcsv2 = v_t2ndb.M(); m_lcsv2 = v_l2ndb.M();
+
+  double minm_tb1_tb2(-999.), maxm_tb1_tb2(-999.), minm_lb1_lb2(-999.), maxm_lb1_lb2(-999.);
+
+  if (m_tcsv1 > m_tcsv2) { maxm_tb1_tb2 = m_tcsv1; minm_tb1_tb2 = m_tcsv2; }
+  else { minm_tb1_tb2 = m_tcsv1; maxm_tb1_tb2 = m_tcsv2; }
+
+  if (m_lcsv1 > m_lcsv2) { maxm_lb1_lb2 = m_lcsv1; minm_lb1_lb2 = m_lcsv2; }
+  else { minm_lb1_lb2 = m_lcsv1; maxm_lb1_lb2 = m_lcsv2; }
+
 
   //HTratio
   double htssm_(0.), htosm_(0.), htratiom_(0.);
@@ -2544,6 +3964,7 @@ void CutflowAnalyzer::fillTauDileptonObjTree(
 
 
 
+
   // get tree ///////////////////////////////////////////////////////////////////////////////////////////////////////////
   // TODO : on multiple tau algos add key to begin of string) ///////////////////////////////////////////////////////////
   TString myStr;
@@ -2563,33 +3984,22 @@ void CutflowAnalyzer::fillTauDileptonObjTree(
 
   //tau Info ///////////////////////////////////////////////////////////
   double tauJetPt              = TMath::Abs(tauJet->Pt()); // Taujetpt corrected at source
-  double tauJetEta             = TMath::Abs(tauJet->Eta());
+  double tauJetEta             = tauJet->Eta();
   double deltaPhiTauJetMET     = TMath::Abs( tauJet->DeltaPhi( metObj ));
+
+  mt_tau_met            = sqrt(  2*tauJetPt*met*(1-cos(deltaPhiTauJetMET))  );
   //////////////////////////////////////////////////////////////////////
   
-  // theTau info ///////////////////////////////////////////////////////
-  double /* unused: tauR(-1),  mT(-1),*/ mt_max(-1), mt_min(-1); // Default values
-  // FIXME: tauR
-  if( !(theTau==NULL)){
-
-    // unused:     if(theTau->E())
-    // unused:       tauR =  (*theTau)[16] / theTau->E();
-    
-    // DEBUG:    if(tauR != tauR_) cout << "WARNING: local rTau = " << tauR << ", global rTau = " << tauR_ << endl;
-    
-    double mTl = sqrt( 2* lepton->Pt() * met * (1- cos( lepton->DeltaPhi(metObj) ) ) );
-    double mTt = sqrt( 2* theTau->Pt() * met * (1- cos( theTau->DeltaPhi(metObj) ) ) );
-  
-    if(mTt>=mTl){ mt_max=mTt;mt_min=mTl; }
-    else {        mt_max= mTl; mt_min = mTt;}
-  }
-  //////////////////////////////////////////////////////////////////////
-
   // lepton info ////////////////////////////////////////////////////
   double leptonPt  = TMath::Abs( lepton->Pt()); 
   double leptonEta = TMath::Abs( lepton->Eta());
   double deltaPhiLeptonMET = TMath::Abs( lepton->DeltaPhi( metObj ) );
+
+  mt_lep_met            = sqrt(  2*leptonPt*met*(1-cos(deltaPhiLeptonMET))  );
   ///////////////////////////////////////////////////////////////////
+
+  if(mt_tau_met>=mt_lep_met) { maxmtlet_=mt_tau_met; minmtlet_=mt_lep_met;  }
+  else          { maxmtlet_=mt_lep_met; minmtlet_=mt_tau_met;  }
 
 
   //deal with evt number
@@ -2614,11 +4024,6 @@ void CutflowAnalyzer::fillTauDileptonObjTree(
   //deal with tauR
   TBranch * tRB = t->GetBranch("rc_t");  Double_t * tR = (Double_t *) tRB->GetAddress();  *tR  = tauR_;
   
-  // deal with transverse mass
-  TBranch* tMtMinB = t->GetBranch("mt_min"); Double_t* tMtMin = (Double_t*) tMtMinB->GetAddress(); *tMtMin = mt_min;
-  TBranch* tMtMaxB = t->GetBranch("mt_max"); Double_t* tMtMax = (Double_t*) tMtMaxB->GetAddress(); *tMtMax = mt_max;
-
-
   //deal with leptonPt
   TBranch * lPtB = t->GetBranch("pt_l");        Double_t * lPt = (Double_t *) lPtB->GetAddress();         *lPt   = leptonPt;
 
@@ -2642,8 +4047,29 @@ void CutflowAnalyzer::fillTauDileptonObjTree(
   //bjet multiplicity
   TBranch * numb_bJetsB = t->GetBranch("btagmultiplicity_j");  Double_t *  numb_bJets = (Double_t *) numb_bJetsB->GetAddress();  *numb_bJets  = nbtags_taus;  
 
-  // HT ratio
-  TBranch* htratioB = t->GetBranch("htratio"); Double_t* htratio = (Double_t*) htratioB->GetAddress(); *htratio=htratiom_;
+  //deal with Transverse Masses
+  TBranch * mttaumetB = t->GetBranch("mttaumet");  Double_t * mttaumet = (Double_t *) mttaumetB->GetAddress();  *mttaumet  = mt_tau_met;
+  TBranch * mtlepmetB = t->GetBranch("mtlepmet");  Double_t * mtlepmet = (Double_t *) mtlepmetB->GetAddress();  *mtlepmet  = mt_lep_met;
+
+  //deal with the max Transverse Mass
+  TBranch * mtmaxB = t->GetBranch("maxmtlet");  Double_t * mtmax = (Double_t *) mtmaxB->GetAddress();  *mtmax  = maxmtlet_;
+
+  //deal with the min Transverse Mass
+  TBranch * mtminB = t->GetBranch("minmtlet");  Double_t * mtmin = (Double_t *) mtminB->GetAddress();  *mtmin  = minmtlet_;
+  
+  //deal with the HTRatio
+  TBranch * htratioB = t->GetBranch("htratio"); Double_t * htratio = (Double_t *) htratioB->GetAddress(); *htratio = htratiom_;
+
+
+  //deal Min{Masses} to check for EndPoint
+  TBranch * minthbthnbB = t->GetBranch("minthbthnb");  Double_t * minthbthnb = (Double_t *) minthbthnbB->GetAddress();  *minthbthnb  = minm_tbj_tnb;
+  TBranch * mintbt1bt2B = t->GetBranch("mintbt1bt2");  Double_t * mintbt1bt2 = (Double_t *) mintbt1bt2B->GetAddress();  *mintbt1bt2  = minm_tb1_tb2;
+
+
+  //deal Min{Masses} to check for EndPoint
+  TBranch * minlhbthnbB = t->GetBranch("minlhbthnb");  Double_t * minlhbthnb = (Double_t *) minlhbthnbB->GetAddress();  *minlhbthnb  = minm_lbj_lnb;
+  TBranch * minlbt1bt2B = t->GetBranch("minlbt1bt2");  Double_t * minlbt1bt2 = (Double_t *) minlbt1bt2B->GetAddress();  *minlbt1bt2  = minm_lb1_lb2;
+
 
   
   //tree multiplicity
@@ -2665,7 +4091,7 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   int btagscorrected// = 0
 
 ){
-  //  std::cout<<"DEBUG: start event " << i_ << std::endl;
+ 
   if(sys_ ) return;  
 
   TString extra1(key); extra1 += TString(" lep_tau ");
@@ -2702,14 +4128,20 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   // invariant mass between leading and next to leading jet
   // btag value
   // btag
-  double jet1(0), jet2(0), jet3(0); 
+  double jet1(0), jet2(0), jet3(0);
   double jeta1(0), jeta2(0), jeta3(0);
   double jphi1(0), jphi2(0), jphi3(0);
+  double jet1_bot(-999.), jet2_bot(-999.), jet3_bot(-999.);
 
   int jet1_ind(-1), jet2_ind(-1), jet3_ind(-1);
-  int btagmul(0);
+
+  int btagmul(0), nonbmul(0);
   
-  PhysicsObject hptbjet; double ptbjet(0);// highest-pt bjet and its pt
+  PhysicsObject hptbjet; double ptbjet(-999.);// highest-pt bjet and its pt
+  PhysicsObject pt2bjet; double p2bjet(-999.);// 2nd highest-pt bjet and its pt
+  PhysicsObject hptnonb; double ptnonb(-999.);// highest-pt non-b and its pt
+  PhysicsObject btag1st, btag2nd;
+  double csv1st(-999.), csv2nd(-999.); // b-tags ranked through CSV
   
 
   for( size_t j=0; j != j_v.size() ; ++j ){ 
@@ -2722,16 +4154,23 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
     if     ( j_pt > jet1 ){
       jet3=jet2; jeta3=jeta2; jphi3=jphi2; jet3_ind=jet2_ind; 
       jet2=jet1; jeta2=jeta1; jphi2=jphi1; jet2_ind=jet1_ind; 
-      jet1=j_pt; jeta1=j_eta; jphi1=j_phi; jet1_ind = ind; 
+      jet1=j_pt; jeta1=j_eta; jphi1=j_phi; jet1_ind = ind; jet1_bot = btag;  
     } // leading jet
     else if( j_pt > jet2 ){
       jet3=jet2; jeta3=jeta2; jphi3=jphi2; jet3_ind=jet2_ind;
-      jet2=j_pt; jeta2=j_eta; jphi2=j_phi; jet2_ind=ind;
+      jet2=j_pt; jeta2=j_eta; jphi2=j_phi; jet2_ind=ind; jet2_bot = btag;
     } // next leading jet
     else if( j_pt > jet3 ){ 
-      jet3=j_pt; jeta3=j_eta; jphi3=j_phi; jet3_ind=ind;   
+      jet3=j_pt; jeta3=j_eta; jphi3=j_phi; jet3_ind=ind; jet3_bot = btag;
     } // next to next to leading jet
     mon.fillHisto(TString("pt_j"),extra1+step, j_pt,w_);  mon.fillHisto(TString("pt_j"), extra2+step, j_pt,w_);
+
+
+    if ( btag > csv1st ) {
+      csv2nd = csv1st;  csv1st = btag; btag2nd = btag1st; btag1st = jets[ind];
+    } else if ( btag > csv2nd ) {
+      csv2nd = btag; btag2nd = jets[ind];      
+    }
 
 //    std::cout << "DEBUG: ";
 //    if(jet1_ind != -1)
@@ -2758,8 +4197,17 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
     if( btag > BTAG_CUT_){
       btagmul++;
       if(j_pt>ptbjet){ // Fill ptbjet with the pt
-	hptbjet = jets[ind];
-	ptbjet=j_pt;
+	hptbjet = jets[ind]; ptbjet=j_pt;
+	pt2bjet = hptbjet; p2bjet=ptbjet;
+      } else if (j_pt> p2bjet) {
+	pt2bjet = jets[ind]; p2bjet=j_pt;
+      }	
+    }
+    if( btag < BTAG_CUT_){
+      nonbmul++;
+      if(j_pt>ptnonb){ // Fill ptnonb with the pt
+	hptnonb = jets[ind];
+	ptnonb=j_pt;
       }
     }
     
@@ -2774,11 +4222,102 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
       if (     pgid == PGID_B       ){ mon.fillHisto("btag_eff_realbs_den", extra1+step, j_pt ,w_); mon.fillHisto("btag_eff_realbs_den", extra2+step, j_pt,w_);   }
       else if( pgid == PGID_UNKNOWN ){ mon.fillHisto("btag_eff_nomatch_den",extra1+step, j_pt ,w_); mon.fillHisto("btag_eff_nomatch_den", extra2+step, j_pt,w_);  } 
       else                           { mon.fillHisto("btag_eff_fakebs_den", extra1+step, j_pt ,w_); mon.fillHisto("btag_eff_fakebs_den", extra2+step, j_pt,w_);   }
-      if(pgid != PGID_B             ){ mon.fillHisto("btag_eff_fakebs2_den",extra1+step, j_pt ,w_); mon.fillHisto("btag_eff_fakebs2_num",  extra2+step, j_pt,w_); } 
+      if(pgid != PGID_B             ){ mon.fillHisto("btag_eff_fakebs2_den",extra1+step, j_pt ,w_); mon.fillHisto("btag_eff_fakebs2_den",  extra2+step, j_pt,w_); } 
 
     }
 
   }
+
+//   cout << "Start of new call" << endl;
+//   cout << "event n." << i_ << endl;
+//   std::cout << setprecision(6) << "csv1st = " << csv1st << ",    csv2nd = " << csv2nd << endl;
+//   std::cout << setprecision(6) << "nonbmul = " << nonbmul << ",    ptnonb = " << ptnonb << endl;
+//   cout << "End of new call" << endl;
+//   cout << "---------------" << endl;
+//   cout << " " << endl;
+//   cout << " " << endl;
+//   cout << " " << endl;
+
+
+  double dphi_nonb1_lep(-999.), dphi_nonb1_met(-999.); //, phi_nonb1(-999.);
+  
+  if ( jet1_bot < BTAG_CUT_ ) {
+    
+    dphi_nonb1_met = jets[jet1_ind].DeltaPhi(metObj);
+    
+    if(evType_ == MUTAU_ && m_v.size()>0 ) dphi_nonb1_lep = jets[jet1_ind].DeltaPhi( muons[m_v[0]] );
+    else if(evType_ == ETAU_ && e_v.size()>0 ) dphi_nonb1_lep = jets[jet1_ind].DeltaPhi( electrons[e_v[0]] );
+ 
+  } else if( jet2_bot < BTAG_CUT_ ) {
+
+    dphi_nonb1_met = jets[jet2_ind].DeltaPhi(metObj);
+    
+    if(evType_ == MUTAU_ && m_v.size()>0 ) dphi_nonb1_lep = jets[jet2_ind].DeltaPhi( muons[m_v[0]] );
+    else if(evType_ == ETAU_ && e_v.size()>0 ) dphi_nonb1_lep = jets[jet2_ind].DeltaPhi( electrons[e_v[0]] );
+
+  } else if( jet3_bot < BTAG_CUT_ ) {
+    
+    dphi_nonb1_met = jets[jet3_ind].DeltaPhi(metObj);
+    
+    if(evType_ == MUTAU_ && m_v.size()>0 ) dphi_nonb1_lep = jets[jet3_ind].DeltaPhi( muons[m_v[0]] );
+    else if(evType_ == ETAU_ && e_v.size()>0 ) dphi_nonb1_lep = jets[jet3_ind].DeltaPhi( electrons[e_v[0]] );
+    
+  } else if( jet1_bot > BTAG_CUT_ && jet2_bot > BTAG_CUT_ && jet2_bot > BTAG_CUT_ ) {
+   
+//     double non1(-999.),non2(-999.),non3(-999.);
+//     int non1_ind(-1), non2_ind(-1), non3_ind(-1);
+//     double non1_bot(-999.), non2_bot(-999.), non3_bot(-999.);
+    
+//     for( size_t m=0; m != j_v.size() ; ++m ){ 
+      
+//       int mnd = j_v[m]; double m_pt = jets[mnd].Pt(); double btag =jets[mnd][BTAGIND_]; 
+//       if( ! isData_) m_pt = getJetPt( jets[mnd], junc, jerFactors[mnd], jes_);
+//       else           m_pt = GetJetResidualPt(jets[mnd]);
+      
+//       if (btag < BTAG_CUT_) {	
+	
+// 	if     ( m_pt > non1 ){
+// 	  non3=non2; non3_ind=non2_ind; 
+// 	  non2=non1; non2_ind=non1_ind; 
+// 	  non1=m_pt; non1_ind = mnd; non1_bot = btag;
+// 	} // leading jet
+// 	else if( m_pt > non2 ){
+// 	  non3=non2; non3_ind=non2_ind;
+// 	  non2=m_pt; non2_ind=mnd; non2_bot = btag;
+// 	} // next leading jet
+// 	else if( m_pt > non3 ){ 
+// 	  non3=m_pt; non3_ind=mnd; non3_bot = btag;
+// 	} // next to next to leading jet	
+//       }
+//     }
+    
+//     cout << setprecision(6) << "pT.non1,non2,non3 =" << non1 << "," << non2 << "," << non3 << endl;
+//     cout << setprecision(6) << "btag.non1,non2,non3 =" << non1_bot << "," << non2_bot << "," << non3_bot << endl;
+
+    dphi_nonb1_met = jets[jet1_ind].DeltaPhi(metObj);
+    
+    if(evType_ == MUTAU_ && m_v.size()>0 ) dphi_nonb1_lep = jets[jet1_ind].DeltaPhi( muons[m_v[0]] );
+    else if(evType_ == ETAU_ && e_v.size()>0 ) dphi_nonb1_lep = jets[jet1_ind].DeltaPhi( electrons[e_v[0]] );
+
+  } 
+  
+//   cout << "Start of new event" << endl;
+//   cout << "event n." << i_ << endl;
+//   cout << setprecision(6) << "btag.jet1,jet2,jet3 =" << jet1_bot << "," << jet2_bot << "," <<jet3_bot << endl;
+//   cout << setprecision(6) << "pT.jet1,jet2,jet3 =" << jet1 << "," << jet2 << "," << jet3 << endl;
+//   cout << setprecision(6) << "dphi_nonb1_met =" << dphi_nonb1_met << endl;
+//   cout << setprecision(6) << "dphi_nonb1_lep =" << dphi_nonb1_lep << endl;
+//   //pT ReWeights
+//   cout << "End of new event" << endl;
+//   cout << "---------------" << endl;
+//   cout << " " << endl;
+//   cout << " " << endl;
+//   cout << " " << endl;
+  
+    mon.fillHisto("Dphi_nonb1_met",extra1+step,dphi_nonb1_met,w_); mon.fillHisto("Dphi_nonb1_met",extra2+step,dphi_nonb1_met,w_);
+    mon.fillHisto("Dphi_nonb1_lep",extra1+step,dphi_nonb1_lep,w_); mon.fillHisto("Dphi_nonb1_lep",extra2+step,dphi_nonb1_lep,w_);
+
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
   // Fill highest pt bjet kinematics ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2791,245 +4330,246 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-  ///////////////////////////////////////////////////////////////////// Study Mjj/Mjjb /////////////////////////////////////////////////////////////////////////////////////
+//   ///////////////////////////////////////////////////////////////////// Study Mjj/Mjjb /////////////////////////////////////////////////////////////////////////////////////
 
-  // FIXME: this piece of code can be heavily optimized
+//   // FIXME: this piece of code can be heavily optimized
 
-  // New strategy:
-  // - Use tau-skimmed collection
-  // - Start from 1 btag
-  // - Start from W mass
-  // - bjets from top should be more energetic (earlier branch of the diagram)
+//   // New strategy:
+//   // - Use tau-skimmed collection
+//   // - Start from 1 btag
+//   // - Start from W mass
+//   // - bjets from top should be more energetic (earlier branch of the diagram)
 
 
-  if(jets.size()>1){ // >=2 jets before tau removal
-    //  pT(jet1)+pT(jet2) (leading pt jets, included taus)
-    mon.fillHisto("sumpt_jj",extra1+step,jets[0].Pt()+jets[1].Pt(),w_); mon.fillHisto("sumpt_jj",extra2+step,jets[0].Pt()+jets[1].Pt(),w_);    
+//   if(jets.size()>1){ // >=2 jets before tau removal
+//     //  pT(jet1)+pT(jet2) (leading pt jets, included taus)
+//     mon.fillHisto("sumpt_jj",extra1+step,jets[0].Pt()+jets[1].Pt(),w_); mon.fillHisto("sumpt_jj",extra2+step,jets[0].Pt()+jets[1].Pt(),w_);    
     
     
-  }
+//   }
   
-  if(j_v.size()>1 && t_v.size() == 1 && m_v.size()==1 ){ // >=2 jets after tau removal, 1 tau, 1 muon
-    // Calculate invariant mass of lep-jet and tau-jet pairs
+//   if(j_v.size()>1 && t_v.size() == 1 && m_v.size()==1 ){ // >=2 jets after tau removal, 1 tau, 1 muon
+//     // Calculate invariant mass of lep-jet and tau-jet pairs
     
-    //    se riesci, prova a calcolare i valori di massa invariante delle coppie lep-jet e tau-jet, e trova l'accoppiamento che ti da la differenza minima di massa (se prendi i 2 jet piu` energetici, per ciascun evento hai almeno 2 combinazioni).
-    //
-    //    Poi, fai la distribuzione delle masse cosi' calcolate. Ovvero, hai 2 entries per evento. Alternativamente, puoi fare la distribuzione solo con il valore minimo (o massimo) delle due masse.
+//     //    se riesci, prova a calcolare i valori di massa invariante delle coppie lep-jet e tau-jet, e trova l'accoppiamento che ti da la differenza minima di massa (se prendi i 2 jet piu` energetici, per ciascun evento hai almeno 2 combinazioni).
+//     //
+//     //    Poi, fai la distribuzione delle masse cosi' calcolate. Ovvero, hai 2 entries per evento. Alternativamente, puoi fare la distribuzione solo con il valore minimo (o massimo) delle due masse.
     
     
-    // lep-jet, tau-jet pairs (using the two most energetic jets)
-    vector<pair<TLorentzVector, TLorentzVector> > withJetPairs;
-    TLorentzVector vLepJet(muons[m_v[0]]); vLepJet += jets[j_v[0]]; 
-    TLorentzVector vTauJet(taus[t_v[0]]);  vTauJet += jets[j_v[1]];
-    withJetPairs.push_back( make_pair(vLepJet, vTauJet) );       
-    vLepJet = muons[m_v[0]]; vLepJet += jets[j_v[1]]; 
-    vTauJet = taus[t_v[0]];  vTauJet += jets[j_v[0]];
-    withJetPairs.push_back( make_pair(vLepJet, vTauJet) );       
+//     // lep-jet, tau-jet pairs (using the two most energetic jets)
+//     vector<pair<TLorentzVector, TLorentzVector> > withJetPairs;
+//     TLorentzVector vLepJet(muons[m_v[0]]); vLepJet += jets[j_v[0]]; 
+//     TLorentzVector vTauJet(taus[t_v[0]]);  vTauJet += jets[j_v[1]];
+//     withJetPairs.push_back( make_pair(vLepJet, vTauJet) );       
+//     vLepJet = muons[m_v[0]]; vLepJet += jets[j_v[1]]; 
+//     vTauJet = taus[t_v[0]];  vTauJet += jets[j_v[0]];
+//     withJetPairs.push_back( make_pair(vLepJet, vTauJet) );       
     
-    // Find the assignment which minimizes the mass difference
-    double minDeltaM(100000000000.);
-    unsigned int chosenPair(10000);
-    for(size_t i=0; i< withJetPairs.size(); ++i){
-      double deltaM = fabs(withJetPairs[i].first.M() - withJetPairs[i].second.M());
-      if(deltaM < minDeltaM){
-	minDeltaM = deltaM;
-	chosenPair = i;
-      }
-    }
+//     // Find the assignment which minimizes the mass difference
+//     double minDeltaM(100000000000.);
+//     unsigned int chosenPair(10000);
+//     for(size_t i=0; i< withJetPairs.size(); ++i){
+//       double deltaM = fabs(withJetPairs[i].first.M() - withJetPairs[i].second.M());
+//       if(deltaM < minDeltaM){
+// 	minDeltaM = deltaM;
+// 	chosenPair = i;
+//       }
+//     }
 
-    if(chosenPair<10000){
-      mon.fillHisto("m_lepj_all"  ,extra1+step,withJetPairs[chosenPair].first.M() ,w_); mon.fillHisto("m_lepj_all"  ,extra2+step,withJetPairs[chosenPair].first.M() ,w_);    
-      mon.fillHisto("m_lepj_all"  ,extra1+step,withJetPairs[chosenPair].second.M(),w_); mon.fillHisto("m_lepj_all"  ,extra2+step,withJetPairs[chosenPair].second.M(),w_);    
+//     if(chosenPair<10000){
+//       mon.fillHisto("m_lepj_all"  ,extra1+step,withJetPairs[chosenPair].first.M() ,w_); mon.fillHisto("m_lepj_all"  ,extra2+step,withJetPairs[chosenPair].first.M() ,w_);    
+//       mon.fillHisto("m_lepj_all"  ,extra1+step,withJetPairs[chosenPair].second.M(),w_); mon.fillHisto("m_lepj_all"  ,extra2+step,withJetPairs[chosenPair].second.M(),w_);    
       
-      if(withJetPairs[chosenPair].first.M() > withJetPairs[chosenPair].second.M()){
-	mon.fillHisto("m_lepj_min"  ,extra1+step,withJetPairs[chosenPair].second.M(),w_); mon.fillHisto("m_lepj_min"  ,extra2+step,withJetPairs[chosenPair].second.M(),w_);    
-	mon.fillHisto("m_lepj_max"  ,extra1+step,withJetPairs[chosenPair].first.M(),w_); mon.fillHisto("m_lepj_max"  ,extra2+step,withJetPairs[chosenPair].first.M(),w_);    
-      } else{
-	mon.fillHisto("m_lepj_min"  ,extra1+step,withJetPairs[chosenPair].first.M(),w_); mon.fillHisto("m_lepj_min"  ,extra2+step,withJetPairs[chosenPair].first.M(),w_);    
-	mon.fillHisto("m_lepj_max"  ,extra1+step,withJetPairs[chosenPair].second.M(),w_); mon.fillHisto("m_lepj_max"  ,extra2+step,withJetPairs[chosenPair].second.M(),w_);    
-      }
+//       if(withJetPairs[chosenPair].first.M() > withJetPairs[chosenPair].second.M()){
+// 	mon.fillHisto("m_lepj_min"  ,extra1+step,withJetPairs[chosenPair].second.M(),w_); mon.fillHisto("m_lepj_min"  ,extra2+step,withJetPairs[chosenPair].second.M(),w_);    
+// 	mon.fillHisto("m_lepj_max"  ,extra1+step,withJetPairs[chosenPair].first.M(),w_); mon.fillHisto("m_lepj_max"  ,extra2+step,withJetPairs[chosenPair].first.M(),w_);    
+//       } else{
+// 	mon.fillHisto("m_lepj_min"  ,extra1+step,withJetPairs[chosenPair].first.M(),w_); mon.fillHisto("m_lepj_min"  ,extra2+step,withJetPairs[chosenPair].first.M(),w_);    
+// 	mon.fillHisto("m_lepj_max"  ,extra1+step,withJetPairs[chosenPair].second.M(),w_); mon.fillHisto("m_lepj_max"  ,extra2+step,withJetPairs[chosenPair].second.M(),w_);    
+//       }
 
-      mon.fillHisto("m_lepj_delta",extra1+step,minDeltaM,w_); mon.fillHisto("m_lepj_delta",extra2+step,minDeltaM,w_);    
+//       mon.fillHisto("m_lepj_delta",extra1+step,minDeltaM,w_); mon.fillHisto("m_lepj_delta",extra2+step,minDeltaM,w_);    
       
-      mon.fill2DHisto(TString("m_lepj_mmj_mtj"  ),extra1+step, withJetPairs[chosenPair].second.M() , withJetPairs[chosenPair].first.M(), w_);  mon.fill2DHisto(TString("m_lepj_mmj_mtj"  ),extra2+step, withJetPairs[chosenPair].second.M() , withJetPairs[chosenPair].first.M() , w_);             
-      mon.fill2DHisto(TString("m_lepj_delta_mtj"),extra1+step, withJetPairs[chosenPair].second.M() , minDeltaM                         , w_);  mon.fill2DHisto(TString("m_lepj_delta_mtj"),extra2+step, withJetPairs[chosenPair].second.M() , minDeltaM                          , w_);             
-    }
+//       mon.fill2DHisto(TString("m_lepj_mmj_mtj"  ),extra1+step, withJetPairs[chosenPair].second.M() , withJetPairs[chosenPair].first.M(), w_);  mon.fill2DHisto(TString("m_lepj_mmj_mtj"  ),extra2+step, withJetPairs[chosenPair].second.M() , withJetPairs[chosenPair].first.M() , w_);             
+//       mon.fill2DHisto(TString("m_lepj_delta_mtj"),extra1+step, withJetPairs[chosenPair].second.M() , minDeltaM                         , w_);  mon.fill2DHisto(TString("m_lepj_delta_mtj"),extra2+step, withJetPairs[chosenPair].second.M() , minDeltaM                          , w_);             
+//     }
 
     
-  }      
+//   }      
   
   
-  if(j_v.size() > 3){ // Minimum requirement: 4 jets.
+//   if(j_v.size() > 3){ // Minimum requirement: 4 jets.
     
-    vector<PhysicsObject> jetsForMass; // Final working collection
+//     vector<PhysicsObject> jetsForMass; // Final working collection
     
-    // Acquire bjets
-    vector<size_t> btagInd;
-    for( size_t j=0; j != j_v.size() ; ++j ){ 
-      size_t ind = j_v[j];
-      if( jets[ind][BTAGIND_] > BTAG_CUT_)
-	btagInd.push_back(ind);
-    }
-    //
+//     // Acquire bjets
+//     vector<size_t> btagInd;
+//     for( size_t j=0; j != j_v.size() ; ++j ){ 
+//       size_t ind = j_v[j];
+//       if( jets[ind][BTAGIND_] > BTAG_CUT_)
+// 	btagInd.push_back(ind);
+//     }
+//     //
     
-    if(btagInd.size() == 1){ // If I have one btag only 
+//     if(btagInd.size() == 1){ // If I have one btag only 
       
-      // Take the btag and the three highest-pt remaining jets
-      jetsForMass.push_back( jets[btagInd[0] ]);
-      for( size_t j=0; j != j_v.size() ; ++j ){ 
-	size_t ind = j_v[j];
-	if( ind==btagInd[0] ) continue;
-	if(jetsForMass.size() < 4) jetsForMass.push_back( jets[ind] );
-      }
-      //
-      if(jetsForMass.size() != 4) cout << "DEBUG: WARNING. btagmult " << btagInd.size() << ", selected " << jetsForMass.size() << " instead of 4 jets." << endl;      
-    } // End if 1btag
-    else if (btagInd.size() >1) { // If I have two ore more btags
+//       // Take the btag and the three highest-pt remaining jets
+//       jetsForMass.push_back( jets[btagInd[0] ]);
+//       for( size_t j=0; j != j_v.size() ; ++j ){ 
+// 	size_t ind = j_v[j];
+// 	if( ind==btagInd[0] ) continue;
+// 	if(jetsForMass.size() < 4) jetsForMass.push_back( jets[ind] );
+//       }
+//       //
+//       if(jetsForMass.size() != 4) cout << "DEBUG: WARNING. btagmult " << btagInd.size() << ", selected " << jetsForMass.size() << " instead of 4 jets." << endl;      
+//     } // End if 1btag
+//     else if (btagInd.size() >1) { // If I have two ore more btags
 
-      // Take the two btags and the two highest-pt non-btags
-      jetsForMass.push_back( jets[btagInd[0] ] );
-      jetsForMass.push_back( jets[btagInd[1] ] );
-      for( size_t j=0; j != j_v.size() ; ++j ){ 
-	size_t ind = j_v[j];
-	if( ind==btagInd[0] || ind==btagInd[1]) continue;
-	if(jetsForMass.size() < 4) jetsForMass.push_back( jets[ind] );
-      }
-      //
+//       // Take the two btags and the two highest-pt non-btags
+//       jetsForMass.push_back( jets[btagInd[0] ] );
+//       jetsForMass.push_back( jets[btagInd[1] ] );
+//       for( size_t j=0; j != j_v.size() ; ++j ){ 
+// 	size_t ind = j_v[j];
+// 	if( ind==btagInd[0] || ind==btagInd[1]) continue;
+// 	if(jetsForMass.size() < 4) jetsForMass.push_back( jets[ind] );
+//       }
+//       //
       
-      if(jetsForMass.size() != 4) cout << "DEBUG: WARNING. btagmult " << btagInd.size() << ", selected " << jetsForMass.size() << " instead of 4 jets." << endl;
-    } // End if >1btag
+//       if(jetsForMass.size() != 4) cout << "DEBUG: WARNING. btagmult " << btagInd.size() << ", selected " << jetsForMass.size() << " instead of 4 jets." << endl;
+//     } // End if >1btag
  
 
     
     
 
-    // Now make the assignments:
-    // unused: size_t chosenbtag(1000);
-    vector<size_t> chosenbtags;
-    vector<size_t> chosenNonbtags;
+//     // Now make the assignments:
+//     size_t chosenbtag(1000);
+//     vector<size_t> chosenbtags;
+//     vector<size_t> chosenNonbtags;
     
 
-    // Assign nonbtags
-    if(btagInd.size() == 1){ // If I have one btag only, I want to take the two non-btags which make mjj closest to mW, and then the btag which make mjjb closest to mTop
+//     // Assign nonbtags
+//     if(btagInd.size() == 1){ // If I have one btag only, I want to take the two non-btags which make mjj closest to mW, and then the btag which make mjjb closest to mTop
 
-      vector<vector<size_t> > comb;
-      vector<double> mjjs;
+//       vector<vector<size_t> > comb;
+//       vector<double> mjjs;
       
-      for(size_t i=0; i<3; ++i){
-	vector<size_t> tempComb;
-	switch(i){
-	case 0:
-	  tempComb.push_back(1); tempComb.push_back(2);
-	  comb.push_back(tempComb);
-	  break;
-	case 1:
-	  tempComb.push_back(1); tempComb.push_back(3);
-	  comb.push_back(tempComb);
-	  break;
-	case 2:
-	  tempComb.push_back(2); tempComb.push_back(3);
-	  comb.push_back(tempComb);
-	  break;
-	default:
-	  cout << "DEBUG: dafuck? Shoulnd't ever be here" << endl;
-	  break;
-	}
-	TLorentzVector vC( jetsForMass[tempComb[0]] ); vC+= jetsForMass[tempComb[1] ]; mjjs.push_back( vC.M() );  // Avoid temporary object allocation  
-      }
+//       for(size_t i=0; i<3; ++i){
+// 	vector<size_t> tempComb;
+// 	switch(i){
+// 	case 0:
+// 	  tempComb.push_back(1); tempComb.push_back(2);
+// 	  comb.push_back(tempComb);
+// 	  break;
+// 	case 1:
+// 	  tempComb.push_back(1); tempComb.push_back(3);
+// 	  comb.push_back(tempComb);
+// 	  break;
+// 	case 2:
+// 	  tempComb.push_back(2); tempComb.push_back(3);
+// 	  comb.push_back(tempComb);
+// 	  break;
+// 	default:
+// 	  cout << "DEBUG: dafuck? Shoulnd't ever be here" << endl;
+// 	  break;
+// 	}
+// 	TLorentzVector vC( jetsForMass[tempComb[0]] ); vC+= jetsForMass[tempComb[1] ]; mjjs.push_back( vC.M() );  // Avoid temporary object allocation  
+//       }
 
-      double chosenmjj = 10000000.;
-      size_t chosenComb = 10;
-      for(size_t i=0; i< mjjs.size(); ++i){ // Select the combination with mass closest to mW  
-	if( fabs(mjjs[i] - 80.385) < fabs(chosenmjj - 80.385) ){ // PDG2012
-	  chosenmjj = mjjs[i];
-	  chosenComb = i;
-	}
-      }
-      // Store the two jets from W
-      chosenNonbtags.push_back(comb[chosenComb][0]);
-      chosenNonbtags.push_back(comb[chosenComb][1]);
-      //
+//       double chosenmjj = 10000000.;
+//       size_t chosenComb = 10;
+//       for(size_t i=0; i< mjjs.size(); ++i){ // Select the combination with mass closest to mW  
+// 	if( fabs(mjjs[i] - 80.385) < fabs(chosenmjj - 80.385) ){ // PDG2012
+// 	  chosenmjj = mjjs[i];
+// 	  chosenComb = i;
+// 	}
+//       }
+//       // Store the two jets from W
+//       chosenNonbtags.push_back(comb[chosenComb][0]);
+//       chosenNonbtags.push_back(comb[chosenComb][1]);
+//       //
      
-      // Now we have to choose the btag. Note that we don't use necessarily the tagged one because it could be from the other leg
-      // unused:       double chosenbtag = 10000000.;
-      double chosenmjjb = 10000000;
-      for(size_t i=0; i<jetsForMass.size(); ++i){
-	if(i==chosenNonbtags[0] || i==chosenNonbtags[1]) continue;
-	chosenbtags.push_back(i);
-	TLorentzVector vC( jetsForMass[chosenNonbtags[0] ] ); vC+= jetsForMass[chosenNonbtags[1] ]; vC+= jetsForMass[i]; // Avoid temporary object allocation  
-	if( fabs(vC.M() - 172.5) < fabs(chosenmjjb - 172.5) ) // Nominal reference value
-	  chosenmjjb = vC.M(); 
-      }
+//       // Now we have to choose the btag. Note that we don't use necessarily the tagged one because it could be from the other leg
+//       double chosenbtag = 10000000.;
+//       double chosenmjjb = 10000000;
+//       for(size_t i=0; i<jetsForMass.size(); ++i){
+// 	if(i==chosenNonbtags[0] || i==chosenNonbtags[1]) continue;
+// 	chosenbtags.push_back(i);
+// 	TLorentzVector vC( jetsForMass[chosenNonbtags[0] ] ); vC+= jetsForMass[chosenNonbtags[1] ]; vC+= jetsForMass[i]; // Avoid temporary object allocation  
+// 	if( fabs(vC.M() - 172.5) < fabs(chosenmjjb - 172.5) ) // Nominal reference value
+// 	  chosenmjjb = vC.M(); 
+//       }
       
-      // Plot the masses
-      // chosenmjj
-      // chosenmjjb
-      mon.fillHisto("mjj",extra1+step, chosenmjj,w_ );  mon.fillHisto("mjj", extra2+step, chosenmjj,w_);                                                                                    
-      mon.fillHisto("mjjb",extra1+step, chosenmjjb,w_ );  mon.fillHisto("mjjb", extra2+step, chosenmjjb,w_);                                                                                
-      mon.fill2DHisto(TString("mjjb_mjj"),extra1+step, chosenmjjb , chosenmjj, w_);  mon.fill2DHisto(TString("mjjb_mjj"),extra2+step, chosenmjjb, chosenmjj, w_);             
+//       // Plot the masses
+//       // chosenmjj
+//       // chosenmjjb
+//       mon.fillHisto("mjj",extra1+step, chosenmjj,w_ );  mon.fillHisto("mjj", extra2+step, chosenmjj,w_);                                                                                    
+//       mon.fillHisto("mjjb",extra1+step, chosenmjjb,w_ );  mon.fillHisto("mjjb", extra2+step, chosenmjjb,w_);                                                                                
+//       mon.fill2DHisto(TString("mjjb_mjj"),extra1+step, chosenmjjb , chosenmjj, w_);  mon.fill2DHisto(TString("mjjb_mjj"),extra2+step, chosenmjjb, chosenmjj, w_);             
                                                  
       
 
-    } // End if 1btag
-    else if (btagInd.size() >1) { // If I have two btags, I want to take the two non-btags and the b which make mjjb closest to mTop
-      chosenNonbtags.push_back(2);
-      chosenNonbtags.push_back(3);
+//     } // End if 1btag
+//     else if (btagInd.size() >1) { // If I have two btags, I want to take the two non-btags and the b which make mjjb closest to mTop
+//       chosenNonbtags.push_back(2);
+//       chosenNonbtags.push_back(3);
       
-      TLorentzVector vW( jetsForMass[chosenNonbtags[0]] ); vW+= jetsForMass[chosenNonbtags[1] ]; 
-      double chosenmjj = vW.M();
+//       TLorentzVector vW( jetsForMass[chosenNonbtags[0]] ); vW+= jetsForMass[chosenNonbtags[1] ]; 
+//       double chosenmjj = vW.M();
 
-      // Now we have to choose the btag. Note that we don't use the tagged one because it could be from the other leg
-      double chosenbtag = 10000000.;
-      double chosenmjjb = 10000000;
-      for(size_t i=0; i<jetsForMass.size(); ++i){
-	if(i==chosenNonbtags[0] || i==chosenNonbtags[1]) continue;
-	chosenbtags.push_back(i);
-	TLorentzVector vC( jetsForMass[chosenNonbtags[0] ] ); vC+= jetsForMass[chosenNonbtags[1] ]; vC+= jetsForMass[i]; // Avoid temporary object allocation  
-	if( fabs(vC.M() - 172.5) < fabs(chosenmjjb - 172.5) ) // Nominal reference value
-	  chosenmjjb = vC.M(); 
-      }
+//       // Now we have to choose the btag. Note that we don't use the tagged one because it could be from the other leg
+//       double chosenbtag = 10000000.;
+//       double chosenmjjb = 10000000;
+//       for(size_t i=0; i<jetsForMass.size(); ++i){
+// 	if(i==chosenNonbtags[0] || i==chosenNonbtags[1]) continue;
+// 	chosenbtags.push_back(i);
+// 	TLorentzVector vC( jetsForMass[chosenNonbtags[0] ] ); vC+= jetsForMass[chosenNonbtags[1] ]; vC+= jetsForMass[i]; // Avoid temporary object allocation  
+// 	if( fabs(vC.M() - 172.5) < fabs(chosenmjjb - 172.5) ) // Nominal reference value
+// 	  chosenmjjb = vC.M(); 
+//       }
       
-      // Plot the masses
-      // chosenmjj
-      // chosenmjjb
-      mon.fillHisto("mjj",extra1+step, chosenmjj,w_ );  mon.fillHisto("mjj", extra2+step, chosenmjj,w_);                                                                                    
-      mon.fillHisto("mjjb",extra1+step, chosenmjjb,w_ );  mon.fillHisto("mjjb", extra2+step, chosenmjjb,w_);                                                                                
-      mon.fill2DHisto(TString("mjjb_mjj"),extra1+step, chosenmjjb , chosenmjj, w_);  mon.fill2DHisto(TString("mjjb_mjj"),extra2+step, chosenmjjb, chosenmjj, w_);             
+//       // Plot the masses
+//       // chosenmjj
+//       // chosenmjjb
+//       mon.fillHisto("mjj",extra1+step, chosenmjj,w_ );  mon.fillHisto("mjj", extra2+step, chosenmjj,w_);                                                                                    
+//       mon.fillHisto("mjjb",extra1+step, chosenmjjb,w_ );  mon.fillHisto("mjjb", extra2+step, chosenmjjb,w_);                                                                                
+//       mon.fill2DHisto(TString("mjjb_mjj"),extra1+step, chosenmjjb , chosenmjj, w_);  mon.fill2DHisto(TString("mjjb_mjj"),extra2+step, chosenmjjb, chosenmjj, w_);             
 
       
-    } // End if >1btag
+//     } // End if >1btag
 
 
-    // Now that we have the two btags (chosenbtags[]) and the two nonbtags (chosenNonbtags[]) we can play
-    /////////
+//     // Now that we have the two btags (chosenbtags[]) and the two nonbtags (chosenNonbtags[]) we can play
+//     /////////
     
 
-    // If we have a tau
+//     // If we have a tau
 
-    // pT(b)+pT(tau)  /////////////////////////////////////////////////////////////////////////////                                                                                                                
-    // This can be done with the main chosen b or with the b which results in a highest sumPt
-    if(t_v.size() == 1){
-      int t_i = t_v[0]; double tauPt = TMath::Abs(taus[t_i].Pt());   /* unused: double deltaPhiWithTau = taus[t_i].DeltaPhi( metObj ); */
-      double chosenSumpt(0.);
-      double chosenmass(0.);
-      for(size_t i=0; i< chosenbtags.size(); ++i){
-	if(chosenSumpt < tauPt+jetsForMass[chosenbtags[i] ].Pt() )
-	  chosenSumpt = tauPt+jetsForMass[chosenbtags[i] ].Pt();
-	TLorentzVector taujv(taus[t_i]); taujv+=jetsForMass[chosenbtags[i] ]; // Avoid temporary object allocation 
-	if(chosenmass < taujv.M())
-	  chosenmass = taujv.M();
-      }
+//     // pT(b)+pT(tau)  /////////////////////////////////////////////////////////////////////////////                                                                                                                
+//     // This can be done with the main chosen b or with the b which results in a highest sumPt
+//     if(t_v.size() == 1){
+//       int t_i = t_v[0]; double tauPt = TMath::Abs(taus[t_i].Pt());     double deltaPhiWithTau = taus[t_i].DeltaPhi( metObj );
       
-      mon.fillHisto("sumpt_taub",extra1+step,chosenSumpt,w_); mon.fillHisto("sumpt_taub",extra2+step,chosenSumpt,w_);
-      mon.fillHisto("m_taub",extra1+step,chosenmass,w_); mon.fillHisto("m_taub",extra2+step,chosenmass,w_);
+//       double chosenSumpt(0.);
+//       double chosenmass(0.);
+//       for(size_t i=0; i< chosenbtags.size(); ++i){
+// 	if(chosenSumpt < tauPt+jetsForMass[chosenbtags[i] ].Pt() )
+// 	  chosenSumpt = tauPt+jetsForMass[chosenbtags[i] ].Pt();
+// 	TLorentzVector taujv(taus[t_i]); taujv+=jetsForMass[chosenbtags[i] ]; // Avoid temporary object allocation 
+// 	if(chosenmass < taujv.M())
+// 	  chosenmass = taujv.M();
+//       }
+      
+//       mon.fillHisto("sumpt_taub",extra1+step,chosenSumpt,w_); mon.fillHisto("sumpt_taub",extra2+step,chosenSumpt,w_);
+//       mon.fillHisto("m_taub",extra1+step,chosenmass,w_); mon.fillHisto("m_taub",extra2+step,chosenmass,w_);
      
 
-    }
-    //
+//     }
+//     //
     
 
     
-  } // End of minimum requirement (4 jets)
+//   } // End of minimum requirement (4 jets)
 
 
 
@@ -3042,25 +4582,6 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   // Fill btag multiplicity  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   mon.fillHisto("btagmultiplicity_j",extra1+step, btagmul,w_);                   mon.fillHisto("btagmultiplicity_j", extra2+step, btagmul,w_);
   mon.fillHisto("corrected_btagmultiplicity_j",extra1+step, btagscorrected,w_);  mon.fillHisto("corrected_btagmultiplicity_j", extra2+step, btagscorrected,w_);   
-
-
-  // Categorized cutflow
-
-  if(btagmul==0) {mon.fillHisto("btagmultiplicity0_j",extra1+step, 0,w_); mon.fillHisto("btagmultiplicity0_j", extra2+step, 0,w_);}
-  if(btagmul==1) {mon.fillHisto("btagmultiplicity1_j",extra1+step, 0,w_); mon.fillHisto("btagmultiplicity1_j", extra2+step, 0,w_);}
-  if(btagmul==2) {mon.fillHisto("btagmultiplicity2_j",extra1+step, 0,w_); mon.fillHisto("btagmultiplicity2_j", extra2+step, 0,w_);}
-  if(btagmul==3) {mon.fillHisto("btagmultiplicity3_j",extra1+step, 0,w_); mon.fillHisto("btagmultiplicity3_j", extra2+step, 0,w_);}
-  if(btagmul==4) {mon.fillHisto("btagmultiplicity4_j",extra1+step, 0,w_); mon.fillHisto("btagmultiplicity4_j", extra2+step, 0,w_);}
-  if(btagmul>=5) {mon.fillHisto("btagmultiplicity5_j",extra1+step, 0,w_); mon.fillHisto("btagmultiplicity5_j", extra2+step, 0,w_);}
-
-
-  if(btagscorrected==0){ mon.fillHisto("corrected_btagmultiplicity0_j",extra1+step, 0,w_); mon.fillHisto("corrected_btagmultiplicity0_j", extra2+step, 0,w_);}
-  if(btagscorrected==1){ mon.fillHisto("corrected_btagmultiplicity1_j",extra1+step, 0,w_); mon.fillHisto("corrected_btagmultiplicity1_j", extra2+step, 0,w_);}
-  if(btagscorrected==2){ mon.fillHisto("corrected_btagmultiplicity2_j",extra1+step, 0,w_); mon.fillHisto("corrected_btagmultiplicity2_j", extra2+step, 0,w_);}
-  if(btagscorrected==3){ mon.fillHisto("corrected_btagmultiplicity3_j",extra1+step, 0,w_); mon.fillHisto("corrected_btagmultiplicity3_j", extra2+step, 0,w_);}
-  if(btagscorrected==4){ mon.fillHisto("corrected_btagmultiplicity4_j",extra1+step, 0,w_); mon.fillHisto("corrected_btagmultiplicity4_j", extra2+step, 0,w_);}
-  if(btagscorrected>=5){ mon.fillHisto("corrected_btagmultiplicity5_j",extra1+step, 0,w_); mon.fillHisto("corrected_btagmultiplicity5_j", extra2+step, 0,w_);}
-
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -3096,8 +4617,60 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
     mon.fillHisto(TString("m_mubj"),extra1+step, m_lbj,w_); mon.fillHisto(TString("m_mubj"),extra2+step, m_lbj,w_); 
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ 
+  double m_tbj(-999.), m_tnb(-999.), m_tcsv1(-999.), m_tcsv2(-999.);
+  // Tau-bjet - leading non-bjet invariant mass ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if(btagmul && t_v.size()>0){
+    double minm_tbj_tnb(-999.), maxm_tbj_tnb(-999.);
+    TLorentzVector v_tnb;
+
+    TLorentzVector v_tbj(taus[t_v[0] ]+hptbjet); m_tbj = v_tbj.M();
+    mon.fillHisto(TString("m_taubj"),extra1+step, m_tbj,w_); mon.fillHisto(TString("m_taubj"),extra2+step, m_tbj,w_);
+    
+    if (nonbmul) { v_tnb = taus[t_v[0] ]+hptnonb; }
+    else { v_tnb = taus[t_v[0] ]+pt2bjet; }
+    m_tnb = v_tnb.M();
+    mon.fillHisto(TString("m_taunb"),extra1+step, m_tnb,w_); mon.fillHisto(TString("m_taunb"),extra2+step, m_tnb,w_);  
+
+    if (m_tbj > m_tnb) { maxm_tbj_tnb = m_tbj; minm_tbj_tnb = m_tnb; }
+    else { minm_tbj_tnb = m_tbj; maxm_tbj_tnb = m_tnb; }
+
+    mon.fillHisto(TString("maxm_tbj_tnb"),extra1+step,maxm_tbj_tnb,w_); mon.fillHisto(TString("maxm_tbj_tnb"),extra2+step,maxm_tbj_tnb,w_); 
+    mon.fillHisto(TString("minm_tbj_tnb"),extra1+step,minm_tbj_tnb,w_); mon.fillHisto(TString("minm_tbj_tnb"),extra2+step,minm_tbj_tnb,w_); 
+
+    mon.fill2DHisto(TString("mtaunb_mtaubj"),extra1+step,m_tbj,m_tnb,w_); mon.fill2DHisto(TString("mtaunb_mtaubj"),extra2+step,m_tbj,m_tnb,w_); 
+  }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
-  
+
+  // Tau-1st, 2nd CSV ranked b-jets invariant masses ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if(t_v.size()>0){
+    TLorentzVector v_t1stb(taus[t_v[0] ]+btag1st); m_tcsv1 = v_t1stb.M();
+    mon.fillHisto(TString("m_tcsv1"),extra1+step, m_tcsv1,w_); mon.fillHisto(TString("m_tcsv1"),extra2+step, m_tcsv1,w_);
+
+    TLorentzVector v_t2ndb;
+    if (csv2nd >= 0) v_t2ndb = taus[t_v[0] ]+btag2nd;
+    else v_t2ndb = taus[t_v[0] ]+hptnonb;
+
+    m_tcsv2 = v_t2ndb.M();
+    mon.fillHisto(TString("m_tcsv2"),extra1+step, m_tcsv2,w_); mon.fillHisto(TString("m_tcsv2"),extra2+step, m_tcsv2,w_);
+
+    double minm_tb1_tb2(-999.), maxm_tb1_tb2(-999.);
+
+    if (m_tcsv1 > m_tcsv2) { maxm_tb1_tb2 = m_tcsv1; minm_tb1_tb2 = m_tcsv2; }
+    else { minm_tb1_tb2 = m_tcsv1; maxm_tb1_tb2 = m_tcsv2; }
+
+    mon.fillHisto(TString("maxm_tb1_tb2"),extra1+step,maxm_tb1_tb2,w_); mon.fillHisto(TString("maxm_tb1_tb2"),extra2+step,maxm_tb1_tb2,w_); 
+    mon.fillHisto(TString("minm_tb1_tb2"),extra1+step,minm_tb1_tb2,w_); mon.fillHisto(TString("minm_tb1_tb2"),extra2+step,minm_tb1_tb2,w_); 
+
+    mon.fill2DHisto(TString("mtaub1_mtaub2"),extra1+step,m_tcsv1,m_tcsv2,w_); mon.fill2DHisto(TString("mtaub1_mtaub2"),extra2+step,m_tcsv1,m_tcsv2,w_);
+
+
+
+  }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
   // lepton-jet mass (lead, sublead, subsublead jet) //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if(e_v.size()>0){ 
@@ -3351,7 +4924,7 @@ void CutflowAnalyzer::fillTauDileptonObjHistograms(
   //Weights
   mon.fillHisto( "weights",extra1+step,w_); mon.fillHisto( "weights",extra2+step,w_);
 
-  //  std::cout<<"DEBUG: end event "<< i_ << std::endl;
+
 }
 
 
@@ -3369,73 +4942,79 @@ void CutflowAnalyzer::fillDebugHistograms(
   if(evType_ == MUTAU_){ extra2 += TString(" m_tau debug"); } else{ extra2 += TString(" e_tau debug"); } 
 
   SelectionMonitor * m_ = tauDileptonDebugMons_[key]; SelectionMonitor & mon = *m_;
- 
 
-  // fill debug info in jets //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  for(uint j=0;j!=j_v.size();++j){ 
-    int ind = j_v[j];
- 
-    mon.fillHisto("jetChargedHadronEnergyFraction", extra1, jets[ind][17] ,w_);             mon.fillHisto("jetChargedHadronEnergyFraction", extra2, jets[ind][17],w_);
-    mon.fillHisto("jetNeutralHadronEnergyFraction", extra1, jets[ind][18] ,w_);             mon.fillHisto("jetNeutralHadronEnergyFraction", extra2, jets[ind][18],w_);
-    mon.fillHisto("jetNeutralHadronEnergyFractionIncludingHF", extra1, jets[ind][19],w_ );  mon.fillHisto("jetNeutralHadronEnergyFractionIncludingHF", extra2, jets[ind][19],w_);
-    mon.fillHisto("jetChargedEmEnergyFraction", extra1, jets[ind][20] ,w_);                 mon.fillHisto("jetChargedEmEnergyFraction", extra2, jets[ind][20],w_);
-    mon.fillHisto("jetNeutralEmEnergyFraction", extra1, jets[ind][21] ,w_);                 mon.fillHisto("jetNeutralEmEnergyFraction", extra2, jets[ind][21],w_);
-    mon.fillHisto("jetChargedMultiplicity",     extra1, jets[ind][22] ,w_);                 mon.fillHisto("jetChargedMultiplicity",     extra2, jets[ind][22],w_);
+  //  cout << setprecision(6) << "topptunc: " <<  pTrew_ <<endl; 
+  //  double wfill_ = 13.3*pTrew_/13.3;
 
-    //see if this is mc and do the mathcing
-    bool matched(false);
+  mon.fillHisto("ttbarWeights", extra1, 1., pTrew_);  mon.fillHisto("ttbarWeights", extra2, 1., pTrew_);
+  mon.fillHisto("ttbarWeight2", extra1, 1., pTre2_);  mon.fillHisto("ttbarWeight2", extra2, 1., pTre2_);
+
+//   // fill debug info in jets //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//   for(uint j=0;j!=j_v.size();++j){ 
+//     int ind = j_v[j];
+ 
+//     mon.fillHisto("jetChargedHadronEnergyFraction", extra1, jets[ind][17] ,w_);             mon.fillHisto("jetChargedHadronEnergyFraction", extra2, jets[ind][17],w_);
+//     mon.fillHisto("jetNeutralHadronEnergyFraction", extra1, jets[ind][18] ,w_);             mon.fillHisto("jetNeutralHadronEnergyFraction", extra2, jets[ind][18],w_);
+//     mon.fillHisto("jetNeutralHadronEnergyFractionIncludingHF", extra1, jets[ind][19],w_ );  mon.fillHisto("jetNeutralHadronEnergyFractionIncludingHF", extra2, jets[ind][19],w_);
+//     mon.fillHisto("jetChargedEmEnergyFraction", extra1, jets[ind][20] ,w_);                 mon.fillHisto("jetChargedEmEnergyFraction", extra2, jets[ind][20],w_);
+//     mon.fillHisto("jetNeutralEmEnergyFraction", extra1, jets[ind][21] ,w_);                 mon.fillHisto("jetNeutralEmEnergyFraction", extra2, jets[ind][21],w_);
+//     mon.fillHisto("jetChargedMultiplicity",     extra1, jets[ind][22] ,w_);                 mon.fillHisto("jetChargedMultiplicity",     extra2, jets[ind][22],w_);
+
+//     //see if this is mc and do the mathcing
+//     bool matched(false);
    
-    int jetpgid = TMath::Abs(jets[ind][jetpgid_]);
+//     int jetpgid = TMath::Abs(jets[ind][jetpgid_]);
 
-    if( !isData_ && (jetpgid == PGID_D || jetpgid == PGID_U ||  jetpgid == PGID_S || jetpgid == PGID_C || jetpgid == PGID_B || jetpgid == PGID_G) ){ matched = true;}
+//     if( !isData_ && (jetpgid == PGID_D || jetpgid == PGID_U ||  jetpgid == PGID_S || jetpgid == PGID_C || jetpgid == PGID_B || jetpgid == PGID_G) ){ matched = true;}
 
-    if(isData_|| matched){
-      mon.fillHisto("jetChargedHadronEnergyFractionMatched", extra1, jets[ind][17],w_ );             mon.fillHisto("jetChargedHadronEnergyFractionMatched", extra2, jets[ind][17],w_);
-      mon.fillHisto("jetNeutralHadronEnergyFractionMatched", extra1, jets[ind][18],w_ );             mon.fillHisto("jetNeutralHadronEnergyFractionMatched", extra2, jets[ind][18],w_);
-      mon.fillHisto("jetNeutralHadronEnergyFractionIncludingHFMatched", extra1, jets[ind][19],w_ );  mon.fillHisto("jetNeutralHadronEnergyFractionIncludingHFMatched", extra2, jets[ind][19],w_);
-      mon.fillHisto("jetChargedEmEnergyFractionMatched", extra1, jets[ind][20],w_ );                 mon.fillHisto("jetChargedEmEnergyFractionMatched", extra2, jets[ind][20],w_);
-      mon.fillHisto("jetNeutralEmEnergyFractionMatched", extra1, jets[ind][21],w_ );                 mon.fillHisto("jetNeutralEmEnergyFractionMatched", extra2, jets[ind][21],w_);
-      mon.fillHisto("jetChargedMultiplicityMatched",     extra1, jets[ind][22],w_ );                 mon.fillHisto("jetChargedMultiplicityMatched",     extra2, jets[ind][22],w_);
-    }
+//     if(isData_|| matched){
+//       mon.fillHisto("jetChargedHadronEnergyFractionMatched", extra1, jets[ind][17],w_ );             mon.fillHisto("jetChargedHadronEnergyFractionMatched", extra2, jets[ind][17],w_);
+//       mon.fillHisto("jetNeutralHadronEnergyFractionMatched", extra1, jets[ind][18],w_ );             mon.fillHisto("jetNeutralHadronEnergyFractionMatched", extra2, jets[ind][18],w_);
+//       mon.fillHisto("jetNeutralHadronEnergyFractionIncludingHFMatched", extra1, jets[ind][19],w_ );  mon.fillHisto("jetNeutralHadronEnergyFractionIncludingHFMatched", extra2, jets[ind][19],w_);
+//       mon.fillHisto("jetChargedEmEnergyFractionMatched", extra1, jets[ind][20],w_ );                 mon.fillHisto("jetChargedEmEnergyFractionMatched", extra2, jets[ind][20],w_);
+//       mon.fillHisto("jetNeutralEmEnergyFractionMatched", extra1, jets[ind][21],w_ );                 mon.fillHisto("jetNeutralEmEnergyFractionMatched", extra2, jets[ind][21],w_);
+//       mon.fillHisto("jetChargedMultiplicityMatched",     extra1, jets[ind][22],w_ );                 mon.fillHisto("jetChargedMultiplicityMatched",     extra2, jets[ind][22],w_);
+//     }
 
-  } 
+//   } 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
   //cout<<endl<<"fill histo 3"<<endl;
-  // leptons pt  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  for(uint e=0;e!=e_v.size();++e){ 
-    int ind = e_v[e]; 
+//   // leptons pt  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//   for(uint e=0;e!=e_v.size();++e){ 
+//     int ind = e_v[e]; 
 
-    mon.fillHisto("electronTrackIso", extra1, electrons[ind][15],w_ );  mon.fillHisto("electronTrackIso", extra2, electrons[ind][15],w_);
-    mon.fillHisto("electronEcalIso",  extra1, electrons[ind][16],w_ );  mon.fillHisto("electronEcalIso",  extra2, electrons[ind][16],w_);
-    mon.fillHisto("electronCaloIso",  extra1, electrons[ind][17],w_ );  mon.fillHisto("electronCaloIso",  extra2, electrons[ind][17],w_);
-    mon.fillHisto("electronRelIso",   extra1, electrons[ind][18],w_ );  mon.fillHisto("electronRelIso",   extra2, electrons[ind][18],w_);
-    mon.fillHisto("electronEOverP",   extra1, electrons[ind][5],w_ );   mon.fillHisto("electronEOverP",   extra2, electrons[ind][5],w_);
-    mon.fillHisto("electronHOverE",   extra1, electrons[ind][6],w_ );   mon.fillHisto("electronHOverE",   extra2, electrons[ind][6],w_);
+//     mon.fillHisto("electronTrackIso", extra1, electrons[ind][15],w_ );  mon.fillHisto("electronTrackIso", extra2, electrons[ind][15],w_);
+//     mon.fillHisto("electronEcalIso",  extra1, electrons[ind][16],w_ );  mon.fillHisto("electronEcalIso",  extra2, electrons[ind][16],w_);
+//     mon.fillHisto("electronCaloIso",  extra1, electrons[ind][17],w_ );  mon.fillHisto("electronCaloIso",  extra2, electrons[ind][17],w_);
+//     mon.fillHisto("electronRelIso",   extra1, electrons[ind][18],w_ );  mon.fillHisto("electronRelIso",   extra2, electrons[ind][18],w_);
+//     mon.fillHisto("electronEOverP",   extra1, electrons[ind][5],w_ );   mon.fillHisto("electronEOverP",   extra2, electrons[ind][5],w_);
+//     mon.fillHisto("electronHOverE",   extra1, electrons[ind][6],w_ );   mon.fillHisto("electronHOverE",   extra2, electrons[ind][6],w_);
 
 
-    bool matched(false);    int pgid = TMath::Abs(electrons[ind][1]);
+//     bool matched(false);    int pgid = TMath::Abs(electrons[ind][1]);
 
-   if(!isData_ && pgid == PGID_ELECTRON ) matched = true;
+//    if(!isData_ && pgid == PGID_ELECTRON ) matched = true;
       
-    if(isData_|| matched){
+//     if(isData_|| matched){
 
-      mon.fillHisto("electronTrackIsoMatched", extra1, electrons[ind][15],w_ );  mon.fillHisto("electronTrackIsoMatched", extra2, electrons[ind][15],w_);
-      mon.fillHisto("electronEcalIsoMatched",  extra1, electrons[ind][16],w_ );  mon.fillHisto("electronEcalIsoMatched",  extra2, electrons[ind][16],w_);
-      mon.fillHisto("electronCaloIsoMatched",  extra1, electrons[ind][17],w_ );  mon.fillHisto("electronCaloIsoMatched",  extra2, electrons[ind][17],w_);
-      mon.fillHisto("electronRelIsoMatched",   extra1, electrons[ind][18],w_ );  mon.fillHisto("electronRelIsoMatched",   extra2, electrons[ind][18],w_);
-      mon.fillHisto("electronEOverPMatched",   extra1, electrons[ind][5],w_ );   mon.fillHisto("electronEOverPMatched",   extra2, electrons[ind][5],w_);
-      mon.fillHisto("electronHOverEMatched",   extra1, electrons[ind][6],w_ );   mon.fillHisto("electronHOverEMatched",   extra2, electrons[ind][6],w_);
-    }
+//       mon.fillHisto("electronTrackIsoMatched", extra1, electrons[ind][15],w_ );  mon.fillHisto("electronTrackIsoMatched", extra2, electrons[ind][15],w_);
+//       mon.fillHisto("electronEcalIsoMatched",  extra1, electrons[ind][16],w_ );  mon.fillHisto("electronEcalIsoMatched",  extra2, electrons[ind][16],w_);
+//       mon.fillHisto("electronCaloIsoMatched",  extra1, electrons[ind][17],w_ );  mon.fillHisto("electronCaloIsoMatched",  extra2, electrons[ind][17],w_);
+//       mon.fillHisto("electronRelIsoMatched",   extra1, electrons[ind][18],w_ );  mon.fillHisto("electronRelIsoMatched",   extra2, electrons[ind][18],w_);
+//       mon.fillHisto("electronEOverPMatched",   extra1, electrons[ind][5],w_ );   mon.fillHisto("electronEOverPMatched",   extra2, electrons[ind][5],w_);
+//       mon.fillHisto("electronHOverEMatched",   extra1, electrons[ind][6],w_ );   mon.fillHisto("electronHOverEMatched",   extra2, electrons[ind][6],w_);
+//     }
 
-  }
+//   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 }
 
-void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,double jes, double unc, double jer , double btagunc, double unbtagunc, double tes){
+void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,double jes, double unc,double jer,
+				       double btagunc, double unbtagunc, double tes, double topptunc){
   
 
    // see if we are processing electron channel or muon channel /////////////////////////////////
@@ -3445,10 +5024,10 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
 
   if(isData_) applybtagweight_ =false;
 
-  jes_=jes; unc_=unc; jer_=jer; btagunc_=btagunc; unbtagunc_=unbtagunc; tes_ = tes;
+  jes_=jes; unc_=unc; jer_=jer; btagunc_=btagunc; unbtagunc_=unbtagunc; tes_ = tes; topptunc_ = topptunc;
 
   // see if we run with systematics...///////////////////////////// 
-  if( jes_|| unc_|| jer_|| btagunc_|| unbtagunc_ || tes_) sys_ = true; else sys_= false;
+  if( jes_|| unc_|| jer_|| btagunc_|| unbtagunc_ || tes_ || topptunc_) sys_ = true; else sys_= false;
   /////////////////////////////////////////////////////////////////
 
   if(sys_ ) return;
@@ -3481,7 +5060,7 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
     if(channel==WQQ_CH || channel==WENU_CH || channel==WTAUNU_CH || channel==WMUNU_CH ){ channel = WJETS_CH; }
     tauDilCh = tdChannel(channel);   
     
-    if( url_ == TTBAR_URL){
+    if( url_ == TTBAR_URL || url_ == TTFULL_URL ){
       if(  ttbarLike_ == ETAU_  && channel != ETAU_CH  )                                                                             { return; }
       else if(  ttbarLike_ == MUTAU_ && channel != MUTAU_CH )                                                                             { return; }
       else if(  ttbarLike_ == TTBAR_MCBKG_ && ( channel ==ETAU_CH || channel == MUTAU_CH || channel == EJETS_CH || channel== MUJETS_CH ) ){ return; }
@@ -3494,13 +5073,15 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   unsigned int jetAlgo, metAlgo, leptonAlgo, tauType;
   JetCorrectionUncertainty * junc(0); JetResolution * jerc(0);
 
-  if(myKey.Contains("PFlow")) { 
-    jetAlgo=event::AK5PFLOW; leptonAlgo=event::PFLOWLEPTON; metAlgo=event::PFLOWMET; tauType = PFLOWTAU; 
-    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{ junc=jecUnc_data_ak5_pf_ ;   }     
-  }
-  else if(myKey=="TC")         { 
+
+
+  if(myKey=="TC")         { 
     jetAlgo=event::AK5JPT;   leptonAlgo=event::STDLEPTON;   metAlgo=event::TC; tauType = CALOTAU; 
     if(!isData_){junc=jecUnc_ak5_jpt_; jerc = jerUnc_ak5_jpt_pt_; } else{ junc = jecUnc_data_ak5_jpt_ ;} 
+  }
+  else if(myKey.Contains("PFlow")) { 
+    jetAlgo=event::AK5PFLOW; leptonAlgo=event::PFLOWLEPTON; metAlgo=event::PFLOWMET; tauType = PFLOWTAU; 
+    if(!isData_){junc=jecUnc_ak5_pf_;  jerc = jerUnc_ak5_pf_pt_;  } else{ junc=jecUnc_data_ak5_pf_ ;   }     
   }
   else                    { 
     jetAlgo=event::AK5PF; leptonAlgo=event::STDLEPTON;  metAlgo=event::PF;    
@@ -3528,6 +5109,22 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   std::vector<PhysicsObject> jets_without_arbitration = evR_->GetPhysicsObjectsFrom(ev,event::JET, jetAlgo  ); 
   std::vector<PhysicsObject> vertices                 = evR_->GetVertexCollection(ev);
   std::vector<PhysicsObject> jets                     = evR_->GetJetsWithArbitration( jets_without_arbitration, jetCorr ); 
+//   std::vector<PhysicsObject> filteredJets;
+//   for(std::vector<PhysicsObject> ::iterator jIt=jets.begin(); jIt!= jets.end(); jIt++)
+//     {
+//       float minDR(99999.);
+//       for(std::vector<PhysicsObject>::iterator jjIt=filteredJets.begin(); jjIt!=filteredJets.end(); jjIt++){
+// 	float dR=jIt->DeltaR(*jjIt);
+// 	if(dR<minDR) minDR=dR;
+//       }
+//       if(minDR<0.1) { continue; }
+//       //      cout << jIt->Pt() << " (" << minDR << ") | " << flush;
+//       filteredJets.push_back(*jIt);
+//     }
+//   //  cout << endl;
+//   //  cout << jets.size() << " ---> " << filteredJets.size() << endl;
+//   jets=filteredJets;
+
   std::vector<PhysicsObject> muons                    = evR_->GetPhysicsObjectsFrom(ev,event::MUON, leptonAlgo);
   std::vector<PhysicsObject> electrons                = evR_->GetPhysicsObjectsFrom(ev,event::ELECTRON, leptonAlgo);
   PhysicsObjectCollection mets                        = evR_->GetPhysicsObjectsFrom(ev,event::MET,metAlgo);
@@ -3542,29 +5139,16 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   } 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  //jet resolution corrections ////////////////////////////////////////////////////////////////////////////////
 
-  // Add here allinone met propagation and do stuff here for that yaya.
+
   if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
   PhysicsObject met = mets[0]; 
-
-  vector<double> jerFactors;
-  doPropagations( jerFactors, jes, jer, junc, jets , met, isData_);
-  if(i_ == 45){
-    cout<<endl<< "RESCALED JETS IN EVENT " << i_ << endl;
-    for(size_t ijet=0; ijet<jets.size(); ++ijet){
-      cout << setprecision(6) << "\t\t jet " << ijet << ", pt " << jets[ijet].Pt() <<", eta " << jets[ijet].Eta() << ", phi " << jets[ijet].Phi() << endl;
-      
-    }
-    cout<<endl<< "PROPAGATED MET: pt " << met.Pt() << ", eta " << met.Eta() << ", phi " << met.Phi() << endl;
-  }
-
-  //double metValue = met.Pt();
-  mets[0] = met;
-  ///////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if(vertices.size()==0){ cout<<endl<<" Vertex was zero ???????"<<endl; return; }
   PhysicsObject & primaryVertex = vertices[0];
+
+
  
   TVectorD *classif = (TVectorD *)ev->eventClassif->At(0);
   if(! isData_ ) if(classif==0) return;
@@ -3581,11 +5165,50 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
 
   //cout<<"\n deb1 "<<"intime pu = "<<std::setprecision(10)<<intimepuWeight_<<endl; 
 
+  //jet energy corrections /////////////////////////////////////////////////////////////////////////////
+  vector<double> jerFactors;
+  vector<PhysicsObject> newJets;
+  ///  // Old jet energy resolution factors
+  ///  if(jerc){ // Split condition for optimizazion
+  ///    fast_=false;
+  ///    if(!fast_ ) {
+  ///      for(unsigned int i=0;i<jets.size();i++){ 
+  ///  	double jetEta = jets[i].Eta(); double jetPt  = jets[i].Pt(); 
+  ///  	double scaleFactor(0.1);  //bias correction
+  ///  	double corr_jer(1);
+  ///  	if( jer < 0 ){ scaleFactor = 0.;  }
+  ///  	if( jer > 0 ){ scaleFactor = 0.2; }
+  ///  	
+  ///  	if (scaleFactor){ corr_jer = 1 + scaleFactor*( jerc->resolutionEtaPt(jetEta,jetPt)->GetRandom()-1.0 ); }
+  ///  	
+  ///  	if( corr_jer < 0 ){ corr_jer = 1; }
+  ///  	jerFactors.push_back(corr_jer);
+  ///      }
+  ///    }  
+  ///    else { for(unsigned int i=0;i<jets.size();i++){ jerFactors.push_back(1);} }
+  ///  }
+  // Base scale factors must be applied in any case (modify code above then)
+  
+  
+  jerFactors.clear();
+  newJets.clear();
+  for(unsigned int i=0;i<jets.size();++i){ 
+    double corr_jer(1.);
+    if(!isData_){
+      if(jer_== 0) newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 0 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      if(jer_> 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 1 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+      if(jer_< 0)  newJets.push_back( smearedJet(jets[i], jets[i][34], 0/* 0=genpt, 1=random */, 2 /* 0=base, 1=jerup, 2=jerdown*/, corr_jer) );
+    }
+    //    jerFactors.push_back(corr_jer);
+    jerFactors.push_back(1.);
+    //    std::cout << " jerfac: " << corr_jer << std::endl;
+  }
+  if(!isData_) jets=newJets;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
   //  double metWithJES = jetMETScaling(jerFactors, jes_,junc, jets , met.Px(), met.Py()); 
-  double metWithJES = met.Pt();  // FIXME: check the jes
+  double metWithJES = jetMETScalingTest( jerFactors, jes_, junc, jets  , met);
   //cout<<"deb 2 met : "<<std::setprecision(10)<<metWithJES<<endl;
   if( metWithJES < MET_CUT_ ) return;
 
@@ -3596,7 +5219,7 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   vector<int> e_init, m_init, j_init,t_init;
   PreSelectMuons(      evR_,&m_init,muons, primaryVertex);
   PreSelectElectrons(  evR_,&e_init,electrons, primaryVertex);
-  PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex, tes ); // this is needed to clean taus from triggering jets
+  PreSelectTaus( &t_init,taus,TAUPRONGS_, myKey, primaryVertex, tes); // this is needed to clean taus from triggering jets
   PreSelectJets( isData_, jerFactors, jes, junc,jetAlgo,&j_init,jets);
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3617,6 +5240,9 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   vector<int> hardJets;     GetObjectsBasedOnPt( isData_, jerFactors,jes,junc,ObjectSelector::JETS_TYPE, hardJets, j_afterLeptonRemoval, jets, JET_PT_CUT_, 0);
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+
   // This processing is applied to extract the taus from the list of hard jets ///////////////////////////////////
   // only accept taus if dr > drmin in respect to electrons and muons 
   vector<int> t_toRemove; vector<int> t_afterLeptonRemoval; 
@@ -3630,11 +5256,6 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   ApplyCleaning(&hardJets, &j_toRemove, &j_final);
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  int tau_i;
-  PhysicsObject* theTau = NULL;
-  if(t_afterLeptonRemoval.size() == 1){ tau_i = t_afterLeptonRemoval[0];
-    // tau_pt = taus[tau_i].Pt(); // unused
-    theTau = &(taus[tau_i]); }
 
 
 
@@ -3654,18 +5275,17 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
     }
   }
   else {
-      
     for(uint j=0; j<j_final.size(); ++j){  
       int    j_ind     = j_final[j]; 
       double btagvalue = jets[j_ind][BTAGIND_];
       bool   isTagged = false;
       double bjpt(jets[j_ind].Pt()), bjeta(jets[j_ind].Eta()); 
-
+      
       if( btagvalue > BTAG_CUT_) isTagged = true;
-      
-      //      double newBTagSF     = BTagSF_;
-      //      double newLightJetSF = LightJetSF_;
-      
+
+//       double newBTagSF     = BTagSF_;
+//       double newLightJetSF = LightJetSF_;
+
       double newBTagSF     = getSFb(bjpt, BTAGIND_);
       double newLightJetSF = getSFlight(bjpt, bjeta, BTAGIND_);
       
@@ -3678,13 +5298,13 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
       if(jet_flavor == PGID_C ){err_newBTagSF =2*err_BTagSF_;}
 
       if(btagunc_   > 0){ newBTagSF     = BTagSF_+ err_newBTagSF; }
-      else if(btagunc_ < 0){ newBTagSF     = BTagSF_- err_newBTagSF; }
+      else              { newBTagSF     = BTagSF_- err_newBTagSF; }
 
       if(unbtagunc_ > 0){ newLightJetSF = LightJetSF_ + err_LightJetSF_;}
-      else if(unbtagunc_ < 0){ newLightJetSF = LightJetSF_ - err_LightJetSF_;}
+      else              { newLightJetSF = LightJetSF_ - err_LightJetSF_;}
 
-//      double BTagEff     = newBTagSF*BTAG_eff_R_;
-//      double LightJeteff = newLightJetSF*BTAG_eff_F_;
+//       double BTagEff     = newBTagSF*BTAG_eff_R_;
+//       double LightJeteff = newLightJetSF*BTAG_eff_F_;
 
       double jet_phi = jets[j_ind].Phi();
 
@@ -3693,9 +5313,10 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
 
       //Initialize class
       BTagSFUtil btsfutil(seed); // Seed must be the same per-event
-      
+    
       //modify tags
-      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, /*BTagEff*/ BTAG_eff_R_, newLightJetSF, /*LightJeteff*/ BTAG_eff_F_);
+      //      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, BTagEff, newLightJetSF, LightJeteff);
+      btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, newBTagSF, BTAG_eff_R_, newLightJetSF, BTAG_eff_F_);
 
       if(isTagged) { numb_btags++; index_btag = j_ind;} 
 
@@ -3714,10 +5335,6 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   if( hasMutrig ){ numb_m = m_init.size(); if(numb_m){ evType_ = MUTAU_; w_ = intimepuWeight_*scale_; }}
   if( numb_e + numb_m != 1){ return; }
 
-  //  double muAbsEta = fabs( muons[ m_init[0] ].Eta() );
-  //  if( muAbsEta >0. && muAbsEta < 0.9)
-
-
   if(isData_){w_=1; leptontriggerefficiency_=1;}
 
 
@@ -3733,7 +5350,8 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
       if( !isData_ ){ /* errorOnEff =  w_*eff.second; */ /* unused */ leptontriggerefficiency_ = electrontriggerefficiency_; w_= w_*leptontriggerefficiency_; } // get trigger efficiency for electrons 
     }
   }
-  else if (eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETS_ ) { if( !isData_ )leptontriggerefficiency_ = electrontriggerefficiency_;}
+  else if (eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETS_ ) { if( !isData_ )leptontriggerefficiency_ = electrontriggerefficiency_
+							       /* electrontriggerefficiency_*electronidisoefficiency_ */ ;}
   else{                                                      if( !isData_ )leptontriggerefficiency_ = muontriggerefficiency_;    }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3793,38 +5411,7 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   ////////////////////////////////////////////////////////////////////////////////
 
 
-  // Acquire W pt
-  // W is lepton+met  
-  double thewpt(met.Pt() + lep_obj->Pt());
-  for(size_t itag=0; itag<evTags.size(); ++itag){
-    mon_.fillHisto("recow_pt", evTags[itag], thewpt, w_);
-  }
-  
-// manipulate for w //  if( url_ == TTBAR_URL){
-// manipulate for w //    double tPt(99999.), tbarPt(99999.);
-// manipulate for w //    event::MiniEvent_t *evmontecarlo = evRMC_->GetNewMiniEvent(i_,"mc");
-// manipulate for w //    if( evmontecarlo == 0 ){ cout<<"\n empty event"<<endl; }
-// manipulate for w //    else{
-// manipulate for w //      std::vector<PhysicsObject> mcquarksColl = evRMC_->GetPhysicsObjectsFrom(evmontecarlo,event::TOP);
-// manipulate for w //      for( size_t iquark=0; iquark<mcquarksColl.size(); iquark++){
-// manipulate for w //	if( i_ == 45) cout << "pdg id: " << mcquarksColl[iquark][1] << endl;
-// manipulate for w //	if(mcquarksColl[iquark][1] == 6) tPt = mcquarksColl[iquark].Pt();
-// manipulate for w //	if(mcquarksColl[iquark][1] == -6) tbarPt = mcquarksColl[iquark].Pt();
-// manipulate for w //      }
-// manipulate for w //      
-// manipulate for w //    }
-// manipulate for w //    
-// manipulate for w //    // down: no reweighting
-// manipulate for w //    // central: weight -> weight * reweight
-// manipulate for w //    // up: weight -> weight * reweight * reweight
-// manipulate for w //    if(topptunc_ >=0) 
-// manipulate for w //      w_  *= ttbarReweight(tPt,tbarPt);    
-// manipulate for w //    if( topptunc_>0)
-// manipulate for w //      w_  *= ttbarReweight(tPt,tbarPt);
-// manipulate for w //    
-// manipulate for w //    if(i_ == 45) cout << "topptunc: (" << tPt << ", " << tbarPt << ") ---> " <<  ttbarReweight(tPt,tbarPt) <<endl;
-// manipulate for w //  }
-// manipulate for w //  /////////////////////////////////////////////
+
 
 
 
@@ -3859,7 +5446,7 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
           mon_.fillHisto(wplusjets_ptR,evTags[itag],pt,R,w_); mon_.fillHisto(wplusjets_etaR,evTags[itag],eta,R,w_);
 
           PhysicsObject tau_obj;  tau_obj.SetPtEtaPhiE(pt,eta,phi,pt); 
-          fillTauDileptonObjTree(ev,"DataDriven",evTags[itag],junc,mets[0],myKey,"",lep_obj, R, &tau_obj, theTau, hardJets, jets, jerFactors, metWithJES);
+          fillTauDileptonObjTree(ev,"DataDriven",evTags[itag],junc,mets[0],myKey,"",lep_obj, R, &tau_obj, hardJets, jets, jerFactors, metWithJES);
         }       
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
      
@@ -3914,7 +5501,7 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
             PhysicsObject tau_obj;  tau_obj.SetPtEtaPhiE(pt,eta,phi,pt); 
             vector<int> hardJets_without_taus;
             for( size_t hj=0; hj<hardJets.size(); ++hj ){  if( hardJets[hj] != ind ) hardJets_without_taus.push_back( hardJets[hj] );   }
-            fillTauDileptonObjTree(ev,"DataDriven",evTags[itag],junc,mets[0],myKey,"",lep_obj, R, &tau_obj, theTau, hardJets_without_taus, jets, jerFactors, metWithJES);
+            fillTauDileptonObjTree(ev,"DataDriven",evTags[itag],junc,mets[0],myKey,"",lep_obj, R, &tau_obj, hardJets_without_taus, jets, jerFactors, metWithJES);
  
             
           }       
@@ -3985,9 +5572,8 @@ void CutflowAnalyzer::newPhysics(
     std::vector<PhysicsObject> & electrons, vector<int>  & e_init,
     std::vector<PhysicsObject> & taus,      vector<int>  & t_init, 
     std::vector<PhysicsObject> & jets,      vector<int>  & j_final, int totalJets, JetCorrectionUncertainty * junc, vector<double> & jerFactors, 
-    TString myKey,
-    event::MiniEvent_t* ev
-    ){
+    TString myKey
+){
 
 
   SelectionMonitor * myMon = newPhysicsMons_[myKey];    // monitor for the selection plots
@@ -4005,7 +5591,7 @@ void CutflowAnalyzer::newPhysics(
 
   TString mcTag(""); TString mcTag2("");
   
-  PhysicsObjectCollection mets = evR_->GetPhysicsObjectsFrom(ev,event::MET,metAlgo);           
+  PhysicsObjectCollection mets = evR_->GetPhysicsObjectsFrom(ev_,event::MET,metAlgo);                     
   if(mets.size()==0) { cout << "No met available for " << myKey <<" analyis type ! "<< endl;  return;}
   PhysicsObject met = mets[0]; 
 
@@ -4096,8 +5682,8 @@ void CutflowAnalyzer::newPhysics(
 
 /*
 The reconstructed mass (mcol) is calculated using the collinear approximation as
-mcol = mvis „„ / ˆš x„1 Â· „2 where mvis „„ is the invariant mass of the two identified tau visible decay
-products and x„1 and x„2 are the fractions of the tau momenta carried by the visible decay daughters.
+mcol = mvis Ï„Ï„ / âˆš xÏ„1 Â· xÏ„2 where mvis Ï„Ï„ is the invariant mass of the two identified tau visible decay
+products and xÏ„1 and xÏ„2 are the fractions of the tau momenta carried by the visible decay daughters.
 */
 
 
@@ -4105,7 +5691,7 @@ products and x„1 and x„2 are the fractions of the tau momenta carried by the vis
   // debug info after OS ////////////////////////////////////////////////////////////////////////////////////////////////////
   if(mass_1 >450){
     infoFile_<<endl<<" ============================================================================";
-    infoFile_<<endl<<" Run : "<<ev->iRun <<" , Lum : "<<(ev->iLumi)<<" , evt :"<< ev->iEvent <<endl;
+    infoFile_<<endl<<" Run : "<<ev_->iRun <<" , Lum : "<<(ev_->iLumi)<<" , evt :"<< ev_->iEvent <<endl;
     // infoFile_<<endl<<" HIGH INV MASS for : "<<evTags[1]<<" inv mass = "<<mass_1;
     // infoFile_<<endl<<" HIGH INV MASS for : " inv mass = "<<mass_1;
     // infoFile_<<endl<<" leptons are filled with this order taus, electrons, muons ";
@@ -4469,7 +6055,7 @@ void CutflowAnalyzer::setSelectionParameters(){
 
 
   if(       eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETSPLUSMET_ ){ MET_CUT_= 45; JET_PT_MIN_=35; JET_PT_CUT_=35; E_ET_MIN_=35;  } 
-  else if(  eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETS_        ){ MET_CUT_= 40; JET_PT_MIN_=30; JET_PT_CUT_=30; E_ET_MIN_=70;  }
+  else if(  eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETS_        ){ MET_CUT_= 40; JET_PT_MIN_=30; JET_PT_CUT_=30; E_ET_MIN_=35;  }//fn26-06-13
   //else if(  eChONmuChOFF_ &&  MODE_ == STARTING_AT_LJETS_      ){ MET_CUT_= 45; JET_PT_MIN_=35; JET_PT_CUT_=35; E_ET_MIN_=35;  }
   if(      !eChONmuChOFF_                                        ){ MET_CUT_= 40; JET_PT_MIN_=30; JET_PT_CUT_=30; E_ET_MIN_=30;  }  
 
@@ -4594,7 +6180,7 @@ void CutflowAnalyzer::evaluatePDFUncertainty(){
  }
 
 
- cout << "\n PDF unc. +" << 100.*sqrt(deltaPlus)/myWeights_[0] << "% -" <<  100.*sqrt(deltaMinus)/myWeights_[0] << " %" << endl;
+ cout << "\n PDF unc. +" << 100.*sqrt(deltaPlus)/myWeights_[0] << "\% -" <<  100.*sqrt(deltaMinus)/myWeights_[0] << " \%" << endl;
 
 
 }
@@ -4606,7 +6192,6 @@ pair<double,double> CutflowAnalyzer::btagSF(double jetPt){
 
   double err_sf(0);
 
-  // 2012 prompt reco payload
        if( jetPt>30  && jetPt<=40  ){ err_sf = SFb_error[0];  }
   else if( jetPt>40  && jetPt<=50  ){ err_sf = SFb_error[1];  }
   else if( jetPt>50  && jetPt<=60  ){ err_sf = SFb_error[2];  }
@@ -4625,7 +6210,7 @@ pair<double,double> CutflowAnalyzer::btagSF(double jetPt){
    //use the SFb value at 670 GeV with twice the quoted uncertainty 
    jetPt=670; err_sf = 2*SFb_error[13];
   }
-       
+
 //  // 2012 22Jan2013ReReco payload https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFb-pt_NOttbar_payload_EPS13.txt
 //       float ptmin[] = {20, 30, 40, 50, 60, 70, 80, 100, 120, 160, 210, 260, 320, 400, 500, 600};
 //       float ptmax[] = {30, 40, 50, 60, 70, 80,100, 120, 160, 210, 260, 320, 400, 500, 600, 800};
@@ -4666,4 +6251,148 @@ pair<double,double> CutflowAnalyzer::btagSF(double jetPt){
 }
 
 
+/*
+  // Jet distributions ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // jets(pt distribution, leading jet1, next to leading jet2, next to next leading jet 3 )
+  // delta phi between      leading and next to leading jet
+  // invariant mass between leading and next to leading jet
+  // btag value
+  // btag
+  double jet1(-999.), jet2(-999.), jet3(-999.); //energies
+  double jeta1(-999.), jeta2(-999.), jeta3(-999.); //etas
+  int jet1_ind(-1), jet2_ind(-1), jet3_ind(-1); //indices to be ordered and saved
+  double btag1(-999), btag2(-999), btag3(-999); 
+  int btagmul(0);
+  double btagmul1(0), btagmul2(0), btagmul3(0);
+ 
+  PhysicsObject hptbjet; double ptbjet(0);// highest-pt bjet and its pt
 
+
+  double ordJetPt[20]; int ordJetInd[20];
+
+  for( size_t i=0; i != j_v.size() ; i++ ){ 
+
+    int ind = j_v[i]; double j_pt = jets[ind].Pt(); // double j_eta = jets[ind].Eta(); double btag =jets[ind][BTAGIND_]; 
+
+    if( ! isData_) j_pt = getJetPt( jets[ind], junc, jerFactors[ind], jes_);
+    else           j_pt = GetJetResidualPt(jets[ind]);
+    
+    ordJetPt[i] = j_pt; ordJetInd[i] = ind;
+  }
+
+  
+  for( size_t j=0; j != j_v.size()-1 ; j++ ){ 
+
+    jet1 = ordJetPt[j]; jet1_ind = ordJetInd[j]; uint jmax = j;
+    
+      for( size_t m=j+1; m != j_v.size() ; m++ ){
+	int mnd = j_v[m]; double m_pt = jets[mnd].Pt(); // double m_eta = jets[mnd].Eta(); double mtag =jets[mnd][BTAGIND_]; 
+
+	if( ! isData_) m_pt = getJetPt( jets[mnd], junc, jerFactors[mnd], jes_);
+	else           m_pt = GetJetResidualPt(jets[mnd]);
+
+	if  ( m_pt > jet1 ){
+	  jet1 = m_pt; jet1_ind = mnd; jmax = m;  
+	}
+	if (jmax != j) {
+	  ordJetPt[jmax] = ordJetPt[j]; ordJetInd[jmax] = ordJetInd[j];
+	  ordJetPt[j] = jet1; ordJetInd[j] = jet1_ind; 
+	}
+      }
+
+
+//   for( size_t ia=0; ia != j_v.size() ; ia++ ){ 
+//     printf("OrdJetPt = %f -- OrdJetInd = %i \n",ordJetPt[ia],ordJetInd[ia]);
+//   }
+      //    mon.fillHisto(TString("pt_j"),extra1+step, j_pt,w_);  mon.fillHisto(TString("pt_j"), extra2+step, j_pt,w_);
+
+ 
+//     double dphij1j2(0);
+//     if ( jet1 && jet2 ){ 
+//       dphij1j2 = fabs( jets[jet1_ind].DeltaPhi( jets[jet2_ind] )) ;  mon.fillHisto("dphij1j2",extra1+step, dphij1j2,w_);  mon.fillHisto("dphij1j2", extra2+step, dphij1j2,w_);  
+//       PhysicsObject vj1 = jets[jet1_ind]; PhysicsObject vj2 = jets[jet2_ind];
+//       TLorentzVector a(vj1+vj2); double mj1j2 = a.M();
+//       mon.fillHisto("mj1j2", extra1+step, mj1j2 ,w_); mon.fillHisto("mj1j2", extra2+step, mj1j2 ,w_); 
+//     }
+
+//     mon.fillHisto("btag_j",extra1+step, btag,w_ );  mon.fillHisto("btag_j", extra2+step, btag,w_); 
+
+
+//     int pgid(PGID_UNKNOWN); if(!isData_) pgid = TMath::Abs(jets[ind][jetpgid_]);
+//     if( btag > BTAG_CUT_){
+//       btagmul++;
+//       if(j_pt>ptbjet){ // Fill ptbjet with the pt
+// 	hptbjet = jets[ind];
+// 	ptbjet=j_pt;
+//       }
+//     }
+    
+//     if( btag1 > BTAG_CUT_) btagmul1++;
+//     if( btag2 > BTAG_CUT_) btagmul2++;
+//     if( btag3 > BTAG_CUT_) btagmul3++;
+//     if(! isData_ ){
+//       if(btag > BTAG_CUT_){
+//         if     ( pgid == PGID_B       ){ mon.fillHisto("btag_eff_realbs_num",  extra1+step,  j_pt ,w_);  mon.fillHisto("btag_eff_realbs_num",  extra2+step, j_pt,w_); }
+//         else if( pgid == PGID_UNKNOWN ){ mon.fillHisto("btag_eff_nomatch_num", extra1+step,  j_pt ,w_);  mon.fillHisto("btag_eff_nomatch_num", extra2+step, j_pt,w_); }
+//         else                           { mon.fillHisto("btag_eff_fakebs_num",  extra1+step,  j_pt ,w_ ); mon.fillHisto("btag_eff_fakebs_num",  extra2+step, j_pt,w_); }
+//         if(pgid != PGID_B             ){ mon.fillHisto("btag_eff_fakebs2_num", extra1+step,  j_pt ,w_ ); mon.fillHisto("btag_eff_fakebs2_num", extra2+step, j_pt,w_); }  
+//       }
+
+//       if (     pgid == PGID_B       ){ mon.fillHisto("btag_eff_realbs_den", extra1+step, j_pt ,w_); mon.fillHisto("btag_eff_realbs_den", extra2+step, j_pt,w_);   }
+//       else if( pgid == PGID_UNKNOWN ){ mon.fillHisto("btag_eff_nomatch_den",extra1+step, j_pt ,w_); mon.fillHisto("btag_eff_nomatch_den", extra2+step, j_pt,w_);  } 
+//       else                           { mon.fillHisto("btag_eff_fakebs_den", extra1+step, j_pt ,w_); mon.fillHisto("btag_eff_fakebs_den", extra2+step, j_pt,w_);   }
+//       if(pgid != PGID_B             ){ mon.fillHisto("btag_eff_fakebs2_den",extra1+step, j_pt ,w_); mon.fillHisto("btag_eff_fakebs2_num",  extra2+step, j_pt,w_); } 
+
+//     }
+
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+*/ 
+//   //Begin - SuperFedeDebug/////////////////////////////////////////////////////////////////////////////////////////////
+//     cout << "" << endl; 
+//     cout << "" << endl; 
+//     cout << "" << endl; 
+//     cout << "" << endl; 
+//     cout << "---Pre Selection Stage----" << endl; 
+//   std::vector<std::pair<size_t,double> > pairing;
+//   //  const UInt_t number = 3;
+//   const uint number = 3;
+
+
+//   for( size_t j=0; j < j_v.size() ; j++ ){ 
+//     std::pair<size_t,double> temp;
+//     temp.first = j_v[j];
+//     double j_pt = jets[temp.first].Pt();
+//     if( ! isData_) j_pt = getJetPt( jets[temp.first], junc, jerFactors[temp.first], jes_);
+//     else           j_pt = GetJetResidualPt(jets[temp.first]);
+    
+//     temp.second = j_pt;
+//     if(pairing.size() < number)
+//       {
+// 	pairing.push_back(temp);
+// 	for(size_t k = pairing.size()-1; k > 0; k--)
+// 	  {
+// 	    if(pairing[k].second > pairing[k-1].second)
+// 	      std::swap(pairing[k], pairing[k-1]);
+// 	  }
+//       }
+//     else
+//       {
+// 	if(temp.second > pairing[number-1].second)
+// 	  {
+// 	    std::swap(temp, pairing[number-1]);
+// 	    for(size_t k = pairing.size()-1; k > 0; k--)
+// 	      {
+// 		if(pairing[k].second > pairing[k-1].second)
+// 		  std::swap(pairing[k], pairing[k-1]);
+// 	      }
+// 	  }
+//       }
+//     for(uint i = 0; i < pairing.size(); i++) {
+//       //      printf("j_ind=%lu: j_eta=%f: j_pt=%f; ", pairing[i].first, jets[pairing[i].first].Eta(),pairing[i].second);
+//       //    printf("\n");
+//     }
+//   }
+//   Double_t ang_ = jets[pairing[0].first].Vect().DeltaR(jets[pairing[1].first].Vect());
+//   //  printf("DeltaR between the 2 most energetic ones = %f \n",ang_);
+//   //End - SuperFedeDebug///////////////////////////////////////////////////////////////////////////////////////////////

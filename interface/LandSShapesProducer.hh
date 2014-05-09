@@ -64,7 +64,7 @@ class LandSShapesProducer: protected utilities::EditorialUtils, utilities::StatU
 public :
   
   // Constructor
-  LandSShapesProducer(string, string, string, bool);
+  LandSShapesProducer(string);
   // Destructor
   ~LandSShapesProducer();
   
@@ -74,8 +74,8 @@ public :
   void Produce();
   
 private:
-
   void Init();
+  void SetOptions();
   void InitMassPoint(size_t);
   void InitPerVariableAmbient(size_t);
   void BuildDatasets(size_t);
@@ -86,7 +86,7 @@ private:
   void StorePerMassSignalShapes();
   void DrawSignalShapesComparison();
 
-  void ShapesToDatacard();
+  void FixExtremityBins(TH1 *h);
   
   // void BuildConstrainedModels(size_t);
   //  void DoPerVariableFit(size_t);
@@ -97,25 +97,23 @@ private:
   
   // Parameter set
   string parSet_;
-  string whatToDo_; 
 
   // Output paths
-  string outputPrefix_;
   string outFolder_;
   string outputFileName_;
-  string datacardsBaseName_;
   vector<string> massPointName_;
   string resultsFileName_; // not used. txt.
   ofstream resultsFile_;
   streambuf* streamToFile_;
 
-  ofstream datacard_;
   // Style
   TStyle* myStyle_;
 
   // Fit settings
   //  bool includeSignal_;
-  //  bool standaloneTTbar_;
+  bool standaloneTTbar_;
+  bool useOS_;
+
   
   // Display/produce settings
   // Can't do simultaneously at the moment because of renormalization of histograms,
@@ -134,7 +132,6 @@ private:
   double displayMin_;
   double displayMax_;
 
-  vector<double> signalNormFactor_;
 
   vector<TString> inputFileName_; // Build from mass ranges
 
@@ -172,17 +169,16 @@ private:
 
   vector<FitVar*> fitVars_;  
   vector<string> vars_;
-  vector<string> fancyNames_;
   vector<double> mins_;
   vector<double> maxs_;
   vector<int> bins_;
-  vector<string> binNames_;
   vector<double> hmin_;
   vector<double> hmax_;
   vector<Int_t> unbinned_;
   vector<Int_t> smoothOrder_;
-  vector<Int_t> doLogy_;
-  
+
+  int catNBtags_;
+
   TCanvas* canvas_;
 
   // RooFit stuff
@@ -222,9 +218,9 @@ private:
   TH1* ddbkgHistUp_;  // These are for showing the error bands. Not for LandS
   TH1* ddbkgHistDown_;// These are for showing the error bands. Not for LandS
   vector<TH1*> hist_;
-  vector<TH1*> histStatNoNorm_;
+  
   vector<TH1*> histStatUp_;
-
+  
   vector<TH1*> histStatDown_;
   
   vector<vector<TH1*> > systHist_;

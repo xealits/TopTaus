@@ -94,8 +94,6 @@ namespace commondefinitions{
   
   */
   
-  extern std::vector<double> brHtaunu_; // BR(H->taunu)
-  extern std::vector<double> brHtb_; // BR(H->tb)
   
   enum puconditions{ NOPU, PUPLUS, PUMINUS };
   
@@ -169,7 +167,7 @@ namespace commondefinitions{
   
   
   enum taudilCh{ 
-    ETAU_TDCH,  MUTAU_TDCH, LEPJETS_TDCH, 
+    ETAU_TDCH,  MUTAU_TDCH, LEPJETS_TDCH,
     EE_TDCH, EMU_TDCH, MUMU_TDCH,
     TAUJETS_TDCH, TAUTAU_TDCH, ALLJETS_TDCH, 
     WJETS_TDCH,
@@ -214,17 +212,16 @@ namespace commondefinitions{
    QCD_EM20TO30_URL, 
    QCD_EM30TO80_URL, 
    QCD_EM80TO170_URL,
-   QCD_EM170TO250_URL, 
-   QCD_EM250TO350_URL, 
+   QCD_EM170TO250_URL,
+   QCD_EM250TO350_URL,
    QCD_EM350TOINF_URL,
-
+   
    QCD_BCTOE20TO30_URL,  
    QCD_BCTOE30TO80_URL,  
    QCD_BCTOE80TO170_URL, 
    QCD_BCTOE170TO250_URL, 
    QCD_BCTOE250TO350_URL, 
-   QCD_BCTOE350TOINF_URL,
-
+   QCD_BCTOE350TOINF_URL, 
    
    QCD_PHOTON15TO30_URL, 
    QCD_PHOTON30TO50_URL, 
@@ -233,8 +230,6 @@ namespace commondefinitions{
    QCD_PHOTON120TO170_URL,
    QCD_PHOTON170TO300_URL,
    QCD_PHOTON300TO470_URL,
-
-
    QCD_MU_URL, 
    
    W0J_URL,
@@ -269,28 +264,8 @@ namespace commondefinitions{
    TBH220_URL, 
    TBH250_URL,
    TBH300_URL,
-   
-   HTB180_URL,  
-   HTB190_URL,  
-   HTB200_URL,  
-   HTB220_URL, 
-   HTB240_URL, 
-   HTB250_URL,
-   HTB260_URL, 
-   HTB280_URL, 
-   HTB300_URL,
-   HTB350_URL,
-   HTB400_URL,
-   HTB500_URL,
-   HTB600_URL,
-   HTB700_URL,
 
-   HHHTAUTAUBB260_URL,
-   HHHTAUTAUBB300_URL,
-   HHHTAUTAUBB350_URL,
-
-   EMBEDDED_DATA_URL,
-   EMBEDDED_TTBAR_URL
+   TTFULL_URL, TTSEMI_URL, TTHADR_URL
   };
 
   
