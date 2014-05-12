@@ -11,11 +11,12 @@
 
 using namespace std;
 
-CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis, TString inputArea, TString outputArea, TString puFileName, TString runRange, vector<double> brHtaunu, vector<double> brHtb) :
+CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool doWPlusJetsAnalysis, TString inputArea, TString outputArea, TString puFileName, TString runRange, vector<double> brHtaunu, vector<double> brHtb, bool eChONmuChOFF) :
   UncertaintyCalculator(),  
   AnalysisMonitoring(tauPtCut, inputArea, outputArea), 
   ObjectSelector(tauPtCut),
   noUncertainties_(noUncertainties),
+
   doWPlusJetsAnalysis_(doWPlusJetsAnalysis),
   testMe_(0),
   testMe_Nev_(0)
@@ -23,6 +24,7 @@ CutflowAnalyzer::CutflowAnalyzer( double tauPtCut, bool noUncertainties, bool do
 {    
   brHtaunu_ = brHtaunu;
   brHtb_    = brHtb;
+  commondefinitions::eChONmuChOFF_  = eChONmuChOFF;
 
   cout << "------- BR(H+->taunu) -------" << endl;
   for(size_t i=0; i<brHtaunu_.size(); ++i)
@@ -3799,6 +3801,8 @@ void CutflowAnalyzer::wPlusJetAnalysis(TString myKey, event::MiniEvent_t *ev,dou
   for(size_t itag=0; itag<evTags.size(); ++itag){
     mon_.fillHisto("recow_pt", evTags[itag], thewpt, w_);
   }
+  
+  // Recoiling jets
   
 // manipulate for w //  if( url_ == TTBAR_URL){
 // manipulate for w //    double tPt(99999.), tbarPt(99999.);

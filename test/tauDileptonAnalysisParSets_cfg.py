@@ -815,6 +815,280 @@ LandSShapesProducerParSetMhmax = cms.PSet(
     )
 
 
+LandSShapesProducerParSetMhmodp_tanb5 = cms.PSet(
+    #    outFolder        = cms.string("shapesForDatacard/"),
+
+    # mixed
+    outFolder        = cms.string("shapes_mhmodp_tanb5/"),
+    datacardsBaseName  = cms.string("datacard_mutau_mhmodp_tanb5"),
+    massPointName   = cms.vstring("m180","m200","m220","m250","m300"),
+    inputFileName      = cms.vstring( "out-data.root", "out-heavyHiggs-pythia-", "out-data_rescaled.root", "out-ttbar-mutau.root", "out-ttbar-mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
+    sampleName      = cms.vstring( "data_obs", "HTB", "tau_fake", "tt_ltau", "tt_ll", "singleTop","di_boson", "Z_tautau",  "Z_eemumu" ),
+    fancySampleName      = cms.vstring("data", "#splitline{H^{+}#rightarrow tb,#tau#nu}{[250 GeV]}", "#splitline{#tau_{h} misID}{DD}", "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson","Z #rightarrow #tau#tau", "Z #rightarrow ee,#mu#mu"),
+    sampleColour    = cms.vint32( 1,  2, 799,  614,    8,   824,  596, 831, 809),
+    #sampleColour    = cms.vint32( 1,  616, 799, 614, 8, 824,  596, 831, 809),
+    sampleFillStyle = cms.vint32( 1001, 0, 1001, 1001, 1001,  1001, 1001, 1001, 1001),
+    baseDir = cms.vstring("/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew/nomt-2012-V1-data-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew_2/nomt-2012-V1-mc-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew/nomt-2012-V1-data-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew/nomt-2012-V1-mc-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew/nomt-2012-V1-mc-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew/nomt-2012-V1-mc-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew/nomt-2012-V1-mc-MU-20GeV/"
+                          ),
+    minitree = cms.vstring("m_tau_Selected",
+                           "m_tau_Selected",
+                           "m_tau_DataDriven",
+                           "m_tau_Selected",
+                           "m_tau_Selected",
+                           "m_tau_Selected",
+                           "m_tau_Selected"
+                           ),
+    isFromData  = cms.vint32( 1, 0, 1, 0, 0, 0, 0, 0, 0),
+    isDDbkg     = cms.vint32( 0, 0, 1, 0, 0, 0, 0, 0, 0),
+    isSignal    = cms.vint32( 0, 1, 0, 0, 0, 0, 0, 0, 0),
+    
+    signalNormFactor = cms.vdouble(
+    1.,
+    # 190: 1./100.,
+    1.,
+    1.,
+    1.,
+    1.,
+    1.,
+    1.,
+    1.,
+    1., 
+    1., 
+    1., 
+    1., 
+    1.
+    ),
+
+
+
+
+
+    ###################
+    # Common parameters
+    ###################
+    outputFileName  = cms.string("shapes"),
+    doMultiDimensionalShapes = cms.bool(False),
+    unsplitUncertainties = cms.bool(False),
+
+    
+    
+    # jes +/-, met +/-, jer +/-
+    systComponents = cms.vstring(
+    "_plus"    , "_minus"    ,
+    "_uncplus" , "_uncminus" ,
+    "_jerplus" , "_jerminus" ,
+    "_bplus"   , "_bminus"   ,
+    "_unbplus" , "_unbminus",
+    "_topptuncplus", "_topptuncminus",
+    "_tesplus", "_tesminus"
+    ),
+
+    systFancyComponents = cms.vstring(
+    "_jesUp"    , "_jesDown"    ,
+    "_umetUp" , "_umetDown" ,
+    "_jerUp" , "_jerDown" ,
+    "_btagUp"   , "_btagDown"   ,
+    "_unbtagUp" , "_unbtagDown",
+    "_topptuncUp", "_topptuncDown",
+    "_tesUp", "_tesDown"
+    ),
+    
+    
+    #osCutEff               = cms.double(0.69*220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
+    #    osCutEff               = cms.double(2054.99/4232.500009), #FIXME: subtract residual shape 0.699), # // FIXME: fixme 220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
+    osCutEff = cms.double(1386*1386/202.1/2045.11),
+
+
+    #2810.89/5736.58),
+
+
+
+    ############################
+    ####### VARIABLE(s) ########
+    ############################
+
+    ###    toNorm      = cms.bool(True),
+    ###    vars        = cms.vstring( "rc_t"    ),
+    ###    fancyName  = cms.vstring("R = p_{T}^{lead.track}/E^{#tau}"),
+    ###    mins        = cms.vdouble(   -0.099  ),
+    ###    maxs        = cms.vdouble(    1.001  ),
+    ###    bins        = cms.vint32(      11    ),
+    ###    binNames    = cms.vstring( ), 
+    ###    hmin        = cms.vdouble(      0    ),
+    ###    hmax        = cms.vdouble(    200    ),
+    ###    unbinned    = cms.vint32(       0    ),
+    ###    smoothOrder = cms.vint32(       3    ),   
+    ###    doLogy      = cms.vint32(     0        ),    
+
+    #    vars        = cms.vstring( "Dphi_tau_met"   ),
+    #    mins        = cms.vdouble(      0           ),
+    #    maxs        = cms.vdouble(    4.8           ),
+    #    bins        = cms.vint32(     5             ),
+    #    hmin        = cms.vdouble(      0          ),
+    #    hmax        = cms.vdouble(    200          ),
+    #    unbinned    = cms.vint32(       0          ),
+    #    smoothOrder = cms.vint32(       3          ),   
+
+    toNorm      = cms.bool(False),
+    vars        = cms.vstring("btagmultiplicity_j" ),
+    fancyName   = cms.vstring("N_{b-tagged jets}"  ),
+    mins        = cms.vdouble(     1               ),
+    maxs        = cms.vdouble(   5                 ),
+    bins        = cms.vint32(     4                ),
+    binNames    = cms.vstring("0", "1","2","3","#geq4"),
+    hmin        = cms.vdouble(     0               ),
+    hmax        = cms.vdouble(   600               ),
+    unbinned    = cms.vint32(      0               ),
+    smoothOrder = cms.vint32(      0               ),                
+    doLogy      = cms.vint32(     1                ),
+    
+    
+    )
+
+
+LandSShapesProducerParSetMhmodp_tanb30 = cms.PSet(
+    #    outFolder        = cms.string("shapesForDatacard/"),
+
+    # mixed
+    outFolder        = cms.string("shapes_mhmodp_tanb30/"),
+    datacardsBaseName  = cms.string("datacard_mutau_mhmodp_tanb30"),
+    massPointName   = cms.vstring("m180","m200","m220","m250","m300"),
+    inputFileName      = cms.vstring( "out-data.root", "out-heavyHiggs-pythia-", "out-data_rescaled.root", "out-ttbar-mutau.root", "out-ttbar-mcbkg.root", "out-singletop.root", "out-dibosons.root" ),
+    sampleName      = cms.vstring( "data_obs", "HTB", "tau_fake", "tt_ltau", "tt_ll", "singleTop","di_boson", "Z_tautau",  "Z_eemumu" ),
+    fancySampleName      = cms.vstring("data", "#splitline{H^{+}#rightarrow tb,#tau#nu}{[250 GeV]}", "#splitline{#tau_{h} misID}{DD}", "t#bar{t} #rightarrow #mu#tau_{h}", "other t#bar{t}", "Single t", "Diboson","Z #rightarrow #tau#tau", "Z #rightarrow ee,#mu#mu"),
+    sampleColour    = cms.vint32( 1,  2, 799,  614,    8,   824,  596, 831, 809),
+    #sampleColour    = cms.vint32( 1,  616, 799, 614, 8, 824,  596, 831, 809),
+    sampleFillStyle = cms.vint32( 1001, 0, 1001, 1001, 1001,  1001, 1001, 1001, 1001),
+    baseDir = cms.vstring("/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew/nomt-2012-V1-data-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew_2/nomt-2012-V1-mc-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew/nomt-2012-V1-data-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew/nomt-2012-V1-mc-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew/nomt-2012-V1-mc-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew/nomt-2012-V1-mc-MU-20GeV/",
+                          "/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_TopPtRew/nomt-2012-V1-mc-MU-20GeV/"
+                          ),
+    minitree = cms.vstring("m_tau_Selected",
+                           "m_tau_Selected",
+                           "m_tau_DataDriven",
+                           "m_tau_Selected",
+                           "m_tau_Selected",
+                           "m_tau_Selected",
+                           "m_tau_Selected"
+                           ),
+    isFromData  = cms.vint32( 1, 0, 1, 0, 0, 0, 0, 0, 0),
+    isDDbkg     = cms.vint32( 0, 0, 1, 0, 0, 0, 0, 0, 0),
+    isSignal    = cms.vint32( 0, 1, 0, 0, 0, 0, 0, 0, 0),
+
+        signalNormFactor = cms.vdouble(
+    1.,
+    # 190: 1./100.,
+    1.,
+    1.,
+    1.,
+    1.,
+    1.,
+    1.,
+    1.,
+    1., 
+    1., 
+    1., 
+    1., 
+    1.
+    ),
+
+
+
+
+
+    ###################
+    # Common parameters
+    ###################
+    outputFileName  = cms.string("shapes"),
+    doMultiDimensionalShapes = cms.bool(False),
+    unsplitUncertainties = cms.bool(False),
+
+    
+    
+    # jes +/-, met +/-, jer +/-
+    systComponents = cms.vstring(
+    "_plus"    , "_minus"    ,
+    "_uncplus" , "_uncminus" ,
+    "_jerplus" , "_jerminus" ,
+    "_bplus"   , "_bminus"   ,
+    "_unbplus" , "_unbminus",
+    "_topptuncplus", "_topptuncminus",
+    "_tesplus", "_tesminus"
+    ),
+
+    systFancyComponents = cms.vstring(
+    "_jesUp"    , "_jesDown"    ,
+    "_umetUp" , "_umetDown" ,
+    "_jerUp" , "_jerDown" ,
+    "_btagUp"   , "_btagDown"   ,
+    "_unbtagUp" , "_unbtagDown",
+    "_topptuncUp", "_topptuncDown",
+    "_tesUp", "_tesDown"
+    ),
+    
+    
+    #osCutEff               = cms.double(0.69*220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
+    #    osCutEff               = cms.double(2054.99/4232.500009), #FIXME: subtract residual shape 0.699), # // FIXME: fixme 220.92/242.915), #    osCutEff               = cms.double(0.577749097), #223.82/387.4),
+    osCutEff = cms.double(1386*1386/202.1/2045.11),
+
+
+    #2810.89/5736.58),
+
+
+
+    ############################
+    ####### VARIABLE(s) ########
+    ############################
+
+    ###    toNorm      = cms.bool(True),
+    ###    vars        = cms.vstring( "rc_t"    ),
+    ###    fancyName  = cms.vstring("R = p_{T}^{lead.track}/E^{#tau}"),
+    ###    mins        = cms.vdouble(   -0.099  ),
+    ###    maxs        = cms.vdouble(    1.001  ),
+    ###    bins        = cms.vint32(      11    ),
+    ###    binNames    = cms.vstring( ), 
+    ###    hmin        = cms.vdouble(      0    ),
+    ###    hmax        = cms.vdouble(    200    ),
+    ###    unbinned    = cms.vint32(       0    ),
+    ###    smoothOrder = cms.vint32(       3    ),   
+    ###    doLogy      = cms.vint32(     0        ),    
+
+    #    vars        = cms.vstring( "Dphi_tau_met"   ),
+    #    mins        = cms.vdouble(      0           ),
+    #    maxs        = cms.vdouble(    4.8           ),
+    #    bins        = cms.vint32(     5             ),
+    #    hmin        = cms.vdouble(      0          ),
+    #    hmax        = cms.vdouble(    200          ),
+    #    unbinned    = cms.vint32(       0          ),
+    #    smoothOrder = cms.vint32(       3          ),   
+
+    toNorm      = cms.bool(False),
+    vars        = cms.vstring("btagmultiplicity_j" ),
+    fancyName   = cms.vstring("N_{b-tagged jets}"  ),
+    mins        = cms.vdouble(     1               ),
+    maxs        = cms.vdouble(   5                 ),
+    bins        = cms.vint32(     4                ),
+    binNames    = cms.vstring("0", "1","2","3","#geq4"),
+    hmin        = cms.vdouble(     0               ),
+    hmax        = cms.vdouble(   600               ),
+    unbinned    = cms.vint32(      0               ),
+    smoothOrder = cms.vint32(      0               ),                
+    doLogy      = cms.vint32(     1                ),
+    
+    
+    )
+
+
 LandSShapesProducerParSetPlot = cms.PSet(
     #    outFolder        = cms.string("shapesForDatacard/"),
 

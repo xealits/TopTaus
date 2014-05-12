@@ -125,10 +125,12 @@ void LandSShapesProducer::Init(){
   // Get ParameterSet from cfg file
   edm::ParameterSet mFitPars;
 
-  if     (whatToDo_=="tb")    mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetTb");
-  else if(whatToDo_=="taunu") mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetTaunu");
-  else if(whatToDo_=="mhmax") mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetMhmax");
-  else if(whatToDo_=="plot")  mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetPlot");
+  if     (whatToDo_=="tb")            mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetTb");
+  else if(whatToDo_=="taunu")         mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetTaunu");
+  else if(whatToDo_=="mhmax")         mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetMhmax");
+  else if(whatToDo_=="mhmodp_tanb5")  mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetMhmodp_tanb5");
+  else if(whatToDo_=="mhmodp_tanb30") mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetMhmodp_tanb30");
+  else if(whatToDo_=="plot")          mFitPars  = edm::readPSetsFrom(parSet_)->getParameter<edm::ParameterSet>("LandSShapesProducerParSetPlot");
   else { cout << "BREAK: I don't know what to do" << endl; return;}
   
   

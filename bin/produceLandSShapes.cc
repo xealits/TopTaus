@@ -81,6 +81,16 @@ int main(int argc, char* argv[])
     LandSShapesProducer* producerPlot = new LandSShapesProducer(parSet, "plot", outputPrefix, false);
     producerPlot->Produce();
     delete producerPlot;
+
+    LandSShapesProducer* producerMhmodp_tanb5 = new LandSShapesProducer(parSet, "mhmodp_tanb5", outputPrefix, true);
+    producerMhmodp_tanb5->Produce();
+    delete producerMhmodp_tanb5;
+
+    LandSShapesProducer* producerMhmodp_tanb30 = new LandSShapesProducer(parSet, "mhmodp_tanb30", outputPrefix, true);
+    producerMhmodp_tanb30->Produce();
+    delete producerMhmodp_tanb30;
+
+
   }
   else{
     LandSShapesProducer* myProducer = new LandSShapesProducer(parSet, whatToDo, outputPrefix, produceOnly);
