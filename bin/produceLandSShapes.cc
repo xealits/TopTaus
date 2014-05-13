@@ -74,9 +74,9 @@ int main(int argc, char* argv[])
     producerTaunu->Produce();
     delete producerTaunu;    
     
-    LandSShapesProducer* producerMhmax = new LandSShapesProducer(parSet, "mhmax", outputPrefix, true);
-    producerMhmax->Produce();
-    delete producerMhmax;
+    //    LandSShapesProducer* producerMhmax = new LandSShapesProducer(parSet, "mhmax", outputPrefix, true);
+    //    producerMhmax->Produce();
+    //    delete producerMhmax;
     
     LandSShapesProducer* producerPlot = new LandSShapesProducer(parSet, "plot", outputPrefix, false);
     producerPlot->Produce();
