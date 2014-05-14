@@ -486,8 +486,8 @@ void SampleProcessor::init(){
     if(eChONmuChOFF_) extra=TString("_spy_eltau.root");
     else extra=TString("_spy_mutau.root");
     TString spyName = outFileName_ + extra;
-    //TTree * spyTree = listOfReaders_[i]->PrepareToSpyEvents(spyName);
-    //cout<<endl<<"Spy Events ... on file ... "<<spyName<<endl;
+    TTree * spyTree = listOfReaders_[i]->PrepareToSpyEvents(spyName);
+    cout<<endl<<"Spy Events ... on file ... "<<spyName<<endl;
     //////////////////////////////////////////////////////////////////
     
     if(fullStats_){
