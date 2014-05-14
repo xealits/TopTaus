@@ -56,7 +56,6 @@ LandSShapesProducerParSetTb = cms.PSet(
     ),
 
 
-
     ###################
     # Common parameters
     ###################
@@ -990,6 +989,9 @@ LandSShapesProducerParSetMhmodp_tanb30 = cms.PSet(
     1.,
     1.,
     1.,
+    0.151062/0.192875,
+    0.110921/0.192875,
+    0.095882/0.192875,
     1.,
     1.,
     1.,
@@ -999,10 +1001,6 @@ LandSShapesProducerParSetMhmodp_tanb30 = cms.PSet(
     1., 
     1.
     ),
-
-
-
-
 
     ###################
     # Common parameters
