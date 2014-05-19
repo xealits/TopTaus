@@ -76,6 +76,7 @@ int main(int argc, char* argv[])
   const edm::ParameterSet &pSet = edm::readPSetsFrom(parSet)->getParameter<edm::ParameterSet>("PhysicsAnalysisParSet");
   
   double tauPtCut = pSet.getParameter<double>("tauPtCut");
+  bool eChONmuChOFF = pSet.getParameter<bool>("eChONmuChOFF");
   bool noUncertainties = pSet.getParameter<bool>("noUncertainties");
   bool doWPlusJetsAnalysis = pSet.getParameter<bool>("doWPlusJetsAnalysis");
   TString inputArea = TString(pSet.getParameter<string>("inputArea"));
@@ -85,7 +86,7 @@ int main(int argc, char* argv[])
   std::vector<double> brHtaunu = pSet.getParameter<std::vector<double> >("brHtaunu");
   std::vector<double> brHtb    = pSet.getParameter<std::vector<double> >("brHtb");
   
-  CutflowAnalyzer* analyzer = new CutflowAnalyzer( tauPtCut, noUncertainties, doWPlusJetsAnalysis, inputArea, outputArea, puFileName, runRange, brHtaunu, brHtb /*parSet*/ );
+  CutflowAnalyzer* analyzer = new CutflowAnalyzer( tauPtCut, noUncertainties, doWPlusJetsAnalysis, inputArea, outputArea, puFileName, runRange, brHtaunu, brHtb /*parSet*/, eChONmuChOFF );
   
   std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;
 
@@ -216,12 +217,13 @@ int main(int argc, char* argv[])
   else if(runOn == "doTables"){
     cout << "Doing tables" << endl;
     bool onlyhiggs(true), heavyhiggs(false), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false), produceDatacards(false), withShapes(true), withStatShapes(false), unsplit(false);
-    int detailed(2), notDetailed(1);      
-    analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, heavyhiggs, sm, "PFlow", "yields-mc-", false, false, false); 
+    int myDetail(0), detailed(2), notDetailed(1), baseDetail(0);      
+    myDetail = detailed;
+    analyzer->mcTable(myDetail, includeSoverB, printAllErrors, heavyhiggs, sm, "PFlow", "yields-mc-", false, false, false); 
     cout << "Done SM table" << endl;
-    analyzer->mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, heavyhiggs, "PFlow", "yields-mc-", false, false, false); 
+    analyzer->mcTable(myDetail, includeSoverB, printAllErrors, onlyhiggs, heavyhiggs, "PFlow", "yields-mc-", false, false, false); 
     cout << "Done TBH table" << endl;
-    analyzer->summaryTable( notDetailed, true, heavyhiggs, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
+    analyzer->summaryTable( myDetail, true, heavyhiggs, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
     cout << "Done summary table" << endl;
   }
   else if(runOn == "doDatacards"){
@@ -270,7 +272,15 @@ int main(int argc, char* argv[])
     a.parse(samples,jets,outFolder); 
     a.parse(samples,yields,outFolder);
     a.parse(samples_datadriven,wplusjets,outFolder);
+
+
+    a.parse(samples_embedded,vertex,outFolderEmbedded);
+    a.parse(samples_embedded,met,outFolderEmbedded);      
+    a.parse(samples_embedded,leptons,outFolderEmbedded);  
+    a.parse(samples_embedded,mt,outFolderEmbedded);      
+    a.parse(samples_embedded,jets,outFolderEmbedded); 
     a.parse(samples_embedded,yields,outFolderEmbedded);
+    //    a.parse(samples_embedded,yields,outFolderEmbedded);
 
     a.parse(samples_tautaubb,vertex,outFolderTautaubb);
     a.parse(samples_tautaubb,met,outFolderTautaubb);      

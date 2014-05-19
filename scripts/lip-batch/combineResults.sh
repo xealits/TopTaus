@@ -16,10 +16,12 @@ if [ "${2}" = "hadd" ]; then
 #    elif ["${3}" = "ABCD" ]; then
  #   hadd -f out-data.root out-Muon_RunA_*.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root &
 	
-	
-	hadd -f out-data.root out-Muon_RunA_*.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root out-MuonMissing_RunB_*.root out-MuonMissing_RunC_1_*.root out-MuonMissing_RunC_1_*.root out-MuonMissing_RunD_2_*.root out-MuonMissing_RunD_2_*.root 
-	
-	
+	if [ "${4}" = "muon" ]; then
+	    hadd -f out-data.root out-Muon_RunA_*.root out-Muon_RunB_*.root out-Muon_RunC_1_*.root out-Muon_RunC_2_*.root out-Muon_RunD_1_*.root out-Muon_RunD_2_*.root out-MuonMissing_RunB_*.root out-MuonMissing_RunC_1_*.root out-MuonMissing_RunC_2_*.root out-MuonMissing_RunD_1_*.root out-MuonMissing_RunD_2_*.root 
+	elif [ "${4}" = "electron" ]; then
+	    hadd -f out-data.root out-Electron_RunA_*.root out-Electron_RunB_*.root out-Electron_RunC_leg1_*.root out-Electron_RunC_leg2_*.root out-Electron_RunD_leg1_*.root out-Electron_RunD_leg2_*.root out-Electron_MisB_*.root out-Electron_RunC_mis1_*.root out-Electron_RunC_mis2_*.root out-Electron_RunD_mis1_*.root out-Electron_RunD_mis2_*.root   
+	fi
+	    
 #    fi
 	
     fi

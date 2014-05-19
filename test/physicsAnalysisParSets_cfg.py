@@ -15,6 +15,8 @@ PhysicsAnalysisParSet = cms.PSet(
     # new
     #    outputArea = cms.string("/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_preapp2/"),
     ## outputArea = cms.string("/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_noTopPtRew/"),
+    # Take care: you should not rewrite in the same directory with eChONmuChOFF differently set. Use two different output directories
+    eChONmuChOFF  = cms.bool(False),
     outputArea = cms.string("/lustre/ncg.ingrid.pt/cmslocal/olek/store/tau/Jan13ReReco/dataRedo/test_TopPtRew_2/"),
     #basepreapp
     #outputArea = cms.string("/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test2/"),
@@ -22,59 +24,35 @@ PhysicsAnalysisParSet = cms.PSet(
     #puFileName = cms.string("/exper-sw/cmst3/cmssw/users/vischia/chiggs/CMSSW_5_3_9/src/LIP/TopTaus/data/pileup/testNewPileup.root"),
     # puFileName = cms.string("/exper-sw/cmst3/cmssw/users/vischia/chiggs/CMSSW_5_3_9/src/LIP/TopTaus/data/pileup/MyDataPileupHistogram_70300_100bins_true.root"),
     runRange = cms.string("ABCD"),
+
+
+
+
+    # Only for tables
+    # Multiplied by 10!!!
     brHtaunu = cms.vdouble(
-    1,
-    1,
-    1,
-    1,
-    1,
-    1
-    #0.831852,
-    #0.407966,
-    #0.228564,
-    #0.106446,
-    #0.04129783,
-    #0.02514242
-
-#    0.831852,   
-#    0.407966,   
-#    0.228564,   
-#    0.106446,   
-#    0.04902523, 
-#    0.04129783, 
-#    0.0361988,  
-#    0.02984434, 
-#    0.02514242,     
-    ),
+#1,1,1,1,1,1
+        1.501,
+        1,
+        1.27996,
+        1.02709,
+        0.7624495,
+        0.464345
+        ),
     brHtb = cms.vdouble(
-    #    1-0.831852,
-    #    1-0.407966,
-    #    1-0.228564,
-    #    1-0.106446,
-    #    1-0.04129783,
-    #    1-0.02514242
-
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    #1,
-    1,
-    1,
-    1,
-    1,
-    1
-    #1-0.831852,   
-    #1-0.228564,   
-    #1-0.106446,   
-    #1-0.04902523, 
-    #1-0.04129783, 
-    #1-0.0361988,  
-    #1-0.02984434, 
-    #1-0.02514242     
+#1,1,1,1,1,1,1,1,1,1,1,1
+    1.501,
+    1.27996,
+    1.02709,
+    0.838679,
+    0.76244950,
+    0.68622,
+    0.564418,
+    0.464345,
+    0.2942245,
+    0.0827089,
+    0.0389719,
+    0.02
     )
     
     )

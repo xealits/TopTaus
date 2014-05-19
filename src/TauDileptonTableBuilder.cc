@@ -20,18 +20,18 @@ using namespace commondefinitions;
 // FIXME: clean code
 namespace tableutils{
 
-  enum dataPrecision { D1=1, D2=2, D3=3 };
+  enum dataPrecision { D0=0, D1=1, D2=2, D3=3 };
   
   
   // systset1 -> if enabled include only JES + MET +JER ,  systset2 -> if enabled include only btag unc ,  systset3 -> if enabled only trigger
   // detailed -> select between 1 or 2 floating points
   void TauDileptonTableBuilder::mcTable( int detailed, bool includeSoverB , bool printAllErrors, bool higgs, bool lightH, TString key, TString name, bool systset1, bool systset2, bool systset3){ 
-
+    
     // Multiplier for yields // Must modify and make it clear from python file
-    for(size_t i=0; i<brHtaunu_.size(); ++i)
-      brHtaunu_[i] = 1.; //100.;
-    for(size_t i=0; i<brHtb_.size(); ++i)
-      brHtb_[i] = 1.; //100.;
+    //for(size_t i=0; i<brHtaunu_.size(); ++i)
+    //  brHtaunu_[i] = 1.; //100.;
+    //for(size_t i=0; i<brHtb_.size(); ++i)
+    //  brHtb_[i] = 1.; //100.;
     
     bool triggerunc(true);  //enable/disable syst on trigger
     
@@ -1407,6 +1407,7 @@ namespace tableutils{
           dtemp = TString(" & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n"); 
           if(        detailed == D2 )  {dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f \\\\ \n");}
           else  if(  detailed == D3 )  {dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f \\\\ \n");}
+          else  if(  detailed == D0 )  {dtemp = TString(" & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f \\\\ \n");}
           line.Append(dtemp); const char * data = line.Data();
           fprintf(f,data,fhh*(hh_e[k])[COL2],fhh*(hh_e[k])[COL3],fhh*(hh_e[k])[COL4],fhh*(hh_e[k])[COL5],fhh*(hh_e[k])[COL6],fhh*(hh_e[k])[COL7],fhh*(hh_e[k])[COL8],fhh*(hh_e[k])[COL9]);
         }
@@ -1414,6 +1415,7 @@ namespace tableutils{
           dtemp = TString(" & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n"); 
           if     ( detailed == D2 )  {dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f  \\\\ \n");  }
           else if( detailed == D3 )  {dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f  \\\\ \n");  }
+          else if( detailed == D0 )  {dtemp = TString(" & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f  \\\\ \n");  }
           line.Append(dtemp); const char * data = line.Data();
           fprintf(f, data, fhh*(hh_e[k])[COL2] , fhh*(hh_e[k])[COL3] ,fhh*(hh_e[k])[COL4], fhh*(hh_e[k])[COL5], fhh*(hh_e[k])[COL6], fhh*(hh_e[k])[COL7], fhh*(hh_e[k])[COL8]);
         }
@@ -1424,7 +1426,8 @@ namespace tableutils{
           
           if( STARTINGPOINT == STARTING_AT_LJETS_ ){
             if      ( detailed == D2 ){ dx= TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$\\\\ \n"); }
-            else if ( detailed == D2 ){ dx= TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if ( detailed == D3 ){ dx= TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if ( detailed == D0 ){ dx= TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
             else        { dx= TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  \\\\ \n"); }
            
             lx.Append(dx); datax= lx.Data();
@@ -1442,6 +1445,7 @@ namespace tableutils{
           else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){
             if      ( detailed == D2 ){ dx = TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if ( detailed == D3 ){ dx = TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+	    else if ( detailed == D0 ){ dx = TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
            else          { dx = TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ \\\\ \n"); }
 
             lx.Append(dx); datax= lx.Data();
@@ -1473,6 +1477,7 @@ namespace tableutils{
           if( STARTINGPOINT      == STARTING_AT_LJETS_        ){
             if     ( detailed == D2){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if( detailed == D3 ){ dx=TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+	    else if( detailed == D0 ){ dx=TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
             else{         dx=TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  \\\\ \n"); }
         
             lx.Append(dx);  datax = lx.Data();
@@ -1489,6 +1494,7 @@ namespace tableutils{
           else if(STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){        
             if     (detailed == D2 ){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if(detailed == D3 ){ dx=TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+	    else if(detailed == D0 ){ dx=TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
             else{           dx=TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ \\\\ \n"); }
    
             lx.Append(dx);  datax = lx.Data();
@@ -1531,11 +1537,13 @@ namespace tableutils{
           dtemp = TString(" & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n"); 
           if     (detailed==D2 ){dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f \\\\ \n");  }
           else if(detailed==D3 ){dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f\\\\ \n");  }
+          else if(detailed==D0 ){dtemp = TString(" & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f\\\\ \n");  }
         }
         else if(  STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){
           dtemp = TString(" & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n");         
           if( detailed == D2 ){dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f \\\\ \n");         }
           if( detailed == D3 ){dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f \\\\ \n");         }
+	  if( detailed == D0 ){dtemp = TString(" & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f \\\\ \n");         }
         }
 
         line.Append(dtemp); const char * data = line.Data();
@@ -1556,6 +1564,7 @@ namespace tableutils{
 
             if     (detailed == D2 ){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if(detailed == D3 ){ dx=TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  \\\\ \n"); }
+            else if(detailed == D0 ){ dx=TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  \\\\ \n"); }
             else{ dx=TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$   & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$\\\\ \n"); }
             lx.Append(dx);  datax = lx.Data();
             fprintf(f, datax, 
@@ -1573,6 +1582,7 @@ namespace tableutils{
     
             if     ( detailed == D2 ){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if( detailed == D3 ){ dx=TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if( detailed == D0 ){ dx=TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
             else{ dx=TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ \\\\ \n"); }
 
             lx.Append(dx);  datax = lx.Data();
@@ -1604,6 +1614,7 @@ namespace tableutils{
           if( STARTINGPOINT == STARTING_AT_LJETS_ ){
             if(detailed == D2 ){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$   \\\\ \n"); }
             else if(detailed == D3 ){ dx=TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  \\\\ \n"); }  
+            else if(detailed == D0 ){ dx=TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  \\\\ \n"); }  
             else{         dx=TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  \\\\ \n"); }
             
             lx.Append(dx);  datax = lx.Data();
@@ -1620,6 +1631,7 @@ namespace tableutils{
           else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){
             if     ( detailed == D2 ){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if( detailed == D3 ){ dx=TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if( detailed == D0 ){ dx=TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
             else{           dx=TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ \\\\ \n"); }
 
             lx.Append(dx); datax = lx.Data();
@@ -1656,6 +1668,7 @@ namespace tableutils{
           dtemp = TString(" & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n"); 
           if(        detailed == D2 )  {dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f \\\\ \n");}
           else  if(  detailed == D3 )  {dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f \\\\ \n");}
+          else  if(  detailed == D0 )  {dtemp = TString(" & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f \\\\ \n");}
           line.Append(dtemp); const char * data = line.Data();
           fprintf(f,data,brHtaunu_[k]*(tbh_e[k])[COL2],brHtaunu_[k]*(tbh_e[k])[COL3],brHtaunu_[k]*(tbh_e[k])[COL4],brHtaunu_[k]*(tbh_e[k])[COL5],brHtaunu_[k]*(tbh_e[k])[COL6],brHtaunu_[k]*(tbh_e[k])[COL7],brHtaunu_[k]*(tbh_e[k])[COL8],brHtaunu_[k]*(tbh_e[k])[COL9]);
         }
@@ -1663,6 +1676,7 @@ namespace tableutils{
           dtemp = TString(" & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n"); 
           if     ( detailed == D2 )  {dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f  \\\\ \n");  }
           else if( detailed == D3 )  {dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f  \\\\ \n");  }
+          else if( detailed == D0 )  {dtemp = TString(" & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f  \\\\ \n");  }
           line.Append(dtemp); const char * data = line.Data();
           fprintf(f, data, brHtaunu_[k]*(tbh_e[k])[COL2] , brHtaunu_[k]*(tbh_e[k])[COL3] ,brHtaunu_[k]*(tbh_e[k])[COL4], brHtaunu_[k]*(tbh_e[k])[COL5], brHtaunu_[k]*(tbh_e[k])[COL6], brHtaunu_[k]*(tbh_e[k])[COL7], brHtaunu_[k]*(tbh_e[k])[COL8]);
         }
@@ -1673,7 +1687,8 @@ namespace tableutils{
           
           if( STARTINGPOINT == STARTING_AT_LJETS_ ){
             if      ( detailed == D2 ){ dx= TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$\\\\ \n"); }
-            else if ( detailed == D2 ){ dx= TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if ( detailed == D3 ){ dx= TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if ( detailed == D0 ){ dx= TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
             else        { dx= TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  \\\\ \n"); }
            
             lx.Append(dx); datax= lx.Data();
@@ -1691,6 +1706,7 @@ namespace tableutils{
           else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){
             if      ( detailed == D2 ){ dx = TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if ( detailed == D3 ){ dx = TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if ( detailed == D0 ){ dx = TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
            else          { dx = TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ \\\\ \n"); }
 
             lx.Append(dx); datax= lx.Data();
@@ -1722,6 +1738,7 @@ namespace tableutils{
           if( STARTINGPOINT      == STARTING_AT_LJETS_        ){
             if     ( detailed == D2){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if( detailed == D3 ){ dx=TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if( detailed == D0 ){ dx=TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
             else{         dx=TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  \\\\ \n"); }
         
             lx.Append(dx);  datax = lx.Data();
@@ -1738,6 +1755,7 @@ namespace tableutils{
           else if(STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){        
             if     (detailed == D2 ){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if(detailed == D3 ){ dx=TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if(detailed == D0 ){ dx=TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
             else{           dx=TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ \\\\ \n"); }
    
             lx.Append(dx);  datax = lx.Data();
@@ -1779,6 +1797,7 @@ namespace tableutils{
           dtemp = TString(" & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n"); 
           if(        detailed == D2 )  {dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f \\\\ \n");}
           else  if(  detailed == D3 )  {dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f \\\\ \n");}
+          else  if(  detailed == D0 )  {dtemp = TString(" & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f \\\\ \n");}
           line.Append(dtemp); const char * data = line.Data();
           fprintf(f,data,brHtb_[k]*(htb_e[k])[COL2],brHtb_[k]*(htb_e[k])[COL3],brHtb_[k]*(htb_e[k])[COL4],brHtb_[k]*(htb_e[k])[COL5],brHtb_[k]*(htb_e[k])[COL6],brHtb_[k]*(htb_e[k])[COL7],brHtb_[k]*(htb_e[k])[COL8],brHtb_[k]*(htb_e[k])[COL9]);
         }
@@ -1786,6 +1805,7 @@ namespace tableutils{
           dtemp = TString(" & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n"); 
           if     ( detailed == D2 )  {dtemp = TString(" & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f & %8.2f  \\\\ \n");  }
           else if( detailed == D3 )  {dtemp = TString(" & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f & %8.3f  \\\\ \n");  }
+          else if( detailed == D0 )  {dtemp = TString(" & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f  \\\\ \n");  }
           line.Append(dtemp); const char * data = line.Data();
           fprintf(f, data, brHtb_[k]*(htb_e[k])[COL2] , brHtb_[k]*(htb_e[k])[COL3] ,brHtb_[k]*(htb_e[k])[COL4], brHtb_[k]*(htb_e[k])[COL5], brHtb_[k]*(htb_e[k])[COL6], brHtb_[k]*(htb_e[k])[COL7], brHtb_[k]*(htb_e[k])[COL8]);
         }
@@ -1796,7 +1816,8 @@ namespace tableutils{
           
           if( STARTINGPOINT == STARTING_AT_LJETS_ ){
             if      ( detailed == D2 ){ dx= TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$\\\\ \n"); }
-            else if ( detailed == D2 ){ dx= TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if ( detailed == D3 ){ dx= TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if ( detailed == D0 ){ dx= TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
             else        { dx= TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  \\\\ \n"); }
            
             lx.Append(dx); datax= lx.Data();
@@ -1814,6 +1835,7 @@ namespace tableutils{
           else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){
             if      ( detailed == D2 ){ dx = TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if ( detailed == D3 ){ dx = TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if ( detailed == D0 ){ dx = TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
            else          { dx = TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ \\\\ \n"); }
 
             lx.Append(dx); datax= lx.Data();
@@ -1845,6 +1867,7 @@ namespace tableutils{
           if( STARTINGPOINT      == STARTING_AT_LJETS_        ){
             if     ( detailed == D2){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if( detailed == D3 ){ dx=TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if( detailed == D0 ){ dx=TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
             else{         dx=TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  \\\\ \n"); }
         
             lx.Append(dx);  datax = lx.Data();
@@ -1861,6 +1884,7 @@ namespace tableutils{
           else if(STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){        
             if     (detailed == D2 ){ dx=TString(" & & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if(detailed == D3 ){ dx=TString(" & & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$  &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n"); }
+            else if(detailed == D0 ){ dx=TString(" & & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$  &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n"); }
             else{           dx=TString(" & & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$  & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ \\\\ \n"); }
    
             lx.Append(dx);  datax = lx.Data();
@@ -1918,7 +1942,10 @@ namespace tableutils{
         else if(k == 13){ d2=TString(" & QCD & "); }
         else if(k == 14){ d2=TString(" & WW,WZ,ZZ & ");}
 
-        if      ( detailed == D1 ){ 
+	if      ( detailed == D0 ){ 
+          if(      STARTINGPOINT == STARTING_AT_LJETS_        ){ d2 = d2 + TString(" %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f \\\\ \n");}  
+          else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){ d2 = d2 + TString(" %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f & %8.0f\\\\ \n"); }
+        }else if      ( detailed == D1 ){ 
           if(      STARTINGPOINT == STARTING_AT_LJETS_        ){ d2 = d2 + TString(" %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f \\\\ \n");}  
           else if( STARTINGPOINT == STARTING_AT_LJETSPLUSMET_ ){ d2 = d2 + TString(" %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f & %8.1f\\\\ \n"); }
         }else if( detailed == D2 ){ 
@@ -1987,6 +2014,7 @@ namespace tableutils{
             if      ( detailed == D2 ){ dx =TString(" &  & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ \\\\ \n"); }
             else if ( detailed == D1 ){         dx =TString(" &  & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ \\\\ \n");  }
             else if ( detailed == D3 ){         dx =TString(" &  & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n");  }
+            else if ( detailed == D0 ){         dx =TString(" &  & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n");  }
 
             lx.Append(dx); datax = lx.Data();
             
@@ -2004,6 +2032,7 @@ namespace tableutils{
             if     ( detailed == D2 ){ dx =TString(" &  & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ &  $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$ & $\\pm$ %8.2f $^{+ %8.2f }_{- %8.2f }$  \\\\ \n"); }
             else if( detailed == D1 ){         dx =TString(" &  & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ &  $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ & $\\pm$ %8.1f $^{+ %8.1f }_{- %8.1f }$ \\\\ \n");  }
             else if( detailed == D3 ){         dx =TString(" &  & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ &  $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ & $\\pm$ %8.3f $^{+ %8.3f }_{- %8.3f }$ \\\\ \n");  }
+            else if( detailed == D0 ){         dx =TString(" &  & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ &  $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ & $\\pm$ %8.0f $^{+ %8.0f }_{- %8.0f }$ \\\\ \n");  }
 
             lx.Append(dx); datax = lx.Data();
             
@@ -2162,39 +2191,39 @@ namespace tableutils{
 // systset1 -> if enabled include only JES + MET +JER
 // systset2 -> if enabled include only btag unc
 // systset3 -> if enabled include only trigger
-  void TauDileptonTableBuilder::summaryTable( bool detailed, bool higgs, bool lightH, bool systset1, bool systset2, bool systset3, bool produceDatacards, bool withShapes, bool withStatShapes, bool unsplit){ 
+  void TauDileptonTableBuilder::summaryTable( int detailed, bool higgs, bool lightH, bool systset1, bool systset2, bool systset3, bool produceDatacards, bool withShapes, bool withStatShapes, bool unsplit){ 
 
 
-    if(!produceDatacards){ // 100 times the cross section*BR
-      for(size_t i=0; i<brHtaunu_.size(); ++i)
-	brHtaunu_[i] = 1;//100.;
-      for(size_t i=0; i<brHtb_.size(); ++i)
-	brHtb_[i] = 1;//100.;
-    }
-    else { // normalize to 1pb (so that the signal strength is already numerically equal to mu*sigma_exp*BR_TH
-      vector<double> scaleByTaunu, scaleByTb;
-
-      scaleByTaunu.push_back(22.6975 );
-      scaleByTaunu.push_back(20.4088 );  
-      scaleByTaunu.push_back(18.4811 );  
-      scaleByTaunu.push_back(15.4027 ); 
-      scaleByTaunu.push_back(11.9413 );
-      scaleByTaunu.push_back(07.91902);
-      
-      scaleByTb.push_back(22.6975  ); 
-      //      scaleByTb.push_back(20.4088  );   
-      scaleByTb.push_back(18.4811  );   
-      scaleByTb.push_back(15.4027  );  
-      scaleByTb.push_back(12.9842  ); 
-      scaleByTb.push_back(11.9413  ); 
-      scaleByTb.push_back(10.9879  );  
-      scaleByTb.push_back(09.31608 ); 
-      scaleByTb.push_back(07.91902 ); 
-      for(size_t i=0; i<brHtaunu_.size(); ++i)
-	brHtaunu_[i] = 1./scaleByTaunu[i];
-      for(size_t i=0; i<brHtb_.size(); ++i)
-	brHtb_[i] = 1./scaleByTb[i];
-    }
+//    if(!produceDatacards){ // 100 times the cross section*BR
+//      for(size_t i=0; i<brHtaunu_.size(); ++i)
+//	brHtaunu_[i] = 1;//100.;
+//      for(size_t i=0; i<brHtb_.size(); ++i)
+//	brHtb_[i] = 1;//100.;
+//    }
+//    else { // normalize to 1pb (so that the signal strength is already numerically equal to mu*sigma_exp*BR_TH
+//      vector<double> scaleByTaunu, scaleByTb;
+//
+//      scaleByTaunu.push_back(22.6975 );
+//      scaleByTaunu.push_back(20.4088 );  
+//      scaleByTaunu.push_back(18.4811 );  
+//      scaleByTaunu.push_back(15.4027 ); 
+//      scaleByTaunu.push_back(11.9413 );
+//      scaleByTaunu.push_back(07.91902);
+//      
+//      scaleByTb.push_back(22.6975  ); 
+//      //      scaleByTb.push_back(20.4088  );   
+//      scaleByTb.push_back(18.4811  );   
+//      scaleByTb.push_back(15.4027  );  
+//      scaleByTb.push_back(12.9842  ); 
+//      scaleByTb.push_back(11.9413  ); 
+//      scaleByTb.push_back(10.9879  );  
+//      scaleByTb.push_back(09.31608 ); 
+//      scaleByTb.push_back(07.91902 ); 
+//      for(size_t i=0; i<brHtaunu_.size(); ++i)
+//	brHtaunu_[i] = 1./scaleByTaunu[i];
+//      for(size_t i=0; i<brHtb_.size(); ++i)
+//	brHtb_[i] = 1./scaleByTb[i];
+//    }
     
     //  double ttbar_init(20416081); //SIMPLE evt processed
     double ttbar_init(8228517); // evt processed from debug.txt
@@ -3184,8 +3213,10 @@ namespace tableutils{
     if( !showAllHiggs && l!= 2 ){ continue; }  // only show 120 GeV/c2
     TString line(""); line.Append(T_HH_mc[l]);
     
-    if(detailed){ TString d(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); line.Append(d); }
-    else{         TString d(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); line.Append(d); }
+    if(detailed == D2){ TString d(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); line.Append(d); }
+    else if(detailed == D1) {         TString d(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); line.Append(d); }
+    else if(detailed == D3) {         TString d(" %8.3f $\\pm$ %8.3f $\\pm$ %8.3f \\\\ \n"); line.Append(d); }
+    else if(detailed == D0) {         TString d(" %8.0f $\\pm$ %8.0f $\\pm$ %8.0f \\\\ \n"); line.Append(d); }
     
     int massPoint(l);
     pair<TString, int> k0(algo0,massPoint); 
@@ -3201,8 +3232,10 @@ namespace tableutils{
      
     TString line(""); line.Append(T_HW_mc[l]); 
 
-    if(detailed){ TString d(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); line.Append(d);}
-    else        { TString d(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); line.Append(d);}                                    
+    if(detailed == D2){ TString d(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); line.Append(d);}
+    else if(detailed == D1)        { TString d(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); line.Append(d);}                                    
+    else if(detailed == D3)        { TString d(" %8.3f $\\pm$ %8.3f $\\pm$ %8.3f \\\\ \n"); line.Append(d);}                                    
+    else if(detailed == D0)        { TString d(" %8.0f $\\pm$ %8.0f $\\pm$ %8.0f \\\\ \n"); line.Append(d);}                                    
     
     int massPoint(l);
     pair<TString, int> k0(algo0,massPoint); 
@@ -3221,8 +3254,10 @@ namespace tableutils{
     
     TString line(""); line.Append(T_TBH_mc[l]); 
     
-    if(detailed){ TString d(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); line.Append(d);}
-    else        { TString d(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); line.Append(d);}                                    
+    if(detailed == D2){ TString d(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); line.Append(d);}
+    else if(detailed == D1)        { TString d(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); line.Append(d);}                                    
+    else if(detailed == D3)        { TString d(" %8.3f $\\pm$ %8.3f $\\pm$ %8.3f \\\\ \n"); line.Append(d);}                                    
+    else if(detailed == D0)        { TString d(" %8.0f $\\pm$ %8.0f $\\pm$ %8.0f \\\\ \n"); line.Append(d);}                                    
     
     int massPoint(l);
     pair<TString, int> k0(algo0,massPoint); 
@@ -3240,8 +3275,11 @@ namespace tableutils{
     
     TString line(""); line.Append(T_HTB_mc[l]); 
     
-    if(detailed){ TString d(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); line.Append(d);}
-    else        { TString d(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); line.Append(d);}                                    
+    if(detailed == D2){ TString d(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); line.Append(d);}
+    else if(detailed == D1)        { TString d(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); line.Append(d);}                                    
+    else if(detailed == D3)        { TString d(" %8.3f $\\pm$ %8.3f $\\pm$ %8.3f \\\\ \n"); line.Append(d);}                                    
+    else if(detailed == D0)        { TString d(" %8.0f $\\pm$ %8.0f $\\pm$ %8.0f \\\\ \n"); line.Append(d);}                                    
+
     
     int massPoint(l);
     pair<TString, int> k0(algo0,massPoint); 
@@ -3332,8 +3370,10 @@ namespace tableutils{
     TString line(""); line.Append(other[0]); TString d;
 
 
-    if(detailed) d = TString(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); 
-    else         d = TString(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); 
+    if(detailed == D2) d = TString(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); 
+    else if(detailed == D1)         d = TString(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); 
+    else if(detailed == D3)         d = TString(" %8.3f $\\pm$ %8.3f $\\pm$ %8.3f \\\\ \n"); 
+    else if(detailed == D0)         d = TString(" %8.0f $\\pm$ %8.0f $\\pm$ %8.0f \\\\ \n"); 
     line.Append(d); 
 
     
@@ -3379,8 +3419,10 @@ namespace tableutils{
 
     TString line(""); line.Append(other[1]); TString d("");
 
-    if(detailed)             d = TString(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); 
-    else                     d = TString(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); 
+    if(detailed == D2)             d = TString(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); 
+    else if(detailed == D1)                     d = TString(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); 
+    else if(detailed == D3)                     d = TString(" %8.3f $\\pm$ %8.3f $\\pm$ %8.3f \\\\ \n"); 
+    else if(detailed == D0)                     d = TString(" %8.0f $\\pm$ %8.0f $\\pm$ %8.0f \\\\ \n"); 
     line.Append(d); 
     const char * data = line.Data(); fprintf(f, data, tau_fakes, sqrt(tau_fakes_stat2), sqrt(tau_fakes_syst2) );        
   }
@@ -3399,8 +3441,10 @@ namespace tableutils{
       TString line(""); line.Append(other[2+k]); 
       TString d("");
 
-      if(detailed) d = TString(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); 
-      else d = TString(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); 
+      if(detailed == D2) d = TString(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); 
+      else if(detailed == D1) d = TString(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n"); 
+      else if(detailed == D3) d = TString(" %8.3f $\\pm$ %8.3f $\\pm$ %8.3f \\\\ \n"); 
+      else if(detailed == D0) d = TString(" %8.0f $\\pm$ %8.0f $\\pm$ %8.0f \\\\ \n"); 
       
       line.Append(d);
 
@@ -3523,8 +3567,11 @@ namespace tableutils{
 
     TString line(""); line.Append("Total expected & "); TString d("");
      
-    if(detailed) d=TString(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); 
-    else d=TString(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n");
+    if(detailed == D2) d=TString(" %8.2f $\\pm$ %8.2f $\\pm$ %8.2f \\\\ \n"); 
+    else if(detailed == D1) d=TString(" %8.1f $\\pm$ %8.1f $\\pm$ %8.1f \\\\ \n");
+    else if(detailed == D3) d=TString(" %8.3f $\\pm$ %8.3f $\\pm$ %8.3f \\\\ \n");
+    else if(detailed == D0) d=TString(" %8.0f $\\pm$ %8.0f $\\pm$ %8.0f \\\\ \n");
+
     line.Append(d);
 
     //FORCED
