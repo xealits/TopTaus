@@ -1,16 +1,16 @@
-/**   
-      \class	    physicsAnalysis physicsAnalysis.cc "UserCode/LIP/TopTaus/bin/physicsAnalysis.cc"                                                                     
+/**
+      \class	    physicsAnalysis physicsAnalysis.cc "UserCode/LIP/TopTaus/bin/physicsAnalysis.cc"
       \brief    executable for performing the cutflow analysis and control plots for the various channels and data samples. Must expand to calling other classes
-      
+
       \author   Pietro Vischia
-      
-      \version  $Id: physicsAnalysis.cc,v 1.22 2013/04/19 15:13:00 vischia Exp $                                                                                                       
+
+      \version  $Id: physicsAnalysis.cc,v 1.22 2013/04/19 15:13:00 vischia Exp $
 */
 
 #include "LIP/TopTaus/interface/CutflowAnalyzer.hh"
 #include "LIP/TopTaus/interface/HistogramPlotter.hh"
 
-// System includes	
+// System includes
 #include <string>
 #include <sstream>
 
@@ -24,7 +24,7 @@
 
 
 /*
-  
+
 @run me like this
 
 physicsAnalysis test/physicsAnalysisParSets_cfg.py sample --> analyze sample
@@ -41,23 +41,23 @@ int main(int argc, char* argv[])
   // load framework libraries
   gSystem->Load( "libFWCoreFWLite" );
   AutoLibraryLoader::enable();
-  
+
   //check arguments
   if ( argc < 3 ) {
     std::cout << "Usage : " << argv[0] << " parameters_cfg.py action" << std::endl;
     return 0;
   }
-  
-  
+
+
   //  // Get input arguments
   //  string sDoDatacards("");
   //  bool doDatacards(false);
-  
+
   //  for(int i=3;i<argc;i++){
   //    string arg(argv[i]);
-  //    //    if(arg.find("--help")        !=string::npos) { printHelp(); return -1;}                                                                                                                                  
+  //    //    if(arg.find("--help")        !=string::npos) { printHelp(); return -1;}
   //    if(arg.find("--doDatacards") !=string::npos) { sDoDatacards = argv[i+1];}
-  //    //check arguments // FIXME: implement --blah bih                             
+  //    //check arguments // FIXME: implement --blah bih
   //  }
   //  if(sDoDatacards == "true")
   //    doDatacards=true;
@@ -67,14 +67,14 @@ int main(int argc, char* argv[])
   //    cout << "Error. DoDatacards value not defined. Defaulting to false (tables mode)" << endl;
   //    doDatacards=false;
   //  }
-  
-  
-  
+
+
+
   string parSet(argv[1]);
   string runOn(argv[2]);
-  
+
   const edm::ParameterSet &pSet = edm::readPSetsFrom(parSet)->getParameter<edm::ParameterSet>("PhysicsAnalysisParSet");
-  
+
   double tauPtCut = pSet.getParameter<double>("tauPtCut");
   bool eChONmuChOFF = pSet.getParameter<bool>("eChONmuChOFF");
   bool noUncertainties = pSet.getParameter<bool>("noUncertainties");
@@ -85,12 +85,12 @@ int main(int argc, char* argv[])
   TString runRange   = TString(pSet.getParameter<string>("runRange"));
   std::vector<double> brHtaunu = pSet.getParameter<std::vector<double> >("brHtaunu");
   std::vector<double> brHtb    = pSet.getParameter<std::vector<double> >("brHtb");
-  
+
   CutflowAnalyzer* analyzer = new CutflowAnalyzer( tauPtCut, noUncertainties, doWPlusJetsAnalysis, inputArea, outputArea, puFileName, runRange, brHtaunu, brHtb /*parSet*/, eChONmuChOFF );
-  
+
   std::cout << "Analyzer has been set with a cut on tau pt of " << tauPtCut << " GeV/c " << std::endl;
 
-  
+
   if(runOn == "testEmbedding") analyzer->process_embeddedData();
 
 
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
     sidx<<i;
     string idx=sidx.str();
     // 50 from 0
-    
+
     if      (runOn == "data_muonA_"+idx)  analyzer->process_data_RunA( i);
     else if (runOn == "data_muonB_"+idx)  analyzer->process_data_RunB( i);
     else if (runOn == "data_muonC1_"+idx) analyzer->process_data_RunC1(i);
@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
     else if(runOn == "qcd_8_"+idx)                 analyzer->process_qcd(8, i)                ;
     else if(runOn == "qcd_9_"+idx)                 analyzer->process_qcd(9, i)                ;
 
-    
+
     else if(runOn == "qcd_15_"+idx)                 analyzer->process_qcd(15, i)                ;
     else if(runOn == "qcd_16_"+idx)                 analyzer->process_qcd(16, i)                ;
     else if(runOn == "qcd_17_"+idx)                 analyzer->process_qcd(17, i)                ;
@@ -200,44 +200,45 @@ int main(int argc, char* argv[])
     else if(runOn == "qcd_14_"+idx)                 analyzer->process_qcd(14, i)                ;
 
 
-  }  
+  }
 
-    
+
   if     (runOn == "hh_higgs_bychannel")  analyzer->process_hh_higgs_bychannel() ;
   else if(runOn == "hh_higgs")            analyzer->process_hh_higgs()           ;
-  
+
   else if(runOn == "wh_higgs_bychannel")  analyzer->process_wh_higgs_bychannel() ;
   else if(runOn == "wh_higgs")            analyzer->process_wh_higgs()           ;
   else if(runOn == "tbh_higgs_bychannel") analyzer->process_tbh_higgs_bychannel() ;
   else if(runOn == "tbh_higgs")           analyzer->process_tbh_higgs()           ;
 
 
+  cout << "doTables = " << runOn;
 
   // FIXME: manage with --blah for having parameters like "withHiggs" and so on
-  else if(runOn == "doTables"){
+  if(runOn == "doTables"){
     cout << "Doing tables" << endl;
     bool onlyhiggs(true), heavyhiggs(false), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false), produceDatacards(false), withShapes(true), withStatShapes(false), unsplit(false);
-    int myDetail(0), detailed(2), notDetailed(1), baseDetail(0);      
+    int myDetail(0), detailed(2), notDetailed(1), baseDetail(0);
     myDetail = detailed;
-    analyzer->mcTable(myDetail, includeSoverB, printAllErrors, heavyhiggs, sm, "PFlow", "yields-mc-", false, false, false); 
+    analyzer->mcTable(myDetail, includeSoverB, printAllErrors, heavyhiggs, sm, "PFlow", "yields-mc-", false, false, false);
     cout << "Done SM table" << endl;
-    analyzer->mcTable(myDetail, includeSoverB, printAllErrors, onlyhiggs, heavyhiggs, "PFlow", "yields-mc-", false, false, false); 
+    analyzer->mcTable(myDetail, includeSoverB, printAllErrors, onlyhiggs, heavyhiggs, "PFlow", "yields-mc-", false, false, false);
     cout << "Done TBH table" << endl;
     analyzer->summaryTable( myDetail, true, heavyhiggs, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
     cout << "Done summary table" << endl;
   }
   else if(runOn == "doDatacards"){
     bool produceDatacards(true), withShapes(true), withStatShapes(false), unsplit(true), heavyhiggs(false);
-    int detailed(2), notDetailed(1); 
+    int detailed(2), notDetailed(1);
     analyzer->summaryTable( notDetailed, true, heavyhiggs, false, false, false, produceDatacards, withShapes, withStatShapes, unsplit);
   }
   else if(runOn == "doPlots"){
 //    PlotStyle sty();
 //    sty.setTDRStyle();
-      
+
     TString samples("data/plotter/samples.xml");
-    TString samples_datadriven("data/plotter/samples_datadriven.xml"); 
-    TString samples_embedded("data/plotter/samples_embedded.xml"); 
+    TString samples_datadriven("data/plotter/samples_datadriven.xml");
+    TString samples_embedded("data/plotter/samples_embedded.xml");
     TString samples_tautaubb("data/plotter/samples_embedded_hhhtautaubb.xml");
     TString outFolder("plots/"); // move to input line
     TString outFolderEmbedded("plotsEmbedded/"); // move to input line
@@ -266,32 +267,32 @@ int main(int argc, char* argv[])
 
     HistogramPlotter a; // Move to input line or cfg file the choice of what to plot
     a.parse(samples,vertex,outFolder);
-    a.parse(samples,met,outFolder);      
-    a.parse(samples,leptons,outFolder);  
-    a.parse(samples,mt,outFolder);      
-    a.parse(samples,jets,outFolder); 
+    a.parse(samples,met,outFolder);
+    a.parse(samples,leptons,outFolder);
+    a.parse(samples,mt,outFolder);
+    a.parse(samples,jets,outFolder);
     a.parse(samples,yields,outFolder);
     a.parse(samples_datadriven,wplusjets,outFolder);
 
 
     a.parse(samples_embedded,vertex,outFolderEmbedded);
-    a.parse(samples_embedded,met,outFolderEmbedded);      
-    a.parse(samples_embedded,leptons,outFolderEmbedded);  
-    a.parse(samples_embedded,mt,outFolderEmbedded);      
-    a.parse(samples_embedded,jets,outFolderEmbedded); 
+    a.parse(samples_embedded,met,outFolderEmbedded);
+    a.parse(samples_embedded,leptons,outFolderEmbedded);
+    a.parse(samples_embedded,mt,outFolderEmbedded);
+    a.parse(samples_embedded,jets,outFolderEmbedded);
     a.parse(samples_embedded,yields,outFolderEmbedded);
     //    a.parse(samples_embedded,yields,outFolderEmbedded);
 
     a.parse(samples_tautaubb,vertex,outFolderTautaubb);
-    a.parse(samples_tautaubb,met,outFolderTautaubb);      
-    a.parse(samples_tautaubb,leptons,outFolderTautaubb);  
-    a.parse(samples_tautaubb,mt,outFolderTautaubb);      
-    a.parse(samples_tautaubb,jets,outFolderTautaubb); 
+    a.parse(samples_tautaubb,met,outFolderTautaubb);
+    a.parse(samples_tautaubb,leptons,outFolderTautaubb);
+    a.parse(samples_tautaubb,mt,outFolderTautaubb);
+    a.parse(samples_tautaubb,jets,outFolderTautaubb);
     a.parse(samples_tautaubb,yields,outFolderTautaubb);
 
 
-    //a.parse(samples,limits,outFolder);      
-    //a.parse(samples,debug,outFolder);  
+    //a.parse(samples,limits,outFolder);
+    //a.parse(samples,debug,outFolder);
     //a.parse(samples,afterR,outFolder);
     //
     //  //a.parse(samples,wjets,outFolder);
@@ -299,37 +300,37 @@ int main(int argc, char* argv[])
     //  //a.parse(higgssamples,taus,outFolder);
     //  //a.parse(samples,taus,outFolder);
     //  //a.parse(samples,test,outFolder);
-    
+
   }
   else
     cout << "Sample does not exist" << endl;
-  
 
 
-  
+
+
   cout << "physicsAnalysis reached its natural end" << endl;
-  
+
   return 0;
-  
+
 }
 //  // creates the physics analyzer
 //  PhysicsAnalyzer analyzer(20);
 //
-//  
-//  //analyzer.process_ttbar();  
+//
+//  //analyzer.process_ttbar();
 //  //analyzer.process_data();
 //  //analyzer.process_ttbar_bychannel();
 //
 //  // Table processing starts here
 //  // include all errors -> (xx,xx,false,false)
-//  bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false); 
-//  int detailed(2), notDetailed(1);      
-//analyzer.mcTable(notDetailed, includeSoverB, printAllErrors, sm, "PFlow", "yields-mc-", false, false, false); 
-//analyzer.mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false); 
-////analyzer.mcTable(notDetailed, includeSoverB, doNotPrintAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false); 
+//  bool onlyhiggs(true), sm(false), doNotPrintAllErrors(false), printAllErrors(true), includeSoverB(true), doNotincludeSoverB(false);
+//  int detailed(2), notDetailed(1);
+//analyzer.mcTable(notDetailed, includeSoverB, printAllErrors, sm, "PFlow", "yields-mc-", false, false, false);
+//analyzer.mcTable(notDetailed, includeSoverB, printAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false);
+////analyzer.mcTable(notDetailed, includeSoverB, doNotPrintAllErrors, onlyhiggs, "PFlow", "yields-mc-", false, false, false);
 //  //DEBUG (include all systematics )
-//  //analyzer.mcTable(notDetailed, includeSoverB, doNotPrintAllErrors, sm, "PFlow", "yields-mc-", false, false, false);  
-//  
+//  //analyzer.mcTable(notDetailed, includeSoverB, doNotPrintAllErrors, sm, "PFlow", "yields-mc-", false, false, false);
+//
 //  //
 // analyzer.summaryTable( notDetailed, false, false, false, false);
 // analyzer.summaryTable( notDetailed, true, false, false, false);

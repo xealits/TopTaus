@@ -17,7 +17,8 @@ PhysicsAnalysisParSet = cms.PSet(
     ## outputArea = cms.string("/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test_noTopPtRew/"),
     # Take care: you should not rewrite in the same directory with eChONmuChOFF differently set. Use two different output directories
     eChONmuChOFF  = cms.bool(False),
-    outputArea = cms.string("/lustre/ncg.ingrid.pt/cmslocal/olek/store/tau/Jan13ReReco/dataRedo/test_TopPtRew_2/"),
+    outputArea = cms.string("/lustre/ncg.ingrid.pt/cmslocal/olek/store/tau/Jan13ReReco/dataRedo/test_TopPtRew_3/"),
+    #outputArea = cms.string("/lustre/ncg.ingrid.pt/cmslocal/olek/store/tau/Jan13ReReco/dataRedo/test_TopPtRew_electrons/"),
     #basepreapp
     #outputArea = cms.string("/lustre/ncg.ingrid.pt/cmslocal/vischia/store/tau/Jan13ReReco/dataRedo/test2/"),
     puFileName = cms.string("/exper-sw/cmst3/cmssw/users/olek/CMSSW_5_3_9/src/LIP/TopTaus/data/pileup/MyDataPileupHistogram_70300_100bins.root"),
